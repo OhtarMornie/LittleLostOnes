@@ -9,13 +9,6 @@
       },
       "hash": "957ba3f8f80c010f31cc7e01810ca43d4579f5a8"
     },
-    "com.idaocracy.naninovelsceneassistant": {
-      "version": "https://github.com/idaocracy/NaninovelSceneAssistant.git",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "d77c244f07f6c16aa41063c5a83874d96af2fcca"
-    },
     "com.unity.2d.animation": {
       "version": "10.0.2",
       "depth": 1,
@@ -115,6 +108,15 @@
       "source": "registry",
       "dependencies": {
         "com.unity.mathematics": "1.2.1"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.cinemachine": {
+      "version": "2.9.7",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.test-framework": "1.1.31"
       },
       "url": "https://packages.unity.com"
     },

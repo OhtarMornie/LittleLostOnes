@@ -166,3 +166,26 @@ MonoBehaviour:
     - name: ToastUI
       pathPrefix: UI
       guid: dd85ce99288c2f8488447fa511b1c0d6
+  - Id: Scripts
+    Resources:
+    - name: TestScipt
+      pathPrefix: Scripts
+      guid: 3357646285b68af40885efe90f72cfc5
+  - Id: Characters/45a7020a-4953-4a09-9241-97d145a51005
+    Resources:
+    - name: Default
+      pathPrefix: "Characters/\u041B\u0438\u0437\u0430"
+      guid: 0872b77d14c55674b92e2beaa73dd410
+  - Id: Backgrounds/48e04657-89e6-4b95-9ffc-6ecbbbc3df97
+    Resources:
+    - name: Street
+      pathPrefix: Backgrounds/MainBackground
+      guid: 02c85627cf57b83468b454cefbc60373
+    - name: S_FrontGate
+      pathPrefix: Backgrounds/MainBackground
+      guid: e1eae59d579c23a428116b6e6db0c4f8
+  - Id: Audio
+    Resources:
+    - name: BGM1
+      pathPrefix: Audio
+      guid: e9e13b4d00d11f14aac17dbc65eea59f
