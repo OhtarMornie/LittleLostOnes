@@ -180,10 +180,7 @@ MonoBehaviour:
     Resources:
     - name: Street
       pathPrefix: Backgrounds/MainBackground
-      guid: 02c85627cf57b83468b454cefbc60373
-    - name: S_FrontGate
-      pathPrefix: Backgrounds/MainBackground
-      guid: e1eae59d579c23a428116b6e6db0c4f8
+      guid: a90db315c61fdfd4c9a7e4a2e65af16b
   - Id: Audio
     Resources:
     - name: BGM1

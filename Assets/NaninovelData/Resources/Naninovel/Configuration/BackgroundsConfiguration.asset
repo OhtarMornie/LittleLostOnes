@@ -51,7 +51,7 @@ MonoBehaviour:
     ids:
     - MainBackground
     metas:
-    - Implementation: Naninovel.SpriteBackground, Elringus.Naninovel.Runtime, Version=0.0.0.0,
+    - Implementation: Naninovel.SceneBackground, Elringus.Naninovel.Runtime, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       Loader:
         PathPrefix: Backgrounds
