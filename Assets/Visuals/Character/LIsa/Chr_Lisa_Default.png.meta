@@ -3,11 +3,8 @@ guid: 0872b77d14c55674b92e2beaa73dd410
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4045267992048591980
-    second: l flip_0
-  - first:
-      213: 1018122679922760481
-    second: l flip_1
+      213: -2999947790329085365
+    second: Chr_Lisa_Default_0
   externalObjects: {}
   serializedVersion: 12
   mipmaps:
@@ -101,12 +98,12 @@ TextureImporter:
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
-    textureFormat: -1
+    textureFormat: 12
     textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
-    overridden: 0
+    overridden: 1
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -125,43 +122,22 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: l flip_0
-      rect:
-        serializedVersion: 2
-        x: 181
-        y: 112
-        width: 7
-        height: 9
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 49b9fa8a1325cd7c0800000000000000
-      internalID: -4045267992048591980
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: l flip_1
+      name: Chr_Lisa_Default
       rect:
         serializedVersion: 2
         x: 196
         y: 0
-        width: 523
-        height: 741
+        width: 635
+        height: 928
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 12b9092ee29112e00800000000000000
-      internalID: 1018122679922760481
+      spriteID: b4287bc016b0e56d0800000000000000
+      internalID: -2999947790329085365
       vertices: []
       indices: 
       edges: []
@@ -169,7 +145,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 3a17b8e66454b5c4090b496c3f4fac8d
     internalID: 0
     vertices: []
     indices: 
@@ -177,8 +153,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      l flip_0: -4045267992048591980
-      l flip_1: 1018122679922760481
+      Chr_Lisa_Default: -2999947790329085365
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

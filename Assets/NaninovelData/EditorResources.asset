@@ -166,23 +166,35 @@ MonoBehaviour:
     - name: ToastUI
       pathPrefix: UI
       guid: dd85ce99288c2f8488447fa511b1c0d6
-  - Id: Scripts
-    Resources:
-    - name: TestScipt
-      pathPrefix: Scripts
-      guid: 3357646285b68af40885efe90f72cfc5
   - Id: Characters/45a7020a-4953-4a09-9241-97d145a51005
     Resources:
     - name: Default
       pathPrefix: "Characters/\u041B\u0438\u0437\u0430"
       guid: 0872b77d14c55674b92e2beaa73dd410
+    - name: Thinking
+      pathPrefix: "Characters/\u041B\u0438\u0437\u0430"
+      guid: e47d9773711fd484ca9c934246e13a50
+    - name: Cocky
+      pathPrefix: "Characters/\u041B\u0438\u0437\u0430"
+      guid: 527d709c4da6e9d43acbff082ca3a6ac
   - Id: Backgrounds/48e04657-89e6-4b95-9ffc-6ecbbbc3df97
     Resources:
-    - name: Street
+    - name: MainMenu
+      pathPrefix: Backgrounds/MainBackground
+      guid: 2cda990e2423bbf4892e6590ba056729
+    - name: School_BiologyClass
+      pathPrefix: Backgrounds/MainBackground
+      guid: 72d8ccf04f8047847a1f643eb8d344c0
+    - name: BlackScreen
+      pathPrefix: Backgrounds/MainBackground
+      guid: 625c202880b5a6442bf3062f1fc84b89
+    - name: BG_Street_Paralax
       pathPrefix: Backgrounds/MainBackground
       guid: a90db315c61fdfd4c9a7e4a2e65af16b
-  - Id: Audio
+  - Id: Scripts
     Resources:
-    - name: BGM1
-      pathPrefix: Audio
-      guid: e9e13b4d00d11f14aac17dbc65eea59f
+    - name: TestScript
+      pathPrefix: Scripts
+      guid: 3357646285b68af40885efe90f72cfc5
+  - Id: CharacterAvatars
+    Resources: []
