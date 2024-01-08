@@ -14,12 +14,11 @@ public class cameraTarget : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("SETDRYTFU");
+
     }
     
     void Update()
     {
-        Camera cam = GameObject.Find("Main Camera(Clone)").GetComponent<Camera>();
         Vector3 mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
         Vector3 targetPos = (player.position + mousePos) / 2f;
 

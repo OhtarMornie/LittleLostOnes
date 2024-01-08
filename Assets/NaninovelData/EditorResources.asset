@@ -182,10 +182,10 @@ MonoBehaviour:
     - name: MainMenu
       pathPrefix: Backgrounds/MainBackground
       guid: 2cda990e2423bbf4892e6590ba056729
-    - name: School_BiologyClass
+    - name: BG_School_BiologyClass
       pathPrefix: Backgrounds/MainBackground
       guid: 72d8ccf04f8047847a1f643eb8d344c0
-    - name: BlackScreen
+    - name: BG_BlackScreen
       pathPrefix: Backgrounds/MainBackground
       guid: 625c202880b5a6442bf3062f1fc84b89
     - name: BG_Street_Paralax
@@ -196,5 +196,35 @@ MonoBehaviour:
     - name: TestScript
       pathPrefix: Scripts
       guid: 3357646285b68af40885efe90f72cfc5
+    - name: SC1_Intro
+      pathPrefix: Scripts
+      guid: e1ee932b923941c48a71bd17022f0485
+    - name: SC1_InClass
+      pathPrefix: Scripts
+      guid: bbe4f347dc1803248a9612896064aa5d
   - Id: CharacterAvatars
+    Resources: []
+  - Id: Characters/ebc02367-c163-4f56-a4ad-b52378623186
+    Resources: []
+  - Id: TextPrinters/da7365d1-66a4-4732-b0f8-56cfaed3847b
+    Resources:
+    - name: Dialogue
+      pathPrefix: TextPrinters
+      guid: 
+  - Id: TextPrinters/0ebef925-5a2d-4155-85a0-a5d02e446e55
+    Resources:
+    - name: Fullscreen
+      pathPrefix: TextPrinters
+      guid: 
+  - Id: TextPrinters/2fcfe7df-b5c0-493c-a902-d581928d6032
+    Resources:
+    - name: TMProDialogue
+      pathPrefix: TextPrinters
+      guid: 
+  - Id: TextPrinters/7bc1d799-9767-456b-b11d-15fba9af0206
+    Resources:
+    - name: NNN
+      pathPrefix: TextPrinters
+      guid: 5217f160384b47848b9f8e9ac5c2a8f2
+  - Id: Characters/f9bf172a-bae6-4b90-a638-a91073ebadcb
     Resources: []

@@ -18,7 +18,6 @@ public class Paralax : MonoBehaviour
 
     void Update()
     {
-        Transform cam = GameObject.Find("Main Camera(Clone)").GetComponent<Transform>();
         transform.position -= ((lastpos - cam.position) * speedCoefficient);
         lastpos = cam.position;
     }
