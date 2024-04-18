@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-3540198981411061799
+--- !u!114 &-8418667881328897219
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 98cbf837c7ba24dda959b0c08f753c33, type: 3}
+  m_Script: {fileID: 11500000, guid: 6c5ea4ad25b4348c6b3b014968e97f17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   id: 0
@@ -36,19 +36,13 @@ MonoBehaviour:
     x: 14
     y: 14
     width: 300
-    height: 132
+    height: 128.41
   overrideColor: {r: 1, g: 1, b: 1, a: 1}
   showOutputSockets: 1
   parentActionListInEditor: {fileID: 0}
+  disableCamera: 0
   constantID: 0
   parameterID: -1
-  origin: {fileID: 0}
-  playFromDefaultSound: 1
-  audioSource: {fileID: 0}
-  audioSourceConstantID: 0
-  audioSourceParameterID: -1
-  audioClip: {fileID: 8300000, guid: 4da46719e9a639e47a1b253e68dcf9dc, type: 3}
-  audioClipParameterID: -1
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62,7 +56,7 @@ MonoBehaviour:
   m_Name: Inventory_TurnOn
   m_EditorClassIdentifier: 
   actions:
-  - {fileID: -3540198981411061799}
+  - {fileID: -8418667881328897219}
   isSkippable: 1
   actionListType: 0
   unfreezePauseMenus: 1

@@ -152,7 +152,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      BG_School_BiologyClassP0_0: -8751439392405397417
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
