@@ -2426,18 +2426,16 @@ namespace AC
 			{
 				return false;
 			}
-
-			GameState gameState = KickStarter.stateHandler.gameState;
-			
-			if ((gameState == GameState.Paused && ((appearType == AppearType.WhenSpeechPlays && showWhenPaused) || IsBlocking ())) ||
-				(gameState == GameState.DialogOptions && appearType == AppearType.DuringConversation) ||
-				(KickStarter.playerMenus.IsInCutscene && CanClickInCutscenes ()) ||
-				(IsInGameplay (gameState) && CanPause () && !pauseWhenEnabled) ||
-				(IsInGameplay (gameState) && !CanPause ()))
+			if (KickStarter.playerMenus.IsInCutscene)
 			{
-				return true;
+				if (canClickInCutscene && ShowClickInCutscenesOption ())
+				{
+					return true;
+				}
+				return false;
 			}
-			return false;
+
+			return true;
 		}
 
 
@@ -2691,6 +2689,7 @@ namespace AC
 
 			if (menuSource != MenuSource.AdventureCreator || KickStarter.settingsManager.inputMethod != InputMethod.TouchScreen)
 			{
+				//if (((gameState == GameState.Paused || IsBlocking ()) && KickStarter.menuManager.keyboardControlWhenPaused) ||
 				if ((((gameState == GameState.Paused && appearType == AppearType.WhenSpeechPlays && showWhenPaused) || IsBlocking ()) && KickStarter.menuManager.keyboardControlWhenPaused) ||
 					(gameState == GameState.DialogOptions && appearType == AppearType.DuringConversation && KickStarter.menuManager.keyboardControlWhenDialogOptions) ||
 					(KickStarter.playerMenus.IsInCutscene && CanClickInCutscenes () && KickStarter.menuManager.keyboardControlWhenCutscene) ||

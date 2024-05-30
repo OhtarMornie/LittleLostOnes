@@ -5,7 +5,51 @@
 \paperw11900\paperh16840\margl1440\margr1440\vieww23380\viewh15000\viewkind0
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 
-\f0\fs24 \cf0 Version 1.78.1:\
+\f0\fs24 \cf0 Version 1.78.4:\
+\
+-Fixed: "Sound: Play one-shot" Action's optional AudioSource field not accepting scene objects\
+-Fixed: "Container: Add" and "Container: Remove" events not auto-generating the correct ActionList parameters\
+-Fixed: Speech lines sometimes not being exported when using the Game Text Export wizard\
+-Fixed: Gathered text not filtering to Player speech when the Speech Manager's "Text filter" Speaker field is set to "Player"\
+\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 Version 1.78.3:\
+\
+= Upgrade notes =\
+-The OnBeforeChangeScene event is now triggered before scene data is saved\
+-The "Turn instantly when under player control?" option has been replaced with a "Turning mode" dropdown\
+\
+-Added: Option for Direct-controlled Players to turn and move independently when changing direction\
+-Added: Duplication options to the ActionList Editor window's context menu\
+-Added: Ability to compress save-game data to reduce filesize\
+-Changed: The OnBeforeChangeScene event is now triggered before scene data is saved\
+-Changed: The "Turn instantly when under player control?" option has been replaced with a "Turning mode" dropdown\
+-Fixed: Hotspot labels not appearing for Crafting menus since v1.78.0\
+-Fixed: Performance issues when dealing with large numbers of save files in the Editor or Builds on standalone platforms\
+-Fixed: Error when saving games in XML format\
+-Fixed: "Inventory: Add" and "Inventory: Remove" events somtimes firing when they shouldn't\
+-Fixed: QTEs sometimes failing automatically if run in succession\
+-Fixed: Characters sometimes not following the scene's Default Sorting Map after loading\
+-Fixed: Camera Fade tracks affecting the Main Camera at runtime when "Draw fade?" is unchecked\
+-Fixed: MainCamera's GetFadeTexture and GetFadeAlpha functions returning incorrect values while a Camera Fade track is in use\
+\
+\
+Version 1.78.2:\
+\
+-Added: "Objective" type to ActionList parameters\
+-Added: Option to the PlayerInteraction component to always prevent camera-dragging while a Hotspot is selected\
+-Changed: The PlayerMenus script's MakeUIInteractive and MakeUINonInteractive functions have been replaced with UpdateUIInteractability\
+-Fixed: Save-game timestamps not being recorded if the "Time display" setting is set to "None"\
+-Fixed: InventoryBox elements that list Documents not always updating Unity UI Button colours at the correct time\
+-Fixed: Playback issues with Timers that are not linked to Global Variables\
+-Fixed: Prevented the "Inventory/Add" event from running in reaction to the Player's initial inventory\
+-Fixed: Unity UI-based menu selection issues with v1.78.1\
+-Fixed: Issues with direct-navigation of duplicated UI Menus\
+-Fixed: Certain inputs still being registered even when the Input system has been disabled\
+\
+\
+Version 1.78.1:\
 \
 -Added: The "Physics: Raycast" Action now draws a debug line in the Scene window to represent the generated ray\
 -Added: "Character / Point and click" event to the Events Editor\

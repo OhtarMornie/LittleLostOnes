@@ -133,7 +133,29 @@ MonoBehaviour:
   freeAimSmoothSpeed: 50
   firstPersonMovementSmoothing: 1
   assumeInputsDefined: 0
-  activeInputs: []
+  activeInputs:
+  - label: InventoryOn
+    ID: 1
+    inputName: Inventory
+    enabledOnStart: 0
+    gameState: 0
+    gameStateFlags: 1
+    actionListAsset: {fileID: 11400000, guid: c34761386d1c0c246b0dcf44c7ef3a21, type: 2}
+    inputType: 0
+    axisThreshold: -0.032
+    buttonType: 0
+    hasUpgraded: 1
+  - label: (Untitled)
+    ID: 2
+    inputName: Inventory
+    enabledOnStart: 1
+    gameState: 0
+    gameStateFlags: 1
+    actionListAsset: {fileID: 0}
+    inputType: 1
+    axisThreshold: 0.2
+    buttonType: 0
+    hasUpgraded: 1
   freeAimTouchSpeed: 0.01
   dragWalkThreshold: 5
   dragRunThreshold: 20
@@ -202,9 +224,9 @@ MonoBehaviour:
   loadScenesFromAddressable: 0
   loadingSceneName: 
   loadingScene: 0
-  useAsyncLoading: 0
+  useAsyncLoading: 1
   loadingDelay: 0
-  blackOutWhenInitialising: 1
+  blackOutWhenInitialising: 0
   spawnPersistentEnginePrefab: 1
   autoCallUnloadUnusedAssets: 1
   playMusicWhilePaused: 1

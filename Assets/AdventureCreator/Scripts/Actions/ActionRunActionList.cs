@@ -850,6 +850,18 @@ namespace AC
 		}
 
 
+		public int GetNumObjectiveReferences (int _objectiveID, List<ActionParameter> parameters)
+		{
+			return GetParameterReferences (parameters, _objectiveID, ParameterType.Objective);
+		}
+
+
+		public int UpdateObjectiveReferences (int oldObjectiveID, int newObjectiveID, List<ActionParameter> parameters)
+		{
+			return GetParameterReferences (parameters, oldObjectiveID, ParameterType.Objective, true, newObjectiveID);
+		}
+
+
 		private int GetParameterReferences (List<ActionParameter> parameters, int _ID, ParameterType _paramType, bool updateID = false, int _newID = 0)
 		{
 			int thisCount = 0;

@@ -22,7 +22,6 @@ GameObject:
   - component: {fileID: 11454006}
   - component: {fileID: 11462416}
   - component: {fileID: 114231274274579078}
-  - component: {fileID: -4655155030535609895}
   m_Layer: 2
   m_Name: PersistentEngine
   m_TagString: Untagged
@@ -203,19 +202,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0d9d7600e87d464c80599286e8f4ea1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &-4655155030535609895
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 100000}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c6bd5e11470ae149b9a27d1f9dbc958, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  constantID: 20814
-  retainInPrefab: 1
-  autoManual: 1
-  stopConversationsWhenLoading: 0

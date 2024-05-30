@@ -146,6 +146,11 @@ namespace AC
 			string levelData = SaveSystem.FileFormatHandler.SerializeAllRoomData (KickStarter.levelStorage.allLevelData);
 			allData = MergeData (mainData, levelData);
 
+			if (KickStarter.settingsManager.saveCompression)
+			{
+				allData = SaveSystem.CompressString (allData);
+			}
+
 			if (KickStarter.settingsManager.saveWithThreading)
 			{
 				if (SaveSystem.SaveFileHandler.SupportsSaveThreading ())

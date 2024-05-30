@@ -179,7 +179,7 @@ namespace AC
 
 		#region ProtectedFunctions
 
-		protected virtual SaveFile GetSaveFile (int saveID, int profileID, bool isImport, int boolID, string separateProductName, string separateFilePrefix)
+		protected virtual SaveFile GetSaveFile (int saveID, int profileID, bool isImport, int boolID, string separateProductName, string separateFilePrefix, FileInfo[] info = null)
 		{
 			string saveDirectory = GetSaveDirectory (separateProductName);
 			string filePrefix = (isImport) ? separateFilePrefix : KickStarter.settingsManager.SavePrefix;
@@ -188,8 +188,24 @@ namespace AC
 			string filenameWithExtention = filename + SaveSystem.GetSaveExtension ();
 			string fullFilename = saveDirectory + Path.DirectorySeparatorChar.ToString () + filenameWithExtention;
 
-			if (File.Exists (fullFilename))
+			if (info == null)
 			{
+				DirectoryInfo dir = new DirectoryInfo (saveDirectory);
+				info = dir.GetFiles (filenameWithExtention);
+			}
+
+			if (info == null)
+			{
+				return null;
+			}
+
+			foreach (FileInfo fileInfo in info)
+			{
+				if (fileInfo.Name != filenameWithExtention)
+				{
+					continue;
+				}
+
 				if (isImport && boolID >= 0)
 				{
 					string allData = LoadFile (fullFilename, false);
@@ -208,21 +224,15 @@ namespace AC
 					isAutoSave = true;
 				}
 
+				if (!isAutoSave)
+				{
+					System.TimeSpan t = fileInfo.LastWriteTime - new System.DateTime (2015, 1, 1);
+					updateTime = (int) t.TotalSeconds;
+				}
+
 				if (KickStarter.settingsManager.saveTimeDisplay != SaveTimeDisplay.None)
 				{
-					DirectoryInfo dir = new DirectoryInfo (saveDirectory);
-					FileInfo[] info = dir.GetFiles (filenameWithExtention);
-
-					if (info != null && info.Length > 0)
-					{
-						if (!isAutoSave)
-						{
-							System.TimeSpan t = info[0].LastWriteTime - new System.DateTime (2015, 1, 1);
-							updateTime = (int) t.TotalSeconds;
-						}
-
-						label += GetTimeString (info[0].LastWriteTime);
-					}
+					label += GetTimeString (fileInfo.LastWriteTime);
 				}
 
 				Texture2D screenShot = null;
@@ -244,9 +254,13 @@ namespace AC
 		{
 			List<SaveFile> gatheredFiles = new List<SaveFile> ();
 
+			string saveDirectory = GetSaveDirectory (separateProductName);
+			DirectoryInfo dir = new DirectoryInfo (saveDirectory);
+			FileInfo[] info = dir.GetFiles ("*" + SaveSystem.GetSaveExtension ());
+
 			for (int i = 0; i < MaxSaves; i++)
 			{
-				SaveFile saveFile = GetSaveFile (i, profileID, isImport, boolID, separateProductName, separateFilePrefix);
+				SaveFile saveFile = GetSaveFile (i, profileID, isImport, boolID, separateProductName, separateFilePrefix, info);
 				if (saveFile != null)
 				{
 					gatheredFiles.Add (saveFile);

@@ -16,7 +16,7 @@ namespace AC
 
 			PlayerPrefs.SetString (prefKeyName, dataString);
 
-			#if UNITY_PS4 || UNITY_SWITCH
+			#if UNITY_PS4 || UNITY_SWITCH || UNITY_WEBGL
 			PlayerPrefs.Save ();
 			#endif
 

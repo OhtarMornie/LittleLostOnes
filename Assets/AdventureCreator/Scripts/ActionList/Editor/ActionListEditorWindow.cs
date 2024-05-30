@@ -1463,7 +1463,7 @@ namespace AC
 			{
 				GUI.enabled = _action.isEnabled;
 
-				int typeIndex = KickStarter.actionsManager.GetActionTypeIndex (_action);
+				int typeIndex = actionsManager.GetActionTypeIndex (_action);
 				int newTypeIndex = ActionListEditor.ShowTypePopup (_action, typeIndex);
 
 				if (newTypeIndex >= 0)
@@ -2238,6 +2238,7 @@ namespace AC
 				{
 					menu.AddItem (new GUIContent ("Cut selected"), false, EmptyCallback, "Cut selected");
 					menu.AddItem (new GUIContent ("Copy selected"), false, EmptyCallback, "Copy selected");
+					menu.AddItem (new GUIContent ("Duplicate selected"), false, EmptyCallback, "Duplicate selected");
 				}
 				menu.AddItem (new GUIContent ("Delete selected"), false, EmptyCallback, "Delete selected");
 				menu.AddSeparator (string.Empty);
@@ -2324,13 +2325,16 @@ namespace AC
 			{
 				menu.AddItem (new GUIContent ("Cut"), false, EmptyCallback, "Cut selected");
 				menu.AddItem (new GUIContent ("Copy"), false, EmptyCallback, "Copy selected");
-				if (JsonAction.HasCopyBuffer ())
-				{
-					menu.AddItem (new GUIContent ("Paste after"), false, EmptyCallback, "Paste after");
-				}
+				menu.AddItem (new GUIContent ("Duplicate"), false, EmptyCallback, "Duplicate selected");
+				
 				menu.AddSeparator (string.Empty);
 			}
 			menu.AddItem (new GUIContent ("Insert after"), false, EmptyCallback, "Insert after");
+			menu.AddItem (new GUIContent ("Duplicate after"), false, EmptyCallback, "Duplicate after");
+			if (JsonAction.HasCopyBuffer ())
+			{
+				menu.AddItem (new GUIContent ("Paste after"), false, EmptyCallback, "Paste after");
+			}
 			menu.AddItem (new GUIContent ("Delete"), false, EmptyCallback, "Delete selected");
 
 			if (i > 0)
@@ -2655,6 +2659,12 @@ namespace AC
 
 				JsonAction.ToCopyBuffer (copyList);
 			}
+			else if (objString == "Duplicate selected")
+			{
+				PerformEmptyCallBack ("Copy selected");
+				PerformEmptyCallBack ("Paste copied Action(s)");
+				JsonAction.ClearCopyBuffer ();
+			}
 			else if (objString == "Delete selected")
 			{
 				while (NumActionsMarked > 0)
@@ -2835,6 +2845,21 @@ namespace AC
 							action.endings[0].resultAction = ResultAction.Continue;
 						}
 
+						break;
+					}
+				}
+			}
+			else if (objString == "Duplicate after")
+			{
+				foreach (Action action in actionList)
+				{
+					if (action != null && action.isMarked)
+					{
+						Action actionToDuplicate = action;
+						PerformEmptyCallBack ("Copy selected");
+						actionToDuplicate.isMarked = true;
+						PerformEmptyCallBack ("Paste after");
+						JsonAction.ClearCopyBuffer ();
 						break;
 					}
 				}

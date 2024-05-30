@@ -148,7 +148,7 @@ namespace AC
 				}
 				else
 				{
-					audioSource = (AudioSource) EditorGUILayout.ObjectField ("Audio source (optional):", audioSource, typeof (AudioSource), false);
+					audioSource = (AudioSource) EditorGUILayout.ObjectField ("Audio source (optional):", audioSource, typeof (AudioSource), true);
 
 					audioSourceConstantID = FieldToID (audioSource, audioSourceConstantID);
 					audioSource = IDToField (audioSource, audioSourceConstantID, false);

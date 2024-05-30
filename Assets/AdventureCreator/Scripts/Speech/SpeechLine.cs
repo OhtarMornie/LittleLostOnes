@@ -931,6 +931,10 @@ namespace AC
 			}
 			else if (filterSpeechLine == FilterSpeechLine.Speaker)
 			{
+				if (filter.ToLower () == "player" && isPlayer)
+				{
+					return true;
+				}
 				return owner.ToLower ().Contains (filter);
 			}
 			else if (filterSpeechLine == FilterSpeechLine.Text)

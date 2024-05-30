@@ -85,6 +85,8 @@ namespace AC
 		public bool reloadSceneWhenLoading = false;
 		/** If True, then save operations will occur on a separate thread */
 		public bool saveWithThreading = false;
+		/** If True, save data will be compressed for reduced file-size */
+		public bool saveCompression = false;
 		/** If True, then references to assets made in save game files will be based on their Addressable name, and not Resources folder presence */
 		public bool saveAssetReferencesWithAddressables = false;
 		/** A collection of save strings (Save, Import, Autosave) that can be translated */
@@ -249,8 +251,10 @@ namespace AC
 		public DoubleClickMovement doubleClickMovement = DoubleClickMovement.MakesPlayerRun;
 		/** If True, and movementMethod = AC_MovementMethod.Direct, then the magnitude of the input axis will affect the Player's speed */
 		public bool magnitudeAffectsDirect = false;
-		/** If True, and movementMethod = AC_MovementMethod.Direct, then the Player will turn instantly when moving during gameplay */
-		public bool directTurnsInstantly = false;
+		[SerializeField] private bool directTurnsInstantly = false;
+		/** The method to use when turning a character under Direct control */
+		public DirectTurnMode directTurnMode;
+
 		/** If True, and movementMethod = AC_MovementMethod.Direct, then the Player will cease turning when input is released */
 		public bool stopTurningWhenReleaseInput = false;
 		/** If True, and Interaction menus are used, movement will be prevented while they are on */
@@ -668,6 +672,7 @@ namespace AC
 				takeSaveScreenshots = false;
 #endif
 
+				saveCompression = CustomGUILayout.ToggleLeft ("Compress save files?", saveCompression, "AC.KickStarter.settingsManager.saveCompression", "If True, save data will be compressed for reduced file-size");
 				saveWithThreading = CustomGUILayout.ToggleLeft ("Save using separate thread?", saveWithThreading, "AC.KickStarter.settingsManager.saveWithThreading", "If True, then game-saving will be handled by a separate CPU thread.");
 				saveAssetReferencesWithAddressables = CustomGUILayout.ToggleLeft ("Save asset references with Addressables?", saveAssetReferencesWithAddressables, "AC.KickStarter.settingsManager.saveAssetReferencesWithAddressables", "If True, then references to assets made in save game files will be based on their Addressable name, and not Resources folder presence");
 
@@ -1146,8 +1151,15 @@ namespace AC
 				else if (movementMethod == MovementMethod.Direct)
 				{
 					magnitudeAffectsDirect = CustomGUILayout.ToggleLeft ("Input magnitude affects speed?", magnitudeAffectsDirect, "AC.KickStarter.settingsManager.magnitudeAffectsDirect", "If True, then the magnitude of the input axis will affect the Player's speed");
-					directTurnsInstantly = CustomGUILayout.ToggleLeft ("Turn instantly when under player control?", directTurnsInstantly, "AC.KickStarter.settingsManager.directTurnsInstantly", "If True, then the Player will turn instantly when moving during gameplay");
-					if (!directTurnsInstantly)
+
+					if (directTurnsInstantly)
+					{
+						directTurnsInstantly = false;
+						directTurnMode = DirectTurnMode.Snap;
+					}
+
+					directTurnMode = (DirectTurnMode) CustomGUILayout.EnumPopup ("Turning mode:", directTurnMode, "AC.KickStarter.settingsManager.directTurnMode", "The method to use when turning a character under Direct control");
+					if (directTurnMode != DirectTurnMode.Snap)
 					{
 						stopTurningWhenReleaseInput = CustomGUILayout.ToggleLeft ("Stop turning when release input?", stopTurningWhenReleaseInput, "AC.KickStarter.settingsManager.stopTurningWhenReleaseInput", "If True, then the Player will stop turning when input is released");
 					}

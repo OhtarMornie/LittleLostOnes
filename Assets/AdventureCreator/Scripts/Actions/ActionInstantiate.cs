@@ -128,7 +128,7 @@ namespace AC
 						}
 						else
 						{
-							SceneItem[] sceneItems = FindObjectsOfType<SceneItem> ();
+							SceneItem[] sceneItems = GameObject.FindObjectsOfType<SceneItem> ();
 							foreach (SceneItem sceneItem in sceneItems)
 							{
 								if (InvInstance.IsValid (sceneItem.LinkedInvInstance) && sceneItem.LinkedInvInstance.ItemID == parameter.intValue)

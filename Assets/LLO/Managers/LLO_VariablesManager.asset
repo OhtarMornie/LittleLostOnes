@@ -53,6 +53,55 @@ MonoBehaviour:
     popUpsLineID: -1
     description: 
     showInFilter: 1
+  - label: InventoryOn
+    id: 2
+    type: 0
+    val: 0
+    floatVal: 0
+    textVal: 
+    gameObjectVal: {fileID: 0}
+    gameObjectSaveReferences: 1
+    objectVal: {fileID: 0}
+    popUps: []
+    vector3Val: {x: 0, y: 0, z: 0}
+    link: 0
+    pmVar: 
+    updateLinkOnStart: 0
+    canTranslate: 1
+    popUpID: 0
+    textValLineID: -1
+    popUpsLineID: -1
+    description: 
+    showInFilter: 1
+  - label: DialogueSystemEnvironment
+    id: 3
+    type: 2
+    val: 0
+    floatVal: 0
+    textVal: "Variable={Alert=\"\", Actor=\"\u0422\u0451\u043C\u0430\", Conversant=\"\u041B\u0438\u0437\u0430\",
+      ActorIndex=\"\u0422\u0451\u043C\u0430\", ConversantIndex=\"\u041B\u0438\u0437\u0430\",
+      Emotion=0, HamsterFound=false, InventoryOn=false, MugWithPan=false, TeachersDesck=false,
+      TeachersBook=false, Cookies=false, Box=false, Skeleton=false}; Item[\"CardboardBox\"]={Name=\"CardboardBox\",
+      Description=\"\", Is_Item=true, AC_ID=0, Count=0, }; Item[\"Cookie\"]={Name=\"Cookie\",
+      Description=\"\", Is_Item=true, AC_ID=1, Count=0, }; Item[\"HamsterTrap\"]={Name=\"HamsterTrap\",
+      Description=\"\", Is_Item=true, AC_ID=2, Count=0, }; Actor={[\"\u0422\u0451\u043C\u0430\"]={Name=\"\u0422\u0451\u043C\u0430\",
+      Pictures=\"[]\", Description=\"\", IsPlayer=true}, [\"\u041B\u0438\u0437\u0430\"]={Name=\"\u041B\u0438\u0437\u0430\",
+      Pictures=\"[]\", Description=\"\", IsPlayer=false}}; StatusTable = \"\"; RelationshipTable
+      = \"\"; "
+    gameObjectVal: {fileID: 0}
+    gameObjectSaveReferences: 1
+    objectVal: {fileID: 0}
+    popUps: []
+    vector3Val: {x: 0, y: 0, z: 0}
+    link: 0
+    pmVar: 
+    updateLinkOnStart: 0
+    canTranslate: 1
+    popUpID: 0
+    textValLineID: -1
+    popUpsLineID: -1
+    description: 
+    showInFilter: 1
   varPresets:
   - label: New preset
     ID: 0
@@ -68,6 +117,29 @@ MonoBehaviour:
       val: 0
       floatVal: 0
       textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+      gameObjectVal: {fileID: 0}
+      objectVal: {fileID: 0}
+    - id: 2
+      val: 0
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+      gameObjectVal: {fileID: 0}
+      objectVal: {fileID: 0}
+    - id: 3
+      val: 0
+      floatVal: 0
+      textVal: "Variable={Alert=\"\", Actor=\"\u0422\u0451\u043C\u0430\", Conversant=\"\u041B\u0438\u0437\u0430\",
+        ActorIndex=\"\u0422\u0451\u043C\u0430\", ConversantIndex=\"\u041B\u0438\u0437\u0430\",
+        Emotion=0, HamsterFound=false, InventoryOn=false, MugWithPan=false, TeachersDesck=false,
+        TeachersBook=false, Cookies=false, Box=false, Skeleton=false}; Item[\"CardboardBox\"]={Name=\"CardboardBox\",
+        Description=\"\", Is_Item=true, AC_ID=0, Count=0, }; Item[\"Cookie\"]={Name=\"Cookie\",
+        Description=\"\", Is_Item=true, AC_ID=1, Count=0, }; Item[\"HamsterTrap\"]={Name=\"HamsterTrap\",
+        Description=\"\", Is_Item=true, AC_ID=2, Count=0, }; Actor={[\"\u0422\u0451\u043C\u0430\"]={Name=\"\u0422\u0451\u043C\u0430\",
+        Pictures=\"[]\", Description=\"\", IsPlayer=true}, [\"\u041B\u0438\u0437\u0430\"]={Name=\"\u041B\u0438\u0437\u0430\",
+        Pictures=\"[]\", Description=\"\", IsPlayer=false}}; StatusTable = \"\";
+        RelationshipTable = \"\"; "
       vector3Val: {x: 0, y: 0, z: 0}
       gameObjectVal: {fileID: 0}
       objectVal: {fileID: 0}

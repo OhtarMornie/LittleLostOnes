@@ -776,6 +776,8 @@ namespace AC
 
 		private void UnloadSceneItemSpawnData (List<SceneItemSpawnData> allSceneItemSpawnData, Scene scene)
 		{
+			if (allSceneItemSpawnData == null) return;
+
 			// Delete any objects (if told to)
 			{
 				HashSet<RememberSceneItem> currentSceneItems = ConstantID.GetComponents<RememberSceneItem> (scene);

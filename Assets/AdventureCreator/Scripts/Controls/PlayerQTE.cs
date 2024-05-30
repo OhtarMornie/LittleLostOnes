@@ -321,7 +321,6 @@ namespace AC
 				Lose ();
 				return;
 			}
-
 			switch (qteType)
 			{
 				case QTEType.SingleKeypress:
@@ -341,7 +340,7 @@ namespace AC
 							Win ();
 							return;
 						}
-						else if (wrongKeyFails && KickStarter.playerInput.InputAnyKey () && KickStarter.playerInput.GetMouseState () == MouseState.Normal)
+						else if (wrongKeyFails && KickStarter.playerInput.InputAnyKeyDown () && KickStarter.playerInput.GetMouseState () == MouseState.Normal)
 						{
 							Lose ();
 							return;

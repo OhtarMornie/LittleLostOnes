@@ -27,9 +27,12 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.AddressableAssets;
 #endif
 
-using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
+using System.Text;
+using UnityEngine;
 
 namespace AC
 {
@@ -44,6 +47,7 @@ namespace AC
 		[HideInInspector] public List<SaveFile> foundSaveFiles = new List<SaveFile> ();
 		/** A List of SaveFile variables, storing all available import files. */
 		[HideInInspector] public List<SaveFile> foundImportFiles = new List<SaveFile> ();
+		public bool IsInitialisingAfterLoad { get; private set; }
 
 		public const string pipe = "|";
 		public const string colon = ":";
@@ -418,6 +422,11 @@ namespace AC
 
 				if (!string.IsNullOrEmpty (fileData))
 				{
+					if (KickStarter.settingsManager.saveCompression)
+					{
+						fileData = SaveSystem.DecompressString (fileData);
+					}
+					
 					KickStarter.eventManager.Call_OnImport (FileAccessState.Before);
 
 					saveData = ExtractMainData (fileData);
@@ -500,6 +509,11 @@ namespace AC
 		{
 			if (variableExtractionCallback == null) return;
 
+			if (KickStarter.settingsManager.saveCompression)
+			{
+				fileData = SaveSystem.DecompressString (fileData);
+			}
+
 			SaveData saveData = ExtractMainData (fileData);
 			if (saveData != null)
 			{
@@ -552,6 +566,11 @@ namespace AC
 			{
 				KickStarter.eventManager.Call_OnLoad (FileAccessState.Fail, saveFile.saveID);
 				yield break;
+			}
+
+			if (KickStarter.settingsManager.saveCompression)
+			{
+				fileData = SaveSystem.DecompressString (fileData);
 			}
 
 			KickStarter.eventManager.Call_OnLoad (FileAccessState.Before, saveFile.saveID, saveFile);
@@ -709,6 +728,8 @@ namespace AC
 
 		private IEnumerator InitAfterLoadCo (int saveID)
 		{
+			IsInitialisingAfterLoad = true;
+
 			KickStarter.mainCamera.OnInitialiseScene ();
 			KickStarter.playerInteraction.StopMovingToHotspot ();
 			KickStarter.runtimeInventory.OnInitialiseScene ();
@@ -803,6 +824,7 @@ namespace AC
 
 			AssetLoader.UnloadAssets ();
 
+			IsInitialisingAfterLoad = false;
 			KickStarter.eventManager.Call_OnAfterChangeScene (thisFrameLoadingGame);
 		}
 
@@ -2406,7 +2428,12 @@ namespace AC
 			if (!useSaveID)
 			{
 				// For this to work, must have loaded the list of saves into a SavesList
-				saveID = KickStarter.saveSystem.foundSaveFiles[elementSlot].saveID;
+				if (foundSaveFiles == null || elementSlot < 0 || elementSlot >= foundSaveFiles.Count)
+				{
+					ACDebug.LogWarning ("Cannot delete save file - invalid slot # " + elementSlot);
+					return;
+				}
+				saveID = foundSaveFiles[elementSlot].saveID;
 			}
 
 			foreach (SaveFile saveFile in foundSaveFiles)
@@ -2655,6 +2682,48 @@ namespace AC
 					return KickStarter.runtimeLanguages.GetTranslatableText (KickStarter.settingsManager.saveLabels, 2);
 				}
 				return "Autosave";
+			}
+		}
+
+
+		public static string CompressString (string text)
+		{
+			byte[] buffer = Encoding.UTF8.GetBytes(text);
+			var memoryStream = new MemoryStream();
+			using (var gZipStream = new GZipStream (memoryStream, CompressionMode.Compress, true))
+			{
+				gZipStream.Write( buffer, 0, buffer.Length);
+			}
+
+			memoryStream.Position = 0;
+
+			var compressedData = new byte[memoryStream.Length];
+			memoryStream.Read(compressedData, 0, compressedData.Length);
+
+			var gZipBuffer = new byte[compressedData.Length + 4];
+			System.Buffer.BlockCopy (compressedData, 0, gZipBuffer, 4, compressedData.Length);
+			System.Buffer.BlockCopy (System.BitConverter.GetBytes (buffer.Length), 0, gZipBuffer, 0, 4);
+			return System.Convert.ToBase64String (gZipBuffer);
+		}
+
+
+		public static string DecompressString (string compressedText)
+		{
+			byte[] gZipBuffer = System.Convert.FromBase64String (compressedText);
+			using (var memoryStream = new MemoryStream ())
+			{
+				int dataLength = System.BitConverter.ToInt32 (gZipBuffer, 0);
+				memoryStream.Write (gZipBuffer, 4, gZipBuffer.Length - 4);
+
+				var buffer = new byte[dataLength];
+
+				memoryStream.Position = 0;
+				using (var gZipStream = new GZipStream (memoryStream, CompressionMode.Decompress))
+				{
+					gZipStream.Read (buffer, 0, buffer.Length);
+				}
+
+				return Encoding.UTF8.GetString (buffer);
 			}
 		}
 

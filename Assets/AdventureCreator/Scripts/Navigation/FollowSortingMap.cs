@@ -239,7 +239,7 @@ namespace AC
 		{
 			if (_sortingMap == null)
 			{
-				followSortingMap = false;
+				followSortingMap = true;
 				customSortingMap = null;
 			}
 			else if (KickStarter.sceneSettings.sortingMap == _sortingMap)

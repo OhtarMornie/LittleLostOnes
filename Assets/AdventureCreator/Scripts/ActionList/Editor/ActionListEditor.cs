@@ -403,6 +403,8 @@ namespace AC
 
 		public static int ShowTypePopup (AC.Action action, int typeIndex)
 		{
+			if (KickStarter.actionsManager == null) return -1;
+
 			if (!KickStarter.actionsManager.IsActionTypeEnabled (typeIndex))
 			{
 				EditorGUILayout.LabelField ("<b>This Action type has been disabled.</b>", CustomStyles.disabledActionType);

@@ -422,7 +422,7 @@ namespace AC
 							anyNotEmpty = true;
 						}
 					}
-					if (!anyNotEmpty)
+					if (!anyNotEmpty && exportedTranslations.Count > 0 && line.translationText.Count > 0)
 					{
 						continue;
 					}

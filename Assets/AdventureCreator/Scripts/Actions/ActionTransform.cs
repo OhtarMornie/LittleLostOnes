@@ -384,12 +384,15 @@ namespace AC
 					newVectorParameterID = Action.ChooseParameterGUI ("Value:", parameters, newVectorParameterID, ParameterType.Vector3);
 					if (newVectorParameterID < 0)
 					{
-						//newVector = EditorGUILayout.Vector3Field ("Value:", newVector);
+						#if AC_ActionListPrefabs
+						newVector = EditorGUILayout.Vector3Field ("Value:", newVector);
+						#else
 						var serializedObject = new SerializedObject (this);
 						serializedObject.Update ();
 						SerializedProperty vectorProperty = serializedObject.FindProperty ("newVector");
 						EditorGUILayout.PropertyField (vectorProperty, true);
 						serializedObject.ApplyModifiedProperties ();
+						#endif
 					}
 				}
 				else if (setVectorMethod == SetVectorMethod.FromVector3Variable)

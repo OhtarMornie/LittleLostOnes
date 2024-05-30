@@ -471,13 +471,16 @@ namespace AC
 		{
 			if (timelineFadeOverride)
 			{
-				Color originalColor = GUI.color;
-				Color tempColor = GUI.color;
-				tempColor.a = timelineFadeWeight;
-				GUI.color = tempColor;
-				GUI.depth = drawDepth;
-				GUI.DrawTexture (new Rect (0, 0,  ACScreen.width,  ACScreen.height), timelineFadeTexture);
-				GUI.color = originalColor;
+				if (renderFading)
+				{
+					Color originalColor = GUI.color;
+					Color tempColor = GUI.color;
+					tempColor.a = timelineFadeWeight;
+					GUI.color = tempColor;
+					GUI.depth = drawDepth;
+					GUI.DrawTexture (new Rect (0, 0,  ACScreen.width,  ACScreen.height), timelineFadeTexture);
+					GUI.color = originalColor;
+				}
 				return;
 			}
 
@@ -546,6 +549,11 @@ namespace AC
 		/** The alpha value of the current fade effect (0 = not visible, 1 = fully visible) */
 		public float GetFadeAlpha ()
 		{
+			if (timelineFadeOverride)
+			{
+				return timelineFadeWeight;
+			}
+
 			return alpha;
 		}
 
@@ -553,6 +561,11 @@ namespace AC
 		/** The texture to display full-screen for the fade effect */
 		public Texture2D GetFadeTexture ()
 		{
+			if (timelineFadeOverride)
+			{
+				return timelineFadeTexture;
+			}
+
 			AssignFadeTexture ();
 			return actualFadeTexture;
 		}

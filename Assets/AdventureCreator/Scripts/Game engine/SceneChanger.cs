@@ -252,8 +252,8 @@ namespace AC
 						preloadSceneIndex = -1;
 					}
 
-					PrepareSceneForExit (!KickStarter.settingsManager.useAsyncLoading, saveRoomData, doOverlay);
 					KickStarter.eventManager.Call_OnBeforeChangeScene (IndexToName (nextSceneIndex));
+					PrepareSceneForExit (!KickStarter.settingsManager.useAsyncLoading, saveRoomData, doOverlay);
 					return LoadLevel (nextSceneIndex, KickStarter.settingsManager.useLoadingScreen, KickStarter.settingsManager.useAsyncLoading, forceReload, doOverlay);
 				}
 			}
@@ -299,8 +299,8 @@ namespace AC
 						preloadSceneName = string.Empty;
 					}
 
-					PrepareSceneForExit (!KickStarter.settingsManager.useAsyncLoading, saveRoomData, doOverlay);
 					KickStarter.eventManager.Call_OnBeforeChangeScene (nextSceneName);
+					PrepareSceneForExit (!KickStarter.settingsManager.useAsyncLoading, saveRoomData, doOverlay);
 					return LoadLevel (nextSceneName, KickStarter.settingsManager.useLoadingScreen, KickStarter.settingsManager.useAsyncLoading, forceReload, doOverlay);
 				}
 			}

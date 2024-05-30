@@ -76,6 +76,7 @@ namespace AC
 	public enum MovementMethod { PointAndClick, Direct, FirstPerson, Drag, None, StraightToCursor };
 	public enum InputMethod { MouseAndKeyboard, KeyboardOrController, TouchScreen };
 	public enum DirectMovementType { RelativeToCamera, TankControls };
+	public enum DirectTurnMode { TurningCircle, Independent, Snap };
 	public enum CameraPerspective { TwoD, TwoPointFiveD, ThreeD };
 	public enum MovingTurning { WorldSpace, ScreenSpace, TopDown, Unity2D };
 
@@ -150,7 +151,7 @@ namespace AC
 	public enum InputCheckType { Button, Axis, SingleTapOrClick, DoubleTapOrClick };
 	public enum IntCondition { EqualTo, NotEqualTo, LessThan, MoreThan };
 	public enum RightClickInventory { DeselectsItem, ExaminesItem, DoesNothing, ExaminesHotspot };
-	public enum ParameterType { GameObject, InventoryItem, GlobalVariable, LocalVariable, String, Float, Integer, Boolean, UnityObject, Vector3, Document, ComponentVariable, PopUp };
+	public enum ParameterType { GameObject, InventoryItem, GlobalVariable, LocalVariable, String, Float, Integer, Boolean, UnityObject, Vector3, Document, ComponentVariable, PopUp, Objective };
 	
 	public enum ChangeNavMeshMethod { ChangeNavMesh, ChangeNumberOfHoles };
 	public enum InvAction { Add, Remove, Replace };

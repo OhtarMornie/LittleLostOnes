@@ -247,6 +247,13 @@ namespace AC
 		public int itemID;
 		public int objectID;
 
+		public SceneItemSpawnData ()
+		{
+			itemID = -1;
+			objectID = 0;
+		}
+
+
 		public SceneItemSpawnData (SceneItem sceneItem, int _objectID)
 		{
 			if (sceneItem == null || !InvInstance.IsValid (sceneItem.LinkedInvInstance))

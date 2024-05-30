@@ -13,7 +13,7 @@ namespace AC
 
 		public override string[] EditorNames { get { return new string[] { "Inventory/Add", "Inventory/Remove" }; } }
 		protected override string EventName { get { return addRemove == AddRemove.Add ? "OnInventoryAdd" : "OnInventoryRemove"; } }
-		protected override string ConditionHelp { get { return "Whenever " + ((itemID >= 0) ? GetItemName () : "an Inventory item") + " is " + ((addRemove == AddRemove.Add) ? "added." : "removed."); } }
+		protected override string ConditionHelp { get { return "Whenever " + ((itemID >= 0) ? GetItemName () : "an Inventory item") + " is " + ((addRemove == AddRemove.Add) ? "added to the Player's inventory." : "removed from the Player's Inventory."); } }
 
 
 		public override void Register ()
@@ -32,6 +32,8 @@ namespace AC
 
 		private void OnInventoryAdd (InvCollection invCollection, InvInstance invInstance, int amount)
 		{
+			if (!KickStarter.kickStarter.HasInitialisedAC || KickStarter.saveSystem.IsInitialisingAfterLoad) return;
+			if (invCollection != KickStarter.runtimeInventory.PlayerInvCollection) return;
 			if (addRemove == AddRemove.Add && (itemID < 0 || itemID == invInstance.ItemID))
 			{
 				Run (new object[] { invInstance.ItemID, amount });
@@ -41,6 +43,7 @@ namespace AC
 		
 		private void OnInventoryRemove (InvCollection invCollection, InvInstance invInstance, int amount)
 		{
+			if (invCollection != KickStarter.runtimeInventory.PlayerInvCollection) return;
 			if (addRemove == AddRemove.Remove && (itemID < 0 || itemID == invInstance.ItemID))
 			{
 				Run (new object[] { invInstance.ItemID, amount });

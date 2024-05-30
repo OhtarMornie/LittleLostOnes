@@ -53,7 +53,7 @@ namespace AC
 		{
 			return new ParameterReference[]
 			{
-				new ParameterReference (ParameterType.InventoryItem, "Container"),
+				new ParameterReference (ParameterType.GameObject, "Container"),
 				new ParameterReference (ParameterType.InventoryItem, "Inventory item"),
 			};
 		}

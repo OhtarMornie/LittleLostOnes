@@ -736,8 +736,26 @@ namespace AC
 					}
 					else
 					{
-						KickStarter.player.SetLookDirection (cameraAlignedInput, KickStarter.settingsManager.directTurnsInstantly);
-						KickStarter.player.SetMoveDirectionAsForward ();
+						switch (KickStarter.settingsManager.directTurnMode)
+						{
+							case DirectTurnMode.TurningCircle:
+								KickStarter.player.SetLookDirection (cameraAlignedInput, false);
+								KickStarter.player.SetMoveDirectionAsForward ();
+								break;
+
+							case DirectTurnMode.Independent:
+								KickStarter.player.SetLookDirection (cameraAlignedInput, false);
+								KickStarter.player.SetMoveDirection (cameraAlignedInput, true);
+								break;
+
+							case DirectTurnMode.Snap:
+								KickStarter.player.SetLookDirection (cameraAlignedInput, true);
+								KickStarter.player.SetMoveDirectionAsForward ();
+								break;
+
+							default:
+								break;
+						}
 					}
 				}
 				else if (KickStarter.player.charState == CharState.Move && KickStarter.playerInteraction.GetHotspotMovingTo () == null && !KickStarter.player.IsPathfinding ())

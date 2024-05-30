@@ -1512,6 +1512,14 @@ namespace AC
 						}
 						break;
 
+					case ParameterType.Objective:
+						Objective objective = KickStarter.inventoryManager.GetObjective (parameter.intValue);
+						if (objective != null)
+						{
+							return objective.GetTitle ();
+						}
+						break;
+
 					default:
 						break;
 				}
@@ -1649,6 +1657,17 @@ namespace AC
 		{
 			ActionParameter parameter = GetParameterWithID (parameters, _parameterID);
 			if (parameter != null && parameter.parameterType == ParameterType.Document)
+			{
+				return (parameter.intValue);
+			}
+			return field;
+		}
+
+
+		protected int AssignObjectiveID (List<ActionParameter> parameters, int _parameterID, int field)
+		{
+			ActionParameter parameter = GetParameterWithID (parameters, _parameterID);
+			if (parameter != null && parameter.parameterType == ParameterType.Objective)
 			{
 				return (parameter.intValue);
 			}
