@@ -152,7 +152,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      BG_BlackScreen__0: -68460628930278571
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

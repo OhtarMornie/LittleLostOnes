@@ -176,7 +176,9 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Itm_Cookie_0: 4462109864456073362
+      Itm_Cookie_1: -4469034140766630751
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
