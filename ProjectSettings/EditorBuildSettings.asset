@@ -6,15 +6,18 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Scene_MainMenu.unity
+    guid: 1fe9dab4c4b5fd44582799504de23664
+  - enabled: 1
     path: Assets/Scenes/Scene_School_2ndFloor_RightHall.unity
     guid: 625c202880b5a6442bf3062f1fc84b89
   - enabled: 1
     path: Assets/Scenes/Scene_School_BiologyClass.unity
     guid: 4f5af99ec7d518249a4e92bf81a8b1ac
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/BG_MainMenu.unity
     guid: 2cda990e2423bbf4892e6590ba056729
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/BG_Street_Paralax.unity
     guid: a90db315c61fdfd4c9a7e4a2e65af16b
   m_configObjects: {}

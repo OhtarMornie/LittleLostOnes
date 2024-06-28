@@ -218,17 +218,32 @@ MonoBehaviour:
   - ID: 1
     label: 
     audioClip: {fileID: 8300000, guid: ae29d2e5f69d1de429ab0ff070330aca, type: 3}
-    relativeVolume: 0.3
+    relativeVolume: 0.1
     overrideMixerGroup: {fileID: 0}
   - ID: 2
     label: 
     audioClip: {fileID: 8300000, guid: 2758220d9f3e78a4c914ac615e35c7f2, type: 3}
-    relativeVolume: 0.4
+    relativeVolume: 0.3
     overrideMixerGroup: {fileID: 0}
   ambienceStorages:
   - ID: 0
     label: 
     audioClip: {fileID: 8300000, guid: e9e13b4d00d11f14aac17dbc65eea59f, type: 3}
+    relativeVolume: 1
+    overrideMixerGroup: {fileID: 0}
+  - ID: 1
+    label: 
+    audioClip: {fileID: 8300000, guid: 4cc16c8fc57fef9439ef6ffef295fd9b, type: 3}
+    relativeVolume: 1
+    overrideMixerGroup: {fileID: 0}
+  - ID: 2
+    label: 
+    audioClip: {fileID: 8300000, guid: 09aa07b4c2eb30742a6430641c25ecc6, type: 3}
+    relativeVolume: 1
+    overrideMixerGroup: {fileID: 0}
+  - ID: 3
+    label: 
+    audioClip: {fileID: 8300000, guid: 27d7153452763b9449cda2adee85b59c, type: 3}
     relativeVolume: 1
     overrideMixerGroup: {fileID: 0}
   loadAmbienceFadeTime: 0.13
