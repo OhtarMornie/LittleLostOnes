@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionSoundShot.cs"
  * 
@@ -114,7 +114,7 @@ namespace AC
 			}
 			else
 			{
-				AudioSource[] audioSources = Object.FindObjectsOfType (typeof (AudioSource)) as AudioSource[];
+				AudioSource[] audioSources = UnityVersionHandler.FindObjectsOfType<AudioSource> ();
 				foreach (AudioSource audioSource in audioSources)
 				{
 					if (audioSource.clip == audioClip && audioSource.isPlaying && audioSource.GetComponent<Sound>() == null)
@@ -131,44 +131,16 @@ namespace AC
 		
 		public override void ShowGUI (List<ActionParameter> parameters)
 		{
-			audioClipParameterID = ChooseParameterGUI ("Clip to play:", parameters, audioClipParameterID, ParameterType.UnityObject);
-			if (audioClipParameterID < 0)
-			{
-				audioClip = (AudioClip) EditorGUILayout.ObjectField ("Clip to play:", audioClip, typeof (AudioClip), false);
-			}
+			AssetField ("Clip to play:", ref audioClip, parameters, ref audioClipParameterID);
 
 			playFromDefaultSound = EditorGUILayout.Toggle ("Play from Default Sound?", playFromDefaultSound);
 			if (!playFromDefaultSound)
 			{
-				audioSourceParameterID = ChooseParameterGUI ("Audio source (optional):", parameters, audioSourceParameterID, ParameterType.GameObject);
-				if (audioSourceParameterID >= 0)
-				{
-					audioSourceConstantID = 0;
-					audioSource = null;
-				}
-				else
-				{
-					audioSource = (AudioSource) EditorGUILayout.ObjectField ("Audio source (optional):", audioSource, typeof (AudioSource), false);
-
-					audioSourceConstantID = FieldToID (audioSource, audioSourceConstantID);
-					audioSource = IDToField (audioSource, audioSourceConstantID, false);
-				}
+				ComponentField ("Audio source (optional):", ref audioSource, ref audioSourceConstantID, parameters, ref audioSourceParameterID);
 
 				if (audioSource == null && audioSourceParameterID < 0)
 				{
-					parameterID = ChooseParameterGUI ("Position (optional):", parameters, parameterID, ParameterType.GameObject);
-					if (parameterID >= 0)
-					{
-						constantID = 0;
-						origin = null;
-					}
-					else
-					{
-						origin = (Transform) EditorGUILayout.ObjectField ("Position (optional):", origin, typeof (Transform), true);
-
-						constantID = FieldToID (origin, constantID);
-						origin = IDToField (origin, constantID, false);
-					}
+					ComponentField ("Position (optional):", ref origin, ref constantID, parameters, ref parameterID);
 				}
 			}
 

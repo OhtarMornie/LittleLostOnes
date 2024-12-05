@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionInteraction.cs"
  * 
@@ -31,6 +31,7 @@ namespace AC
 
 		public InteractionType interactionType;
 		public int index = 0;
+		public int indexParameterID = -1;
 
 		public bool ignorePlayerAction;
 		public bool requireItemHeld;
@@ -44,6 +45,21 @@ namespace AC
 		public override void AssignValues (List<ActionParameter> parameters)
 		{
 			runtimeHotspot = AssignFile<Hotspot> (parameters, parameterID, constantID, hotspot);
+			index = AssignInteger (parameters, indexParameterID, index);
+
+			if (interactionType == InteractionType.Inventory && parameterID >= 0 && indexParameterID >= 0 && runtimeHotspot)
+			{
+				// Special case: parameter was actually inventory item, not integer
+				int itemID = AssignInvItemID (parameters, indexParameterID, index);
+				for (int i = 0; i < runtimeHotspot.invButtons.Count; i++)
+				{
+					if (runtimeHotspot.invButtons[i].invID == itemID)
+					{
+					//	index = i;
+					}
+				}
+			}
+
 		}
 
 
@@ -121,104 +137,85 @@ namespace AC
 
 		public override void ShowGUI (List<ActionParameter> parameters)
 		{
-			if (AdvGame.GetReferences () && AdvGame.GetReferences ().settingsManager)
+			ComponentField ("Hotspot:", ref hotspot, ref constantID, parameters, ref parameterID);
+
+			interactionType = (InteractionType) EditorGUILayout.EnumPopup ("Interaction to run:", interactionType);
+
+			switch (interactionType)
 			{
-				parameterID = Action.ChooseParameterGUI ("Hotspot:", parameters, parameterID, ParameterType.GameObject);
-				if (parameterID >= 0)
-				{
-					constantID = 0;
-					hotspot = null;
-				}
-				else
-				{
-					hotspot = (Hotspot) EditorGUILayout.ObjectField ("Hotspot:", hotspot, typeof (Hotspot), true);
-
-					constantID = FieldToID<Hotspot> (hotspot, constantID);
-					hotspot = IDToField<Hotspot> (hotspot, constantID, false);
-				}
-
-				interactionType = (InteractionType) EditorGUILayout.EnumPopup ("Interaction to run:", interactionType);
-
-				if ((!isAssetFile && hotspot != null) || isAssetFile)
-				{
-					switch (interactionType)
+				case InteractionType.Use:
+					if (hotspot == null || parameterID >= 0)
 					{
-						case InteractionType.Use:
-							if (hotspot == null)
-							{
-								index = EditorGUILayout.IntField ("Use interaction:", index);
-							}
-							else if (AdvGame.GetReferences ().cursorManager)
-							{
-								// Multiple use interactions
-								if (hotspot.useButtons.Count > 0 && hotspot.provideUseInteraction)
-								{
-									List<string> labelList = new List<string> ();
-
-									foreach (AC.Button button in hotspot.useButtons)
-									{
-										labelList.Add (hotspot.useButtons.IndexOf (button) + ": " + AdvGame.GetReferences ().cursorManager.GetLabelFromID (button.iconID, 0));
-									}
-
-									index = EditorGUILayout.Popup ("Use interaction:", index, labelList.ToArray ());
-								}
-								else
-								{
-									EditorGUILayout.HelpBox ("No 'Use' interactions defined!", MessageType.Info);
-								}
-							}
-							else
-							{
-								EditorGUILayout.HelpBox ("A Cursor Manager is required.", MessageType.Warning);
-							}
-							break;
-
-						case InteractionType.Examine:
-							if (hotspot != null && !hotspot.provideLookInteraction)
-							{
-								EditorGUILayout.HelpBox ("No 'Examine' interaction defined!", MessageType.Info);
-							}
-							break;
-
-						case InteractionType.Inventory:
-							if (hotspot == null)
-							{
-								index = EditorGUILayout.IntField ("Inventory interaction:", index);
-							}
-							else if (AdvGame.GetReferences ().inventoryManager)
-							{
-								if (hotspot.invButtons.Count > 0 && hotspot.provideInvInteraction)
-								{
-									List<string> labelList = new List<string> ();
-
-									foreach (AC.Button button in hotspot.invButtons)
-									{
-										labelList.Add (hotspot.invButtons.IndexOf (button) + ": " + AdvGame.GetReferences ().inventoryManager.GetLabel (button.invID));
-									}
-
-									index = EditorGUILayout.Popup ("Inventory interaction:", index, labelList.ToArray ());
-								}
-								else
-								{
-									EditorGUILayout.HelpBox ("No 'Inventory' interactions defined!", MessageType.Info);
-								}
-							}
-							else
-							{
-								EditorGUILayout.HelpBox ("An Inventory Manager is required.", MessageType.Warning);
-							}
-
-							requireItemHeld = EditorGUILayout.Toggle ("Require Inventory item?", requireItemHeld);
-							break;
+						IntField ("Use interaction:", ref index, parameters, ref indexParameterID);
 					}
-				}
+					else if (KickStarter.cursorManager)
+					{
+						// Multiple use interactions
+						if (hotspot.useButtons.Count > 0 && hotspot.provideUseInteraction)
+						{
+							List<string> labelList = new List<string> ();
 
-				ignorePlayerAction = EditorGUILayout.Toggle ("Ignore 'Player action'?", ignorePlayerAction);
+							foreach (AC.Button button in hotspot.useButtons)
+							{
+								labelList.Add (hotspot.useButtons.IndexOf (button) + ": " + KickStarter.cursorManager.GetLabelFromID (button.iconID, 0));
+							}
+
+							index = EditorGUILayout.Popup ("Use interaction:", index, labelList.ToArray ());
+						}
+						else
+						{
+							EditorGUILayout.HelpBox ("No 'Use' interactions defined!", MessageType.Info);
+						}
+					}
+					else
+					{
+						EditorGUILayout.HelpBox ("A Cursor Manager is required.", MessageType.Warning);
+					}
+					break;
+
+				case InteractionType.Examine:
+					if (hotspot != null && parameterID < 0 && !hotspot.provideLookInteraction)
+					{
+						EditorGUILayout.HelpBox ("No 'Examine' interaction defined!", MessageType.Info);
+					}
+					break;
+
+				case InteractionType.Inventory:
+					if (hotspot == null || parameterID >= 0)
+					{
+						ItemField ("Inventory interaction:", ref index, parameters, ref indexParameterID);
+					}
+					else if (KickStarter.inventoryManager)
+					{
+						if (hotspot.invButtons.Count > 0 && hotspot.provideInvInteraction)
+						{
+							List<string> labelList = new List<string> ();
+
+							foreach (AC.Button button in hotspot.invButtons)
+							{
+								labelList.Add (hotspot.invButtons.IndexOf (button) + ": " + KickStarter.inventoryManager.GetLabel (button.invID));
+							}
+
+							index = EditorGUILayout.Popup ("Inventory interaction:", index, labelList.ToArray ());
+						}
+						else
+						{
+							EditorGUILayout.HelpBox ("No 'Inventory' interactions defined!", MessageType.Info);
+						}
+					}
+					else
+					{
+						EditorGUILayout.HelpBox ("An Inventory Manager is required.", MessageType.Warning);
+					}
+
+					requireItemHeld = EditorGUILayout.Toggle ("Require Inventory item?", requireItemHeld);
+					break;
+
+				default:
+					break;
 			}
-			else
-			{
-				EditorGUILayout.HelpBox ("A Settings Manager is required for this Action.", MessageType.Warning);
-			}
+
+			ignorePlayerAction = EditorGUILayout.Toggle ("Ignore 'Player action'?", ignorePlayerAction);
 		}
 
 

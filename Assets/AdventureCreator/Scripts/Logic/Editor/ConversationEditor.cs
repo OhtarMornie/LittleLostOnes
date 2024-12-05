@@ -32,8 +32,8 @@ namespace AC
 			if (_target == null) return;
 			CustomGUILayout.UpdateDrag (DragKey, lastDragOver, lastDragOver != null ? lastDragOver.label : string.Empty, ref ignoreDrag, OnCompleteDrag);
 
+			CustomGUILayout.Header ("Properties");
 			CustomGUILayout.BeginVertical ();
-			EditorGUILayout.LabelField ("Conversation settings", EditorStyles.boldLabel);
 			_target.interactionSource = (AC.InteractionSource) CustomGUILayout.EnumPopup ("Interaction source:", _target.interactionSource, "", "The source of the commands that are run when an option is chosen");
 			_target.autoPlay = CustomGUILayout.Toggle ("Auto-play lone option?", _target.autoPlay, "", "If True, and only one option is available, then the option will be chosen automatically");
 			_target.isTimed = CustomGUILayout.Toggle ("Is timed?", _target.isTimed, "", "If True, then the Conversation is timed, and the options will only be shown for a fixed period");
@@ -75,7 +75,7 @@ namespace AC
 
 			if (_target.selectedOption != null && _target.options.Contains (_target.selectedOption))
 			{
-				EditorGUILayout.LabelField ("Dialogue option '" + _target.selectedOption.label + "' properties", EditorStyles.boldLabel);
+				CustomGUILayout.Header ("Dialogue option '" + _target.selectedOption.label + "' properties");
 				EditOptionGUI (_target.selectedOption, _target.interactionSource);
 			}
 
@@ -91,7 +91,8 @@ namespace AC
 				lastSwapIndex = -1;
 			}
 
-			EditorGUILayout.LabelField ("Dialogue options", EditorStyles.boldLabel);
+			CustomGUILayout.Header ("Dialogue options");
+			CustomGUILayout.BeginVertical ();
 
 			scrollPos = EditorGUILayout.BeginScrollView (scrollPos, GUILayout.Height (Mathf.Min (_target.options.Count * 22, ACEditorPrefs.MenuItemsBeforeScroll * 22) + 9));
 
@@ -139,7 +140,7 @@ namespace AC
 				}
 			}
 			EditorGUILayout.EndScrollView();
-			
+
 			if (GUILayout.Button ("Add new dialogue option"))
 			{
 				Undo.RecordObject (_target, "Create dialogue option");
@@ -148,6 +149,8 @@ namespace AC
 				DeactivateAllOptions ();
 				ActivateOption (newOption);
 			}
+
+			CustomGUILayout.EndVertical ();
 		}
 
 
@@ -238,7 +241,7 @@ namespace AC
 
 		private int CreateInventoryGUI (int invID)
 		{
-			if (AdvGame.GetReferences ().inventoryManager == null || AdvGame.GetReferences ().inventoryManager.items == null || AdvGame.GetReferences ().inventoryManager.items.Count == 0)
+			if (KickStarter.inventoryManager == null || KickStarter.inventoryManager.items == null || KickStarter.inventoryManager.items.Count == 0)
 			{
 				EditorGUILayout.HelpBox ("Cannot find any inventory items!", MessageType.Warning);
 				return invID;
@@ -249,7 +252,7 @@ namespace AC
 			int invNumber = -1;
 			int i = 0;
 
-			foreach (InvItem _item in AdvGame.GetReferences ().inventoryManager.items)
+			foreach (InvItem _item in KickStarter.inventoryManager.items)
 			{
 				labelList.Add (_item.label);
 
@@ -268,7 +271,7 @@ namespace AC
 			}
 
 			invNumber = CustomGUILayout.Popup ("Linked inventory item:", invNumber, labelList.ToArray (), string.Empty, "The inventory item that the player must be carrying for the option to be active");
-			invID = AdvGame.GetReferences ().inventoryManager.items[invNumber].id;
+			invID = KickStarter.inventoryManager.items[invNumber].id;
 
 			return invID;
 		}

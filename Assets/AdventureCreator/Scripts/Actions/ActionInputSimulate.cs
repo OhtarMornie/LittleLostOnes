@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionInputSimulate.cs"
  * 
@@ -51,11 +51,7 @@ namespace AC
 		{
 			simulateInput = (SimulateInputType) EditorGUILayout.EnumPopup ("Simulate:", simulateInput);
 
-			inputAxisParameterID = ChooseParameterGUI ("Input axis:", parameters, inputAxisParameterID, ParameterType.String);
-			if (inputAxisParameterID < 0)
-			{
-				inputAxis = EditorGUILayout.TextField ("Input axis:", inputAxis);
-			}
+			TextField ("Input axis:", ref inputAxis, parameters, ref inputAxisParameterID);
 
 			if (simulateInput == SimulateInputType.Axis)
 			{

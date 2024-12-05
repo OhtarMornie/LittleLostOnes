@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionPlayerTeleportInactive.cs"
  * 
@@ -116,47 +116,7 @@ namespace AC
 					return;
 				}
 
-				playerIDParameterID = Action.ChooseParameterGUI ("New Player ID:", parameters, playerIDParameterID, ParameterType.Integer);
-				if (playerIDParameterID == -1)
-				{
-					// Create a string List of the field's names (for the PopUp box)
-					List<string> labelList = new List<string>();
-					
-					int i = 0;
-					int playerNumber = -1;
-
-					foreach (PlayerPrefab playerPrefab in KickStarter.settingsManager.players)
-					{
-						if (playerPrefab.EditorPrefab != null)
-						{
-							labelList.Add (playerPrefab.EditorPrefab.name);
-						}
-						else
-						{
-							labelList.Add ("(Undefined prefab)");
-						}
-						
-						// If a player has been removed, make sure selected player is still valid
-						if (playerPrefab.ID == playerID)
-						{
-							playerNumber = i;
-						}
-						
-						i++;
-					}
-					
-					if (playerNumber == -1)
-					{
-						// Wasn't found (item was possibly deleted), so revert to zero
-						if (playerID > 0) LogWarning ("Previously chosen Player no longer exists!");
-						
-						playerNumber = 0;
-						playerID = 0;
-					}
-				
-					playerNumber = EditorGUILayout.Popup ("Player:", playerNumber, labelList.ToArray());
-					playerID = KickStarter.settingsManager.players[playerNumber].ID;
-				}
+				PlayerField ("New Player:", "New Player ID:", ref playerID, parameters, ref playerIDParameterID, false);
 
 				moveToCurrentScene = EditorGUILayout.Toggle ("Move to current scene?", moveToCurrentScene);
 				if (moveToCurrentScene)
@@ -165,19 +125,7 @@ namespace AC
 
 					if (teleportPlayerStartMethod == TeleportPlayerStartMethod.EnteredHere)
 					{
-						newTransformParameterID = Action.ChooseParameterGUI ("New PlayerStart:", parameters, newTransformParameterID, ParameterType.GameObject);
-						if (newTransformParameterID >= 0)
-						{
-							newTransformConstantID = 0;
-							newTransform = null;
-						}
-						else
-						{
-							newTransform = (PlayerStart)EditorGUILayout.ObjectField ("New PlayerStart:", newTransform, typeof (PlayerStart), true);
-
-							newTransformConstantID = FieldToID (newTransform, newTransformConstantID);
-							newTransform = IDToField (newTransform, newTransformConstantID, true);
-						}
+						ComponentField ("New PlayerStart:", ref newTransform, ref newTransformConstantID, parameters, ref newTransformParameterID);
 					}
 				}
 				else
@@ -202,10 +150,7 @@ namespace AC
 					if (teleportPlayerStartMethod == TeleportPlayerStartMethod.EnteredHere)
 					{
 						newTransformParameterID = -1;
-						newTransform = (PlayerStart)EditorGUILayout.ObjectField ("New PlayerStart:", newTransform, typeof (PlayerStart), true);
-
-						newTransformConstantID = FieldToID (newTransform, newTransformConstantID, true);
-						newTransform = IDToField (newTransform, newTransformConstantID, true);
+						ComponentField ("New PlayerStart:", ref newTransform, ref newTransformConstantID);
 					}
 				}
 

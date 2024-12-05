@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionListAsset.cs"
  * 
@@ -56,6 +56,10 @@ namespace AC
 
 		/** The ID of the associated SpeechTag */
 		[HideInInspector] public int tagID;
+
+		#if UNITY_EDITOR
+		public List<ActionGroup> groups = new List<ActionGroup> ();
+		#endif
 
 		#if UNITY_EDITOR && UNITY_2019_2_OR_NEWER
 		[SerializeField] private JsonAction[] backupData;
@@ -283,7 +287,7 @@ namespace AC
 						string suffix = " in scene '" + sceneFile + "'";
 						
 						// iActionListAssetReferencers
-						MonoBehaviour[] sceneObjects = FindObjectsOfType<MonoBehaviour> ();
+						MonoBehaviour[] sceneObjects = UnityVersionHandler.FindObjectsOfType<MonoBehaviour> ();
 						for (int i = 0; i < sceneObjects.Length; i++)
 						{
 							MonoBehaviour currentObj = sceneObjects[i];
@@ -378,10 +382,25 @@ namespace AC
 		}
 
 
-		public static ActionListAsset CreateFromActions (string fileName, string filePath, List<Action> _actions)
+		public static ActionListAsset CreateFromActions (string fileName, string filePath, List<Action> _actions, ActionListType actionListType = ActionListType.PauseGameplay)
 		{
 			ActionListAsset newAsset = CustomAssetUtility.CreateAsset<ActionListAsset> (fileName, filePath);
+			if (newAsset == null)
+			{
+				return null;
+			}
 			newAsset = AddActionsToAsset (newAsset, _actions, false);
+			newAsset.actionListType = actionListType;
+
+			foreach (Action action in newAsset.actions)
+			{
+				if (action != null)
+				{
+					action.SkipActionGUI (newAsset.actions, false);
+				}
+			}
+
+			EditorUtility.SetDirty (newAsset);
 			
 			AssetDatabase.SaveAssets ();
 			
@@ -422,7 +441,7 @@ namespace AC
 
 			if (doCopy)
 			{
-				asset.actions = new List<Action>();
+				asset.actions = new List<Action> ();
 				asset.actions.Clear ();
 			
 				Vector2 firstPosition = new Vector2 (14f, 14f);
@@ -503,6 +522,21 @@ namespace AC
 			AddActionsToAsset (this, actionList.actions, true);
 		}
 
+
+		public ActionParameter CreateNewParameter ()
+		{
+			List<int> idArray = new List<int>();
+			foreach (ActionParameter parameter in parameters)
+			{
+				idArray.Add (parameter.ID);
+			}
+			idArray.Sort ();
+			ActionParameter newParameter = new ActionParameter (idArray.ToArray ());
+			parameters.Add (newParameter);
+			EditorUtility.SetDirty (this);
+			return newParameter;
+		}
+
 		#endif
 
 		/**
@@ -519,9 +553,7 @@ namespace AC
 		}
 
 
-		/**
-		 * <summary>Runs the ActionList asset file</summary>
-		 */
+		/** Runs the ActionList asset file */
 		public void Interact ()
 		{
 			AdvGame.RunActionListAsset (this);
@@ -874,18 +906,18 @@ namespace AC
 					default:
 						break;
 				}
+			}
 
-				foreach (Action action in actions)
+			foreach (Action action in actions)
+			{
+				if (action != null && action is IVariableReferencerAction)
 				{
-					if (action != null && action is IVariableReferencerAction)
+					IVariableReferencerAction variableReferencerAction = action as IVariableReferencerAction;
+					int thisNumReferences = variableReferencerAction.GetNumVariableReferences (variableLocation, variableID, DefaultParameters, _variables, _variablesConstantID);
+					if (thisNumReferences > 0)
 					{
-						IVariableReferencerAction variableReferencerAction = action as IVariableReferencerAction;
-						int thisNumReferences = variableReferencerAction.GetNumVariableReferences (variableLocation, variableID, DefaultParameters, _variables, _variablesConstantID);
-						if (thisNumReferences > 0)
-						{
-							totalNumReferences += thisNumReferences;
-							ActionList.logSuffix += "\n (" + actions.IndexOf (action) + ") " + action.Category + ": " + action.Title;
-						}
+						totalNumReferences += thisNumReferences;
+						ActionList.logSuffix += "\n (" + actions.IndexOf (action) + ") " + action.Category + ": " + action.Title;
 					}
 				}
 			}
@@ -913,18 +945,18 @@ namespace AC
 					default:
 						break;
 				}
+			}
 
-				foreach (Action action in actions)
+			foreach (Action action in actions)
+			{
+				if (action != null && action is IVariableReferencerAction)
 				{
-					if (action != null && action is IVariableReferencerAction)
+					IVariableReferencerAction variableReferencerAction = action as IVariableReferencerAction;
+					int thisNumReferences = variableReferencerAction.UpdateVariableReferences (variableLocation, oldVariableID, newVariableID, DefaultParameters, _variables, _variablesConstantID);
+					if (thisNumReferences > 0)
 					{
-						IVariableReferencerAction variableReferencerAction = action as IVariableReferencerAction;
-						int thisNumReferences = variableReferencerAction.UpdateVariableReferences (variableLocation, oldVariableID, newVariableID, DefaultParameters, _variables, _variablesConstantID);
-						if (thisNumReferences > 0)
-						{
-							totalNumReferences += thisNumReferences;
-							ActionList.logSuffix += "\n (" + actions.IndexOf (action) + ") " + action.Category + ": " + action.Title;
-						}
+						totalNumReferences += thisNumReferences;
+						ActionList.logSuffix += "\n (" + actions.IndexOf (action) + ") " + action.Category + ": " + action.Title;
 					}
 				}
 			}
@@ -999,6 +1031,15 @@ namespace AC
 		{
 			int totalNumReferences = 0;
 
+			if (NumParameters > 0)
+			{
+				int thisNumReferences = GetParameterReferences (parameters, objectiveID, ParameterType.Objective);
+				if (thisNumReferences > 0)
+				{
+					totalNumReferences += thisNumReferences;
+				}
+			}
+
 			foreach (Action action in actions)
 			{
 				if (action != null && action is IObjectiveReferencerAction)
@@ -1020,6 +1061,15 @@ namespace AC
 		public int UpdateObjectiveReferences (int oldObjectiveID, int newObjectiveID)
 		{
 			int totalNumReferences = 0;
+
+			if (NumParameters > 0)
+			{
+				int thisNumReferences = GetParameterReferences (parameters, oldObjectiveID, ParameterType.Objective, null, 0, true, newObjectiveID);
+				if (thisNumReferences > 0)
+				{
+					totalNumReferences += thisNumReferences;
+				}
+			}
 
 			foreach (Action action in actions)
 			{
@@ -1106,7 +1156,7 @@ namespace AC
 		}
 
 
-		public static ActionListAsset AssetGUI (string label, ActionListAsset actionListAsset, string defaultName = "", string api = "", string tooltip = "", System.Action<ActionListAsset> onCreateCallback = null)
+		public static ActionListAsset AssetGUI (string label, ActionListAsset actionListAsset, string defaultName = "", string api = "", string tooltip = "", System.Action<ActionListAsset> onCreateCallback = null, System.Action<ActionListAsset> showALAEditor = null)
 		{
 			EditorGUILayout.BeginHorizontal ();
 			actionListAsset = (ActionListAsset) CustomGUILayout.ObjectField <ActionListAsset> (label, actionListAsset, false, api, tooltip);
@@ -1130,10 +1180,20 @@ namespace AC
 				}
 			}
 
+			if (showALAEditor == null) showALAEditor = _showALAEditor;
+
+			if (showALAEditor != null && actionListAsset && GUILayout.Button (string.Empty, CustomStyles.IconNodes, GUILayout.Height (21)))
+			{
+				showALAEditor.Invoke (actionListAsset);
+			}
+
 			EditorGUILayout.EndHorizontal ();
 			return actionListAsset;
 		}
 
+		
+		public static System.Action<ActionList> showALEditor = null;
+		public static System.Action<ActionListAsset> _showALAEditor = null;
 
 		public static Cutscene CutsceneGUI (string label, Cutscene cutscene, string defaultName = "", string api = "", string tooltip = "")
 		{
@@ -1152,6 +1212,10 @@ namespace AC
 						cutscene.gameObject.name = AdvGame.UniqueName (defaultName);
 					}
 				}
+			}
+			else if (showALEditor != null && GUILayout.Button (string.Empty, CustomStyles.IconNodes, GUILayout.Height (21)))
+			{
+				showALEditor.Invoke (cutscene);
 			}
 
 			EditorGUILayout.EndHorizontal ();
@@ -1176,6 +1240,10 @@ namespace AC
 						actionList.gameObject.name = AdvGame.UniqueName (defaultName);
 					}
 				}
+			}
+			else if (showALEditor != null && GUILayout.Button (string.Empty, CustomStyles.IconNodes, GUILayout.Height (21)))
+			{
+				showALEditor.Invoke (actionList);
 			}
 
 			EditorGUILayout.EndHorizontal ();

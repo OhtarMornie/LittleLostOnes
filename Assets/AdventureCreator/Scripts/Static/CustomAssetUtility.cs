@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"CustomAssetUtility.cs"
  * 
@@ -56,6 +56,11 @@ namespace AC
 		public static T CreateAsset<T> (string filename, string path = "") where T : ScriptableObject
 		{
 			T asset = ScriptableObject.CreateInstance<T> ();
+
+			if (path.StartsWith ("Assets/"))
+			{
+				path = path.Substring (("Assets/").Length);
+			}
 
 			string assetPathAndName =
 				(!string.IsNullOrEmpty (path))

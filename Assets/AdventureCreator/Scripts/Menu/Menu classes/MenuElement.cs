@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"MenuElement.cs"
  * 
@@ -456,7 +456,7 @@ namespace AC
 		
 		#if UNITY_EDITOR
 		
-		public void ShowGUIStart (Menu menu)
+		public void ShowGUIStart (Menu menu, System.Action<ActionListAsset> showALAEditor)
 		{
 			string apiPrefix = "AC.PlayerMenus.GetElementWithName (\"" + menu.title + "\", \"" + title + "\")";
 
@@ -465,7 +465,7 @@ namespace AC
 			isVisible = CustomGUILayout.Toggle ("Is visible?", isVisible, apiPrefix + ".IsVisible", "If True, the element is enabled and visible");
 			CustomGUILayout.EndVertical ();
 
-			ShowGUI (menu);
+			ShowGUI (menu, showALAEditor);
 		}
 
 
@@ -479,7 +479,7 @@ namespace AC
 		}
 		
 		
-		public virtual void ShowGUI (Menu menu)
+		public virtual void ShowGUI (Menu menu, System.Action<ActionListAsset> showALAEditor)
 		{
 			string apiPrefix = "AC.PlayerMenus.GetElementWithName (\"" + menu.title + "\", \"" + title + "\")";
 
@@ -631,11 +631,11 @@ namespace AC
 		}
 
 
-		protected T LinkedUiGUI <T> (T field, string label, MenuSource source, string tooltip = "") where T : Component
+		protected T LinkedUiGUI <T> (T field, string label, Menu menu, string tooltip = "") where T : Component
 		{
 			field = (T) EditorGUILayout.ObjectField (new GUIContent (label, tooltip), field, typeof (T), true);
 			linkedUiID = Menu.FieldToID <T> (field, linkedUiID);
-			return Menu.IDToField <T> (field, linkedUiID, source);
+			return Menu.IDToField <T> (field, linkedUiID, menu);
 		}
 
 
@@ -688,10 +688,10 @@ namespace AC
 		{
 			string apiPrefix = "AC.PlayerMenus.GetElementWithName (\"" + menu.title + "\", \"" + title + "\")";
 
-			changeCursor = CustomGUILayout.Toggle ("Change cursor when over?", changeCursor, apiPrefix + ".changeCursor", "If True, then the mouse cursor will change when it hovers over the element");
+			changeCursor = CustomGUILayout.Toggle ("Change cursor on hover?", changeCursor, apiPrefix + ".changeCursor", "If True, then the mouse cursor will change when it hovers over the element");
 			if (changeCursor)
 			{
-				CursorManager cursorManager = AdvGame.GetReferences ().cursorManager;
+				CursorManager cursorManager = KickStarter.cursorManager;
 				if (cursorManager)
 				{
 					int cursorIndex = cursorManager.GetIntFromID (cursorID);
@@ -972,19 +972,33 @@ namespace AC
 		}
 
 
-		protected void Shift (AC_ShiftInventory shiftType, int maxSlots, int arraySize, int amount)
+		protected void Shift (AC_ShiftInventory shiftType, int maxSlots, int arraySize, int amount, bool canBeLooped = false)
 		{
+			if (canBeLooped && arraySize < maxSlots) return;
+
 			int newOffset = offset;
+			int maxValue = arraySize - maxSlots;
 
 			switch (shiftType)
 			{ 
 				case AC_ShiftInventory.ShiftPrevious:
-					if (offset > 0)
+					if (canBeLooped)
 					{
 						newOffset -= amount;
-						if (newOffset < 0)
+						while (newOffset < 0)
 						{
-							newOffset = 0;
+							newOffset = maxValue + 1 + newOffset;
+						}
+					}
+					else
+					{
+						if (offset > 0)
+						{
+							newOffset -= amount;
+							if (newOffset < 0)
+							{
+								newOffset = 0;
+							}
 						}
 					}
 					break;
@@ -992,9 +1006,21 @@ namespace AC
 				case AC_ShiftInventory.ShiftNext:
 					{
 						newOffset += amount;
-						if ((maxSlots + newOffset) >= arraySize)
+
+						if (canBeLooped)
 						{
-							newOffset = arraySize - maxSlots;
+							while (newOffset > maxValue)
+							{
+								int extra = newOffset - maxValue - 1;
+								newOffset = extra;
+							}
+						}
+						else
+						{
+							if (newOffset > maxValue)
+							{
+								newOffset = maxValue;
+							}
 						}
 					}
 					break;
@@ -1385,23 +1411,40 @@ namespace AC
 		{
 			if (Application.isPlaying && field)
 			{
-				if (uiSelectableHideStyle == UISelectableHideStyle.DisableObject)
+				switch (uiSelectableHideStyle)
 				{
-					field.gameObject.SetActive (IsVisible);
-				}
-				else if (uiSelectableHideStyle == UISelectableHideStyle.DisableInteractability)
-				{
-					field.interactable = IsVisible;
+					case UISelectableHideStyle.DisableObject:
+						field.gameObject.SetActive (IsVisible);
+						break;
+
+					case  UISelectableHideStyle.DisableInteractability:
+						field.interactable = IsVisible;
+						break;
+
+					default:
+						break;
 				}
 			}
 		}
 
 
-		protected void UpdateUIElement <T> (T field) where T : Behaviour
+		protected void UpdateUIElement <T> (T field, UIComponentHideStyle uiComponentHideStyle) where T : Behaviour
 		{
-			if (Application.isPlaying && field && field.gameObject.activeSelf != IsVisible)
+			if (Application.isPlaying && field)
 			{
-				field.gameObject.SetActive (IsVisible);
+				switch (uiComponentHideStyle)
+				{
+					case UIComponentHideStyle.DisableObject:
+						field.gameObject.SetActive (IsVisible);
+						break;
+
+					case  UIComponentHideStyle.DisableComponent:
+						field.enabled = IsVisible;
+						break;
+
+					default:
+						break;
+				}
 			}
 		}
 
@@ -1474,6 +1517,12 @@ namespace AC
 		public virtual void OnMenuTurnOn (Menu menu)
 		{
 			parentMenu = menu;
+		}
+
+
+		public virtual bool SupportsRightClicks ()
+		{
+			return false;
 		}
 
 

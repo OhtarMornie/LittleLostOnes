@@ -9,6 +9,18 @@
 		protected override string ConditionHelp { get { return "Whenever the active Player is set."; } }
 
 
+		public EventPlayerSet (int _id, string _label, ActionListAsset _actionListAsset, int[] _parameterIDs)
+		{
+			id = _id;
+			label = _label;
+			actionListAsset = _actionListAsset;
+			parameterIDs = _parameterIDs;
+		}
+
+
+		public EventPlayerSet () {}
+
+
 		public override void Register ()
 		{
 			EventManager.OnPlayerSpawn += OnSetPlayer;

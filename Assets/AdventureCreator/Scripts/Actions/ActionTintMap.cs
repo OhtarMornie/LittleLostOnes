@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionTintMap.cs"
  * 
@@ -148,25 +148,11 @@ namespace AC
 			isPlayer = EditorGUILayout.Toggle ("Affect Player?", isPlayer);
 			if (isPlayer)
 			{
-				playerParameterID = ChooseParameterGUI ("Player ID:", parameters, playerParameterID, ParameterType.Integer);
-				if (playerParameterID < 0)
-					playerID = ChoosePlayerGUI (playerID, true);
+				PlayerField (ref playerID, parameters, ref playerParameterID);
 			}
 			else
 			{
-				followTintMapParameterID = Action.ChooseParameterGUI ("FollowTintMap:", parameters, followTintMapParameterID, ParameterType.GameObject);
-				if (followTintMapParameterID >= 0)
-				{
-					followTintMapConstantID = 0;
-					followTintMap = null;
-				}
-				else
-				{
-					followTintMap = (FollowTintMap) EditorGUILayout.ObjectField ("FollowTintMap:", followTintMap, typeof (FollowTintMap), true);
-					
-					followTintMapConstantID = FieldToID <FollowTintMap> (followTintMap, followTintMapConstantID);
-					followTintMap = IDToField <FollowTintMap> (followTintMap, followTintMapConstantID, false);
-				}
+				ComponentField ("FollowTintMap:", ref followTintMap, ref followTintMapConstantID, parameters, ref followTintMapParameterID);
 			}
 
 			if (tintMapMethod == TintMapMethod.ChangeTintMap)
@@ -174,19 +160,7 @@ namespace AC
 				followDefault = EditorGUILayout.Toggle ("Follow scene default?", followDefault);
 				if (!followDefault)
 				{
-					newTintMapParameterID = Action.ChooseParameterGUI ("New TintMap:", parameters, newTintMapParameterID, ParameterType.GameObject);
-					if (newTintMapParameterID >= 0)
-					{
-						newTintMapConstantID = 0;
-						followTintMap = null;
-					}
-					else
-					{
-						newTintMap = (TintMap) EditorGUILayout.ObjectField ("New TintMap:", newTintMap, typeof (TintMap), true);
-						
-						newTintMapConstantID = FieldToID <TintMap> (newTintMap, newTintMapConstantID);
-						newTintMap = IDToField <TintMap> (newTintMap, newTintMapConstantID, false);
-					}
+					ComponentField ("New TintMap:", ref newTintMap, ref newTintMapConstantID, parameters, ref newTintMapParameterID);
 				}
 			}
 			else if (tintMapMethod == TintMapMethod.ChangeIntensity)
@@ -212,14 +186,18 @@ namespace AC
 				FollowTintMap obToUpdate = followTintMap;
 				if (isPlayer && (KickStarter.settingsManager == null || KickStarter.settingsManager.playerSwitching == PlayerSwitching.DoNotAllow))
 				{
-					if (!fromAssetFile && GameObject.FindObjectOfType <Player>() != null)
+					if (!fromAssetFile)
 					{
-						obToUpdate = GameObject.FindObjectOfType <Player>().GetComponentInChildren <FollowTintMap>();
+						Player _player = UnityVersionHandler.FindObjectOfType<Player> ();
+						if (_player)
+						{
+							obToUpdate = _player.GetComponentInChildren <FollowTintMap>();
+						}
 					}
 
-					if (obToUpdate == null && AdvGame.GetReferences ().settingsManager != null)
+					if (obToUpdate == null && KickStarter.settingsManager != null)
 					{
-						Player player = AdvGame.GetReferences ().settingsManager.GetDefaultPlayer ();
+						Player player = KickStarter.settingsManager.GetDefaultPlayer ();
 						obToUpdate = player.GetComponentInChildren <FollowTintMap>();
 					}
 				}

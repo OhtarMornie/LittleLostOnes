@@ -57,6 +57,19 @@ namespace AC
 		}
 
 
+		public EventSaveSave (int _id, string _label, ActionListAsset _actionListAsset, int[] _parameterIDs, FileAccessState _fileAccessState)
+		{
+			id = _id;
+			label = _label;
+			actionListAsset = _actionListAsset;
+			parameterIDs = _parameterIDs;
+			fileAccessState = _fileAccessState;
+		}
+
+
+		public EventSaveSave () {}
+
+
 		public override void Register ()
 		{
 			EventManager.OnBeforeSaving += OnBeforeSaving;

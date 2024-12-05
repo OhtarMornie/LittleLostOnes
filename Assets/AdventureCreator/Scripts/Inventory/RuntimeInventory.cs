@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"RuntimeInventory.cs"
  * 
@@ -372,7 +372,7 @@ namespace AC
 
 		/**
 		 * <summary>Removes some instances of an inventory item from a player's inventory.</summary>
-		 * <param name = "_id">The ID number of the inventory item (InvItem) to remove</param>
+		 * <param name = "itemID">The ID number of the inventory item (InvItem) to remove</param>
 		 * <param name = "amount">The amount if the inventory item to remove, if the InvItem's canCarryMultiple = True.</param>
 		 * <param name = "playerID">The ID number of the player to affect, if player-switching is enabled</param>
 		 */
@@ -389,6 +389,10 @@ namespace AC
 		}
 
 
+		/**
+		 * <summary>Removes all items from a player's inventory.</summary>
+		 * <param name = "playerID">The ID number of the player to affect</param>
+		 */
 		public void RemoveAllFromOtherPlayer (int playerID)
 		{
 			if (playerID >= 0 && (KickStarter.player == null || KickStarter.player.ID != playerID))
@@ -400,6 +404,26 @@ namespace AC
 			else
 			{
 				playerInvCollection.DeleteAll ();
+			}
+		}
+
+
+		/**
+		 * <summary>Removes all items in a category from a player's inventory.</summary>
+		 * <param name = "playerID">The ID number of the player to affect</param>
+		 * <param name="categoryID">The ID of the category</param>
+		 */
+		public void RemoveAllFromOtherPlayer (int playerID, int categoryID)
+		{
+			if (playerID >= 0 && (KickStarter.player == null || KickStarter.player.ID != playerID))
+			{
+				InvCollection otherPlayerInvCollection = KickStarter.saveSystem.GetItemsFromPlayer (playerID);
+				otherPlayerInvCollection.DeleteAllInCategory (categoryID);
+				KickStarter.saveSystem.AssignItemsToPlayer (otherPlayerInvCollection, playerID);
+			}
+			else
+			{
+				playerInvCollection.DeleteAllInCategory (categoryID);
 			}
 		}
 
@@ -774,9 +798,10 @@ namespace AC
 		/**
 		 * <summary>Works out which Recipe, if any, for which all ingredients have been correctly arranged.</summary>
 		 * <param name = "ingredientsInvCollection">The InvCollection to get ingredients from</param>
+		 * <param name = "limitToCategoryIDs">If set, an array of item categories that the resulting item must be within for the recipe to be valid</param>
 		 * <returns>The Recipe, if any, for which all ingredients have been correctly arranged</returns>
 		 */
-		public Recipe CalculateRecipe (InvCollection ingredientsInvCollection)
+		public Recipe CalculateRecipe (InvCollection ingredientsInvCollection, int[] limitToCategoryIDs = null)
 		{
 			if (KickStarter.inventoryManager == null)
 			{
@@ -785,7 +810,7 @@ namespace AC
 
 			foreach (Recipe recipe in KickStarter.inventoryManager.recipes)
 			{
-				if (recipe.CanBeCrafted (ingredientsInvCollection))
+				if (recipe.CanBeCrafted (ingredientsInvCollection, limitToCategoryIDs))
 				{
 					return recipe;
 				}
@@ -1306,7 +1331,7 @@ namespace AC
 					}
 				}
 
-				return new InvCollection (playerStartItems);
+				return new InvCollection (playerStartItems, KickStarter.settingsManager.maxInventorySlots);
 			}
 			else
 			{

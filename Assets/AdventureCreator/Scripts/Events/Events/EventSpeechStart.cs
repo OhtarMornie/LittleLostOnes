@@ -7,15 +7,29 @@ namespace AC
 	{
 
 		[SerializeField] private SpeakerType speakerType;
-		private enum SpeakerType { Character, Narrator };
+		public enum SpeakerType { Character, Narrator };
 		[SerializeField] private StartStop startStop;
-		private enum StartStop { Start, Stop };
+		public enum StartStop { Start, Stop };
 		
 
 		public override string[] EditorNames { get { return new string[] { "Speech/Start", "Speech/Stop" }; } }
 		protected override string EventName { get { return startStop == StartStop.Start? "OnStartSpeech" : "OnStopSpeech"; } }
 		protected override string ConditionHelp { get { return "Whenever " + ((speakerType == SpeakerType.Character) ? "speech " : "narration ") + startStop.ToString ().ToLower () + "."; } }
-		
+
+
+		public EventSpeechStart (int _id, string _label, ActionListAsset _actionListAsset, int[] _parameterIDs, SpeakerType _speakerType, StartStop _startStop)
+		{
+			id = _id;
+			label = _label;
+			actionListAsset = _actionListAsset;
+			parameterIDs = _parameterIDs;
+			speakerType = _speakerType;
+			startStop = _startStop;
+		}
+
+
+		public EventSpeechStart () {}
+
 
 		public override void Register ()
 		{

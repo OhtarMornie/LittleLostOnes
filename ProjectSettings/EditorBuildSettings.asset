@@ -6,19 +6,46 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Scene_MainMenu.unity
+    path: Assets/LLO/Scenes/Old/Scene_MainMenu.unity
     guid: 1fe9dab4c4b5fd44582799504de23664
   - enabled: 1
-    path: Assets/Scenes/Scene_School_2ndFloor_RightHall.unity
+    path: Assets/LLO/Scenes/Old/Scene_School_2ndFloor_RightHall.unity
     guid: 625c202880b5a6442bf3062f1fc84b89
   - enabled: 1
-    path: Assets/Scenes/Scene_School_BiologyClass.unity
+    path: Assets/LLO/Scenes/Old/Scene_School_BiologyClass.unity
     guid: 4f5af99ec7d518249a4e92bf81a8b1ac
   - enabled: 0
     path: Assets/Scenes/BG_MainMenu.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 0
-    path: Assets/Scenes/BG_Street_Paralax.unity
+    path: Assets/LLO/Scenes/Old/BG_Street_Paralax.unity
     guid: a90db315c61fdfd4c9a7e4a2e65af16b
+  - enabled: 1
+    path: Assets/LLO/Scenes/Home/Scene_Home_Bedroom.unity
+    guid: d624fe2fb07bbe045a964e3340844dd0
+  - enabled: 1
+    path: Assets/LLO/Scenes/Home/Scene_Home_Hallway.unity
+    guid: 72ed00940eb6f3e46b8f38b4b6da554e
+  - enabled: 1
+    path: Assets/LLO/Scenes/Street/Scene_Street_2.unity
+    guid: 97abe7b79bded8549bb0b78ecc4b9f36
+  - enabled: 1
+    path: Assets/LLO/Scenes/Street/Scene_Street_1.unity
+    guid: 89d9d464d21d29644b688da9776c593e
+  - enabled: 1
+    path: Assets/LLO/Scenes/Street/Scene_Street_FrontGate.unity
+    guid: 7d0e705438eab3741886a0d2546cf8f5
+  - enabled: 1
+    path: Assets/LLO/Scenes/School/1stFloor/Scene_School_1stFloorLeftHall.unity
+    guid: 66baf0566f73a1e49ad275b7219c02dd
+  - enabled: 1
+    path: Assets/LLO/Scenes/School/1stFloor/Scene_School_Warderobe.unity
+    guid: f08f06b6e528580429887708aed14c20
+  - enabled: 1
+    path: Assets/LLO/Scenes/School/1stFloor/Scene_School_Hall.unity
+    guid: 8691c07864378ac4b8b85c2e7fa6c925
+  - enabled: 1
+    path: Assets/LLO/Scenes/School/1stFloor/Scene_School_108.unity
+    guid: 5fb83a7e65f54734e9e4df424c13d72f
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

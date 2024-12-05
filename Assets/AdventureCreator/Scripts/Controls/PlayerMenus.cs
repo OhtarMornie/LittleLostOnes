@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"PlayerMenus.cs"
  * 
@@ -34,7 +34,8 @@ namespace AC
 		protected bool interactionMenuIsOn = false;
 		protected bool interactionMenuPauses = false;
 
-		protected bool lockSave = false;
+		/** If True, then saving will be manually disabled */
+		public bool PreventSaving { get; set; }
 		protected int selected_option;
 
 		protected bool foundMouseOverMenu = false;
@@ -65,6 +66,7 @@ namespace AC
 		protected Menu mouseOverMenu;
 		protected MenuElement mouseOverElement;
 		protected int mouseOverElementSlot;
+		protected bool isOverRightClickElement;
 		
 		protected Menu crossFadeTo;
 		protected Menu crossFadeFrom;
@@ -106,6 +108,7 @@ namespace AC
 			EventManager.OnExitGameState += OnExitGameState;
 			EventManager.OnMouseOverMenu += OnMouseOverMenu;
 			EventManager.OnChangeLanguage += OnChangeLanguage;
+			EventManager.OnDocumentOpen += OnDocumentOpen;
 		}
 
 
@@ -116,6 +119,7 @@ namespace AC
 			EventManager.OnExitGameState -= OnExitGameState;
 			EventManager.OnMouseOverMenu -= OnMouseOverMenu;
 			EventManager.OnChangeLanguage -= OnChangeLanguage;
+			EventManager.OnDocumentOpen -= OnDocumentOpen;
 		}
 
 
@@ -243,9 +247,13 @@ namespace AC
 		}
 
 
-		public void CreateEventSystem ()
+		/**
+		 * <summary>Spawns an Event System, either using the prefab supplied in the Menu Manager, or generating one from scratch otherwise.</summary>
+		 * <param name = "force">If True, the EventSystem will always be created.  If False, it will only be generated if any Menus rely on Unity UI</param>
+		 */
+		public void CreateEventSystem (bool force = false)
 		{
-			UnityEngine.EventSystems.EventSystem localEventSystem = GameObject.FindObjectOfType <UnityEngine.EventSystems.EventSystem>();
+			UnityEngine.EventSystems.EventSystem localEventSystem = UnityVersionHandler.FindObjectOfType <UnityEngine.EventSystems.EventSystem>();
 
 			if (localEventSystem == null)
 			{
@@ -258,7 +266,7 @@ namespace AC
 						_eventSystem = (UnityEngine.EventSystems.EventSystem) Instantiate (KickStarter.menuManager.eventSystem);
 						_eventSystem.gameObject.name = KickStarter.menuManager.eventSystem.name;
 					}
-					else if (AreAnyMenusUI ())
+					else if (AreAnyMenusUI () || force)
 					{
 						GameObject eventSystemObject = new GameObject ();
 						eventSystemObject.name = "EventSystem";
@@ -338,7 +346,7 @@ namespace AC
 			if (gameState == GameState.Cutscene)
 			{
 				isInCutscene = true;
-				MakeUINonInteractive ();
+				UpdateUIInteractability ();
 			}
 		}
 
@@ -348,7 +356,9 @@ namespace AC
 			if (gameState == GameState.Cutscene)
 			{
 				isInCutscene = false;
-				MakeUIInteractive ();
+				UpdateUIInteractability ();
+
+				KickStarter.playerMenus.FindFirstSelectedElement (null, true);
 			}
 		}
 
@@ -386,6 +396,13 @@ namespace AC
 					}
 				}
 			}
+		}
+		
+
+		private void OnDocumentOpen (DocumentInstance documentInstance)
+		{
+			// Necessary to update UI colours
+			RecalculateAll ();
 		}
 
 
@@ -1469,6 +1486,7 @@ namespace AC
 				menuIdentifier = menu.ID;
 				mouseOverMenu = menu;
 				mouseOverElement = null;
+				isOverRightClickElement = false;
 				mouseOverElementSlot = 0;
 			}
 
@@ -1497,7 +1515,7 @@ namespace AC
 					MenuCrafting menuCrafting = menu.elements[j] as MenuCrafting;
 					MenuInput menuInput = menu.elements[j] as MenuInput;
 
-					if (menu.IsVisible () && menu.elements[j].IsVisible && menu.elements[j].isClickable)
+					if (menu.IsVisible () && menu.elements[j].IsVisible && menu.elements[j].isClickable && !menu.NeedsOneFrameWakeUp)
 					{
 						if (i == 0 && !string.IsNullOrEmpty (menu.elements[j].alternativeInputButton))
 						{
@@ -1535,6 +1553,7 @@ namespace AC
 							elementIdentifier = (menu.ID * 10000) + (menu.elements[j].ID * 100) + i;
 							mouseOverMenu = menu;
 							mouseOverElement = menu.elements[j];
+							isOverRightClickElement = menu.elements[j].SupportsRightClicks ();
 							mouseOverElementSlot = i;
 						}
 
@@ -2032,6 +2051,8 @@ namespace AC
 
 		private void CheckForDirectNav ()
 		{
+			if (!KickStarter.stateHandler.InputSystemIsEnabled) return;
+
 			GameState gameState = KickStarter.stateHandler.gameState;
 
 			for (int i=customMenus.Count-1; i >= 0; i--)
@@ -2768,7 +2789,7 @@ namespace AC
 				}
 				return allMenus;
 			}
-			return null;
+			return new List<Menu> ();
 		}
 		
 
@@ -2898,13 +2919,19 @@ namespace AC
 				return true;
 			}
 
-			if (KickStarter.playerMenus.lockSave)
+			if (KickStarter.playerMenus.PreventSaving)
 			{
 				ACDebug.LogWarning ("Cannot save at this time - saving has been manually locked.");
 				return true;
 			}
 
 			return false;
+		}
+
+
+		public bool CanCurrentlyRightClick ()
+		{
+			return isOverRightClickElement;
 		}
 		
 
@@ -3076,12 +3103,14 @@ namespace AC
 				ForceOffSubtitles (menu, speechMenuLimit);
 			}
 
-			foreach (AC.Menu menu in dupSpeechMenus)
+			Menu[] dubSpeechMenusArray = dupSpeechMenus.ToArray ();
+			foreach (AC.Menu menu in dubSpeechMenusArray)
 			{
 				ForceOffSubtitles (menu, speechMenuLimit);
 			}
 
-			foreach (AC.Menu menu in customMenus)
+			Menu[] customMenusArray = customMenus.ToArray ();
+			foreach (AC.Menu menu in customMenusArray)
 			{
 				ForceOffSubtitles (menu, speechMenuLimit);
 			}
@@ -3250,17 +3279,18 @@ namespace AC
 		 * <summary>Selects the first element GameObject in a Unity UI-based Menu.</summary>
 		 * <param name = "menuToIgnore">If set, this menu will be ignored when searching</param>
 		 */
-		public void FindFirstSelectedElement (Menu menuToIgnore = null)
+		public void FindFirstSelectedElement (Menu menuToIgnore = null, bool ignoreIfAlreadySelectingMenu = false)
 		{
-			if (eventSystem == null || menus.Count == 0)
+			List<Menu> allMenus = GetMenus (true);
+			if (eventSystem == null || allMenus.Count == 0)
 			{
 				return;
 			}
 
 			GameObject objectToSelect = null;
-			for (int i=menus.Count-1; i>=0; i--)
+			for (int i=allMenus.Count-1; i>=0; i--)
 			{
-				Menu menu = menus[i];
+				Menu menu = allMenus[i];
 
 				if (menuToIgnore != null && menu == menuToIgnore)
 				{
@@ -3277,6 +3307,15 @@ namespace AC
 					objectToSelect = menu.GetObjectToSelect ();
 					if (objectToSelect != null)
 					{
+						if (ignoreIfAlreadySelectingMenu)
+						{
+							if (eventSystem.currentSelectedGameObject && eventSystem.currentSelectedGameObject.GetComponentInParent<Canvas> () && eventSystem.currentSelectedGameObject.GetComponentInParent<Canvas> () == menu.RuntimeCanvas && eventSystem.currentSelectedGameObject.activeInHierarchy)
+							{
+								// Already selecting an element in this menu
+								return;
+							}
+						}
+
 						break;
 					}
 				}
@@ -3314,16 +3353,6 @@ namespace AC
 		public virtual int GetElementOverCursorID ()
 		{
 			return elementOverCursorID;
-		}
-
-
-		/**
-		 * <summary>Sets the state of the manual save lock.</summary>
-		 * <param name = "state">If True, then saving will be manually disabled</param>
-		 */
-		public void SetManualSaveLock (bool state)
-		{
-			lockSave = state;
 		}
 
 
@@ -3394,22 +3423,8 @@ namespace AC
 		}
 
 
-		/** Makes all Menus linked to Unity UI interactive. */
-		public void MakeUIInteractive ()
-		{
-			Menu[] allMenus = GetMenus (true).ToArray ();
-			foreach (Menu menu in allMenus)
-			{
-				if (!menu.IsOff ())
-				{
-					menu.UpdateInteractability ();
-				}
-			}
-		}
-		
-		
-		/** Makes all Menus linked to Unity UI non-interactive. */
-		public void MakeUINonInteractive ()
+		/** Updates the interactability of all Menus linked to Unity UI. */
+		public void UpdateUIInteractability ()
 		{
 			Menu[] allMenus = GetMenus (true).ToArray ();
 			foreach (Menu menu in allMenus)
@@ -3529,7 +3544,7 @@ namespace AC
 				}
 			}
 			
-			if (menus.Count > 0)
+			if (menus.Count > 0 && visibilityString.Length > 0)
 			{
 				visibilityString.Remove (visibilityString.Length-1, 1);
 			}

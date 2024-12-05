@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"Hotspot.cs"
  * 
@@ -414,14 +414,17 @@ namespace AC
 					{
 						case HotspotIcon.UseIcon:
 							GenerateMainIcon ();
-							if (mainIcon != null)
+							if (CursorIconBase.IsValid (mainIcon))
 							{
 								mainIcon.Draw (GetIconScreenPosition (), !KickStarter.playerMenus.IsMouseOverInteractionMenu ());
 							}
 							break;
 
 						case HotspotIcon.Texture:
-							hotspotIcon.Draw (GetIconScreenPosition (), !KickStarter.playerMenus.IsMouseOverInteractionMenu ());
+							if (CursorIconBase.IsValid (hotspotIcon))
+							{
+								hotspotIcon.Draw (GetIconScreenPosition (), !KickStarter.playerMenus.IsMouseOverInteractionMenu ());
+							}
 							break;
 
 						default:
@@ -698,6 +701,17 @@ namespace AC
 		}
 
 
+		/** Corrects the Hotspot's state after exiting "Player Vicinity" Hotspot detection mode.  This is called automatically by PlayerInteraction */
+		public void OnExitPlayerVicinityMode ()
+		{
+			if (IsOn ())
+			{
+				tooFarAway = false;
+				TurnOn (false);
+			}
+		}
+
+
 		/**
 		 * <summary>Enables the Hotspot.</summary>
 		 * <param name = "manualSet">If True, then the Hotspot will be considered 'On" when saving</param>
@@ -829,6 +843,7 @@ namespace AC
 		{
 			if (highlight)
 			{
+				if (KickStarter.playerInteraction.GetActiveHotspot () == this && highlight.highlightWhenSelected) return;
 				highlight.Flash ();
 			}
 			hotspotIcon.Reset ();
@@ -1467,13 +1482,6 @@ namespace AC
 				return;
 			}
 			
-			if (provideUseInteraction && useButton != null && useButton.iconID >= 0 && !useButton.isDisabled)
-			{
-				mainIcon = new CursorIcon ();
-				mainIcon.Copy (KickStarter.cursorManager.GetCursorIconFromID (useButton.iconID), true);
-				return;
-			}
-			
 			if (provideLookInteraction && lookButton != null && lookButton.iconID >= 0 && !lookButton.isDisabled)
 			{
 				mainIcon = new CursorIcon ();
@@ -1492,6 +1500,13 @@ namespace AC
 						return;
 					}
 				}
+			}
+
+			if (provideUseInteraction && useButton != null && useButton.iconID >= 0 && !useButton.isDisabled)
+			{
+				mainIcon = new CursorIcon ();
+				mainIcon.Copy (KickStarter.cursorManager.GetCursorIconFromID (useButton.iconID), true);
+				return;
 			}
 		}
 
@@ -1838,6 +1853,9 @@ namespace AC
 				return _transform;
 			}
 		}
+
+
+		public Collider Collider { get { return _collider; }}
 
 		#endregion
 

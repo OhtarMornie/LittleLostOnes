@@ -15,6 +15,20 @@ namespace AC
 		protected override string ConditionHelp { get { return "Whenever " + (!string.IsNullOrEmpty (menuName) ? "menu '" + menuName + "'" : "a menu") + (!string.IsNullOrEmpty (menuName) && !string.IsNullOrEmpty (elementName) ? " has its '" + elementName + "' element hovered over." : " is hovered over"); } }
 
 
+		public EventMenuHover (int _id, string _label, ActionListAsset _actionListAsset, int[] _parameterIDs, string _menuName, string _elementName)
+		{
+			id = _id;
+			label = _label;
+			actionListAsset = _actionListAsset;
+			parameterIDs = _parameterIDs;
+			menuName = _menuName;
+			elementName = _elementName;
+		}
+
+
+		public EventMenuHover () {}
+
+
 		public override void Register ()
 		{
 			EventManager.OnMouseOverMenu += OnMouseOverMenu;

@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"RememberTimeline.cs"
  * 
@@ -11,7 +11,7 @@
  */
 
 using UnityEngine;
-#if !ACIgnoreTimeline
+#if TimelineIsPresent
 using UnityEngine.Timeline;
 #endif
 using UnityEngine.Playables;
@@ -63,7 +63,7 @@ namespace AC
 
 			if (PlayableDirector.playableAsset)
 			{
-				#if !ACIgnoreTimeline
+				#if TimelineIsPresent
 				TimelineAsset timeline = (TimelineAsset) PlayableDirector.playableAsset;
 
 				if (timeline)
@@ -143,8 +143,8 @@ namespace AC
 		{
 			if (playableDirectorToSave == null) playableDirectorToSave = GetComponent<PlayableDirector> ();
 
+			CustomGUILayout.Header ("Timeline");
 			CustomGUILayout.BeginVertical ();
-			EditorGUILayout.LabelField ("Timeline", EditorStyles.boldLabel);
 			playableDirectorToSave = (PlayableDirector) CustomGUILayout.ObjectField<PlayableDirector> ("PlayableDirector to save:", playableDirectorToSave, true);
 			saveBindings = CustomGUILayout.Toggle ("Save bindings?", saveBindings, "", "If True, the GameObjects bound to the Timeline will be stored in save game files.");
 			saveTimelineAsset = CustomGUILayout.Toggle ("Save Timeline asset?", saveTimelineAsset, "", "If True, the Timeline asset assigned in the PlayableDirector's Timeline field will be stored in save game files.");
@@ -165,7 +165,7 @@ namespace AC
 
 		private IEnumerator LoadDataFromAddressable (TimelineData data)
 		{
-			#if AddressableIsPresent && !ACIgnoreTimeline
+			#if AddressableIsPresent && TimelineIsPresent
 			AsyncOperationHandle<TimelineAsset> handle = Addressables.LoadAssetAsync<TimelineAsset> (data.timelineAssetID);
 			yield return handle;
 			if (handle.Status == AsyncOperationStatus.Succeeded)
@@ -181,7 +181,7 @@ namespace AC
 
 		private void LoadDataFromResources (TimelineData data)
 		{
-			#if !ACIgnoreTimeline
+			#if TimelineIsPresent
 			if (PlayableDirector.playableAsset)
 			{
 				TimelineAsset timeline = (TimelineAsset) PlayableDirector.playableAsset;
@@ -205,7 +205,7 @@ namespace AC
 
 		private void LoadRemainingData (TimelineData data)
 		{
-			#if !ACIgnoreTimeline
+			#if TimelineIsPresent
 			if (PlayableDirector.playableAsset)
 			{
 				TimelineAsset timeline = (TimelineAsset) PlayableDirector.playableAsset;

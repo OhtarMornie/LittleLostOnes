@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"SpeechPlayableBehaviour.cs"
  * 
@@ -14,7 +14,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.AddressableAssets;
 #endif
 
-#if !ACIgnoreTimeline
+#if TimelineIsPresent
 using UnityEngine;
 using UnityEngine.Playables;
 

@@ -14,6 +14,19 @@ namespace AC
 		protected override string ConditionHelp { get { return "Whenever " + ((itemID >= 0) ? GetItemName () : "an Inventory item") + " is combined with another."; } }
 
 
+		public EventInventoryCombine (int _id, string _label, ActionListAsset _actionListAsset, int[] _parameterIDs, int _itemID)
+		{
+			id = _id;
+			label = _label;
+			actionListAsset = _actionListAsset;
+			parameterIDs = _parameterIDs;
+			itemID = _itemID;
+		}
+
+
+		public EventInventoryCombine () {}
+
+
 		public override void Register ()
 		{
 			EventManager.OnInventoryCombine_Alt += OnInventoryCombine;

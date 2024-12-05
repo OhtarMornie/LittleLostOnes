@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"NavigationEngine_PolygonCollider.cs"
  * 
@@ -224,7 +224,7 @@ namespace AC
 					continue;
 				}
 
-				Vector2 scaleFac = new Vector2 (1f / navMesh.transform.localScale.x, 1f / navMesh.transform.localScale.y);
+				Vector2 scaleFac = new Vector2 (1f / navMesh.transform.lossyScale.x, 1f / navMesh.transform.lossyScale.y);
 				foreach (PolygonCollider2D hole in navMesh.polygonColliderHoles)
 				{
 					if (hole)
@@ -540,39 +540,37 @@ namespace AC
 		{
 			return ("NavMesh2D");
 		}
+
+
+		#if UNITY_EDITOR
+
+		private NavigationMesh OnAutoCreateDefaultNavMesh ()
+		{
+			NavigationMesh newNavMesh = null;
+			newNavMesh = SceneManager.AddPrefab ("Navigation", "NavMesh2D", true, false, true).GetComponent <NavigationMesh>();
+			newNavMesh.gameObject.name = "Default NavMesh";
+			EditorGUIUtility.PingObject (newNavMesh.gameObject);
+			return newNavMesh;
+		}
+
+		#endif
 		
 		
 		public override void SceneSettingsGUI ()
 		{
 			#if UNITY_EDITOR
-			EditorGUILayout.BeginHorizontal ();
-			KickStarter.sceneSettings.navMesh = (NavigationMesh) EditorGUILayout.ObjectField ("Default NavMesh:", KickStarter.sceneSettings.navMesh, typeof (NavigationMesh), true);
+			KickStarter.sceneSettings.navMesh = CustomGUILayout.AutoCreateField<NavigationMesh> ("Default NavMesh:", KickStarter.sceneSettings.navMesh, OnAutoCreateDefaultNavMesh);
 			if (!SceneSettings.IsUnity2D ())
 			{
-				EditorGUILayout.EndHorizontal ();
 				EditorGUILayout.HelpBox ("This pathfinding method is only compatible with 'Unity 2D' mode.", MessageType.Warning);
-				EditorGUILayout.BeginHorizontal ();
 			}
-			else if (KickStarter.sceneSettings.navMesh == null)
-			{
-				if (CustomGUILayout.ClickedCreateButton ())
-				{
-					NavigationMesh newNavMesh = null;
-					newNavMesh = SceneManager.AddPrefab ("Navigation", "NavMesh2D", true, false, true).GetComponent <NavigationMesh>();
-
-					newNavMesh.gameObject.name = "Default NavMesh";
-					KickStarter.sceneSettings.navMesh = newNavMesh;
-					EditorGUIUtility.PingObject (newNavMesh.gameObject);
-				}
-			}
-			EditorGUILayout.EndHorizontal ();
 			#endif
 		}
 
 
 		protected void AddCharHoles (PolygonCollider2D[] navPolys, AC.Char charToExclude, NavigationMesh navigationMesh)
 		{
-			if (navigationMesh.characterEvasion == CharacterEvasion.None)
+			if (navigationMesh.characterEvasion == CharacterEvasion.None || navigationMesh.characterEvasionMethod != CharacterEvasionMethod.Carve)
 			{
 				return;
 			}
@@ -599,7 +597,7 @@ namespace AC
 					// Discard if not inside
 					if (!navPolys[p].OverlapPoint (character.transform.position)) continue;
 
-					CircleCollider2D circleCollider2D = character.GetComponent <CircleCollider2D>();
+					CircleCollider2D circleCollider2D = character.CircleCollider;
 					if (circleCollider2D != null &&
 						(character.charState == CharState.Idle || navigationMesh.characterEvasion == CharacterEvasion.AllCharacters) &&
 					    (charToExclude == null || character != charToExclude) && 
@@ -782,28 +780,40 @@ namespace AC
 			_target.characterEvasion = (CharacterEvasion) CustomGUILayout.EnumPopup ("Character evasion:", _target.characterEvasion, "", "The condition for which dynamic 2D pathfinding can occur by generating holes around characters");
 			if (_target.characterEvasion != CharacterEvasion.None)
 			{
-				_target.characterEvasionPoints = (CharacterEvasionPoints) CustomGUILayout.EnumPopup ("Evasion accuracy:", _target.characterEvasionPoints, "", "The number of vertices created around characters to evade");
-				_target.characterEvasionYScale = CustomGUILayout.Slider ("Evasion y-scale:", _target.characterEvasionYScale, 0.1f, 1f, "", "The scale of generated character evasion 'holes' in the NavMesh in the y-axis, relative to the x-axis");
-
-				EditorGUILayout.HelpBox ("Note: Characters can only be avoided if they have a Circle Collider 2D (no Trigger) component on their base.\n\n" +
-					"For best results, set a non-zero 'Pathfinding update time' in the Settings Manager.", MessageType.Info);
-
-				if (_target.transform.lossyScale != Vector3.one)
+				_target.characterEvasionMethod = (CharacterEvasionMethod) CustomGUILayout.EnumPopup ("Evasion method:", _target.characterEvasionMethod, "", "How characters should avoid one another.\n'Carve' - causes characters to cut a hole in the NavMesh around them.\n'Push' - causes characters to be pushed around others nearby if they get too close");
+				if (_target.characterEvasionMethod == CharacterEvasionMethod.Carve)
 				{
-					EditorGUILayout.HelpBox ("For character evasion to work, the NavMesh must have a unit scale (1,1,1).", MessageType.Warning);
-				}
+					_target.characterEvasionPoints = (CharacterEvasionPoints) CustomGUILayout.EnumPopup ("Evasion accuracy:", _target.characterEvasionPoints, "", "The number of vertices created around characters to evade");
+					_target.characterEvasionYScale = CustomGUILayout.Slider ("Evasion y-scale:", _target.characterEvasionYScale, 0.1f, 1f, "", "The scale of generated character evasion 'holes' in the NavMesh in the y-axis, relative to the x-axis");
 
-				#if UNITY_ANDROID || UNITY_IOS
-				EditorGUILayout.HelpBox ("This is an expensive calculation - consider setting this to 'None' for mobile platforms.", MessageType.Warning);
-				#endif
+					EditorGUILayout.HelpBox ("Note: Characters can only be avoided if they have a Circle Collider 2D (no Trigger) component on their base.\n\n" +
+						"For best results, set a non-zero 'Pathfinding update time' in the Settings Manager.", MessageType.Info);
+
+					if (_target.transform.lossyScale != Vector3.one)
+					{
+						EditorGUILayout.HelpBox ("For character evasion to work, the NavMesh must have a unit scale (1,1,1).", MessageType.Warning);
+					}
+
+					#if UNITY_ANDROID || UNITY_IOS
+					EditorGUILayout.HelpBox ("This is an expensive calculation - consider setting this to 'None' for mobile platforms.", MessageType.Warning);
+					#endif
+				}
+				else
+				{
+					_target.characterEvasionYScale = CustomGUILayout.Slider ("Evasion y-scale:", _target.characterEvasionYScale, 0.1f, 1f, "", "The scale of generated character evasion 'holes' in the NavMesh in the y-axis, relative to the x-axis");
+				}
 			}
 
 			_target.accuracy = CustomGUILayout.Slider ("Accuracy:", _target.accuracy, 0f, 1f, "", "A float that can be used as an accuracy parameter, should the algorithm require one");
 			_target.gizmoColour = CustomGUILayout.ColorField ("Gizmo colour:", _target.gizmoColour, "", "The colour of its Gizmo when used for 2D polygons");
 
-			EditorGUILayout.Separator ();
-			GUILayout.Box (string.Empty, GUILayout.ExpandWidth (true), GUILayout.Height(1));
-			EditorGUILayout.LabelField ("NavMesh holes", EditorStyles.boldLabel);
+			//EditorGUILayout.Separator ();
+			//GUILayout.Box (string.Empty, GUILayout.ExpandWidth (true), GUILayout.Height(1));
+
+			CustomGUILayout.EndVertical ();
+
+			CustomGUILayout.Header ("NavMesh holes");
+			CustomGUILayout.BeginVertical ();
 
 			for (int i=0; i<_target.polygonColliderHoles.Count; i++)
 			{
@@ -909,7 +919,7 @@ namespace AC
 
 			Undo.RecordObjects (undoObs.ToArray (), "Bake NavMesh holes");
 
-			Vector2 scaleFac = new Vector2 (1f / navMesh.transform.localScale.x, 1f / navMesh.transform.localScale.y);
+			Vector2 scaleFac = new Vector2 (1f / navMesh.transform.lossyScale.x, 1f / navMesh.transform.lossyScale.y);
 			for (int i = 0; i < navMesh.polygonColliderHoles.Count; i++)
 			{
 				PolygonCollider2D hole = navMesh.polygonColliderHoles[i];

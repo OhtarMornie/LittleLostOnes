@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionCheckActionList.cs"
  * 
@@ -107,27 +107,11 @@ namespace AC
 			listSource = (ListSource) EditorGUILayout.EnumPopup ("Source:", listSource);
 			if (listSource == ListSource.InScene)
 			{
-				parameterID = Action.ChooseParameterGUI ("ActionList:", parameters, parameterID, ParameterType.GameObject);
-				if (parameterID >= 0)
-				{
-					constantID = 0;
-					actionList = null;
-				}
-				else
-				{
-					actionList = (ActionList) EditorGUILayout.ObjectField ("ActionList:", actionList, typeof (ActionList), true);
-					
-					constantID = FieldToID <ActionList> (actionList, constantID);
-					actionList = IDToField <ActionList> (actionList, constantID, true);
-				}
+				ComponentField ("ActionList:", ref actionList, ref constantID, parameters, ref parameterID);
 			}
 			else if (listSource == ListSource.AssetFile)
 			{
-				parameterID = Action.ChooseParameterGUI ("ActionList asset:", parameters, parameterID, ParameterType.UnityObject);
-				if (parameterID < 0)
-				{
-					actionListAsset = (ActionListAsset)EditorGUILayout.ObjectField ("ActionList asset:", actionListAsset, typeof (ActionListAsset), true);
-				}
+				AssetField ("ActionList asset:", ref actionListAsset, parameters, ref parameterID);
 			}
 		}
 

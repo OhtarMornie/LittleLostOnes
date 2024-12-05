@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"FollowTintMap.cs"
  * 
@@ -96,7 +96,10 @@ namespace AC
 				{
 					for (int i=0; i<_spriteRenderers.Length; i++)
 					{
-						_spriteRenderers[i].color = actualTintMap.GetColorData (transform.position, intensity, _spriteRenderers[i].color.a);
+						if (_spriteRenderers[i])
+						{
+							_spriteRenderers[i].color = actualTintMap.GetColorData (transform.position, intensity, _spriteRenderers[i].color.a);
+						}
 					}
 				}
 				else if (_spriteRenderer)

@@ -8,12 +8,26 @@ namespace AC
 
 		[SerializeField] private Container container = null;
 		[SerializeField] private AddRemove addRemove;
-		private enum AddRemove { Add, Remove };
+		public enum AddRemove { Add, Remove };
 
 
 		public override string[] EditorNames { get { return new string[] { "Container/Add", "Container/Remove" }; } }
 		protected override string EventName { get { return addRemove == AddRemove.Add ? "OnContainerAdd" : "OnContainerRemove"; } }
 		protected override string ConditionHelp { get { return "Whenever an item is " + ((addRemove == AddRemove.Add) ? "added to " : "removed from ") + (container ? "container '" + container.name + "'." : "a Container."); } }
+
+
+		public EventContainerAddRemove (int _id, string _label, ActionListAsset _actionListAsset, int[] _parameterIDs, Container _container, AddRemove _addRemove)
+		{
+			id = _id;
+			label = _label;
+			actionListAsset = _actionListAsset;
+			parameterIDs = _parameterIDs;
+			container = _container;
+			addRemove = _addRemove;
+		}
+
+
+		public EventContainerAddRemove () {}
 
 
 		public override void Register ()
@@ -53,7 +67,7 @@ namespace AC
 		{
 			return new ParameterReference[]
 			{
-				new ParameterReference (ParameterType.InventoryItem, "Container"),
+				new ParameterReference (ParameterType.GameObject, "Container"),
 				new ParameterReference (ParameterType.InventoryItem, "Inventory item"),
 			};
 		}

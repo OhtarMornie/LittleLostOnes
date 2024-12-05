@@ -11,6 +11,18 @@ namespace AC
 		protected override string ConditionHelp { get { return "Whenever the Player moves via Point and Click."; } }
 
 
+		public EventPointClick (int _id, string _label, ActionListAsset _actionListAsset, int[] _parameterIDs)
+		{
+			id = _id;
+			label = _label;
+			actionListAsset = _actionListAsset;
+			parameterIDs = _parameterIDs;
+		}
+
+
+		public EventPointClick () {}
+
+
 		public override void Register ()
 		{
 			EventManager.OnPointAndClick += OnPointAndClick;
@@ -23,7 +35,7 @@ namespace AC
 		}
 
 
-		private void OnPointAndClick (Vector3[] pointArray, bool isRunning)
+		private void OnPointAndClick (ref Vector3[] pointArray, bool isRunning)
 		{
 			if (pointArray.Length > 1)
 				Run (new object[] { pointArray[pointArray.Length - 1], isRunning }); ;

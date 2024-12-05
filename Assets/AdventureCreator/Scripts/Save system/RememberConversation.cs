@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"RememberConversation.cs"
  * 
@@ -118,6 +118,7 @@ namespace AC
 		{
 			if (conversationToSave == null) conversationToSave = GetComponent<Conversation> ();
 
+			CustomGUILayout.Header ("Conversation");
 			CustomGUILayout.BeginVertical ();
 			conversationToSave = (Conversation) CustomGUILayout.ObjectField<Conversation> ("Conversation to save:", conversationToSave, true);
 			CustomGUILayout.EndVertical ();

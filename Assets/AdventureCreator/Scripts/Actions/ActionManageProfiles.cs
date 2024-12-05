@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionManageProfiles.cs"
  * 
@@ -35,6 +35,7 @@ namespace AC
 
 		public bool useCustomLabel = false;
 		public bool preProcessTokens = true;
+		protected string newProfileLabel;
 
 		public string menuName = "";
 		public string elementName = "";
@@ -49,6 +50,13 @@ namespace AC
 		{
 			UpgradeSelf ();
 			profileIndex = AssignInteger (parameters, profileIndexParameterID, profileIndex);
+
+			newProfileLabel = string.Empty;
+			if ((manageProfileType == ManageProfileType.CreateProfile && useCustomLabel) || manageProfileType == ManageProfileType.RenameProfile)
+			{
+				newProfileLabel = customLabel;
+				newProfileLabel = AdvGame.ConvertParameterTokens (newProfileLabel, parameters, Options.GetLanguage ());
+			}
 		}
 		
 		
@@ -60,10 +68,8 @@ namespace AC
 				return 0f;
 			}
 
-			string newProfileLabel = string.Empty;
 			if ((manageProfileType == ManageProfileType.CreateProfile && useCustomLabel) || manageProfileType == ManageProfileType.RenameProfile)
 			{
-				newProfileLabel = customLabel;
 				if (preProcessTokens)
 				{
 					newProfileLabel = AdvGame.ConvertTokens (newProfileLabel);
@@ -178,7 +184,7 @@ namespace AC
 		{
 			UpgradeSelf ();
 
-			if (AdvGame.GetReferences ().settingsManager != null && !AdvGame.GetReferences ().settingsManager.useProfiles)
+			if (KickStarter.settingsManager != null && !KickStarter.settingsManager.useProfiles)
 			{
 				EditorGUILayout.HelpBox ("Save game profiles are not enabled - please set in Settings Manager to use this Action.", MessageType.Warning);
 				return;
@@ -214,11 +220,7 @@ namespace AC
 				deleteProfileType = (DeleteProfileType) EditorGUILayout.EnumPopup ("Profile to " + _action + ":", deleteProfileType);
 				if (deleteProfileType == DeleteProfileType.SetSlotIndex)
 				{
-					profileIndexParameterID = Action.ChooseParameterGUI ("Slot index to " + _action + ":", parameters, profileIndexParameterID, ParameterType.Integer);
-					if (profileIndexParameterID == -1)
-					{
-						profileIndex = EditorGUILayout.IntField ("Slot index to " + _action + ":", profileIndex);
-					}
+					IntField ("Slot index to " + _action + ":", ref profileIndex, parameters, ref profileIndexParameterID);
 				}
 				else if (deleteProfileType == DeleteProfileType.SlotIndexFromVariable)
 				{
@@ -226,11 +228,7 @@ namespace AC
 				}
 				else if (deleteProfileType == DeleteProfileType.SetProfileID)
 				{
-					profileIndexParameterID = Action.ChooseParameterGUI ("Profile ID to " + _action + ":", parameters, profileIndexParameterID, ParameterType.Integer);
-					if (profileIndexParameterID == -1)
-					{
-						profileIndex = EditorGUILayout.IntField ("Profile ID to " + _action + ":", profileIndex);
-					}
+					IntField ("Profile ID to " + _action + ":", ref profileIndex, parameters, ref profileIndexParameterID);
 				}
 				else if (deleteProfileType == DeleteProfileType.ActiveProfile)
 				{

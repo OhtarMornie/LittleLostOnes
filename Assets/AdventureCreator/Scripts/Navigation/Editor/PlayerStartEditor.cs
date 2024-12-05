@@ -19,8 +19,8 @@ namespace AC
 				EditorGUILayout.HelpBox ("This PlayerStart is the scene's default, and will be used if a more appropriate one is not found.", MessageType.Info);
 			}
 
+			CustomGUILayout.Header ("Previous scene activation");
 			CustomGUILayout.BeginVertical ();
-			EditorGUILayout.LabelField ("Previous scene activation", EditorStyles.boldLabel);
 			_target.chooseSceneBy = (ChooseSceneBy)CustomGUILayout.EnumPopup ("Choose scene by:", _target.chooseSceneBy, "", "The way in which the previous scene is identified by");
 			if (_target.chooseSceneBy == ChooseSceneBy.Name)
 			{
@@ -44,8 +44,8 @@ namespace AC
 
 			CustomGUILayout.EndVertical ();
 
+			CustomGUILayout.Header ("Camera settings");
 			CustomGUILayout.BeginVertical ();
-			EditorGUILayout.LabelField ("Camera settings", EditorStyles.boldLabel);
 			_target.cameraOnStart = (_Camera) CustomGUILayout.ObjectField <_Camera> ("Camera on start:", _target.cameraOnStart, true, "", "The AC _Camera that should be made active when the Player starts the scene from this point");
 			_target.fadeInOnStart = CustomGUILayout.Toggle ("Fade in on activate?", _target.fadeInOnStart, "", "If True, then the MainCamera will fade in when the Player starts the scene from this point");
 			if (_target.fadeInOnStart)

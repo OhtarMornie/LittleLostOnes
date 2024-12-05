@@ -7,13 +7,27 @@ namespace AC
 	{
 
 		[SerializeField] private AddRemove addRemove;
-		private enum AddRemove { Add, Remove };
+		public enum AddRemove { Add, Remove };
 		[SerializeField] private int documentID = -1;
 
 
 		public override string[] EditorNames { get { return new string[] { "Document/Add", "Document/Remove" }; } }
 		protected override string EventName { get { return addRemove == AddRemove.Add ? "OnDocumentAdd" : "OnDocumentRemove"; } }
 		protected override string ConditionHelp { get { return "Whenever " + ((documentID >= 0) ? GetDocumentName () : "a Document") + " is " + ((addRemove == AddRemove.Add) ? "added." : "removed."); } }
+
+
+		public EventDocumentAddRemove (int _id, string _label, ActionListAsset _actionListAsset, int[] _parameterIDs, AddRemove _addRemove, int _documentID)
+		{
+			id = _id;
+			label = _label;
+			actionListAsset = _actionListAsset;
+			parameterIDs = _parameterIDs;
+			addRemove = _addRemove;
+			documentID = _documentID;
+		}
+
+
+		public EventDocumentAddRemove () {}
 
 
 		public override void Register ()

@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionList.cs"
  * 
@@ -82,6 +82,10 @@ namespace AC
 		private int skipIteractions = 0; // Used to combat StackOverflow exceptions
 		private HashSet<ActionEnd> parallelSkipEndings = new HashSet<ActionEnd> ();
 
+
+		#if UNITY_EDITOR
+		public List<ActionGroup> groups = new List<ActionGroup> ();
+		#endif
 
 		#if UNITY_EDITOR && UNITY_2019_2_OR_NEWER
 
@@ -406,7 +410,6 @@ namespace AC
 				{
 					// Run it
 					StartCoroutine (RunAction (actions[i]));
-
 				}
 			}
 			else
@@ -451,9 +454,8 @@ namespace AC
 			if (isSkipping && !action.RunNormallyWhenSkip)
 			{
 				skipIteractions++;
-				action.Skip ();
-
 				PrintActionComment (action);
+				action.Skip ();
 			}
 			else
 			{
@@ -463,6 +465,7 @@ namespace AC
 					actionRunActionList.isSkippable = IsSkippable ();
 				}
 
+				PrintActionComment (action);
 				action.isRunning = false;
 				float waitTime = action.Run ();
 
@@ -470,8 +473,6 @@ namespace AC
 				{
 					waitedAnyFrame = true;
 				}
-
-				PrintActionComment (action);
 
 				if (!Mathf.Approximately (waitTime, 0f))
 				{
@@ -547,7 +548,7 @@ namespace AC
 			action.isRunning = false;
 
 			int endIndex = action.GetNextOutputIndex ();
-			ActionEnd actionEnd = (endIndex < 0 || endIndex > action.endings.Count) ? Action.GenerateStopActionEnd () : action.endings[endIndex];
+			ActionEnd actionEnd = (endIndex < 0 || endIndex >= action.endings.Count) ? Action.GenerateStopActionEnd () : action.endings[endIndex];
 			
 			if (action.NumSockets <= 0)
 			{
@@ -798,17 +799,13 @@ namespace AC
 		 */
 		public static AC.Action GetDefaultAction ()
 		{
-			if (AdvGame.GetReferences ().actionsManager)
+			string defaultAction = ActionsManager.GetDefaultAction ();
+			if (!string.IsNullOrEmpty (defaultAction))
 			{
-				string defaultAction = ActionsManager.GetDefaultAction ();
 				Action newAction = Action.CreateNew (defaultAction);
 				return newAction;
 			}
-			else
-			{
-				ACDebug.LogError ("Cannot create Action - no Actions Manager found.");
-				return null;
-			}
+			return null;
 		}
 
 
@@ -1386,6 +1383,16 @@ namespace AC
 		{
 			int totalNumReferences = 0;
 
+			if ((source == ActionListSource.InScene && NumParameters > 0) ||
+				(source == ActionListSource.AssetFile && assetFile && assetFile.NumParameters > 0 && !syncParamValues && useParameters))
+			{
+				int thisNumReferences = GetParameterReferences (parameters, objectiveID, ParameterType.Objective);
+				if (thisNumReferences > 0)
+				{
+					totalNumReferences += thisNumReferences;
+				}
+			}
+
 			foreach (Action action in actions)
 			{
 				if (action != null && action is IObjectiveReferencerAction)
@@ -1407,6 +1414,16 @@ namespace AC
 		public int UpdateObjectiveReferences (int oldObjectiveID, int newObjectiveID)
 		{
 			int totalNumReferences = 0;
+
+			if ((source == ActionListSource.InScene && NumParameters > 0) ||
+				(source == ActionListSource.AssetFile && assetFile && assetFile.NumParameters > 0 && !syncParamValues && useParameters))
+			{
+				int thisNumReferences = GetParameterReferences (parameters, oldObjectiveID, ParameterType.Objective, null, 0, true, newObjectiveID);
+				if (thisNumReferences > 0)
+				{
+					totalNumReferences += thisNumReferences;
+				}
+			}
 
 			foreach (Action action in actions)
 			{

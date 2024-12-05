@@ -7,12 +7,25 @@ namespace AC
 	{
 
 		[SerializeField] private AddRemove addRemove;
-		private enum AddRemove { Add, Remove };
+		public enum AddRemove { Add, Remove };
 
 
 		public override string[] EditorNames { get { return new string[] { "Menu/Journal/Add page", "Menu/Journal/Remove page" }; } }
 		protected override string EventName { get { return addRemove == AddRemove.Add ? "OnJournalPageAdd" : "OnJournalPageRemove"; } }
 		protected override string ConditionHelp { get { return "Whenever a Journal page is " + ((addRemove == AddRemove.Add) ? "added." : "removed."); } }
+
+
+		public EventMenuJournalPage (int _id, string _label, ActionListAsset _actionListAsset, int[] _parameterIDs, AddRemove _addRemove)
+		{
+			id = _id;
+			label = _label;
+			actionListAsset = _actionListAsset;
+			parameterIDs = _parameterIDs;
+			addRemove = _addRemove;
+		}
+
+
+		public EventMenuJournalPage () {}
 
 
 		public override void Register ()

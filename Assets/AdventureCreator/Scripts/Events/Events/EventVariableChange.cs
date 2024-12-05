@@ -16,6 +16,21 @@ namespace AC
 		protected override string ConditionHelp { get { return "Whenever " + (varID >= 0 ? "" : "a ") + variableLocation.ToString () + (varID >= 0 ? " variable " + varID + "'s" : " variable's") + " value is changed."; } }
 
 
+		public EventVariableChange (int _id, string _label, ActionListAsset _actionListAsset, int[] _parameterIDs, VariableLocation _variableLocation, Variables _variables, int _varID)
+		{
+			id = _id;
+			label = _label;
+			actionListAsset = _actionListAsset;
+			parameterIDs = _parameterIDs;
+			variables = _variables;
+			variableLocation = _variableLocation;
+			varID = _varID;
+		}
+
+
+		public EventVariableChange () {}
+
+
 		public override void Register ()
 		{
 			EventManager.OnVariableChange += OnVariableChange;

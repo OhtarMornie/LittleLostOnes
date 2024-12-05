@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"SaveOperation.cs"
  * 
@@ -68,6 +68,12 @@ namespace AC
 				KickStarter.eventManager.Call_OnPrepareSaveThread (saveFile);
 
 				Thread saveThread = new Thread (SendSaveToFile);
+
+				if (KickStarter.settingsManager.useInvariantCulture)
+				{
+					saveThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+				}
+
 				if (KickStarter.stateHandler.GetMusicEngine ())
 				{
 					KickStarter.stateHandler.GetMusicEngine ().PrepareSaveBeforeThreading ();
@@ -145,6 +151,11 @@ namespace AC
 			string mainData = Serializer.SerializeObject<SaveData> (saveData, true);
 			string levelData = SaveSystem.FileFormatHandler.SerializeAllRoomData (KickStarter.levelStorage.allLevelData);
 			allData = MergeData (mainData, levelData);
+
+			if (KickStarter.settingsManager.saveCompression)
+			{
+				allData = SaveSystem.CompressString (allData);
+			}
 
 			if (KickStarter.settingsManager.saveWithThreading)
 			{

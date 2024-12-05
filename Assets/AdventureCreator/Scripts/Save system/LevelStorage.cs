@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"LevelStorage.cs"
  * 
@@ -174,7 +174,7 @@ namespace AC
 		 * <summary>Returns a sub-scene's save data to the appropriate Remember components.</summary>
 		 * <param name = "subScene">The SubScene component associated with the sub-scene</param>
 		 */
-		public void ReturnSubSceneData (SubScene subScene)
+		public IEnumerator ReturnSubSceneData (SubScene subScene)
 		{
 			SingleLevelData levelData = null;
 			
@@ -192,10 +192,16 @@ namespace AC
 
 			if (levelData == null)
 			{
-				return;
+				yield break;
 			}
 
-			LoadSceneData (levelData, subScene);
+			var loadSceneDataCoroutine = LoadSceneData (levelData, subScene);
+			while (loadSceneDataCoroutine.MoveNext ())
+			{
+				yield return loadSceneDataCoroutine.Current;
+			}
+
+			if (KickStarter.eventManager) KickStarter.eventManager.Call_OnAddSubScene (subScene);
 		}
 
 
@@ -776,6 +782,8 @@ namespace AC
 
 		private void UnloadSceneItemSpawnData (List<SceneItemSpawnData> allSceneItemSpawnData, Scene scene)
 		{
+			if (allSceneItemSpawnData == null) return;
+
 			// Delete any objects (if told to)
 			{
 				HashSet<RememberSceneItem> currentSceneItems = ConstantID.GetComponents<RememberSceneItem> (scene);
@@ -1022,10 +1030,19 @@ namespace AC
 						Debug.LogWarning ("Invalid Remember data for object ID " + scriptData.objectID + " in scene " + sceneName + ", " + sceneNumber);
 						continue;
 					}
-					RememberData rememberData = SaveSystem.FileFormatHandler.DeserializeObject<RememberData> (scriptData.data);
-					if (rememberData != null)
+					
+					try
 					{
-						CustomGUILayout.MultiLineLabelGUI ("   " + rememberData.GetType ().ToString () + ":", EditorJsonUtility.ToJson (rememberData, true));
+						RememberData rememberData = SaveSystem.FileFormatHandler.DeserializeObject<RememberData> (scriptData.data);
+						if (rememberData != null)
+						{
+							CustomGUILayout.MultiLineLabelGUI ("   " + rememberData.GetType ().ToString () + ":", EditorJsonUtility.ToJson (rememberData, true));
+						}
+					}
+					catch (System.Exception)
+					{
+						ACDebug.LogWarning ("Error displaying Scene " + sceneNumber + ", "+ sceneName + "'s Remember data '" + scriptData.data + "'");
+						continue;
 					}
 				}
 			}

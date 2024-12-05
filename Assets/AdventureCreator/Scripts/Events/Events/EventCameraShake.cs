@@ -14,10 +14,24 @@ namespace AC
 		protected override string ConditionHelp { get { return "Whenever " + (camera ? "camera '" + camera.name + "'" : "the active camera") + " is shaken."; } }
 
 
+		public EventCameraShake (int _id, string _label, ActionListAsset _actionListAsset, int[] _parameterIDs, _Camera _camera)
+		{
+			id = _id;
+			label = _label;
+			actionListAsset = _actionListAsset;
+			parameterIDs = _parameterIDs;
+			camera = _camera;
+		}
+
+
+		public EventCameraShake () {}
+
+
 		public override void Register ()
 		{
 			EventManager.OnShakeCamera += OnShakeCamera;
 		}
+		
 
 		public override void Unregister ()
 		{

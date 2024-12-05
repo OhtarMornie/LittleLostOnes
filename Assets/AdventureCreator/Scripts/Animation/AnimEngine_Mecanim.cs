@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"AnimEngine_Mecanim.cs"
  * 
@@ -35,17 +35,17 @@ namespace AC
 		{
 			#if UNITY_EDITOR
 			
+			CustomGUILayout.Header ("Mecanim parameters");
 			CustomGUILayout.BeginVertical ();
-			EditorGUILayout.LabelField ("Mecanim parameters", EditorStyles.boldLabel);
 
 			character.moveSpeedParameter = CustomGUILayout.TextField ("Move speed float:", character.moveSpeedParameter, "", "The name of the Animator float parameter set to the movement speed");
 			character.turnParameter = CustomGUILayout.TextField ("Turn float:", character.turnParameter, "", "The name of the Animator float parameter set to the turning direction");
 			character.talkParameter = CustomGUILayout.TextField ("Talk bool:", character.talkParameter, "", "The name of the Animator bool parameter set to True while talking");
 
-			if (AdvGame.GetReferences () && AdvGame.GetReferences ().speechManager &&
-			    AdvGame.GetReferences ().speechManager.lipSyncMode != LipSyncMode.Off && AdvGame.GetReferences ().speechManager.lipSyncMode != LipSyncMode.FaceFX)
+			if (KickStarter.speechManager &&
+			    KickStarter.speechManager.lipSyncMode != LipSyncMode.Off)
 			{
-				if (AdvGame.GetReferences ().speechManager.lipSyncOutput == LipSyncOutput.PortraitAndGameObject)
+				if (KickStarter.speechManager.lipSyncOutput == LipSyncOutput.PortraitAndGameObject)
 				{
 					character.phonemeParameter = CustomGUILayout.TextField ("Phoneme integer:", character.phonemeParameter, "", "The name of the Animator integer parameter set to the active lip-syncing phoneme index");
 					character.phonemeNormalisedParameter = CustomGUILayout.TextField ("Normalised phoneme float:", character.phonemeNormalisedParameter, "", "The name of the Animator float parameter set to the active lip-syncing phoneme index, relative to the number of phonemes");
@@ -55,7 +55,7 @@ namespace AC
 						character.lipSyncBlendShapeSpeedFactor = CustomGUILayout.Slider ("Shapeable speed factor:", character.lipSyncBlendShapeSpeedFactor, 0f, 1f, "", "The rate at which Blendshapes will be animated when using a Shapeable component, with 1 = normal speed and lower = faster speed");
 					}
 				}
-				else if (AdvGame.GetReferences ().speechManager.lipSyncOutput == LipSyncOutput.GameObjectTexture)
+				else if (KickStarter.speechManager.lipSyncOutput == LipSyncOutput.GameObjectTexture)
 				{
 					if (character.GetComponent <LipSyncTexture>() == null)
 					{
@@ -85,8 +85,8 @@ namespace AC
 			}
 
 			CustomGUILayout.EndVertical ();
+			CustomGUILayout.Header ("Mecanim settings");
 			CustomGUILayout.BeginVertical ();
-			EditorGUILayout.LabelField ("Mecanim settings", EditorStyles.boldLabel);
 
 			if (SceneSettings.IsTopDown ())
 			{
@@ -114,6 +114,8 @@ namespace AC
 				EditorGUILayout.HelpBox ("'IK Pass' must be enabled for this character's Base layer.", MessageType.Info);
 			}
 
+			character.neckBone = (Transform) CustomGUILayout.ObjectField <Transform> ("Neck bone:", character.neckBone, true, "", "The 'Neck bone' Transform");
+
 			if (!Application.isPlaying)
 			{
 				character.ResetAnimator ();
@@ -131,13 +133,6 @@ namespace AC
 				character.wallReductionOnlyParameter = CustomGUILayout.Toggle ("Only affects Mecanim parameter?", character.wallReductionOnlyParameter, "", "If True, then the wall reduction factor will only affect the Animator move speed float parameter, and not character's actual speed");
 			}
 
-			CustomGUILayout.EndVertical ();
-			CustomGUILayout.BeginVertical ();
-			EditorGUILayout.LabelField ("Bone transforms", EditorStyles.boldLabel);
-
-			character.neckBone = (Transform) CustomGUILayout.ObjectField <Transform> ("Neck bone:", character.neckBone, true, "", "The 'Neck bone' Transform");
-			character.leftHandBone = (Transform) CustomGUILayout.ObjectField <Transform> ("Left hand:", character.leftHandBone, true, "", "The 'Left hand bone' transform");
-			character.rightHandBone = (Transform) CustomGUILayout.ObjectField <Transform> ("Right hand:", character.rightHandBone, true, "", "The 'Right hand bone' transform");
 			CustomGUILayout.EndVertical ();
 
 			if (GUI.changed && character)
@@ -285,40 +280,22 @@ namespace AC
 			
 			if (action.methodMecanim == AnimMethodCharMecanim.ChangeParameterValue)
 			{
-				action.parameterNameID = Action.ChooseParameterGUI ("Parameter to affect:", parameters, action.parameterNameID, new ParameterType[2] { ParameterType.String, ParameterType.PopUp });
-				if (action.parameterNameID < 0)
-				{
-					action.parameterName = EditorGUILayout.TextField ("Parameter to affect:", action.parameterName);
-				}
+				action.TextField ("Parameter to affect:", ref action.parameterName, parameters, ref action.parameterNameID);
 
 				action.mecanimParameterType = (MecanimParameterType) EditorGUILayout.EnumPopup ("Parameter type:", action.mecanimParameterType);
 				if (action.mecanimParameterType == MecanimParameterType.Bool)
 				{
-					action.parameterValueParameterID = Action.ChooseParameterGUI ("Set as value:", parameters, action.parameterValueParameterID, ParameterType.Boolean);
-					if (action.parameterValueParameterID < 0)
-					{
-						bool value = (action.parameterValue <= 0f) ? false : true;
-						value = EditorGUILayout.Toggle ("Set as value:", value);
-						action.parameterValue = (value) ? 1f : 0f;
-					}
+					action.BoolField ("Set as value:", ref action.parameterValue, parameters, ref action.parameterValueParameterID);
 				}
 				else if (action.mecanimParameterType == MecanimParameterType.Int)
 				{
-					action.parameterValueParameterID = Action.ChooseParameterGUI ("Set as value:", parameters, action.parameterValueParameterID, ParameterType.Integer);
-					if (action.parameterValueParameterID < 0)
-					{
-						int value = (int) action.parameterValue;
-						value = EditorGUILayout.IntField ("Set as value:", value);
-						action.parameterValue = (float) value;
-					}
+					int asInt = (int) action.parameterValue;
+					action.IntField ("Set as value:", ref asInt, parameters, ref action.parameterValueParameterID);
+					action.parameterValue = (float) asInt;
 				}
 				else if (action.mecanimParameterType == MecanimParameterType.Float)
 				{
-					action.parameterValueParameterID = Action.ChooseParameterGUI ("Set as value:", parameters, action.parameterValueParameterID, ParameterType.Float);
-					if (action.parameterValueParameterID < 0)
-					{
-						action.parameterValue = EditorGUILayout.FloatField ("Set as value:", action.parameterValue);
-					}
+					action.FloatField ("Set as value:", ref action.parameterValue, parameters, ref action.parameterValueParameterID);
 				}
 				else if (action.mecanimParameterType == MecanimParameterType.Trigger)
 				{
@@ -360,15 +337,10 @@ namespace AC
 
 			else if (action.methodMecanim == AnimMethodCharMecanim.PlayCustom)
 			{
-				action.clip2DParameterID = Action.ChooseParameterGUI ("Clip name:", parameters, action.clip2DParameterID, new ParameterType[2] { ParameterType.String, ParameterType.PopUp });
-				if (action.clip2DParameterID < 0)
-				{
-					action.clip2D = EditorGUILayout.TextField ("Clip name:", action.clip2D);
-				}
-				//action.includeDirection = EditorGUILayout.Toggle ("Add directional suffix?", action.includeDirection);
+				action.TextField ("Clip name:", ref action.clip2D, parameters, ref action.clip2DParameterID);
 				
 				action.layerInt = EditorGUILayout.IntField ("Mecanim layer:", action.layerInt);
-				action.fadeTime = EditorGUILayout.Slider ("Transition time:", action.fadeTime, 0f, 1f);
+				action.fadeTime = EditorGUILayout.FloatField ("Transition time:", action.fadeTime);
 				action.willWait = EditorGUILayout.Toggle ("Wait until finish?", action.willWait);
 			}
 
@@ -400,6 +372,8 @@ namespace AC
 						break;
 				}
 			}
+
+			action.fadeTime = Mathf.Max (0f, action.fadeTime);
 		}
 		
 		
@@ -544,58 +518,28 @@ namespace AC
 
 			if (action.methodMecanim == AnimMethodMecanim.ChangeParameterValue || action.methodMecanim == AnimMethodMecanim.PlayCustom)
 			{
-				action.parameterID = AC.Action.ChooseParameterGUI ("Animator:", parameters, action.parameterID, ParameterType.GameObject);
-				if (action.parameterID >= 0)
-				{
-					action.constantID = 0;
-					action.animator = null;
-				}
-				else
-				{
-					action.animator = (Animator) EditorGUILayout.ObjectField ("Animator:", action.animator, typeof (Animator), true);
-					
-					action.constantID = action.FieldToID <Animator> (action.animator, action.constantID);
-					action.animator = action.IDToField <Animator> (action.animator, action.constantID, false);
-				}
+				action.ComponentField ("Animator:", ref action.animator, ref action.constantID, parameters, ref action.parameterID);
 			}
 
 			if (action.methodMecanim == AnimMethodMecanim.ChangeParameterValue)
 			{
-				action.parameterNameID = Action.ChooseParameterGUI ("Parameter to affect:", parameters, action.parameterNameID, new ParameterType[2] { ParameterType.String, ParameterType.PopUp });
-				if (action.parameterNameID < 0)
-				{
-					action.parameterName = EditorGUILayout.TextField ("Parameter to affect:", action.parameterName);
-				}
+				action.TextField ("Parameter to affect:", ref action.parameterName, parameters, ref action.parameterNameID);
 
 				action.mecanimParameterType = (MecanimParameterType) EditorGUILayout.EnumPopup ("Parameter type:", action.mecanimParameterType);
 
 				if (action.mecanimParameterType == MecanimParameterType.Bool)
 				{
-					action.parameterValueParameterID = Action.ChooseParameterGUI ("Set as value:", parameters, action.parameterValueParameterID, ParameterType.Boolean);
-					if (action.parameterValueParameterID < 0)
-					{
-						bool value = (action.parameterValue <= 0f) ? false : true;
-						value = EditorGUILayout.Toggle ("Set as value:", value);
-						action.parameterValue = (value) ? 1f : 0f;
-					}
+					action.BoolField ("Set as value:", ref action.parameterValue, parameters, ref action.parameterValueParameterID);
 				}
 				else if (action.mecanimParameterType == MecanimParameterType.Int)
 				{
-					action.parameterValueParameterID = Action.ChooseParameterGUI ("Set as value:", parameters, action.parameterValueParameterID, ParameterType.Integer);
-					if (action.parameterValueParameterID < 0)
-					{
-						int value = (int) action.parameterValue;
-						value = EditorGUILayout.IntField ("Set as value:", value);
-						action.parameterValue = (float) value;
-					}
+					int asInt = (int) action.parameterValue;
+					action.IntField ("Set as value:", ref asInt, parameters, ref action.parameterValueParameterID);
+					action.parameterValue = (float) asInt;
 				}
 				else if (action.mecanimParameterType == MecanimParameterType.Float)
 				{
-					action.parameterValueParameterID = Action.ChooseParameterGUI ("Set as value:", parameters, action.parameterValueParameterID, ParameterType.Float);
-					if (action.parameterValueParameterID < 0)
-					{
-						action.parameterValue = EditorGUILayout.FloatField ("Set as value:", action.parameterValue);
-					}
+					action.FloatField ("Set as value:", ref action.parameterValue, parameters, ref action.parameterValueParameterID);
 				}
 				else if (action.mecanimParameterType == MecanimParameterType.Trigger)
 				{
@@ -606,13 +550,10 @@ namespace AC
 			}
 			else if (action.methodMecanim == AnimMethodMecanim.PlayCustom)
 			{
-				action.clip2DParameterID = Action.ChooseParameterGUI ("Clip name:", parameters, action.clip2DParameterID, new ParameterType[2] { ParameterType.String, ParameterType.PopUp });
-				if (action.clip2DParameterID < 0)
-				{
-					action.clip2D = EditorGUILayout.TextField ("Clip name:", action.clip2D);
-				}
+				action.TextField ("Clip name:", ref action.clip2D, parameters, ref action.clip2DParameterID);
+
 				action.layerInt = EditorGUILayout.IntField ("Mecanim layer:", action.layerInt);
-				action.fadeTime = EditorGUILayout.Slider ("Transition time:", action.fadeTime, 0f, 2f);
+				action.fadeTime = EditorGUILayout.FloatField ("Transition time:", action.fadeTime);
 				action.willWait = EditorGUILayout.Toggle ("Wait until finish?", action.willWait);
 			}
 			else if (action.methodMecanim == AnimMethodMecanim.BlendShape)
@@ -620,24 +561,12 @@ namespace AC
 				action.isPlayer = EditorGUILayout.Toggle ("Is player?", action.isPlayer);
 				if (!action.isPlayer)
 				{
-					action.parameterID = AC.Action.ChooseParameterGUI ("Object:", parameters, action.parameterID, ParameterType.GameObject);
-					if (action.parameterID >= 0)
-					{
-						action.constantID = 0;
-						action.shapeObject = null;
-					}
-					else
-					{
-						action.shapeObject = (Shapeable) EditorGUILayout.ObjectField ("Object:", action.shapeObject, typeof (Shapeable), true);
-						
-						action.constantID = action.FieldToID <Shapeable> (action.shapeObject, action.constantID);
-						action.shapeObject = action.IDToField <Shapeable> (action.shapeObject, action.constantID, false);
-					}
+					action.ComponentField ("Object:", ref action.shapeObject, ref action.constantID, parameters, ref action.parameterID);
 				}
 
 				action.shapeKey = EditorGUILayout.IntField ("Shape key:", action.shapeKey);
 				action.shapeValue = EditorGUILayout.Slider ("Shape value:", action.shapeValue, 0f, 100f);
-				action.fadeTime = EditorGUILayout.Slider ("Transition time:", action.fadeTime, 0f, 2f);
+				action.fadeTime = EditorGUILayout.FloatField ("Transition time:", action.fadeTime);
 				action.willWait = EditorGUILayout.Toggle ("Wait until finish?", action.willWait);
 			}
 			
@@ -702,6 +631,8 @@ namespace AC
 						break;
 				}
 			}
+
+			action.fadeTime = Mathf.Max (0f, action.fadeTime);
 		}
 
 
@@ -848,11 +779,7 @@ namespace AC
 			action.renderLock_scale = (RenderLock) EditorGUILayout.EnumPopup ("Character scale:", action.renderLock_scale);
 			if (action.renderLock_scale == RenderLock.Set)
 			{
-				action.scaleParameterID = Action.ChooseParameterGUI ("New scale (%):", parameters, action.scaleParameterID, ParameterType.Integer);
-				if (action.scaleParameterID < 0)
-				{
-					action.scale = EditorGUILayout.IntField ("New scale (%):", action.scale);
-				}
+				action.IntField ("New scale (%):", ref action.scale, parameters, ref action.scaleParameterID);
 			}
 			
 			#endif

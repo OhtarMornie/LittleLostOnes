@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionVarProperty.cs"
  * 
@@ -39,9 +39,17 @@ namespace AC
 		[SerializeField] protected SetVarAsPropertyMethod setVarAsPropertyMethod = SetVarAsPropertyMethod.SpecificItem;
 
 		public bool useLiveValues;
+		public enum ItemSource { NoSource, PlayerInventory, Container };
+		public ItemSource itemSource = ItemSource.NoSource;
+
+		public Container container;
+		public int containerConstantID = 0;
+		public int containerParameterID = -1;
+		private Container runtimeContainer;
+
 		public bool multiplyByItemCount;
 		public int invID;
-		public int invParameterID;
+		public int invParameterID = -1;
 
 		public int propertyID;
 
@@ -88,6 +96,22 @@ namespace AC
 					runtimeVariable = AssignVariable (parameters, varParameterID, runtimeVariable);
 					break;
 			}
+
+			if (itemSource == ItemSource.Container)
+			{
+				runtimeContainer = AssignFile (parameters, containerParameterID, containerConstantID, container);
+			}
+		}
+
+
+		public override void Upgrade ()
+		{
+			if (useLiveValues)
+			{
+				useLiveValues = false;
+				itemSource = ItemSource.PlayerInventory;
+			}
+			base.Upgrade ();
 		}
 
 
@@ -131,7 +155,7 @@ namespace AC
 			switch (setVarAsPropertyMethod)
 			{
 				case SetVarAsPropertyMethod.SelectedItem:
-					if (useLiveValues)
+					if (itemSource == ItemSource.PlayerInventory)
 					{
 						if (InvInstance.IsValid (KickStarter.runtimeInventory.SelectedInstance))
 						{
@@ -144,14 +168,34 @@ namespace AC
 							return;
 						}
 					}
-					else
+					else if (itemSource == ItemSource.Container)
+					{
+						if (runtimeContainer)
+						{
+							if (InvInstance.IsValid (KickStarter.runtimeInventory.SelectedInstance))
+							{
+								int selectedItemID = KickStarter.runtimeInventory.SelectedInstance.ItemID;
+								invInstance = runtimeContainer.InvCollection.GetFirstInstance (selectedItemID);
+							}
+							else
+							{
+								LogWarning ("No Inventory item currently selected");
+								return;
+							}
+						}
+						else
+						{
+							LogWarning ("Container not set");
+						}
+					}
+					else if (itemSource == ItemSource.NoSource)
 					{
 						invInstance = KickStarter.runtimeInventory.SelectedInstance;
 					}
 					break;
 
 				case SetVarAsPropertyMethod.LastSelectedItem:
-					if (useLiveValues)
+					if (itemSource == ItemSource.PlayerInventory)
 					{
 						if (InvInstance.IsValid (KickStarter.runtimeInventory.LastSelectedInstance))
 						{
@@ -164,7 +208,27 @@ namespace AC
 							return;
 						}
 					}
-					else
+					else if (itemSource == ItemSource.Container)
+					{
+						if (runtimeContainer)
+						{
+							if (InvInstance.IsValid (KickStarter.runtimeInventory.LastSelectedInstance))
+							{
+								int lastSelectedItemID = KickStarter.runtimeInventory.LastSelectedInstance.ItemID;
+								invInstance = runtimeContainer.InvCollection.GetFirstInstance (lastSelectedItemID);
+							}
+							else
+							{
+								LogWarning ("No Inventory item currently selected");
+								return;
+							}
+						}
+						else
+						{
+							LogWarning ("Container not set");
+						}
+					}
+					else if (itemSource == ItemSource.NoSource)
 					{
 						invInstance = KickStarter.runtimeInventory.LastSelectedInstance;
 					}
@@ -172,11 +236,22 @@ namespace AC
 
 				case SetVarAsPropertyMethod.SpecificItem:
 				default:
-					if (useLiveValues)
+					if (itemSource == ItemSource.PlayerInventory)
 					{
 						invInstance = KickStarter.runtimeInventory.GetInstance (invID);
 					}
-					else
+					else if (itemSource == ItemSource.Container)
+					{
+						if (runtimeContainer)
+						{
+							invInstance = runtimeContainer.InvCollection.GetFirstInstance (invID);
+						}
+						else
+						{
+							LogWarning ("Container not set");
+						}
+					}
+					else if (itemSource == ItemSource.NoSource)
 					{
 						invInstance = new InvInstance (KickStarter.inventoryManager.GetItem (invID));
 					}
@@ -185,13 +260,17 @@ namespace AC
 
 			if (!InvInstance.IsValid (invInstance))
 			{
-				if ((setVarAsPropertyMethod == SetVarAsPropertyMethod.SelectedItem || setVarAsPropertyMethod == SetVarAsPropertyMethod.LastSelectedItem) && useLiveValues)
+				if ((setVarAsPropertyMethod == SetVarAsPropertyMethod.SelectedItem || setVarAsPropertyMethod == SetVarAsPropertyMethod.LastSelectedItem) && itemSource != ItemSource.NoSource)
 				{
 					LogWarning ("No Inventory item currently selected");
 				}
-				else if (useLiveValues)
+				else if (itemSource == ItemSource.PlayerInventory)
 				{
 					LogWarning ("Cannot find Inventory item with ID " + invID + " in the Player's inventory");
+				}
+				else if (itemSource == ItemSource.Container)
+				{
+					LogWarning ("Cannot find Inventory item with ID " + invID + " in Container " + runtimeContainer, runtimeContainer);
 				}
 				else
 				{
@@ -221,7 +300,7 @@ namespace AC
 			}
 			else if (runtimeVariable.type == invVar.type)
 			{
-				int itemCount = (useLiveValues && multiplyByItemCount) ? invInstance.Count : 1;
+				int itemCount = (itemSource != ItemSource.NoSource && multiplyByItemCount) ? invInstance.Count : 1;
 
 				switch (invVar.type)
 				{
@@ -369,7 +448,7 @@ namespace AC
 
 		public override void ShowGUI (List<ActionParameter> parameters)
 		{
-			inventoryManager = AdvGame.GetReferences ().inventoryManager;
+			inventoryManager = KickStarter.inventoryManager;
 			method = (Method) EditorGUILayout.EnumPopup ("Method:", method);
 			string getSet = (method == Method.PropertyToVariable) ? "Get" : "Set";
 
@@ -382,7 +461,7 @@ namespace AC
 			}
 
 			// Select item property
-			ShowInvPropertyGUI ();
+			ShowInvPropertyGUI (parameters);
 
 			EditorGUILayout.Space ();
 
@@ -391,9 +470,13 @@ namespace AC
 			switch (varLocation)
 			{
 				case VariableLocation.Global:
-					if (AdvGame.GetReferences ().variablesManager)
+					if (KickStarter.variablesManager)
 					{
-						ShowVarGUI (AdvGame.GetReferences ().variablesManager.vars, parameters, ParameterType.GlobalVariable);
+						GlobalVariableField ("Global variable:", ref variableID, null, parameters, ref varParameterID);
+						foreach (GVar var in KickStarter.variablesManager.vars)
+						{
+							if (var.id == variableID) varType = var.type;
+						}
 					}
 					break;
 
@@ -402,7 +485,11 @@ namespace AC
 					{
 						if (localVariables)
 						{
-							ShowVarGUI (localVariables.localVars, parameters, ParameterType.LocalVariable);
+							LocalVariableField ("Global variable:", ref variableID, null, parameters, ref varParameterID);
+							foreach (GVar var in localVariables.localVars)
+							{
+								if (var.id == variableID) varType = var.type;
+							}
 						}
 						else
 						{
@@ -416,21 +503,13 @@ namespace AC
 					break;
 
 				case VariableLocation.Component:
+					ComponentVariableField ("Component variable:", ref variables, ref variablesConstantID, ref variableID, null, parameters, ref varParameterID);
 					varParameterID = Action.ChooseParameterGUI ("Component variable:", parameters, varParameterID, ParameterType.ComponentVariable);
-					if (varParameterID >= 0)
+					if (varParameterID < 0 && variables)
 					{
-						variables = null;
-						variablesConstantID = 0;	
-					}
-					else
-					{
-						variables = (Variables) EditorGUILayout.ObjectField ("Component:", variables, typeof (Variables), true);
-						variablesConstantID = FieldToID <Variables> (variables, variablesConstantID);
-						variables = IDToField <Variables> (variables, variablesConstantID, false);
-
-						if (variables != null)
+						foreach (GVar var in variables.vars)
 						{
-							ShowVarGUI (variables.vars, null, ParameterType.ComponentVariable);
+							if (var.id == variableID) varType = var.type;
 						}
 					}
 					break;
@@ -446,7 +525,7 @@ namespace AC
 		}
 
 
-		private void ShowInvPropertyGUI ()
+		private void ShowInvPropertyGUI (List<ActionParameter> parameters)
 		{
 			if (inventoryManager != null)
 			{
@@ -486,12 +565,17 @@ namespace AC
 
 					if (method == Method.PropertyToVariable)
 					{
-						useLiveValues = EditorGUILayout.Toggle ("Get 'live' value?", useLiveValues);
-						if (useLiveValues)
+						itemSource = (ItemSource) EditorGUILayout.EnumPopup ("Item source:", itemSource);
+						if (itemSource != ItemSource.NoSource)
 						{
 							if (propertyType == VariableType.Integer || propertyType == VariableType.Float)
 							{
 								multiplyByItemCount = EditorGUILayout.Toggle ("Multiply by item count?", multiplyByItemCount);
+							}
+
+							if (itemSource == ItemSource.Container)
+							{
+								ComponentField ("Container:", ref container, ref containerConstantID, parameters, ref containerParameterID);
 							}
 						}
 					}
@@ -510,116 +594,7 @@ namespace AC
 		{
 			if (inventoryManager != null)
 			{
-				// Create a string List of the field's names (for the PopUp box)
-				List<string> labelList = new List<string>();
-				
-				int i = 0;
-				int invNumber = 0;
-				if (invParameterID == -1)
-				{
-					invNumber = -1;
-				}
-				
-				if (inventoryManager.items.Count > 0)
-				{
-					foreach (InvItem _item in inventoryManager.items)
-					{
-						labelList.Add (_item.label);
-						
-						// If an item has been removed, make sure selected variable is still valid
-						if (_item.id == invID)
-						{
-							invNumber = i;
-						}
-						
-						i++;
-					}
-					
-					if (invNumber == -1)
-					{
-						// Wasn't found (item was possibly deleted), so revert to zero
-						if (invID > 0) LogWarning ("Previously chosen item no longer exists!");
-						
-						invNumber = 0;
-						invID = 0;
-					}
-
-					invParameterID = Action.ChooseParameterGUI ("Inventory item:", parameters, invParameterID, ParameterType.InventoryItem);
-					if (invParameterID >= 0)
-					{
-						invNumber = Mathf.Min (invNumber, inventoryManager.items.Count-1);
-						invID = -1;
-					}
-					else
-					{
-						invNumber = EditorGUILayout.Popup ("Inventory item:", invNumber, labelList.ToArray());
-						invID = inventoryManager.items[invNumber].id;
-					}
-				}
-				else
-				{
-					EditorGUILayout.HelpBox ("No inventory items exist!", MessageType.Info);
-					invID = -1;
-					invNumber = -1;
-				}
-			}
-		}
-
-
-		private void ShowVarGUI (List<GVar> vars, List<ActionParameter> parameters, ParameterType parameterType)
-		{
-			// Create a string List of the field's names (for the PopUp box)
-			List<string> labelList = new List<string>();
-			
-			int i = 0;
-			int variableNumber = -1;
-
-			if (vars.Count > 0)
-			{
-				foreach (GVar _var in vars)
-				{
-					labelList.Add (_var.label);
-					
-					// If a GlobalVar variable has been removed, make sure selected variable is still valid
-					if (_var.id == variableID)
-					{
-						variableNumber = i;
-					}
-					
-					i ++;
-				}
-				
-				if (variableNumber == -1 && (parameters == null || parameters.Count == 0 || varParameterID == -1))
-				{
-					// Wasn't found (variable was deleted?), so revert to zero
-					if (variableID > 0) LogWarning ("Previously chosen variable no longer exists!");
-					variableNumber = 0;
-					variableID = 0;
-				}
-
-				string label = varLocation.ToString () + " variable:";
-				varParameterID = Action.ChooseParameterGUI (label, parameters, varParameterID, parameterType);
-				if (varParameterID >= 0)
-				{
-					variableNumber = Mathf.Min (variableNumber, vars.Count-1);
-					variableID = -1;
-				}
-				else
-				{
-					variableNumber = EditorGUILayout.Popup (label, variableNumber, labelList.ToArray());
-					variableID = vars [variableNumber].id;
-				}
-			}
-			else
-			{
-				EditorGUILayout.HelpBox ("No variables exist!", MessageType.Info);
-				variableID = -1;
-				variableNumber = -1;
-			}
-
-			if (variableNumber >= 0)
-			{
-				varType = vars[variableNumber].type;
+				ItemField (ref invID, parameters, ref invParameterID);
 			}
 		}
 
@@ -631,9 +606,9 @@ namespace AC
 				switch (varLocation)
 				{
 					case VariableLocation.Global:
-						if (AdvGame.GetReferences ().variablesManager)
+						if (KickStarter.variablesManager)
 						{
-							return GetLabelString (AdvGame.GetReferences ().variablesManager.vars, variableID);
+							return GetLabelString (KickStarter.variablesManager.vars, variableID);
 						}
 						break;
 
@@ -756,6 +731,11 @@ namespace AC
 			{
 				if (variables && variables.gameObject == _gameObject) return true;
 				if (variablesConstantID == id) return true;
+			}
+			if (itemSource == ItemSource.Container && containerParameterID < 0)
+			{
+				if (container && container.gameObject == _gameObject) return true;
+				if (containerConstantID == id) return true;
 			}
 			return base.ReferencesObjectOrID (_gameObject, id);
 		}

@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"RememberContainer.cs"
  * 
@@ -56,6 +56,12 @@ namespace AC
 			if (data == null) return;
 			SavePrevented = data.savePrevented; if (savePrevented) return;
 
+			if (!string.IsNullOrEmpty (data.collectionData))
+			{
+				Container.InvCollection = InvCollection.LoadData (data.collectionData, Container);
+				return;
+			}
+
 			Container.InvCollection = new InvCollection (Container);
 
 			if (!string.IsNullOrEmpty (data._linkedIDs))
@@ -74,16 +80,6 @@ namespace AC
 					}
 				}
 			}
-			else if (!string.IsNullOrEmpty (data.collectionData))
-			{
-				Container.InvCollection.DeleteAll ();
-					
-				List<InvInstance> invInstances = InvCollection.DataToInstances (data.collectionData);
-				foreach (InvInstance invInstance in invInstances)
-				{
-					Container.InvCollection.Add (invInstance);
-				}
-			}
 		}
 
 
@@ -93,6 +89,7 @@ namespace AC
 		{
 			if (containerToSave == null) containerToSave = GetComponent<Container> ();
 
+			CustomGUILayout.Header ("Container");
 			CustomGUILayout.BeginVertical ();
 			containerToSave = (Container) CustomGUILayout.ObjectField<Container> ("Container to save:", containerToSave, true);
 			CustomGUILayout.EndVertical ();

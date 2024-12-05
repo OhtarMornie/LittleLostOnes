@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionMenuSelect.cs"
  * 
@@ -91,26 +91,13 @@ namespace AC
 		
 		public override void ShowGUI (List<ActionParameter> parameters)
 		{
-			menuNameParameterID = Action.ChooseParameterGUI ("Menu name:", parameters, menuNameParameterID, new ParameterType[2] { ParameterType.String, ParameterType.PopUp });
-			if (menuNameParameterID < 0)
-			{
-				menuName = TextField ("Menu name:", menuName);
-			}
+			TextField ("Menu name:", ref menuName, parameters, ref menuNameParameterID);
 
 			selectFirstVisible = EditorGUILayout.Toggle ("Select first-visible?", selectFirstVisible);
 			if (!selectFirstVisible)
 			{
-				elementNameParameterID = Action.ChooseParameterGUI ("Element name:", parameters, elementNameParameterID, new ParameterType[2] { ParameterType.String, ParameterType.PopUp });
-				if (elementNameParameterID < 0)
-				{
-					elementName = TextField ("Element name:", elementName);
-				}
-
-				slotIndexParameterID = Action.ChooseParameterGUI ("Slot index (optional):", parameters, slotIndexParameterID, ParameterType.Integer);
-				if (slotIndexParameterID < 0)
-				{
-					slotIndex = EditorGUILayout.IntField ("Slot index (optional):", slotIndex);
-				}
+				TextField ("Element name:", ref elementName, parameters, ref elementNameParameterID);
+				IntField ("Slot index (optional):", ref slotIndex, parameters, ref slotIndexParameterID);
 			}
 
 			simulateClick = EditorGUILayout.Toggle ("Simulate click?", simulateClick);

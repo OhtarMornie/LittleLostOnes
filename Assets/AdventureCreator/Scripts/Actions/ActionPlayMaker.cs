@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionPlayMaker.cs"
  * 
@@ -40,7 +40,7 @@ namespace AC
 
 
 		public override ActionCategory Category { get { return ActionCategory.ThirdParty; }}
-		public override string Title { get { return "PlayMaker"; }}
+		public override string Title { get { return "Playmaker"; }}
 		public override string Description { get { return "Calls a specified Event within a PlayMaker FSM. Note that PlayMaker is a separate Unity Asset, and the 'PlayMakerIsPresent' preprocessor must be defined for this to work."; }}
 
 
@@ -93,40 +93,15 @@ namespace AC
 				isPlayer = EditorGUILayout.Toggle ("Use Player's FSM?", isPlayer);
 				if (isPlayer)
 				{
-					if (KickStarter.settingsManager != null && KickStarter.settingsManager.playerSwitching == PlayerSwitching.Allow)
-					{
-						playerParameterID = ChooseParameterGUI ("Player ID:", parameters, playerParameterID, ParameterType.Integer);
-						if (playerParameterID < 0)
-							playerID = ChoosePlayerGUI (playerID, true);
-					}
+					PlayerField (ref playerID, parameters, ref playerParameterID);
 				}
 				else
 				{
-					parameterID = ChooseParameterGUI ("Playmaker FSM:", parameters, parameterID, ParameterType.GameObject);
-					if (parameterID >= 0)
-					{
-						constantID = 0;
-						linkedObject = null;
-					}
-					else
-					{
-						linkedObject = (GameObject) EditorGUILayout.ObjectField ("Playmaker FSM:", linkedObject, typeof (GameObject), true);
-						
-						constantID = FieldToID (linkedObject, constantID);
-						linkedObject = IDToField (linkedObject, constantID, false);
-					}
+					GameObjectField ("Playmaker FSM:", ref linkedObject, ref constantID, parameters, ref parameterID);
 				}
 
-				fsmNameParameterID = Action.ChooseParameterGUI ("FSM to call (optional):", parameters, fsmNameParameterID, new ParameterType[2] { ParameterType.String, ParameterType.PopUp });
-				if (fsmNameParameterID < 0)
-				{
-					fsmName = EditorGUILayout.TextField ("FSM to call (optional):", fsmName);
-				}
-				eventNameParameterID = Action.ChooseParameterGUI ("Event to call:", parameters, eventNameParameterID, new ParameterType[2] { ParameterType.String, ParameterType.PopUp });
-				if (eventNameParameterID < 0)
-				{
-					eventName = EditorGUILayout.TextField ("Event to call:", eventName);
-				}
+				TextField ("Event name:", ref eventName, parameters, ref eventNameParameterID);
+				TextField ("FSM to call (optional):", ref fsmName, parameters, ref fsmNameParameterID);
 			}
 			else
 			{

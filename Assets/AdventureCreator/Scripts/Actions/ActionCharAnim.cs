@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionCharAnim.cs"
  * 
@@ -162,12 +162,7 @@ namespace AC
 			isPlayer = EditorGUILayout.Toggle ("Is Player?", isPlayer);
 			if (isPlayer)
 			{
-				if (KickStarter.settingsManager && KickStarter.settingsManager.playerSwitching == PlayerSwitching.Allow)
-				{
-					parameterID = ChooseParameterGUI ("Player ID:", parameters, parameterID, ParameterType.Integer);
-					if (parameterID < 0)
-						playerID = ChoosePlayerGUI (playerID, true);
-				}
+				PlayerField (ref playerID, parameters, ref parameterID);
 
 				if (KickStarter.settingsManager && KickStarter.settingsManager.playerSwitching == PlayerSwitching.Allow)
 				{
@@ -185,26 +180,16 @@ namespace AC
 				{
 					EditorAnimChar = KickStarter.player;
 				}
-				else if (AdvGame.GetReferences ().settingsManager)
+				else if (KickStarter.settingsManager)
 				{
-					EditorAnimChar = AdvGame.GetReferences ().settingsManager.GetDefaultPlayer ();
+					EditorAnimChar = KickStarter.settingsManager.GetDefaultPlayer ();
 				}
 			}
 			else
 			{
-				parameterID = Action.ChooseParameterGUI ("Character:", parameters, parameterID, ParameterType.GameObject);
-				if (parameterID >= 0)
-				{
-					constantID = 0;
-					EditorAnimChar = null;
-				}
-				else
-				{
-					EditorAnimChar = (Char) EditorGUILayout.ObjectField ("Character:", EditorAnimChar, typeof (Char), true);
-					
-					constantID = FieldToID <Char> (EditorAnimChar, constantID);
-					EditorAnimChar = IDToField <Char> (EditorAnimChar, constantID, true);
-				}
+				AC.Char _editChar = EditorAnimChar;
+				ComponentField ("Character:", ref _editChar, ref constantID, parameters, ref parameterID, "Character:", true);
+				EditorAnimChar = _editChar;
 				animChar = EditorAnimChar;
 			}
 
@@ -246,14 +231,18 @@ namespace AC
 		{
 			if (isPlayer)
 			{
-				if (!fromAssetFile && GameObject.FindObjectOfType <Player>() != null)
+				if (!fromAssetFile)
 				{
-					EditorAnimChar = GameObject.FindObjectOfType <Player>();
+					Player _player = UnityVersionHandler.FindObjectOfType<Player> ();
+					if (_player)
+					{
+						EditorAnimChar = _player;
+					}
 				}
 
-				if (EditorAnimChar == null && AdvGame.GetReferences ().settingsManager != null)
+				if (EditorAnimChar == null && KickStarter.settingsManager)
 				{
-					EditorAnimChar = AdvGame.GetReferences ().settingsManager.GetDefaultPlayer ();
+					EditorAnimChar = KickStarter.settingsManager.GetDefaultPlayer ();
 				}
 			}
 

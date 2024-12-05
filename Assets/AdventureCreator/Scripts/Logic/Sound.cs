@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"Sound.cs"
  * 
@@ -606,7 +606,7 @@ namespace AC
 							if (otherSound.IsPlaying ())
 							{
 								//DestroyImmediate (gameObject);
-								KickStarter.sceneChanger.ScheduleForDeletion (otherSound.gameObject);
+								KickStarter.sceneChanger.ScheduleForDeletion (gameObject);
 								return;
 							}
 							else

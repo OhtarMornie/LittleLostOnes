@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"Options.cs"
  * 
@@ -39,7 +39,7 @@ namespace AC
 			LoadPrefs ();
 			
 			KickStarter.runtimeLanguages.LoadAssetBundle (GetVoiceLanguage ());
-			KickStarter.eventManager.Call_OnChangeLanguage (optionsData.language);
+			KickStarter.runtimeLanguages.CallOnSetLanguageEvent (optionsData.language);
 		}
 		
 
@@ -122,7 +122,7 @@ namespace AC
 			}
 			else if (KickStarter.runtimeLanguages)
 			{
-				int numLanguages = (Application.isPlaying) ? KickStarter.runtimeLanguages.Languages.Count : AdvGame.GetReferences ().speechManager.Languages.Count;
+				int numLanguages = (Application.isPlaying) ? KickStarter.runtimeLanguages.Languages.Count : KickStarter.speechManager.Languages.Count;
 				if (optionsData.language >= numLanguages)
 				{
 					if (numLanguages != 0)
@@ -157,7 +157,7 @@ namespace AC
 					SavePrefs (false);
 				}
 
-				KickStarter.eventManager.Call_OnChangeLanguage (optionsData.language);
+				KickStarter.runtimeLanguages.CallOnSetLanguageEvent (optionsData.language);
 				KickStarter.eventManager.Call_OnChangeSubtitles (optionsData.showSubtitles);
 				KickStarter.eventManager.Call_OnChangeVolume (SoundType.Music, optionsData.musicVolume);
 				KickStarter.eventManager.Call_OnChangeVolume (SoundType.SFX, optionsData.sfxVolume);
@@ -726,7 +726,7 @@ namespace AC
 				Options.optionsData.language = i;
 				Options.SavePrefs ();
 
-				KickStarter.eventManager.Call_OnChangeLanguage (i);
+				KickStarter.runtimeLanguages.CallOnSetLanguageEvent (i);
 				KickStarter.runtimeLanguages.LoadAssetBundle (GetVoiceLanguage ());
 			}
 			else

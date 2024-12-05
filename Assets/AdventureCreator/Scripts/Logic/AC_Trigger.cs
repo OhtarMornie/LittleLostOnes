@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"AC_Trigger.cs"
  * 
@@ -344,7 +344,9 @@ namespace AC
 				return false;
 			}
 
-			if (triggerReacts == TriggerReacts.OnlyDuringGameplay && KickStarter.stateHandler.gameState != GameState.Normal)
+			if (triggerReacts == TriggerReacts.OnlyDuringGameplay && KickStarter.stateHandler.gameState == GameState.DialogOptions && KickStarter.settingsManager.allowGameplayDuringConversations)
+			{ }
+			else if (triggerReacts == TriggerReacts.OnlyDuringGameplay && KickStarter.stateHandler.gameState != GameState.Normal)
 			{
 				return false;
 			}
@@ -431,7 +433,11 @@ namespace AC
 
 			if (_collider && _collider.enabled)
 			{
-				return _collider.bounds.Contains (position);
+				if (_collider.transform.eulerAngles == Vector3.zero)
+				{
+					return _collider.bounds.Contains (position);
+				}
+				return (position == _collider.ClosestPoint (position));
 			}
 
 			return false;
@@ -496,7 +502,7 @@ namespace AC
 					}
 					else if (detectsAllPlayers && KickStarter.settingsManager && KickStarter.settingsManager.playerSwitching == PlayerSwitching.Allow)
 					{
-						Player[] players = FindObjectsOfType<Player>();
+						Player[] players = UnityVersionHandler.FindObjectsOfType<Player>();
 						foreach (Player player in players)
 						{
 							positionDetectObjects.Add (new PositionDetectObject (player));

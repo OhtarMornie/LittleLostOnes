@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionFootstepSounds.cs"
  * 
@@ -31,10 +31,13 @@ namespace AC
 		public bool isPlayer;
 		public int playerID = -1;
 
-		public enum FootstepSoundType { Walk, Run };
-		public FootstepSoundType footstepSoundType = FootstepSoundType.Walk;
+		public int surfaceID = 0;
+		public int surfaceIDParameterID = -1;
+		protected Surface runtimeSurface;
 
-		public AudioClip[] newSounds;
+		private enum FootstepSoundType { Walk, Run };
+		[SerializeField] private FootstepSoundType footstepSoundType = FootstepSoundType.Walk;
+		[SerializeField] private AudioClip[] newSounds;
 
 
 		public override ActionCategory Category { get { return ActionCategory.Sound; }}
@@ -44,6 +47,8 @@ namespace AC
 
 		public override void AssignValues (List<ActionParameter> parameters)
 		{
+			if (footstepSoundType == FootstepSoundType.Walk) {}
+			
 			if (isPlayer)
 			{
 				Player player = AssignPlayer (playerID, parameters, parameterID);
@@ -56,6 +61,9 @@ namespace AC
 			{
 				runtimeFootstepSounds = AssignFile <FootstepSounds> (parameters, parameterID, constantID, footstepSounds);
 			}
+
+			surfaceID = AssignInteger (parameters, surfaceIDParameterID, surfaceID);
+			runtimeSurface = KickStarter.settingsManager.GetSurface (surfaceID);
 		}
 
 
@@ -65,16 +73,13 @@ namespace AC
 			{
 				LogWarning ("No FootstepSounds component set.");
 			}
+			else if (runtimeSurface == null)
+			{
+				LogWarning ("Surface with ID " + surfaceID + " not found");
+			}
 			else
 			{
-				if (footstepSoundType == FootstepSoundType.Walk)
-				{
-					runtimeFootstepSounds.footstepSounds = newSounds;
-				}
-				else if (footstepSoundType == FootstepSoundType.Run)
-				{
-					runtimeFootstepSounds.runSounds = newSounds;
-				}
+				runtimeFootstepSounds.CurrentSurface = runtimeSurface;
 			}
 
 			return 0f;
@@ -88,79 +93,51 @@ namespace AC
 			isPlayer = EditorGUILayout.Toggle ("Change Player's?", isPlayer);
 			if (isPlayer)
 			{
-				if (KickStarter.settingsManager != null && KickStarter.settingsManager.playerSwitching == PlayerSwitching.Allow)
-				{
-					parameterID = ChooseParameterGUI ("Player ID:", parameters, parameterID, ParameterType.Integer);
-					if (parameterID < 0)
-						playerID = ChoosePlayerGUI (playerID, true);
-				}
+				PlayerField (ref playerID, parameters, ref parameterID);
 			}
 			else
 			{
-				parameterID = Action.ChooseParameterGUI ("FootstepSounds:", parameters, parameterID, ParameterType.GameObject);
-				if (parameterID >= 0)
-				{
-					constantID = 0;
-					footstepSounds = null;
-				}
-				else
-				{
-					footstepSounds = (FootstepSounds) EditorGUILayout.ObjectField ("FootstepSounds:", footstepSounds, typeof (FootstepSounds), true);
-					
-					constantID = FieldToID <FootstepSounds> (footstepSounds, constantID);
-					footstepSounds = IDToField <FootstepSounds> (footstepSounds, constantID, false);
-				}
+				ComponentField ("FootstepSounds:", ref footstepSounds, ref constantID, parameters, ref parameterID);
 			}
 
-			footstepSoundType = (FootstepSoundType) EditorGUILayout.EnumPopup ("Clips to change:", footstepSoundType);
-			newSounds = ShowClipsGUI (newSounds, (footstepSoundType == FootstepSoundType.Walk) ? "New walk sounds:" : "New run sounds:");
-		}
-
-
-		private AudioClip[] ShowClipsGUI (AudioClip[] clips, string headerLabel)
-		{
-			CustomGUILayout.BeginVertical ();
-			EditorGUILayout.LabelField (headerLabel, EditorStyles.boldLabel);
-			List<AudioClip> clipsList = new List<AudioClip>();
-
-			if (clips != null)
+			if (GUILayout.Button ("Surfaces window"))
 			{
-				foreach (AudioClip clip in clips)
+				SurfacesEditor.Init ();
+			}
+
+			int tempNumber = -1;
+
+			if (KickStarter.settingsManager != null && KickStarter.settingsManager.surfaces != null && KickStarter.settingsManager.surfaces.Count > 0)
+			{
+				string[] labelList = new string[KickStarter.settingsManager.surfaces.Count];
+				for (int i=0; i<KickStarter.settingsManager.surfaces.Count; i++)
 				{
-					clipsList.Add (clip);
+					labelList[i] = i.ToString () + ": " + KickStarter.settingsManager.surfaces[i].label;
+
+					if (KickStarter.settingsManager.surfaces[i].ID == surfaceID)
+					{
+						tempNumber = i;
+					}
 				}
-			}
 
-			int numParameters = clipsList.Count;
-			numParameters = EditorGUILayout.IntField ("# of footstep sounds:", numParameters);
-
-			if (numParameters < clipsList.Count)
-			{
-				clipsList.RemoveRange (numParameters, clipsList.Count - numParameters);
-			}
-			else if (numParameters > clipsList.Count)
-			{
-				if (numParameters > clipsList.Capacity)
+				if (tempNumber == -1)
 				{
-					clipsList.Capacity = numParameters;
+					// Wasn't found (was deleted?), so revert to zero
+					if (surfaceID != 0)
+						LogWarning ("Previously chosen Surface no longer exists!");
+					tempNumber = 0;
+					surfaceID = 0;
 				}
-				for (int i=clipsList.Count; i<numParameters; i++)
-				{
-					clipsList.Add (null);
-				}
-			}
 
-			for (int i=0; i<clipsList.Count; i++)
-			{
-				clipsList[i] = (AudioClip) EditorGUILayout.ObjectField ("Sound #" + (i+1).ToString (), clipsList[i], typeof (AudioClip), false);
+				tempNumber = EditorGUILayout.Popup ("Surface:", tempNumber, labelList);
+				surfaceID = KickStarter.settingsManager.surfaces [tempNumber].ID;
 			}
-			if (clipsList.Count > 1)
+			else
 			{
-				EditorGUILayout.HelpBox ("Sounds will be chosen at random.", MessageType.Info);
+				EditorGUILayout.HelpBox ("No Surfaces exist!", MessageType.Info);
+				surfaceID = 0;
+				tempNumber = 0;
 			}
-			CustomGUILayout.EndVertical ();
-
-			return clipsList.ToArray ();
 		}
 
 
@@ -169,14 +146,18 @@ namespace AC
 			FootstepSounds obToUpdate = footstepSounds;
 			if (isPlayer && (KickStarter.settingsManager == null || KickStarter.settingsManager.playerSwitching == PlayerSwitching.DoNotAllow))
 			{
-				if (!fromAssetFile && GameObject.FindObjectOfType <Player>() != null)
+				if (!fromAssetFile)
 				{
-					obToUpdate = GameObject.FindObjectOfType <Player>().GetComponentInChildren <FootstepSounds>();
+					Player _player = UnityVersionHandler.FindObjectOfType<Player> ();
+					if (_player)
+					{
+						obToUpdate = _player.GetComponentInChildren <FootstepSounds>();
+					}
 				}
 
-				if (obToUpdate == null && AdvGame.GetReferences ().settingsManager != null)
+				if (obToUpdate == null && KickStarter.settingsManager != null)
 				{
-					Player player = AdvGame.GetReferences ().settingsManager.GetDefaultPlayer ();
+					Player player = KickStarter.settingsManager.GetDefaultPlayer ();
 					obToUpdate = player.GetComponentInChildren <FootstepSounds>();
 				}
 			}
@@ -232,17 +213,15 @@ namespace AC
 		/**
 		 * <summary>Creates a new instance of the 'Sound: Change footsteps' Action</summary>
 		 * <param name = "footstepSoundsToModify">The FootstepSounds component to affect</param>
-		 * <param name = "footstepSoundType">The type of footsteps (Walk / Run) to change</param>
-		 * <param name = "newSounds">An array of sounds to set as the new sounds</param>
+		 * <param name = "newSurfaceID">The ID of the new surface to use</param>
 		 * <returns>The generated Action</returns>
 		 */
-		public static ActionFootstepSounds CreateNew (FootstepSounds footstepSoundsToModify, FootstepSoundType footstepSoundType, AudioClip[] newSounds)
+		public static ActionFootstepSounds CreateNew (FootstepSounds footstepSoundsToModify, int newSurfaceID)
 		{
 			ActionFootstepSounds newAction = CreateNew<ActionFootstepSounds> ();
 			newAction.footstepSounds = footstepSoundsToModify;
 			newAction.TryAssignConstantID (newAction.footstepSounds, ref newAction.constantID);
-			newAction.footstepSoundType = footstepSoundType;
-			newAction.newSounds = newSounds;
+			newAction.surfaceID = newSurfaceID;
 			return newAction;
 		}
 		

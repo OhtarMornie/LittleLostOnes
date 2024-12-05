@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"MainCamera.cs"
  * 
@@ -448,6 +448,10 @@ namespace AC
 			{
 				SetGameCamera (firstPersonCamera);
 			}
+			else
+			{
+				ACDebug.LogWarning ("Cannot set first-person camera because it cannot be found on the Player " + KickStarter.player, KickStarter.player);
+			}
 
 			UpdateLastGameplayCamera ();
 		}
@@ -471,13 +475,16 @@ namespace AC
 		{
 			if (timelineFadeOverride)
 			{
-				Color originalColor = GUI.color;
-				Color tempColor = GUI.color;
-				tempColor.a = timelineFadeWeight;
-				GUI.color = tempColor;
-				GUI.depth = drawDepth;
-				GUI.DrawTexture (new Rect (0, 0,  ACScreen.width,  ACScreen.height), timelineFadeTexture);
-				GUI.color = originalColor;
+				if (renderFading)
+				{
+					Color originalColor = GUI.color;
+					Color tempColor = GUI.color;
+					tempColor.a = timelineFadeWeight;
+					GUI.color = tempColor;
+					GUI.depth = drawDepth;
+					GUI.DrawTexture (new Rect (0, 0,  ACScreen.width,  ACScreen.height), timelineFadeTexture);
+					GUI.color = originalColor;
+				}
 				return;
 			}
 
@@ -546,6 +553,11 @@ namespace AC
 		/** The alpha value of the current fade effect (0 = not visible, 1 = fully visible) */
 		public float GetFadeAlpha ()
 		{
+			if (timelineFadeOverride)
+			{
+				return timelineFadeWeight;
+			}
+
 			return alpha;
 		}
 
@@ -553,6 +565,11 @@ namespace AC
 		/** The texture to display full-screen for the fade effect */
 		public Texture2D GetFadeTexture ()
 		{
+			if (timelineFadeOverride)
+			{
+				return timelineFadeTexture;
+			}
+
 			AssignFadeTexture ();
 			return actualFadeTexture;
 		}
@@ -1042,7 +1059,7 @@ namespace AC
 		{
 			if (!Application.isPlaying)
 			{
-				if (AdvGame.GetReferences () == null || AdvGame.GetReferences ().settingsManager == null || AdvGame.GetReferences ().settingsManager.AspectRatioEnforcement == AspectRatioEnforcement.NoneEnforced)
+				if (KickStarter.settingsManager == null || KickStarter.settingsManager.AspectRatioEnforcement == AspectRatioEnforcement.NoneEnforced)
 				{
 					return;
 				}
@@ -2593,6 +2610,7 @@ namespace AC
 
 		public void ShowGUI ()
 		{
+			CustomGUILayout.Header ("Properties");
 			CustomGUILayout.BeginVertical ();
 			fadeTexture = (Texture2D) CustomGUILayout.ObjectField <Texture2D> ("Fade texture:", fadeTexture, false, string.Empty, "The texture to display fullscreen when fading");
 			renderFading = CustomGUILayout.Toggle ("Draw fade?", renderFading, string.Empty, "If True, the fade effect will be drawn automatically.");

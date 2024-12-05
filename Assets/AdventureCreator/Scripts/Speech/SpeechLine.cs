@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"SpeechLine.cs"
  * 
@@ -347,13 +347,21 @@ namespace AC
 			{
 				case ReferenceSpeechFiles.ByNamingConvention:
 				case ReferenceSpeechFiles.ByAssetBundle:
-					if (!string.IsNullOrEmpty (customFilename) && string.IsNullOrEmpty (overrideName))
+					if (!SeparatePlayerAudio () && !string.IsNullOrEmpty (customFilename))
 					{
 						return customFilename;
 					}
 					break;
 
 				case ReferenceSpeechFiles.ByAddressable:
+					if (!SeparatePlayerAudio () && !string.IsNullOrEmpty (customFilename))
+					{
+						if (Application.isPlaying && KickStarter.speechManager.translateAudio && Options.GetLanguage () > 0)
+						{
+							return customFilename + "_" + Options.GetLanguageName ();
+						}
+						return customFilename;
+					}
 					if (Application.isPlaying && KickStarter.speechManager.translateAudio && Options.GetLanguage () > 0)
 					{
 						return GetSubfolderPath (overrideName) + lineID.ToString () + "_" + Options.GetLanguageName ();
@@ -363,8 +371,6 @@ namespace AC
 				default:
 					break;
 			}
-
-			
 
 			return GetSubfolderPath (overrideName) + lineID.ToString ();
 		}
@@ -402,12 +408,12 @@ namespace AC
 		{
 			CustomGUILayout.DrawUILine ();
 
-			SpeechManager speechManager = AdvGame.GetReferences ().speechManager;
+			SpeechManager speechManager = KickStarter.speechManager;
 			string apiPrefix = "KickStarter.speechManager.GetLine (" + lineID + ")";
 
 			if (lineID == speechManager.activeLineID)
 			{
-				CustomGUILayout.BeginVertical ();
+				EditorGUILayout.BeginVertical (CustomStyles.thinBox);
 
 				EditorGUILayout.BeginHorizontal ();
 
@@ -621,7 +627,21 @@ namespace AC
 											}
 											else
 											{
-												ShowField (" Speech key:", KickStarter.speechManager.speechAddressablesPrefix + GetFilename (), false, maxWidth, string.Empty, string.Empty, true);
+												if (string.IsNullOrEmpty (customFilename))
+												{
+													EditorGUILayout.BeginHorizontal ();
+													ShowField ("Speech key:", KickStarter.speechManager.speechAddressablesPrefix + GetFilename (), false, maxWidth, string.Empty, string.Empty, true);
+													if (GUILayout.Button ("Set custom", GUILayout.Width (100f)))
+													{
+														customFilename = GetFilename ();
+													}
+													EditorGUILayout.EndHorizontal ();
+												}
+												else
+												{
+													customFilename = EditField ("Speech key:", customFilename, false, maxWidth, apiPrefix + ".customFilename");
+												}
+												//ShowField (" Speech key:", KickStarter.speechManager.speechAddressablesPrefix + GetFilename (), false, maxWidth, string.Empty, string.Empty, true);
 												if (speechManager.UseFileBasedLipSyncing ())
 												{
 													ShowField (" Lipsync key:", KickStarter.speechManager.lipSyncAddressablesPrefix + GetFilename (), false, maxWidth, string.Empty, string.Empty, true);
@@ -728,7 +748,22 @@ namespace AC
 									}
 									else
 									{
-										ShowField ("Speech key:", KickStarter.speechManager.speechAddressablesPrefix + GetFilename (), false, maxWidth, string.Empty, string.Empty, true);
+										if (string.IsNullOrEmpty (customFilename))
+										{
+											EditorGUILayout.BeginHorizontal ();
+											ShowField ("Speech key:", KickStarter.speechManager.speechAddressablesPrefix + GetFilename (), false, maxWidth, string.Empty, string.Empty, true);
+											if (GUILayout.Button ("Set custom", GUILayout.Width (100f)))
+											{
+												customFilename = GetFilename ();
+											}
+											EditorGUILayout.EndHorizontal ();
+										}
+										else
+										{
+											customFilename = EditField ("Speech key:", customFilename, false, maxWidth, apiPrefix + ".customFilename");
+										}
+										//ShowField ("Speech key:", KickStarter.speechManager.speechAddressablesPrefix + GetFilename (), false, maxWidth, string.Empty, string.Empty, true);
+
 										if (speechManager.UseFileBasedLipSyncing ())
 										{
 											ShowField ("Lipsync key:", KickStarter.speechManager.lipSyncAddressablesPrefix + GetFilename (), false, maxWidth, string.Empty, string.Empty, true);
@@ -912,11 +947,11 @@ namespace AC
 			if (filterSpeechLine == FilterSpeechLine.All)
 			{
 				if (description.ToLower ().Contains (filter)
-				    || scene.ToLower ().Contains (filter)
-				    || owner.ToLower ().Contains (filter)
-				    || text.ToLower ().Contains (filter)
-				    || lineID.ToString ().Contains (filter)
-				    || textType.ToString ().ToLower ().Contains (filter))
+					|| scene.ToLower ().Contains (filter)
+					|| owner.ToLower ().Contains (filter)
+					|| text.ToLower ().Contains (filter)
+					|| lineID.ToString ().Contains (filter)
+					|| textType.ToString ().ToLower ().Contains (filter))
 				{
 					return true;
 				}
@@ -931,6 +966,10 @@ namespace AC
 			}
 			else if (filterSpeechLine == FilterSpeechLine.Speaker)
 			{
+				if (filter.ToLower () == "player" && isPlayer)
+				{
+					return true;
+				}
 				return owner.ToLower ().Contains (filter);
 			}
 			else if (filterSpeechLine == FilterSpeechLine.Text)
@@ -1027,10 +1066,10 @@ namespace AC
 			}
 			
 			string languageName = string.Empty;
-			SpeechManager speechManager = AdvGame.GetReferences ().speechManager;
+			SpeechManager speechManager = KickStarter.speechManager;
 			if (i > 0 && speechManager.translateAudio)
 			{
-				languageName = AdvGame.GetReferences ().speechManager.Languages[i].name;
+				languageName = speechManager.Languages[i].name;
 			}
 			
 			switch (speechManager.referenceSpeechFiles)
@@ -1103,7 +1142,7 @@ namespace AC
 		{
 			if (GUILayout.Button ("Ping file", GUILayout.Width (100f)))
 			{
-				string languageName = (languageIndex == 0) ? string.Empty : AdvGame.GetReferences ().speechManager.Languages[languageIndex].name;
+				string languageName = (languageIndex == 0) ? string.Empty : KickStarter.speechManager.Languages[languageIndex].name;
 				string fullName = string.Empty;
 
 				Object foundClp = null;
@@ -1118,21 +1157,10 @@ namespace AC
 
 							if (forLipSync)
 							{
-								if (KickStarter.speechManager.lipSyncMode == LipSyncMode.RogoLipSync)
+								TextAsset textFile = Resources.Load (fullName) as TextAsset;
+								if (textFile )
 								{
-									Object lipSyncFile = RogoLipSyncIntegration.GetObjectToPing (fullName);
-									if (lipSyncFile)
-									{
-										foundClp = lipSyncFile;
-									}
-								}
-								else
-								{
-									TextAsset textFile = Resources.Load (fullName) as TextAsset;
-									if (textFile )
-									{
-										foundClp = textFile;
-									}
+									foundClp = textFile;
 								}
 							}
 							else
@@ -1153,15 +1181,8 @@ namespace AC
 
 					if (forLipSync)
 					{
-						if (KickStarter.speechManager.lipSyncMode == LipSyncMode.RogoLipSync)
-						{
-							foundClp = RogoLipSyncIntegration.GetObjectToPing (fullName);
-						}
-						else
-						{
-							TextAsset textFile = Resources.Load (fullName) as TextAsset;
-							foundClp = textFile;
-						}
+						TextAsset textFile = Resources.Load (fullName) as TextAsset;
+						foundClp = textFile;
 					}
 					else
 					{
@@ -1319,7 +1340,7 @@ namespace AC
 
 		protected string GetSpeakerName ()
 		{
-			if (isPlayer && (AdvGame.GetReferences ().speechManager == null || !AdvGame.GetReferences ().speechManager.usePlayerRealName))
+			if (isPlayer && (KickStarter.speechManager == null || !KickStarter.speechManager.usePlayerRealName))
 			{
 				return "Player";
 			}

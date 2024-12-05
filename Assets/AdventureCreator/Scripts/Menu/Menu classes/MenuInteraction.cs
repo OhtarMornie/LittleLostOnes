@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"MenuInteraction.cs"
  * 
@@ -60,10 +60,9 @@ namespace AC
 		public LinkUIGraphic linkUIGraphic = LinkUIGraphic.ImageComponent;
 
 		#if TextMeshProIsPresent
-		private TMPro.TextMeshProUGUI uiText;
-		#else
-		private Text uiText;
+		private TMPro.TextMeshProUGUI uiTextTMP;
 		#endif
+		private Text uiText;
 
 		private Image uiImage;
 		private CursorIcon icon;
@@ -96,6 +95,9 @@ namespace AC
 			uiSelectableHideStyle = UISelectableHideStyle.DisableObject;
 			fixedIcon = true;
 			linkUIGraphic = LinkUIGraphic.ImageComponent;
+			#if TextMeshProIsPresent
+			uiTextTMP = null;
+			#endif
 			
 			base.Declare ();
 		}
@@ -130,6 +132,9 @@ namespace AC
 			uiPointerState = _element.uiPointerState;
 			uiText = null;
 			uiImage = null;
+			#if TextMeshProIsPresent
+			uiTextTMP = null;
+			#endif
 
 			maxSlots = _element.maxSlots;
 			displayType = _element.displayType;
@@ -143,6 +148,7 @@ namespace AC
 			uiSelectableHideStyle = _element.uiSelectableHideStyle;
 			linkUIGraphic = _element.linkUIGraphic;
 			fixedIcon = _element.fixedIcon;
+
 			
 			base.Copy (_element);
 
@@ -161,10 +167,13 @@ namespace AC
 				if (uiButton)
 				{
 					#if TextMeshProIsPresent
-					uiText = uiButton.GetComponentInChildren <TMPro.TextMeshProUGUI>();
-					#else
-					uiText = uiButton.GetComponentInChildren <Text>();
+					if (_menu.useTextMeshProComponents)
+					{
+						uiTextTMP = uiButton.GetComponentInChildren <TMPro.TextMeshProUGUI>();
+					}
+					if (!_menu.useTextMeshProComponents || uiTextTMP == null)
 					#endif
+						uiText = uiButton.GetComponentInChildren <Text>();
 
 					uiImage = uiButton.GetComponentInChildren <Image>();
 
@@ -180,7 +189,7 @@ namespace AC
 				int i=0;
 				foreach (UISlot uiSlot in uiSlots)
 				{
-					uiSlot.LinkUIElements (canvas, linkUIGraphic);
+					uiSlot.LinkUIElements (_menu, canvas, linkUIGraphic);
 					
 					if (addEventListeners)
 					{
@@ -251,7 +260,7 @@ namespace AC
 		
 		#if UNITY_EDITOR
 		
-		public override void ShowGUI (Menu menu)
+		public override void ShowGUI (Menu menu, System.Action<ActionListAsset> showALAEditor)
 		{
 			string apiPrefix = "(AC.PlayerMenus.GetElementWithName (\"" + menu.title + "\", \"" + title + "\") as AC.MenuInteraction)";
 
@@ -280,14 +289,14 @@ namespace AC
 
 				if (fixedIcon)
 				{
-					uiButton = LinkedUiGUI <UnityEngine.UI.Button> (uiButton, "Linked Button:", source, "The Unity UI Button this is linked to");
+					uiButton = LinkedUiGUI <UnityEngine.UI.Button> (uiButton, "Linked Button:", menu, "The Unity UI Button this is linked to");
 				}
 				else
 				{
 					uiSlots = ResizeUISlots (uiSlots, maxSlots);
 					for (int i=0; i<uiSlots.Length; i++)
 					{
-						uiSlots[i].LinkedUiGUI (i, source);
+						uiSlots[i].LinkedUiGUI (i, menu);
 					}
 				}
 
@@ -297,7 +306,7 @@ namespace AC
 			}
 			CustomGUILayout.EndVertical ();
 
-			base.ShowGUI (menu);
+			base.ShowGUI (menu, showALAEditor);
 		}
 
 
@@ -336,11 +345,11 @@ namespace AC
 			{
 				numSlots = 1;
 
-				if (AdvGame.GetReferences ().cursorManager && AdvGame.GetReferences().cursorManager.cursorIcons.Count > 0)
+				if (KickStarter.cursorManager && KickStarter.cursorManager.cursorIcons.Count > 0)
 				{
-					int iconInt = AdvGame.GetReferences ().cursorManager.GetIntFromID (iconID);
-					iconInt = EditorGUILayout.Popup ("Cursor:", iconInt, AdvGame.GetReferences ().cursorManager.GetLabelsArray ());
-					iconID = AdvGame.GetReferences ().cursorManager.cursorIcons [iconInt].id;
+					int iconInt = KickStarter.cursorManager.GetIntFromID (iconID);
+					iconInt = EditorGUILayout.Popup ("Cursor:", iconInt, KickStarter.cursorManager.GetLabelsArray ());
+					iconID = KickStarter.cursorManager.cursorIcons [iconInt].id;
 				}
 				else
 				{
@@ -399,6 +408,12 @@ namespace AC
 				{
 					return 0;
 				}
+				#if TextMeshProIsPresent
+				if (uiTextTMP && uiTextTMP.gameObject == gameObject)
+				{
+					return 0;
+				}
+				#endif
 				if (uiText && uiText.gameObject == gameObject)
 				{
 					return 0;
@@ -410,7 +425,7 @@ namespace AC
 				{
 					if (uiSlots[i].uiButton && uiSlots[i].uiButton == gameObject)
 					{
-						return 0;
+						return i;
 					}
 				}
 			}
@@ -449,11 +464,19 @@ namespace AC
 				if (uiButton)
 				{
 					UpdateUISelectable (uiButton, uiSelectableHideStyle);
+
+					#if TextMeshProIsPresent
+					if (displayType != AC_DisplayType.IconOnly && uiTextTMP && labels != null)
+					{
+						uiTextTMP.text = labels[0];
+					}
+					#endif
 					
-					if (displayType != AC_DisplayType.IconOnly && uiText)
+					if (displayType != AC_DisplayType.IconOnly && uiText && labels != null)
 					{
 						uiText.text = labels[0];
 					}
+					
 					if (displayType == AC_DisplayType.IconOnly && uiImage && icon != null && icon.isAnimated)
 					{
 						uiImage.sprite = icon.GetAnimatedSprite (isActive);
@@ -754,11 +777,11 @@ namespace AC
 
 		public override void RecalculateSize (MenuSource source)
 		{
-			if (AdvGame.GetReferences ().cursorManager)
+			if (KickStarter.cursorManager)
 			{
 				if (fixedIcon)
 				{
-					CursorIcon _icon = AdvGame.GetReferences ().cursorManager.GetCursorIconFromID (iconID);
+					CursorIcon _icon = KickStarter.cursorManager.GetCursorIconFromID (iconID);
 					if (_icon != null)
 					{
 						labels = new string[1];
@@ -907,8 +930,12 @@ namespace AC
 
 		private CursorIcon GetIconAtSlot (int _slot)
 		{
-			int iconID = GetIconIDAtSlot (_slot);
-			return KickStarter.cursorManager.GetCursorIconFromID (iconID);
+			if (KickStarter.cursorManager)
+			{
+				int iconID = GetIconIDAtSlot (_slot);
+				return KickStarter.cursorManager.GetCursorIconFromID (iconID);
+			}
+			return null;
 		}
 
 

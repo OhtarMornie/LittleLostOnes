@@ -46,14 +46,14 @@ namespace AC
 		
 		private void OnGUI ()
 		{
-			if (AdvGame.GetReferences ().speechManager == null)
+			if (KickStarter.speechManager == null)
 			{
 				EditorGUILayout.HelpBox ("A Speech Manager must be assigned before this window can display correctly.", MessageType.Warning);
 				return;
 			}
 			
 			scroll = GUILayout.BeginScrollView (scroll);
-			SpeechManager speechManager = AdvGame.GetReferences ().speechManager;
+			SpeechManager speechManager = KickStarter.speechManager;
 			
 			EditorGUILayout.HelpBox ("Check the settings below and click 'Create' to save a new script sheet.", MessageType.Info);
 			EditorGUILayout.Space ();
@@ -133,19 +133,19 @@ namespace AC
 			ACDebug.LogWarning ("Game text cannot be exported in WebPlayer mode - please switch platform and try again.");
 			#else
 			
-			if (AdvGame.GetReferences () == null || AdvGame.GetReferences ().speechManager == null)
+			if (KickStarter.speechManager == null)
 			{
 				ACDebug.LogError ("Cannot create script sheet - no Speech Manager is assigned!");
 				return;
 			}
 			
-			SpeechManager speechManager = AdvGame.GetReferences ().speechManager;
+			SpeechManager speechManager = KickStarter.speechManager;
 			languageIndex = Mathf.Max (languageIndex, 0);
 			
 			string suggestedFilename = "Adventure Creator";
-			if (AdvGame.GetReferences ().settingsManager)
+			if (KickStarter.settingsManager)
 			{
-				suggestedFilename = AdvGame.GetReferences ().settingsManager.saveFileName;
+				suggestedFilename = KickStarter.settingsManager.saveFileName;
 			}
 			if (limitToCharacter && characterName != "")
 			{
@@ -190,9 +190,9 @@ namespace AC
 			}
 
 			string gameName = "Adventure Creator";
-			if (AdvGame.GetReferences ().settingsManager && AdvGame.GetReferences ().settingsManager.saveFileName.Length > 0)
+			if (KickStarter.settingsManager && KickStarter.settingsManager.saveFileName.Length > 0)
 			{
-				gameName = AdvGame.GetReferences ().settingsManager.saveFileName;
+				gameName = KickStarter.settingsManager.saveFileName;
 				if (languageIndex > 0)
 				{
 					gameName += " (" + speechManager.Languages[languageIndex].name + ")";

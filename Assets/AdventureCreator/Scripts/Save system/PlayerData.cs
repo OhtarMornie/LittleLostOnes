@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"PlayerData.cs"
  * 
@@ -172,6 +172,8 @@ namespace AC
 		public float mainCameraRotY = 0f;
 		/** The MainCamera's Z rotation */
 		public float mainCameraRotZ = 0f;
+		/** The pitch of the first-person camera, if used */
+		public float fpCameraPitch = 0f;
 
 		/** True if split-screen is currently active */
 		public bool isSplitScreen = false;
@@ -232,6 +234,13 @@ namespace AC
 		/** Data related to the character's available sprite directions */
 		public string spriteDirectionData;
 
+		/** (Deprecated) */
+		public int leftHandSceneItemConstantID;
+		/** (Deprecated)) */
+		public int rightHandSceneItemConstantID;
+		/** Data related to which objects are held in the Player's hands */
+		public AttachmentPointData[] attachmentPointDatas = new AttachmentPointData[0];
+
 		/** Save data for any Remember components attached to the Player */
 		public List<ScriptData> playerScriptData = new List<ScriptData>();
 		/** The Constant ID number of the PlayerStart to appear at when that PlayerStart's scene is next opened */
@@ -288,7 +297,7 @@ namespace AC
 			}
 			else if (teleportPlayerStartMethod == TeleportPlayerStartMethod.BasedOnPrevious)
 			{
-				playerStart = KickStarter.sceneSettings.GetPlayerStart (playerID);
+				playerStart = KickStarter.sceneSettings.GetPlayerStart (playerID, true);
 			}
 
 			UpdatePositionFromPlayerStart (playerStart);
@@ -335,7 +344,7 @@ namespace AC
 					break;
 
 				case TeleportPlayerStartMethod.BasedOnPrevious:
-					playerStart = KickStarter.sceneSettings.GetPlayerStart (playerID);
+					playerStart = KickStarter.sceneSettings.GetPlayerStart (playerID, true);
 					break;
 
 				case TeleportPlayerStartMethod.EnteredHere:
@@ -403,7 +412,7 @@ namespace AC
 				switch (teleportPlayerStartMethod)
 				{
 					case TeleportPlayerStartMethod.BasedOnPrevious:
-						playerStart = KickStarter.sceneSettings.GetPlayerStart (playerID);
+						playerStart = KickStarter.sceneSettings.GetPlayerStart (playerID, true);
 						break;
 
 					case TeleportPlayerStartMethod.EnteredHere:
@@ -603,6 +612,16 @@ namespace AC
 				CustomGUILayout.MultiLineLabelGUI ("   Active Document:", activeDocumentID.ToString ());
 				CustomGUILayout.MultiLineLabelGUI ("   Collected Documents:", collectedDocumentData.ToString ());
 				CustomGUILayout.MultiLineLabelGUI ("   Objectives:", playerObjectivesData.ToString ());
+				if (leftHandSceneItemConstantID != 0) CustomGUILayout.MultiLineLabelGUI ("   Left-hand SceneItem:", leftHandSceneItemConstantID.ToString ());
+				if (rightHandSceneItemConstantID != 0) CustomGUILayout.MultiLineLabelGUI ("   Right-hand SceneItem:", rightHandSceneItemConstantID.ToString ());
+				if (attachmentPointDatas != null && attachmentPointDatas.Length > 0)
+				{
+					EditorGUILayout.LabelField ("Attachment points:");
+					foreach (var attachmentPointData in attachmentPointDatas)
+					{
+						CustomGUILayout.MultiLineLabelGUI ("   " + attachmentPointData.attachmentPointID, attachmentPointData.heldSceneItemConstantID.ToString ());
+					}
+				}
 
 				EditorGUILayout.LabelField ("Head-turning:");
 				CustomGUILayout.MultiLineLabelGUI ("   Head facing Hotspot?", playerLockHotspotHeadTurning.ToString ());

@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionPlayerSwitch.cs"
  * 
@@ -331,7 +331,7 @@ namespace AC
 		{
 			if (settingsManager == null)
 			{
-				settingsManager = AdvGame.GetReferences ().settingsManager;
+				settingsManager = KickStarter.settingsManager;
 			}
 			
 			if (settingsManager == null)
@@ -347,47 +347,7 @@ namespace AC
 
 			if (settingsManager.players.Count > 0)
 			{
-				playerIDParameterID = Action.ChooseParameterGUI ("New Player ID:", parameters, playerIDParameterID, ParameterType.Integer);
-				if (playerIDParameterID == -1)
-				{
-					// Create a string List of the field's names (for the PopUp box)
-					List<string> labelList = new List<string>();
-					
-					int i = 0;
-					int playerNumber = -1;
-
-					foreach (PlayerPrefab playerPrefab in settingsManager.players)
-					{
-						if (playerPrefab.EditorPrefab != null)
-						{
-							labelList.Add (playerPrefab.ID + ": " + playerPrefab.EditorPrefab.name);
-						}
-						else
-						{
-							labelList.Add (playerPrefab.ID + ": " + "(Undefined prefab)");
-						}
-						
-						// If a player has been removed, make sure selected player is still valid
-						if (playerPrefab.ID == playerID)
-						{
-							playerNumber = i;
-						}
-						
-						i++;
-					}
-					
-					if (playerNumber == -1)
-					{
-						// Wasn't found (item was possibly deleted), so revert to zero
-						if (playerID > 0) LogWarning ("Previously chosen Player no longer exists!");
-						
-						playerNumber = 0;
-						playerID = 0;
-					}
-				
-					playerNumber = EditorGUILayout.Popup ("New Player:", playerNumber, labelList.ToArray());
-					playerID = settingsManager.players[playerNumber].ID;
-				}
+				PlayerField ("New Player:", "New Player ID:", ref playerID, parameters, ref playerIDParameterID, false);
 
 				//
 				takeOldPlayerPosition = EditorGUILayout.ToggleLeft ("Replace old Player's position?", takeOldPlayerPosition);
@@ -406,7 +366,7 @@ namespace AC
 				}
 				//
 
-				if (AdvGame.GetReferences ().settingsManager == null || !AdvGame.GetReferences ().settingsManager.shareInventory)
+				if (KickStarter.settingsManager == null || !KickStarter.settingsManager.shareInventory)
 				{
 					keepInventory = EditorGUILayout.Toggle ("Transfer inventory?", keepInventory);
 				}
@@ -439,7 +399,7 @@ namespace AC
 
 			if (settingsManager == null)
 			{
-				settingsManager = AdvGame.GetReferences ().settingsManager;
+				settingsManager = KickStarter.settingsManager;
 			}
 			
 			if (settingsManager != null && settingsManager.playerSwitching == PlayerSwitching.Allow)

@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionContainerOpen.cs"
  * 
@@ -100,8 +100,12 @@ namespace AC
 					if (runtimeInventoryBox != null)
 					{
 						runtimeInventoryBox.OverrideContainer = runtimeContainer;
-						return 0f;
 					}
+					else
+					{
+						LogWarning ("Could not find InventoryBox to assign Container");
+					}
+					return 0f;
 				}
 				else
 				{
@@ -120,34 +124,13 @@ namespace AC
 			useActive = EditorGUILayout.Toggle ("Affect active container?", useActive);
 			if (!useActive)
 			{
-				parameterID = Action.ChooseParameterGUI ("Container:", parameters, parameterID, ParameterType.GameObject);
-				if (parameterID >= 0)
-				{
-					constantID = 0;
-					container = null;
-				}
-				else
-				{
-					container = (Container) EditorGUILayout.ObjectField ("Container:", container, typeof (Container), true);
-					
-					constantID = FieldToID <Container> (container, constantID);
-					container = IDToField <Container> (container, constantID, false);
-				}
+				ComponentField ("Container:", ref container, ref constantID, parameters, ref parameterID);
 
 				setElement = EditorGUILayout.Toggle ("Open in set element?", setElement);
 				if (setElement)
 				{
-					menuParameterID = Action.ChooseParameterGUI ("Menu name:", parameters, menuParameterID, new ParameterType[2] { ParameterType.String, ParameterType.PopUp });
-					if (menuParameterID < 0)
-					{
-						menuName = TextField ("Menu name:", menuName);
-					}
-
-					elementParameterID = Action.ChooseParameterGUI ("InventoryBox name:", parameters, elementParameterID, new ParameterType[2] { ParameterType.String, ParameterType.PopUp });
-					if (elementParameterID < 0)
-					{
-						containerElementName = TextField ("InventoryBox name:", containerElementName);
-					}
+					TextField ("Menu name:", ref menuName, parameters, ref menuParameterID);
+					TextField ("InventoryBox name:", ref containerElementName, parameters, ref elementParameterID);
 				}
 			}
 		}
@@ -195,7 +178,10 @@ namespace AC
 		{
 			ActionContainerOpen newAction = CreateNew<ActionContainerOpen> ();
 			newAction.container = containerToOpen;
-			newAction.TryAssignConstantID (newAction.container, ref newAction.constantID);
+			if (newAction.container)
+			{
+				newAction.TryAssignConstantID (newAction.container, ref newAction.constantID);
+			}
 			return newAction;
 		}
 		

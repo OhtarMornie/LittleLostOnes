@@ -7,13 +7,26 @@ namespace AC
 	{
 
 		[SerializeField] private QteCondition qteCondition;
-		private enum QteCondition { Begin, Win, Lose };
+		public enum QteCondition { Begin, Win, Lose };
 
 
 		public override string[] EditorNames { get { return new string[] { "QTE/Begin", "QTE/Win", "QTE/Lose" }; } }
 		
 		protected override string EventName { get { return "OnQTE" + qteCondition.ToString (); } }
 		protected override string ConditionHelp { get { return "Whenever a QTE " + qteCondition.ToString ().ToLower () + "s."; } }
+
+
+		public EventQTE (int _id, string _label, ActionListAsset _actionListAsset, int[] _parameterIDs, QteCondition _qteCondition)
+		{
+			id = _id;
+			label = _label;
+			actionListAsset = _actionListAsset;
+			parameterIDs = _parameterIDs;
+			qteCondition = _qteCondition;
+		}
+
+
+		public EventQTE () {}
 
 
 		public override void Register ()

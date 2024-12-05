@@ -24,7 +24,7 @@ MonoBehaviour:
   displayNarrationForever: 0
   playAnimationForever: 1
   canSkipWithMouseClicks: 1
-  minimumDisplayTime: 1
+  minimumDisplayTime: 0.5
   screenTimeFactor: 0.1
   allowSpeechSkipping: 0
   allowGameplaySpeechSkipping: 0
@@ -34,32 +34,38 @@ MonoBehaviour:
   scrollingTextFactorsLength: 0
   syncSubtitlesToAudio: 0
   useAssetBundles: 0
-  searchAudioFiles: 1
+  searchAudioFiles: 0
   autoNameSpeechFiles: 0
   referenceSpeechFiles: 1
   autoSpeechFolder: Speech
   autoLipsyncFolder: Lipsync
   speechAddressablesPrefix: 
   lipSyncAddressablesPrefix: 
-  forceSubtitles: 1
-  translateAudio: 1
+  forceSubtitles: 0
+  translateAudio: 0
   separateVoiceAndTextLanguages: 0
   fallbackAudio: 0
-  keepTextInBuffer: 0
+  keepTextInBuffer: 1
   relegateBackgroundSpeechAudio: 0
   usePlayerRealName: 0
   separateSharedPlayerAudio: 0
   placeAudioInSubfolders: 0
   separateLines: 0
   separateLinePause: 1
-  resetExpressionsEachLine: 1
+  resetExpressionsEachLine: 0
   lines: []
   languages: []
   languageIsRightToLeft: 
   languageAudioAssetBundles: []
   languageLipsyncAssetBundles: []
   Languages:
-  - name: Original
+  - name: "\u0420\u0443\u0441\u0441\u043A\u0438\u0439"
+    isRightToLeft: 0
+    audioAssetBundle: 
+    lipsyncAssetBundle: 
+    fallbackLanguageIndex: 0
+    isDisabled: 0
+  - name: English
     isRightToLeft: 0
     audioAssetBundle: 
     lipsyncAssetBundle: 
@@ -76,7 +82,12 @@ MonoBehaviour:
   maxID: -1
   speechIDRecycling: 0
   mergeMatchingSpeechIDs: 0
-  useSpeechTags: 0
-  speechTags: []
+  useSpeechTags: 1
+  speechTags:
+  - ID: 0
+    label: (Untagged)
+  - ID: 1
+    label: Default
+  gatherInactiveGameObjects: 0
   previewMenuName: Subtitles
   mergeMatchingIDs: 0

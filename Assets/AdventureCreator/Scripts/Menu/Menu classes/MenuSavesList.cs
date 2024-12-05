@@ -2,7 +2,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"MenuSavesList.cs"
  * 
@@ -191,7 +191,7 @@ namespace AC
 			int i=0;
 			foreach (UISlot uiSlot in uiSlots)
 			{
-				uiSlot.LinkUIElements (canvas, linkUIGraphic);
+				uiSlot.LinkUIElements (_menu, canvas, linkUIGraphic);
 
 				if (addEventListeners)
 				{
@@ -237,7 +237,7 @@ namespace AC
 		
 		#if UNITY_EDITOR
 		
-		public override void ShowGUI (Menu menu)
+		public override void ShowGUI (Menu menu, System.Action<ActionListAsset> showALAEditor)
 		{
 			string apiPrefix = "(AC.PlayerMenus.GetElementWithName (\"" + menu.title + "\", \"" + title + "\") as AC.MenuSavesList)";
 
@@ -259,11 +259,11 @@ namespace AC
 				autoHandle = CustomGUILayout.Toggle ("Save when click on?", autoHandle, apiPrefix + ".autoHandle");
 				if (autoHandle)
 				{
-					ActionListGUI ("ActionList after saving:", menu.title, "AfterSaving", apiPrefix, "An ActionList asset that runs after the game is saved");
+					ActionListGUI ("ActionList after saving:", menu.title, "AfterSaving", apiPrefix, "An ActionList asset that runs after the game is saved", showALAEditor);
 				}
 				else
 				{
-					ActionListGUI ("ActionList when click:", menu.title, "OnClick", apiPrefix, "An ActionList asset that runs after the user clicks on a save file");
+					ActionListGUI ("ActionList when click:", menu.title, "OnClick", apiPrefix, "An ActionList asset that runs after the user clicks on a save file", showALAEditor);
 				}
 			}
 			else if (saveListType == AC_SaveListType.Load)
@@ -276,11 +276,11 @@ namespace AC
 				autoHandle = CustomGUILayout.Toggle ("Load when click on?", autoHandle, apiPrefix + ".autoHandle");
 				if (autoHandle)
 				{
-					ActionListGUI ("ActionList after loading:", menu.title, "AfterLoading", apiPrefix, "An ActionList asset that runs after the game is loaded");
+					ActionListGUI ("ActionList after loading:", menu.title, "AfterLoading", apiPrefix, "An ActionList asset that runs after the game is loaded", showALAEditor);
 				}
 				else
 				{
-					ActionListGUI ("ActionList when click:", menu.title, "OnClick", apiPrefix, "An ActionList asset that runs after the user clicks on a save file");
+					ActionListGUI ("ActionList when click:", menu.title, "OnClick", apiPrefix, "An ActionList asset that runs after the user clicks on a save file", showALAEditor);
 				}
 			}
 			else if (saveListType == AC_SaveListType.Import)
@@ -289,7 +289,7 @@ namespace AC
 				#if UNITY_STANDALONE
 				importProductName = CustomGUILayout.TextField ("Import product name:", importProductName, apiPrefix + ".importProductName", "The name of the project to import files from");
 				importSaveFilename = CustomGUILayout.TextField ("Import save filename:", importSaveFilename, apiPrefix + ".importSaveFilename", "The filename syntax of import files");
-				ActionListGUI ("ActionList after import:", menu.title, "After_Import", apiPrefix, "An ActionList asset that runs after a save file is imported");
+				ActionListGUI ("ActionList after import:", menu.title, "After_Import", apiPrefix, "An ActionList asset that runs after a save file is imported", showALAEditor);
 				checkImportBool = CustomGUILayout.Toggle ("Require Bool to be true?", checkImportBool, apiPrefix + ".checkImportBool", "If True, then a specific Boolean global variable must = True for an import file to be listed");
 				if (checkImportBool)
 				{
@@ -323,7 +323,7 @@ namespace AC
 			}
 			else
 			{
-				maxSlots = CustomGUILayout.IntField ("Maximum # of slots:", maxSlots, apiPrefix + ".maxSlots", "The maximum number of slots that can be displayed at once");
+				maxSlots = CustomGUILayout.DelayedIntField ("Maximum # of slots:", maxSlots, apiPrefix + ".maxSlots", "The maximum number of slots that can be displayed at once");
 				if (maxSlots < 0) maxSlots = 0;
 				allowEmptySlots = CustomGUILayout.Toggle ("Allow empty slots?", allowEmptySlots, apiPrefix + ".allowEmptySlots", "If True, then all slots will be shown even if they are not already assigned a save file.");
 
@@ -368,7 +368,7 @@ namespace AC
 				
 				for (int i=0; i<uiSlots.Length; i++)
 				{
-					uiSlots[i].LinkedUiGUI (i, source);
+					uiSlots[i].LinkedUiGUI (i, menu);
 				}
 
 				linkUIGraphic = (LinkUIGraphic) CustomGUILayout.EnumPopup ("Link graphics to:", linkUIGraphic, "", "What Image component the element's graphics should be linked to");
@@ -381,7 +381,7 @@ namespace AC
 				
 			CustomGUILayout.EndVertical ();
 			
-			base.ShowGUI (menu);
+			base.ShowGUI (menu, showALAEditor);
 		}
 
 
@@ -446,9 +446,9 @@ namespace AC
 		}
 
 
-		private void ActionListGUI (string label, string menuTitle, string suffix, string apiPrefix, string tooltip)
+		private void ActionListGUI (string label, string menuTitle, string suffix, string apiPrefix, string tooltip, System.Action<ActionListAsset> showALAEditor)
 		{
-			actionListOnSave = ActionListAssetMenu.AssetGUI (label, actionListOnSave,  menuTitle + "_" + title + "_" + suffix, apiPrefix + ".actionListOnSave",tooltip);
+			actionListOnSave = ActionListAssetMenu.AssetGUI (label, actionListOnSave,  menuTitle + "_" + title + "_" + suffix, apiPrefix + ".actionListOnSave", tooltip, null, showALAEditor);
 			
 			if (actionListOnSave && actionListOnSave.NumParameters > 0)
 			{
@@ -584,7 +584,7 @@ namespace AC
 			{
 				if (uiSlots[i].uiButton && uiSlots[i].uiButton == gameObject)
 				{
-					return 0;
+					return i;
 				}
 			}
 			return base.GetSlotIndex (gameObject);
@@ -861,7 +861,7 @@ namespace AC
 						EventManager.OnFinishSaving += OnCompleteSave;
 						EventManager.OnFailSaving += OnFailSaveLoad;
 
-						if (newSaveSlot && _slot == (numSlots - 1))
+						if (newSaveSlot && !fixedOption && _slot == (numSlots - 1))
 						{
 							SaveSystem.SaveNewGame ();
 

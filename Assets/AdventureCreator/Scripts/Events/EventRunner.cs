@@ -3,7 +3,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"EventRunner.cs"
  * 
@@ -20,7 +20,7 @@ namespace AC
 	/** A component that allows ActionLists to run when events are invoked. */
 	[AddComponentMenu ("Adventure Creator/Logic/Event runner")]
 	[HelpURL ("https://www.adventurecreator.org/scripting-guide/class_a_c_1_1_event_runner.html")]
-	public class EventRunner : MonoBehaviour
+	public class EventRunner : MonoBehaviour, iActionListAssetReferencer
     {
 
 		#region Variables
@@ -67,6 +67,32 @@ namespace AC
 		{
 			if (data == null) data = new EventsEditorData ();
 			data.ShowGUI (events, this);
+		}
+
+
+		public bool ReferencesAsset (ActionListAsset actionListAsset)
+		{
+			foreach (EventBase _event in events)
+			{
+				if (_event.ActionListAsset == null) continue;
+				if (_event.ActionListAsset == actionListAsset)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+		
+		public List<ActionListAsset> GetReferencedActionListAssets ()
+		{
+			List<ActionListAsset> allAssets = new List<ActionListAsset> ();
+			foreach (EventBase _event in events)
+			{
+				if (_event.ActionListAsset == null) continue;
+				allAssets.Add (_event.ActionListAsset);
+			}
+			return allAssets;
 		}
 
 #endif

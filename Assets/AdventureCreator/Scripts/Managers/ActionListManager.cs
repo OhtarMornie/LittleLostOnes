@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionListManager.cs"
  * 
@@ -10,6 +10,7 @@
  */
 
 using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -31,6 +32,7 @@ namespace AC
 		[HideInInspector] public bool ignoreNextConversationSkip = false;
 
 		private List<GameObject> skippableCutsceneSpawnedObjects = new List<GameObject> ();
+		private List<NestedAwaitingActiveList> nestedAwaitingActiveLists = new List<NestedAwaitingActiveList> ();
 
 		protected bool playCutsceneOnVarChange = false;
 		protected bool saveAfterCutscene = false;
@@ -179,6 +181,48 @@ namespace AC
 		}
 
 
+		public void SetActionPendingState (NestedAwaitingActiveList _nestedAwaitingActiveList, bool state)
+		{
+			if (state)
+			{
+				foreach (var nestedAwaitingActiveList in nestedAwaitingActiveLists)
+				{
+					if (nestedAwaitingActiveList.ActiveList == _nestedAwaitingActiveList.ActiveList &&
+						nestedAwaitingActiveList.Conversation == _nestedAwaitingActiveList.Conversation &&
+						nestedAwaitingActiveList.ActionList == _nestedAwaitingActiveList.ActionList)
+					{
+						return;
+					}
+				}
+				
+				nestedAwaitingActiveLists.Add (_nestedAwaitingActiveList);
+			}
+			else
+			{
+				foreach (var nestedAwaitingActiveList in nestedAwaitingActiveLists)
+				{
+					if (nestedAwaitingActiveList.ActiveList == _nestedAwaitingActiveList.ActiveList &&
+						nestedAwaitingActiveList.Conversation == _nestedAwaitingActiveList.Conversation &&
+						nestedAwaitingActiveList.ActionList == _nestedAwaitingActiveList.ActionList)
+					{
+						nestedAwaitingActiveLists.Remove (nestedAwaitingActiveList);
+						return;
+					}
+				}
+			}
+		}
+
+
+		public bool IsNestedAwaiting (ActiveList activeList)
+		{
+			foreach (var nestedAwaitingActiveList in nestedAwaitingActiveLists)
+			{
+				if (nestedAwaitingActiveList.ActiveList == activeList) return true;
+			}
+			return false;
+		}
+
+
 		/**
 		 * <summary>Checks if any currently-running ActionLists pause gameplay.</summary>
 		 * <param name = "_actionToIgnore">Any ActionList that contains this Action will be excluded from the check</param>
@@ -191,6 +235,18 @@ namespace AC
 			{
 				if (activeList.actionList.actionListType == ActionListType.PauseGameplay && activeList.IsRunning ())
 				{
+					bool foundPending = false;
+					foreach (var pendingList in nestedAwaitingActiveLists)
+					{
+						if (pendingList.ActiveList == activeList && (pendingList.Conversation == null || pendingList.Conversation.IsOverridingActionList (pendingList.ActionList)))
+						{
+							foundPending = true;
+							break;
+						}
+					}
+
+					if (foundPending) continue;
+
 					if (_actionToIgnore != null)
 					{
 						if (activeList.actionList.actions.Contains (_actionToIgnore))
@@ -572,12 +628,9 @@ namespace AC
 			}
 		}
 
-		#endregion
 
-
-		#region ProtectedFunctions
-
-		protected bool AreAnyListsSkipping ()
+		/** Checks if any ActionLists, both scene-based and assets, are currently being skipped */
+		public bool AreAnyListsSkipping ()
 		{
 			foreach (ActiveList activeList in activeLists)
 			{
@@ -598,6 +651,10 @@ namespace AC
 			return false;
 		}
 
+		#endregion
+
+
+		#region ProtectedFunctions
 
 		protected void OnEndActionList (ActionList actionList, ActionListAsset actionListAsset, bool isSkipping)
 		{
@@ -625,9 +682,9 @@ namespace AC
 
 		protected void RunVarChange (GameState gameState)
 		{
-			if (playCutsceneOnVarChange && (gameState == GameState.Normal || gameState == GameState.DialogOptions))
+			playCutsceneOnVarChange = false;
+			/*if (playCutsceneOnVarChange && (gameState == GameState.Normal || gameState == GameState.DialogOptions))
 			{
-				playCutsceneOnVarChange = false;
 
 				if (KickStarter.sceneSettings.actionListSource == ActionListSource.InScene && KickStarter.sceneSettings.cutsceneOnVarChange != null)
 				{
@@ -637,7 +694,7 @@ namespace AC
 				{
 					KickStarter.sceneSettings.actionListAssetOnVarChange.Interact ();
 				}
-			}
+			}*/
 		}
 
 
@@ -735,7 +792,7 @@ namespace AC
 				yield break;
 			}
 
-			if (AdvGame.GetReferences ().settingsManager.blackOutWhenSkipping)
+			if (KickStarter.settingsManager.blackOutWhenSkipping)
 			{
 				KickStarter.mainCamera.ForceOverlayForFrames (400);
 			}
@@ -743,7 +800,7 @@ namespace AC
 			KickStarter.eventManager.Call_OnSkipCutscene ();
 
 			// Stop all non-looping sound
-			Sound[] sounds = FindObjectsOfType (typeof (Sound)) as Sound[];
+			Sound[] sounds = UnityVersionHandler.FindObjectsOfType<Sound> ();
 			foreach (Sound sound in sounds)
 			{
 				if (sound.GetComponent<AudioSource> ())
@@ -836,7 +893,7 @@ namespace AC
 				}
 			}
 
-			if (AdvGame.GetReferences ().settingsManager.blackOutWhenSkipping)
+			if (KickStarter.settingsManager.blackOutWhenSkipping)
 			{
 				KickStarter.mainCamera.ForceOverlayForFrames (0);
 			}
@@ -847,9 +904,7 @@ namespace AC
 
 		#region StaticFunctions
 
-		/**
-		 * Ends all currently-running ActionLists and ActionListAssets.
-		 */
+		/** Ends all currently-running ActionLists and ActionListAssets. */
 		public static void KillAll ()
 		{
 			KickStarter.actionListManager.KillAllLists ();
@@ -869,6 +924,26 @@ namespace AC
 				return activeLists;
 			}
 		}
+
+		#endregion
+
+
+		#region PublicClasses
+
+		public class NestedAwaitingActiveList
+		{
+			public readonly ActiveList ActiveList;
+			public readonly Conversation Conversation;
+			public readonly ActionList ActionList;
+
+			public NestedAwaitingActiveList (ActiveList activeList, Conversation conversation, ActionList actionList)
+			{
+				ActiveList = activeList;
+				Conversation = conversation;
+				ActionList = actionList;
+			}
+		}
+
 
 		#endregion
 

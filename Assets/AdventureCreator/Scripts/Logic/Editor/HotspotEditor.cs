@@ -29,171 +29,114 @@ namespace AC
 		{
 			_target = (Hotspot) target;
 		}
-		
-		
+
+
 		public override void OnInspectorGUI ()
 		{
-			if (AdvGame.GetReferences () == null)
+			if (KickStarter.inventoryManager)
 			{
-				ACDebug.LogError ("A References file is required - please use the Adventure Creator window to create one.");
-				EditorGUILayout.LabelField ("No References file found!");
+				inventoryManager = KickStarter.inventoryManager;
 			}
-			else
+			if (KickStarter.cursorManager)
 			{
-				if (AdvGame.GetReferences ().inventoryManager)
-				{
-					inventoryManager = AdvGame.GetReferences ().inventoryManager;
-				}
-				if (AdvGame.GetReferences ().cursorManager)
-				{
-					cursorManager = AdvGame.GetReferences ().cursorManager;
-				}
-				if (AdvGame.GetReferences ().settingsManager)
-				{
-					settingsManager = AdvGame.GetReferences ().settingsManager;
-				}
-
-				if (Application.isPlaying)
-				{
-					if ((settingsManager && _target.gameObject.layer != LayerMask.NameToLayer (settingsManager.hotspotLayer)) || !_target.enabled)
-					{
-						EditorGUILayout.HelpBox ("Current state: OFF", MessageType.Info);
-					}
-				}
-
-				if (_target.lineID > -1)
-				{
-					EditorGUILayout.LabelField ("Speech Manager ID:", _target.lineID.ToString ());
-				}
-				
-				_target.interactionSource = (AC.InteractionSource) CustomGUILayout.EnumPopup ("Interaction source:", _target.interactionSource, string.Empty, "The source of the commands that are run when an option is chosen");
-				_target.hotspotName = CustomGUILayout.TextField ("Label (if not name):", _target.hotspotName, string.Empty, "The display name, if not the GameObject's name");
-
-				bool isPronoun = !_target.canBeLowerCase;
-				isPronoun = CustomGUILayout.Toggle ("Name is pronoun?", isPronoun, string.Empty, "If False, the name will be lower-cased when inside sentences.");
-				_target.canBeLowerCase = !isPronoun;
-
-				_target.highlight = (Highlight) CustomGUILayout.ObjectField <Highlight> ("Object to highlight:", _target.highlight, true, string.Empty, "The Highlight component that controls any highlighting effects associated with the Hotspot");
-
-				if (AdvGame.GetReferences ().settingsManager != null && AdvGame.GetReferences ().settingsManager.hotspotDrawing == ScreenWorld.WorldSpace)
-				{
-					_target.iconSortingLayer = CustomGUILayout.TextField ("Icon sorting layer:", _target.iconSortingLayer, string.Empty, "The 'Sorting Layer' of the icon's SpriteRenderer");
-					_target.iconSortingOrder = CustomGUILayout.IntField ("Icon sprite order:", _target.iconSortingOrder, string.Empty, "The 'Order in Layer' of the icon's SpriteRenderer");
-				}
-
-				EditorGUILayout.BeginHorizontal ();
-				_target.centrePoint = (Transform) CustomGUILayout.ObjectField <Transform> ("Centre-point (override):", _target.centrePoint, true, string.Empty, "A Transform that represents the centre of the Hotspot, if it is not physically at the same point as the Hotspot's GameObject itself");
-
-				if (_target.centrePoint == null)
-				{
-					if (CustomGUILayout.ClickedCreateButton ())
-					{
-						string prefabName = "Hotspot centre: " + _target.gameObject.name;
-						GameObject go = SceneManager.AddPrefab ("Navigation", "HotspotCentre", true, false, false);
-						go.name = prefabName;
-						go.transform.position = _target.transform.position;
-						_target.centrePoint = go.transform;
-						go.transform.parent = _target.transform;
-					}
-				}
-				EditorGUILayout.EndHorizontal ();
-
-				if (_target.centrePoint)
-				{
-					_target.centrePointOverrides = (CentrePointOverrides) CustomGUILayout.EnumPopup ("Centre-point overrides:", _target.centrePointOverrides, string.Empty, "What the 'Centre-point (override)' Transform actually overrides");
-				}
-
-				EditorGUILayout.BeginHorizontal ();
-				_target.walkToMarker = (Marker) CustomGUILayout.ObjectField <Marker> ("Walk-to Marker:", _target.walkToMarker, true, string.Empty, "The Marker that the player can optionally automatically walk to before an Interaction runs");
-				if (_target.walkToMarker == null)
-				{
-					if (CustomGUILayout.ClickedCreateButton ())
-					{
-						string prefabName = "Marker";
-						if (SceneSettings.IsUnity2D ())
-						{
-							prefabName += "2D";
-						}
-						Marker newMarker = SceneManager.AddPrefab ("Navigation", prefabName, true, false, true).GetComponent <Marker>();
-						newMarker.gameObject.name += (": " + _target.gameObject.name);
-						newMarker.transform.position = _target.transform.position;
-						_target.walkToMarker = newMarker;
-
-						if (UnityVersionHandler.IsPrefabFile (_target.gameObject))
-						{
-							newMarker.transform.parent = _target.transform;
-						}
-					}
-				}
-				EditorGUILayout.EndHorizontal ();
-
-				_target.limitToCamera = (_Camera) CustomGUILayout.ObjectField <_Camera> ("Limit to camera:", _target.limitToCamera, true, string.Empty, "If assigned, then the Hotspot will only be interactive when the assigned _Camera is active");
-
-				EditorGUILayout.BeginHorizontal ();
-				_target.interactiveBoundary = (InteractiveBoundary) CustomGUILayout.ObjectField <InteractiveBoundary> ("Interactive boundary:", _target.interactiveBoundary, true, string.Empty, "If assigned, then the Hotspot will only be interactive when the player is within this Trigger Collider's boundary");
-				if (_target.interactiveBoundary == null)
-				{
-					if (CustomGUILayout.ClickedCreateButton ())
-					{
-						string prefabName = "InteractiveBoundary";
-						if (SceneSettings.IsUnity2D ())
-						{
-							prefabName += "2D";
-						}
-						InteractiveBoundary newInteractiveBoundary = SceneManager.AddPrefab ("Logic", prefabName, true, false, true).GetComponent <InteractiveBoundary>();
-						newInteractiveBoundary.gameObject.name += (": " + _target.gameObject.name);
-						newInteractiveBoundary.transform.position = _target.transform.position;
-						newInteractiveBoundary.transform.SetParent (_target.transform);
-						_target.interactiveBoundary = newInteractiveBoundary;
-					}
-				}
-				EditorGUILayout.EndHorizontal ();
-
-				_target.drawGizmos = CustomGUILayout.Toggle ("Draw yellow cube?", _target.drawGizmos, string.Empty, "If True, then a Gizmo may be drawn in the Scene window at the Hotspots's position");
-				
-				if (settingsManager != null && (settingsManager.interactionMethod == AC_InteractionMethod.ChooseHotspotThenInteraction || settingsManager.interactionMethod == AC_InteractionMethod.ChooseInteractionThenHotspot || settingsManager.interactionMethod == AC_InteractionMethod.CustomScript))
-				{
-					_target.oneClick = CustomGUILayout.Toggle ("Single 'Use' Interaction?", _target.oneClick, string.Empty, "If True, then clicking the Hotspot will run the Hotspot's first interaction in useButtons, regardless of the Settings Manager's Interaction method");
-
-					if (_target.oneClick && settingsManager.interactionMethod == AC_InteractionMethod.CustomScript)
-					{
-						EditorGUILayout.HelpBox ("The above property can be accessed by reading the Hotspot script's IsSingleInteraction() method.", MessageType.Info);
-					}
-				}
-				if (_target.oneClick || (settingsManager != null && settingsManager.interactionMethod == AC_InteractionMethod.ContextSensitive))
-				{
-					if (!(settingsManager != null && settingsManager.interactionMethod == AC_InteractionMethod.CustomScript))
-					{
-						_target.doubleClickingHotspot = (DoubleClickingHotspot) CustomGUILayout.EnumPopup ("Double-clicking:", _target.doubleClickingHotspot, string.Empty, "The effect that double-clicking on the Hotspot has");
-					}
-				}
-				if (settingsManager != null && settingsManager.playerFacesHotspots)
-				{
-					_target.playerTurnsHead = CustomGUILayout.Toggle ("Players turn heads when active?", _target.playerTurnsHead, string.Empty, "If True, then the player will turn their head when the Hotspot is selected");
-				}
-
-				EditorGUILayout.Space ();
-				
-				UseInteractionGUI ();
-				
-				if (settingsManager == null || settingsManager.interactionMethod == AC_InteractionMethod.ContextSensitive || settingsManager.interactionMethod == AC_InteractionMethod.CustomScript)
-				{
-					EditorGUILayout.Space ();
-					LookInteractionGUI ();
-				}
-				
-				EditorGUILayout.Space ();
-				InvInteractionGUI ();
-
-				if (KickStarter.cursorManager != null && KickStarter.cursorManager.AllowUnhandledIcons ())
-				{
-					EditorGUILayout.Space ();
-					UnhandledUseInteractionGUI ();
-				}
-
-				EditorGUILayout.Space ();
-				UnhandledInvInteractionGUI ();
+				cursorManager = KickStarter.cursorManager;
 			}
+			if (KickStarter.settingsManager)
+			{
+				settingsManager = KickStarter.settingsManager;
+			}
+
+
+			if (Application.isPlaying)
+			{
+				if ((settingsManager && _target.gameObject.layer != LayerMask.NameToLayer (settingsManager.hotspotLayer)) || !_target.enabled)
+				{
+					EditorGUILayout.HelpBox ("Current state: OFF", MessageType.Info);
+				}
+			}
+			CustomGUILayout.Header ("Properties");
+			CustomGUILayout.BeginVertical ();
+
+			if (_target.lineID > -1)
+			{
+				EditorGUILayout.LabelField ("Speech Manager ID:", _target.lineID.ToString ());
+			}
+			
+			_target.interactionSource = (AC.InteractionSource) CustomGUILayout.EnumPopup ("Interaction source:", _target.interactionSource, string.Empty, "The source of the commands that are run when an option is chosen");
+			_target.hotspotName = CustomGUILayout.TextField ("Label (if not name):", _target.hotspotName, string.Empty, "The display name, if not the GameObject's name");
+
+			bool isPronoun = !_target.canBeLowerCase;
+			isPronoun = CustomGUILayout.Toggle ("Name is pronoun?", isPronoun, string.Empty, "If False, the name will be lower-cased when inside sentences.");
+			_target.canBeLowerCase = !isPronoun;
+
+			_target.highlight = (Highlight) CustomGUILayout.ObjectField <Highlight> ("Object to highlight:", _target.highlight, true, string.Empty, "The Highlight component that controls any highlighting effects associated with the Hotspot");
+
+			if (KickStarter.settingsManager != null && KickStarter.settingsManager.hotspotDrawing == ScreenWorld.WorldSpace)
+			{
+				_target.iconSortingLayer = CustomGUILayout.TextField ("Icon sorting layer:", _target.iconSortingLayer, string.Empty, "The 'Sorting Layer' of the icon's SpriteRenderer");
+				_target.iconSortingOrder = CustomGUILayout.IntField ("Icon sprite order:", _target.iconSortingOrder, string.Empty, "The 'Order in Layer' of the icon's SpriteRenderer");
+			}
+
+			_target.centrePoint = (Transform) CustomGUILayout.AutoCreateField ("Centre-point (override):", _target.centrePoint, OnAutoCreateCentrePoint, string.Empty, "A Transform that represents the centre of the Hotspot, if it is not physically at the same point as the Hotspot's GameObject itself");
+
+			if (_target.centrePoint)
+			{
+				_target.centrePointOverrides = (CentrePointOverrides) CustomGUILayout.EnumPopup ("Centre-point overrides:", _target.centrePointOverrides, string.Empty, "What the 'Centre-point (override)' Transform actually overrides");
+			}
+
+			_target.walkToMarker = (Marker) CustomGUILayout.AutoCreateField ("Walk-to Marker:", _target.walkToMarker, OnAutoCreateWalkToMarker, string.Empty, "The Marker that the player can optionally automatically walk to before an Interaction runs");
+
+			_target.limitToCamera = (_Camera) CustomGUILayout.ObjectField <_Camera> ("Limit to camera:", _target.limitToCamera, true, string.Empty, "If assigned, then the Hotspot will only be interactive when the assigned _Camera is active");
+
+			_target.interactiveBoundary = (InteractiveBoundary) CustomGUILayout.AutoCreateField ("Interactive boundary:", _target.interactiveBoundary, OnAutoCreateInteractiveBoundary, string.Empty, "If assigned, then the Hotspot will only be interactive when the player is within this Trigger Collider's boundary");
+
+			_target.drawGizmos = CustomGUILayout.Toggle ("Draw yellow cube?", _target.drawGizmos, string.Empty, "If True, then a Gizmo may be drawn in the Scene window at the Hotspots's position");
+			
+			if (settingsManager != null && (settingsManager.interactionMethod == AC_InteractionMethod.ChooseHotspotThenInteraction || settingsManager.interactionMethod == AC_InteractionMethod.ChooseInteractionThenHotspot || settingsManager.interactionMethod == AC_InteractionMethod.CustomScript))
+			{
+				_target.oneClick = CustomGUILayout.Toggle ("Single 'Use' Interaction?", _target.oneClick, string.Empty, "If True, then clicking the Hotspot will run the Hotspot's first interaction in useButtons, regardless of the Settings Manager's Interaction method");
+
+				if (_target.oneClick && settingsManager.interactionMethod == AC_InteractionMethod.CustomScript)
+				{
+					EditorGUILayout.HelpBox ("The above property can be accessed by reading the Hotspot script's IsSingleInteraction() method.", MessageType.Info);
+				}
+			}
+			if (_target.oneClick || (settingsManager != null && settingsManager.interactionMethod == AC_InteractionMethod.ContextSensitive))
+			{
+				if (!(settingsManager != null && settingsManager.interactionMethod == AC_InteractionMethod.CustomScript))
+				{
+					_target.doubleClickingHotspot = (DoubleClickingHotspot) CustomGUILayout.EnumPopup ("Double-clicking:", _target.doubleClickingHotspot, string.Empty, "The effect that double-clicking on the Hotspot has");
+				}
+			}
+			if (settingsManager != null && settingsManager.playerFacesHotspots)
+			{
+				_target.playerTurnsHead = CustomGUILayout.Toggle ("Players turn heads when active?", _target.playerTurnsHead, string.Empty, "If True, then the player will turn their head when the Hotspot is selected");
+			}
+
+			CustomGUILayout.EndVertical ();
+			EditorGUILayout.Space ();
+
+			CustomGUILayout.Header ("Interactions");
+			
+			UseInteractionGUI ();
+			
+			if (settingsManager == null || settingsManager.interactionMethod == AC_InteractionMethod.ContextSensitive || settingsManager.interactionMethod == AC_InteractionMethod.CustomScript)
+			{
+				EditorGUILayout.Space ();
+				LookInteractionGUI ();
+			}
+			
+			EditorGUILayout.Space ();
+			InvInteractionGUI ();
+
+			if (KickStarter.cursorManager != null && KickStarter.cursorManager.AllowUnhandledIcons ())
+			{
+				EditorGUILayout.Space ();
+				UnhandledUseInteractionGUI ();
+			}
+
+			EditorGUILayout.Space ();
+			UnhandledInvInteractionGUI ();
 			
 			UnityVersionHandler.CustomSetDirty (_target);
 		}
@@ -268,8 +211,9 @@ namespace AC
 							labelList.Add (_icon.id.ToString () + ": " + _icon.label);
 						}
 
-						foreach (Button useButton in _target.useButtons)
+						for (int b = 0; b < _target.useButtons.Count; b++)
 						{
+							Button useButton = _target.useButtons[b];
 							iconNumber = -1;
 							
 							int j = 0;
@@ -308,7 +252,10 @@ namespace AC
 							EditorGUILayout.EndHorizontal ();
 							ButtonGUI (useButton, iconLabel, _target.interactionSource);
 
-							CustomGUILayout.DrawUILine ();
+							if (b < _target.useButtons.Count - 1)
+							{
+								CustomGUILayout.DrawUILine ();
+							}
 						}
 					}
 					else
@@ -362,8 +309,9 @@ namespace AC
 							labelList.Add (_item.label);
 						}
 						
-						foreach (Button invButton in _target.invButtons)
+						for (int b = 0; b < _target.invButtons.Count; b++)
 						{
+							Button invButton = _target.invButtons[b];
 							invNumber = -1;
 							
 							int j = 0;
@@ -426,7 +374,10 @@ namespace AC
 								ButtonGUI (invButton, "Inventory", _target.interactionSource, true);
 							}
 
-							CustomGUILayout.DrawUILine ();
+							if (b < _target.invButtons.Count - 1)
+							{
+								CustomGUILayout.DrawUILine ();
+							}
 						}
 						
 					}					
@@ -654,6 +605,10 @@ namespace AC
 					}
 				}
 			}
+			else if (button.playerAction == PlayerAction.DoNothing)
+			{
+				button.stopPlayer = CustomGUILayout.Toggle ("Player stop moving?", button.stopPlayer, string.Empty, "If True, the Player will stop moving when the interaction runs");
+			}
 
 			if (Application.isPlaying && GUILayout.Button ("Run now"))
 			{
@@ -796,6 +751,51 @@ namespace AC
 				}
 				
 			}
+		}
+
+
+		private Transform OnAutoCreateCentrePoint ()
+		{
+			string prefabName = "Hotspot centre: " + _target.gameObject.name;
+			GameObject go = SceneManager.AddPrefab ("Navigation", "HotspotCentre", true, false, false);
+			go.name = prefabName;
+			go.transform.position = _target.transform.position;
+			go.transform.parent = _target.transform;
+			return go.transform;
+		}
+
+
+		private Marker OnAutoCreateWalkToMarker ()
+		{
+			string prefabName = "Marker";
+			if (SceneSettings.IsUnity2D ())
+			{
+				prefabName += "2D";
+			}
+			Marker newMarker = SceneManager.AddPrefab ("Navigation", prefabName, true, false, true).GetComponent <Marker>();
+			newMarker.gameObject.name += (": " + _target.gameObject.name);
+			newMarker.transform.position = _target.transform.position;
+
+			if (UnityVersionHandler.IsPrefabFile (_target.gameObject))
+			{
+				newMarker.transform.parent = _target.transform;
+			}
+			return newMarker;
+		}
+
+
+		private InteractiveBoundary OnAutoCreateInteractiveBoundary ()
+		{
+			string prefabName = "InteractiveBoundary";
+			if (SceneSettings.IsUnity2D ())
+			{
+				prefabName += "2D";
+			}
+			InteractiveBoundary newInteractiveBoundary = SceneManager.AddPrefab ("Logic", prefabName, true, false, true).GetComponent <InteractiveBoundary>();
+			newInteractiveBoundary.gameObject.name += (": " + _target.gameObject.name);
+			newInteractiveBoundary.transform.position = _target.transform.position;
+			newInteractiveBoundary.transform.SetParent (_target.transform);
+			return newInteractiveBoundary;
 		}
 
 	}

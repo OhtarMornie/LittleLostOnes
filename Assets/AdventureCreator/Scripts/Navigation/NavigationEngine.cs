@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"NavigationEngine.cs"
  * 
@@ -155,8 +155,8 @@ namespace AC
 		 */
 		public virtual NavigationMesh NavigationMeshGUI (NavigationMesh _target)
 		{
-			_target.disableRenderer = CustomGUILayout.ToggleLeft ("Disable mesh renderer?", _target.disableRenderer, "", "If True, the MeshRenderer will be disabled when the game begins");
-			_target.ignoreCollisions = CustomGUILayout.ToggleLeft ("Ignore collisions?", _target.ignoreCollisions, "", "If True, then Physics collisions with this GameObject's Collider will be disabled");
+			_target.disableRenderer = CustomGUILayout.Toggle ("Disable mesh renderer?", _target.disableRenderer, "", "If True, the MeshRenderer will be disabled when the game begins");
+			_target.ignoreCollisions = CustomGUILayout.Toggle ("Ignore collisions?", _target.ignoreCollisions, "", "If True, then Physics collisions with this GameObject's Collider will be disabled");
 			return _target;
 		}
 

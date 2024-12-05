@@ -64,6 +64,7 @@ namespace AC
 
 		public void ShowGUI ()
 		{
+			CustomGUILayout.Header ("Camera");
 			CustomGUILayout.BeginVertical ();
 			dragCamera = (GameCamera2DDrag) UnityEditor.EditorGUILayout.ObjectField ("Drag camera:", dragCamera, typeof (GameCamera2DDrag), true);
 			CustomGUILayout.EndVertical ();

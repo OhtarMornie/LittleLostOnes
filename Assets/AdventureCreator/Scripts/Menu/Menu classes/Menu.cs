@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"Menu.cs"
  * 
@@ -93,6 +93,12 @@ namespace AC
 		public bool hideDuringSaveScreenshots = true;
 
 		private Vector2 positionOffset;
+		private int needsOneFrameWakeUp;
+
+		#if TextMeshProIsPresent
+		/** If True, Elements in Unity UI-based Menus will use Text Mesh Pro equivalents to the standard UI components */
+		public bool useTextMeshProComponents = false;
+		#endif
 
 		/** If True, the Menu will be positioned such that it is always completely within the screen boundary */
 		public bool fitWithinScreen = true;
@@ -189,14 +195,13 @@ namespace AC
 		private bool isDisabledForScreenshot = false;
 		
 		private bool canDoSmoothing = false;
-		private int elementCount = -1;
 
 		[SerializeField] private Vector2 biggestElementSize;
 		[SerializeField] private Rect rect = new Rect ();
 
 		#if UNITY_EDITOR
 		private bool doProportionalScaling = false;
-		public bool showInFilter;
+		[System.NonSerialized] public bool showInFilter;
 		#endif
 
 
@@ -258,7 +263,10 @@ namespace AC
 			positionSmoothing = false;
 			defaultRectTransformLocalPosition = Vector2.zero;
 			hasMoved = false;
-			elementCount = -1;
+
+			#if TextMeshProIsPresent
+			useTextMeshProComponents = false;
+			#endif
 
 			// Update id based on array
 			foreach (int _id in idArray)
@@ -357,7 +365,9 @@ namespace AC
 			hideDuringSaveScreenshots = _menu.hideDuringSaveScreenshots;
 			positionSmoothing = _menu.positionSmoothing;
 
-			elementCount = -1;
+			#if TextMeshProIsPresent
+			useTextMeshProComponents = _menu.useTextMeshProComponents;
+			#endif
 
 			elements = new List<MenuElement>();
 			bool ignoreUnityUI = (Application.isPlaying && !fromEditor && _menu.menuSource == MenuSource.AdventureCreator);
@@ -636,7 +646,7 @@ namespace AC
 
 		#if UNITY_EDITOR
 		
-		public void ShowGUI ()
+		public void ShowGUI (System.Action<ActionListAsset> showALAEditor)
 		{
 			string apiPrefix = "AC.PlayerMenus.GetMenuWithName (\"" + title + "\")";
 
@@ -645,8 +655,8 @@ namespace AC
 
 			_isLocked = CustomGUILayout.Toggle ("Start game locked off?", _isLocked, apiPrefix + ".isLocked", "If True, the menu is locked off, and won't ever be displayed - even if the conditions for its 'Appear type' are met");
 			ignoreMouseClicks = CustomGUILayout.Toggle ("Ignore input?", ignoreMouseClicks, apiPrefix + ".ignoreMouseClicks", "If True, then input will be ineffective");
-			actionListOnTurnOn = ActionListAssetMenu.AssetGUI ("ActionList when turn on:", actionListOnTurnOn, title + "_TurnOn", apiPrefix + ".actionListOnTurnOn", "The ActionList asset to run whenever the menu is enabled");
-			actionListOnTurnOff = ActionListAssetMenu.AssetGUI ("ActionList when turn off:", actionListOnTurnOff, title + "_TurnOff", apiPrefix + ".actionListOnTurnOff", "The ActionList asset to run whenever the menu is disabled");
+			actionListOnTurnOn = ActionListAssetMenu.AssetGUI ("ActionList when turn on:", actionListOnTurnOn, title + "_TurnOn", apiPrefix + ".actionListOnTurnOn", "The ActionList asset to run whenever the menu is enabled", null, showALAEditor);
+			actionListOnTurnOff = ActionListAssetMenu.AssetGUI ("ActionList when turn off:", actionListOnTurnOff, title + "_TurnOff", apiPrefix + ".actionListOnTurnOff", "The ActionList asset to run whenever the menu is disabled", null, showALAEditor);
 
 			if (actionListOnTurnOff && ShouldTurnOffWhenLoading ())
 			{
@@ -716,7 +726,7 @@ namespace AC
 
 			if (CanPause ())
 			{
-				pauseWhenEnabled = CustomGUILayout.Toggle ("Pause game when enabled?", pauseWhenEnabled, apiPrefix + ".pauseWhenEnabled", "If True, then the game will be paused whenever the menu is enabled");
+				pauseWhenEnabled = CustomGUILayout.Toggle ("Pauses game?", pauseWhenEnabled, apiPrefix + ".pauseWhenEnabled", "If True, then the game will be paused whenever the menu is enabled");
 			}
 			else if (appearType == AppearType.WhenSpeechPlays)
 			{
@@ -885,6 +895,10 @@ namespace AC
 					}
 				}
 
+				#if TextMeshProIsPresent
+				useTextMeshProComponents = CustomGUILayout.Toggle ("Use TMPro components?", useTextMeshProComponents, apiPrefix + ".useTextMeshProComponents", "If True, then Elements within this Menu will rely on TextMeshPro UI components, rather than Unity UI. If a TMPro component is not found, it will use Unity UI as a fallback.");
+				#endif
+
 				bool isInScene = false;
 				if (menuSource == MenuSource.UnityUiInScene)
 				{
@@ -895,7 +909,7 @@ namespace AC
 				{
 					canvas = (Canvas) CustomGUILayout.ObjectField <Canvas> ("Linked Canvas:", canvas, isInScene, apiPrefix + ".RuntimeCanvas", "The in-scene Canvas GameObject that renders the menu");
 					canvasID = Menu.FieldToID <Canvas> (canvas, canvasID);
-					canvas = Menu.IDToField <Canvas> (canvas, canvasID, menuSource);
+					canvas = Menu.IDToField <Canvas> (canvas, canvasID, this);
 				}
 				else
 				{
@@ -913,7 +927,7 @@ namespace AC
 
 				rectTransform = (RectTransform) CustomGUILayout.ObjectField <RectTransform> ("RectTransform boundary:", rectTransform, true, apiPrefix + ".rectTransform", "A RectTransform that describes the Menu's screen space.");
 				rectTransformID = Menu.FieldToID <RectTransform> (rectTransform, rectTransformID);
-				rectTransform = Menu.IDToField <RectTransform> (rectTransform, rectTransformID, menuSource);
+				rectTransform = Menu.IDToField <RectTransform> (rectTransform, rectTransformID, this);
 
 				autoSelectFirstVisibleElement = CustomGUILayout.ToggleLeft ("Auto-select first visible Element?", autoSelectFirstVisibleElement, apiPrefix + ".autoSelectFirstVisibleElement", "If True, the first visible element will be automatically selected when the Menu is turned on");
 				if (!autoSelectFirstVisibleElement)
@@ -946,13 +960,14 @@ namespace AC
 				return _constantID;
 			}
 			
-			if (field.GetComponent <ConstantID>())
+			ConstantID fieldID = field.GetComponent<ConstantID> ();
+			if (fieldID)
 			{
-				if (!field.gameObject.activeInHierarchy && field.GetComponent <ConstantID>().constantID == 0)
+				if (!field.gameObject.activeInHierarchy && fieldID.constantID == 0)
 				{
 					UnityVersionHandler.AddConstantIDToGameObject <ConstantID> (field.gameObject, true);
 				}
-				_constantID = field.GetComponent <ConstantID>().constantID;
+				_constantID = fieldID.constantID;
 			}
 			else
 			{
@@ -964,9 +979,9 @@ namespace AC
 		}
 
 		
-		public static T IDToField <T> (T field, int _constantID, MenuSource source) where T : Component
+		public static T IDToField <T> (T field, int _constantID, Menu menu) where T : Component
 		{
-			if (Application.isPlaying || source == MenuSource.AdventureCreator)
+			if (Application.isPlaying || menu == null || menu.menuSource == MenuSource.AdventureCreator)
 			{
 				return field;
 			}
@@ -974,16 +989,41 @@ namespace AC
 			T newField = field;
 			if (_constantID != 0)
 			{
-				newField = ConstantID.GetComponent <T> (_constantID);
-				if (newField && source == MenuSource.UnityUiInScene)
+				bool doSearch = true;
+
+				if (field)
 				{
-					field = newField;
+					ConstantID existingID = field.GetComponent<ConstantID> ();
+					if (existingID && existingID.constantID == _constantID)
+					{
+						doSearch = false;
+					}
+				}
+
+				if (doSearch)
+				{
+					GameObject root = menu.PrefabCanvas ? menu.PrefabCanvas.gameObject : null;
+					if (UnityVersionHandler.GetPrefabStageRoot ())
+					{
+						root = UnityVersionHandler.GetPrefabStageRoot ();
+					}
+					else if (menu.canvasID != 0)
+					{
+						Canvas localCanvas = ConstantID.GetComponent <Canvas> (menu.canvasID);
+						if (localCanvas) root = localCanvas.gameObject;
+					}
+
+					newField = ConstantID.GetComponent <T> (_constantID, root);//
+					if (newField)// && menu.menuSource == MenuSource.UnityUiInScene)
+					{
+						field = newField;
+					}
 				}
 				
 				CustomGUILayout.BeginVertical ();
 				EditorGUILayout.BeginHorizontal ();
 				EditorGUILayout.LabelField ("Recorded ConstantID: " + _constantID.ToString (), EditorStyles.miniLabel);
-				if (field == null && source == MenuSource.UnityUiInScene)
+				if (field == null && menu.menuSource == MenuSource.UnityUiInScene)
 				{
 					if (GUILayout.Button ("Search scenes", EditorStyles.miniButton))
 					{
@@ -1693,7 +1733,7 @@ namespace AC
 				
 				if (element.positionType == AC_PositionType2.RelativeToMenuSize && sizeType == AC_SizeType.Automatic)
 				{
-					ACDebug.LogError ("Menu " + title + " cannot display because its size is Automatic, while its Element " + element.title + "'s Position is set to Relative");
+					ACDebug.LogWarning ("Menu " + title + " cannot display because its size is Automatic, while its Element " + element.title + "'s Position is set to Relative");
 					return;
 				}
 
@@ -1946,6 +1986,7 @@ namespace AC
 			if (!HasTransition ())
 			{
 				doFade = false;
+				needsOneFrameWakeUp = 2;
 			}
 
 			// Setting selected_slot to -2 will cause PlayerInput's selected_option to reset
@@ -2042,6 +2083,9 @@ namespace AC
 		}
 
 
+		public bool NeedsOneFrameWakeUp { get { return needsOneFrameWakeUp > 0; }}
+
+
 		/**
 		 * <summary>Turns the Menu off.</summary>
 		 * <param name = "doFade">If True, the Menu will play its transition animation; otherwise, it will turn off instantly.</param>
@@ -2076,7 +2120,7 @@ namespace AC
 
 			if (appearType == AppearType.OnContainer)
 			{
-				KickStarter.playerInput.activeContainer = null;
+				if (KickStarter.playerInput.activeContainer) KickStarter.playerInput.activeContainer.Close ();
 			}
 			else if (appearType == AppearType.OnViewDocument)
 			{
@@ -2224,7 +2268,9 @@ namespace AC
 		 */
 		public void HandleTransition ()
 		{
-			if (isFading && isEnabled)
+			if (!isEnabled) return;
+
+			if (isFading)
 			{
 				if (fadeType == FadeType.fadeIn)
 				{
@@ -2257,6 +2303,10 @@ namespace AC
 						UpdateTransition ();
 					}
 				}
+			}
+			else if (needsOneFrameWakeUp > 0)
+			{
+				needsOneFrameWakeUp--;
 			}
 		}
 		
@@ -2426,18 +2476,16 @@ namespace AC
 			{
 				return false;
 			}
-
-			GameState gameState = KickStarter.stateHandler.gameState;
-			
-			if ((gameState == GameState.Paused && ((appearType == AppearType.WhenSpeechPlays && showWhenPaused) || IsBlocking ())) ||
-				(gameState == GameState.DialogOptions && appearType == AppearType.DuringConversation) ||
-				(KickStarter.playerMenus.IsInCutscene && CanClickInCutscenes ()) ||
-				(IsInGameplay (gameState) && CanPause () && !pauseWhenEnabled) ||
-				(IsInGameplay (gameState) && !CanPause ()))
+			if (KickStarter.playerMenus.IsInCutscene)
 			{
-				return true;
+				if (canClickInCutscene && ShowClickInCutscenesOption ())
+				{
+					return true;
+				}
+				return false;
 			}
-			return false;
+
+			return true;
 		}
 
 
@@ -2691,6 +2739,7 @@ namespace AC
 
 			if (menuSource != MenuSource.AdventureCreator || KickStarter.settingsManager.inputMethod != InputMethod.TouchScreen)
 			{
+				//if (((gameState == GameState.Paused || IsBlocking ()) && KickStarter.menuManager.keyboardControlWhenPaused) ||
 				if ((((gameState == GameState.Paused && appearType == AppearType.WhenSpeechPlays && showWhenPaused) || IsBlocking ()) && KickStarter.menuManager.keyboardControlWhenPaused) ||
 					(gameState == GameState.DialogOptions && appearType == AppearType.DuringConversation && KickStarter.menuManager.keyboardControlWhenDialogOptions) ||
 					(KickStarter.playerMenus.IsInCutscene && CanClickInCutscenes () && KickStarter.menuManager.keyboardControlWhenCutscene) ||
@@ -3197,6 +3246,10 @@ namespace AC
 					}
 				}
 			}
+			else if (!IsUnityUI () && !hasMoved)
+			{
+				hasMoved = true;
+			}
 		}
 
 
@@ -3215,11 +3268,7 @@ namespace AC
 		{
 			get
 			{
-				if (elementCount <= 0)
-				{
-					elementCount = elements.Count;
-				}
-				return elementCount;
+				return elements.Count;
 			}
 		}
 

@@ -2,7 +2,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"InvVar.cs"
  * 
@@ -165,7 +165,14 @@ namespace AC
 					return GetPopUpForIndex (val, languageNumber);
 
 				case VariableType.String:
-					return KickStarter.runtimeLanguages.GetTranslation (textVal, textValLineID, languageNumber, GetTranslationType (0));
+					if (KickStarter.runtimeLanguages)
+					{
+						return KickStarter.runtimeLanguages.GetTranslation (textVal, textValLineID, languageNumber, GetTranslationType (0));
+					}
+					else
+					{
+						return textVal;
+					}
 					
 				case VariableType.GameObject:
 					if (gameObjectVal)
@@ -262,7 +269,7 @@ namespace AC
 
 		public override AC_TextType GetTranslationType (int index)
 		{
-			return AC_TextType.InventoryItemProperty;
+			return AC_TextType.InventoryProperty;
 		}
 
 
@@ -298,7 +305,7 @@ namespace AC
 
 		public void ShowGUI (string apiPrefix, bool allowSceneGameObjects = false)
 		{
-			string _label = label + ":";
+			string _label = id + ": " + label + ":";
 			if (string.IsNullOrEmpty (label))
 			{
 				_label = "Property " + id.ToString () + ":";

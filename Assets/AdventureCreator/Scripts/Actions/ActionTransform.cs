@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionTransform.cs"
  * 
@@ -328,28 +328,11 @@ namespace AC
 			isPlayer = EditorGUILayout.Toggle ("Move Player?", isPlayer);
 			if (isPlayer)
 			{
-				if (KickStarter.settingsManager != null && KickStarter.settingsManager.playerSwitching == PlayerSwitching.Allow)
-				{
-					parameterID = ChooseParameterGUI ("Player ID:", parameters, parameterID, ParameterType.Integer);
-					if (parameterID < 0)
-						playerID = ChoosePlayerGUI (playerID, true);
-				}
+				PlayerField (ref playerID, parameters, ref parameterID);
 			}
 			else
 			{
-				parameterID = Action.ChooseParameterGUI ("Moveable object:", parameters, parameterID, ParameterType.GameObject);
-				if (parameterID >= 0)
-				{
-					constantID = 0;
-					linkedProp = null;
-				}
-				else
-				{
-					linkedProp = (Moveable) EditorGUILayout.ObjectField ("Moveable object:", linkedProp, typeof (Moveable), true);
-
-					constantID = FieldToID <Moveable> (linkedProp, constantID);
-					linkedProp = IDToField <Moveable> (linkedProp, constantID, false);
-				}
+				ComponentField ("Moveable object:", ref linkedProp, ref constantID, parameters, ref parameterID);
 			}
 
 			EditorGUILayout.BeginHorizontal ();
@@ -362,35 +345,14 @@ namespace AC
 			
 			if (transformType == TransformType.CopyMarker)
 			{
-				markerParameterID = Action.ChooseParameterGUI ("Marker:", parameters, markerParameterID, ParameterType.GameObject);
-				if (markerParameterID >= 0)
-				{
-					markerID = 0;
-					marker = null;
-				}
-				else
-				{
-					marker = (Marker) EditorGUILayout.ObjectField ("Marker:", marker, typeof (Marker), true);
-
-					markerID = FieldToID<Marker> (marker, markerID);
-					marker = IDToField<Marker> (marker, markerID, false);
-				}
+				ComponentField ("Marker:", ref marker, ref markerID, parameters, ref markerParameterID);
 			}
 			else
 			{
 				setVectorMethod = (SetVectorMethod) EditorGUILayout.EnumPopup ("Vector is: ", setVectorMethod);
 				if (setVectorMethod == SetVectorMethod.EnteredHere)
 				{
-					newVectorParameterID = Action.ChooseParameterGUI ("Value:", parameters, newVectorParameterID, ParameterType.Vector3);
-					if (newVectorParameterID < 0)
-					{
-						//newVector = EditorGUILayout.Vector3Field ("Value:", newVector);
-						var serializedObject = new SerializedObject (this);
-						serializedObject.Update ();
-						SerializedProperty vectorProperty = serializedObject.FindProperty ("newVector");
-						EditorGUILayout.PropertyField (vectorProperty, true);
-						serializedObject.ApplyModifiedProperties ();
-					}
+					Vector3Field ("Value:", ref newVector, parameters, ref newVectorParameterID);
 				}
 				else if (setVectorMethod == SetVectorMethod.FromVector3Variable)
 				{
@@ -399,21 +361,13 @@ namespace AC
 					switch (variableLocation)
 					{
 						case VariableLocation.Global:
-							vectorVarParameterID = Action.ChooseParameterGUI ("Vector3 variable:", parameters, vectorVarParameterID, ParameterType.GlobalVariable);
-							if (vectorVarParameterID < 0)
-							{
-								vectorVarID = AdvGame.GlobalVariableGUI ("Vector3 variable:", vectorVarID, VariableType.Vector3);
-							}
+							GlobalVariableField ("Vector3 variable:", ref vectorVarID, VariableType.Vector3, parameters, ref vectorVarParameterID);
 							break;
 
 						case VariableLocation.Local:
 							if (!isAssetFile)
 							{
-								vectorVarParameterID = Action.ChooseParameterGUI ("Vector3 variable:", parameters, vectorVarParameterID, ParameterType.LocalVariable);
-								if (vectorVarParameterID < 0)
-								{
-									vectorVarID = AdvGame.LocalVariableGUI ("Vector3 variable:", vectorVarID, VariableType.Vector3);
-								}
+								LocalVariableField ("Vector3 variable:", ref vectorVarID, VariableType.Vector3, parameters, ref vectorVarParameterID);
 							}
 							else
 							{
@@ -422,23 +376,7 @@ namespace AC
 							break;
 
 						case VariableLocation.Component:
-							vectorVarParameterID = Action.ChooseParameterGUI ("Vector3 variable:", parameters, vectorVarParameterID, ParameterType.ComponentVariable);
-							if (vectorVarParameterID >= 0)
-							{
-								variables = null;
-								variablesConstantID = 0;
-							}
-							else
-							{
-								variables = (Variables) EditorGUILayout.ObjectField ("Component:", variables, typeof (Variables), true);
-								variablesConstantID = FieldToID<Variables> (variables, variablesConstantID);
-								variables = IDToField<Variables> (variables, variablesConstantID, false);
-
-								if (variables != null)
-								{
-									vectorVarID = AdvGame.ComponentVariableGUI ("Vector3 variable:", vectorVarID, VariableType.Vector3, variables);
-								}
-							}
+							ComponentVariableField ("Vector3 variable:", ref variables, ref variablesConstantID, ref vectorVarID, VariableType.Vector3, parameters, ref vectorVarParameterID);
 							break;
 					}
 				}
@@ -458,11 +396,7 @@ namespace AC
 				}
 			}
 
-			transitionTimeParameterID = Action.ChooseParameterGUI ("Transition time (s):", parameters, transitionTimeParameterID, ParameterType.Float);
-			if (transitionTimeParameterID < 0)
-			{
-				transitionTime = EditorGUILayout.FloatField ("Transition time (s):", transitionTime);
-			}
+			FloatField ("Transition time (s):", ref transitionTime, parameters, ref transitionTimeParameterID);
 
 			if (transitionTime > 0f)
 			{

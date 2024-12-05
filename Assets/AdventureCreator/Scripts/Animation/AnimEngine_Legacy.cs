@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"AnimEngine_Legacy.cs"
  * 
@@ -36,8 +36,8 @@ namespace AC
 		{
 			#if UNITY_EDITOR
 			
+			CustomGUILayout.Header ("Standard 3D animations");
 			CustomGUILayout.BeginVertical ();
-			EditorGUILayout.LabelField ("Standard 3D animations", EditorStyles.boldLabel);
 
 			if (SceneSettings.IsTopDown ())
 			{
@@ -57,11 +57,11 @@ namespace AC
 				character.talkAnim = (AnimationClip) CustomGUILayout.ObjectField <AnimationClip> ("Talk:", character.talkAnim, false, "", "The 'Talk' animation");
 			}
 
-			if (AdvGame.GetReferences () && AdvGame.GetReferences ().speechManager)
+			if (KickStarter.speechManager)
 			{
-				if (AdvGame.GetReferences ().speechManager.lipSyncMode != LipSyncMode.Off && AdvGame.GetReferences ().speechManager.lipSyncMode != LipSyncMode.FaceFX)
+				if (KickStarter.speechManager.lipSyncMode != LipSyncMode.Off)
 				{
-					if (AdvGame.GetReferences ().speechManager.lipSyncOutput == LipSyncOutput.PortraitAndGameObject)
+					if (KickStarter.speechManager.lipSyncOutput == LipSyncOutput.PortraitAndGameObject)
 					{
 						if (character.GetShapeable ())
 						{
@@ -73,7 +73,7 @@ namespace AC
 							EditorGUILayout.HelpBox ("Attach a Shapeable script to show phoneme options", MessageType.Info);
 						}
 					}
-					else if (AdvGame.GetReferences ().speechManager.lipSyncOutput == LipSyncOutput.GameObjectTexture)
+					else if (KickStarter.speechManager.lipSyncOutput == LipSyncOutput.GameObjectTexture)
 					{
 						if (character.GetComponent <LipSyncTexture>() == null)
 						{
@@ -97,15 +97,13 @@ namespace AC
 			}
 			CustomGUILayout.EndVertical ();
 			
+			CustomGUILayout.Header ("Bone transforms");
 			CustomGUILayout.BeginVertical ();
-			EditorGUILayout.LabelField ("Bone transforms", EditorStyles.boldLabel);
 			
 			character.upperBodyBone = (Transform) CustomGUILayout.ObjectField <Transform> ("Upper body:", character.upperBodyBone, true, "", "The 'Upper body bone' Transform, used to isolate animations");
 			character.neckBone = (Transform) CustomGUILayout.ObjectField <Transform> ("Neck bone:", character.neckBone, true, "", "The 'Neck bone' Transform, used to isolate animations");
 			character.leftArmBone = (Transform) CustomGUILayout.ObjectField <Transform> ("Left arm:", character.leftArmBone, true, "", "The 'Left arm bone' Transform, used to isolate animations");
 			character.rightArmBone = (Transform) CustomGUILayout.ObjectField <Transform> ("Right arm:", character.rightArmBone, true, "", "The 'Right arm bone' Transform, used to isolate animations");
-			character.leftHandBone = (Transform) CustomGUILayout.ObjectField <Transform> ("Left hand:", character.leftHandBone, true, "", "The 'Left hand bone' Transform, used to isolate animations");
-			character.rightHandBone = (Transform) CustomGUILayout.ObjectField <Transform> ("Right hand:", character.rightHandBone, true, "", "The 'Right hand bone' Transform, used to isolate animations");
 			CustomGUILayout.EndVertical ();
 
 			if (GUI.changed && character != null)
@@ -183,7 +181,6 @@ namespace AC
 		}
 
 
-
 		public override void LoadNPCData (NPCData npcData, NPC npc)
 		{
 			#if AddressableIsPresent
@@ -240,11 +237,7 @@ namespace AC
 
 			if (action.method == ActionCharAnim.AnimMethodChar.PlayCustom || action.method == ActionCharAnim.AnimMethodChar.StopCustom)
 			{
-				action.clipParameterID = Action.ChooseParameterGUI ("Clip:", parameters, action.clipParameterID, ParameterType.UnityObject);
-				if (action.clipParameterID < 0)
-				{
-					action.clip = (AnimationClip) EditorGUILayout.ObjectField ("Clip:", action.clip, typeof (AnimationClip), true);
-				}
+				action.AssetField ("Clip:", ref action.clip, parameters, ref action.clipParameterID);
 
 				if (action.method == ActionCharAnim.AnimMethodChar.PlayCustom)
 				{
@@ -268,11 +261,7 @@ namespace AC
 			
 			else if (action.method == ActionCharAnim.AnimMethodChar.SetStandard)
 			{
-				action.clipParameterID = Action.ChooseParameterGUI ("Clip:", parameters, action.clipParameterID, ParameterType.UnityObject);
-				if (action.clipParameterID < 0)
-				{
-					action.clip = (AnimationClip) EditorGUILayout.ObjectField ("Clip:", action.clip, typeof (AnimationClip), true);
-				}
+				action.AssetField ("Clip:", ref action.clip, parameters, ref action.clipParameterID);
 
 				action.standard = (AnimStandard) EditorGUILayout.EnumPopup ("Change:", action.standard);
 
@@ -281,20 +270,12 @@ namespace AC
 					action.changeSound = EditorGUILayout.Toggle ("Change sound?", action.changeSound);
 					if (action.changeSound)
 					{
-						action.newSoundParameterID = Action.ChooseParameterGUI ("New sound:", parameters, action.newSoundParameterID, ParameterType.UnityObject);
-						if (action.newSoundParameterID < 0)
-						{
-							action.newSound = (AudioClip) EditorGUILayout.ObjectField ("New sound:", action.newSound, typeof (AudioClip), false);
-						}
+						action.AssetField ("New sound:", ref action.newSound, parameters, ref action.newSoundParameterID);
 					}
 					action.changeSpeed = EditorGUILayout.Toggle ("Change speed?", action.changeSpeed);
 					if (action.changeSpeed)
 					{
-						action.newSpeedParameterID = Action.ChooseParameterGUI ("New speed:", parameters, action.newSpeedParameterID, ParameterType.Float);
-						if (action.newSpeedParameterID < 0)
-						{
-							action.newSpeed = EditorGUILayout.FloatField ("New speed:", action.newSpeed);
-						}
+						action.FloatField ("New speed:", ref action.newSpeed, parameters, ref action.newSpeedParameterID);
 					}
 				}
 			}
@@ -680,25 +661,8 @@ namespace AC
 
 			if (action.method == AnimMethod.PlayCustom || action.method == AnimMethod.StopCustom)
 			{
-				action.parameterID = Action.ChooseParameterGUI ("Object:", parameters, action.parameterID, ParameterType.GameObject);
-				if (action.parameterID >= 0)
-				{
-					action.constantID = 0;
-					action._anim = null;
-				}
-				else
-				{
-					action._anim = (Animation) EditorGUILayout.ObjectField ("Object:", action._anim, typeof (Animation), true);
-					
-					action.constantID = action.FieldToID <Animation> (action._anim, action.constantID);
-					action._anim = action.IDToField <Animation> (action._anim, action.constantID, false);
-				}
-
-				action.clipParameterID = Action.ChooseParameterGUI ("Clip:", parameters, action.clipParameterID, ParameterType.UnityObject);
-				if (action.clipParameterID < 0)
-				{
-					action.clip = (AnimationClip) EditorGUILayout.ObjectField ("Clip:", action.clip, typeof (AnimationClip), true);
-				}
+				action.ComponentField ("Object:", ref action._anim, ref action.constantID, parameters, ref action.parameterID);
+				action.AssetField ("Clip:", ref action.clip, parameters, ref action.clipParameterID);
 
 				if (action.method == AnimMethod.PlayCustom)
 				{
@@ -713,19 +677,7 @@ namespace AC
 				action.isPlayer = EditorGUILayout.Toggle ("Is player?", action.isPlayer);
 				if (!action.isPlayer)
 				{
-					action.parameterID = Action.ChooseParameterGUI ("Object:", parameters, action.parameterID, ParameterType.GameObject);
-					if (action.parameterID >= 0)
-					{
-						action.constantID = 0;
-						action.shapeObject = null;
-					}
-					else
-					{
-						action.shapeObject = (Shapeable) EditorGUILayout.ObjectField ("Object:", action.shapeObject, typeof (Shapeable), true);
-						
-						action.constantID = action.FieldToID <Shapeable> (action.shapeObject, action.constantID);
-						action.shapeObject = action.IDToField <Shapeable> (action.shapeObject, action.constantID, false);
-					}
+					action.ComponentField ("Shapeable:", ref action.shapeObject, ref action.constantID, parameters, ref action.parameterID);
 				}
 
 				action.shapeKey = EditorGUILayout.IntField ("Shape key:", action.shapeKey);
@@ -932,11 +884,7 @@ namespace AC
 			action.renderLock_scale = (RenderLock) EditorGUILayout.EnumPopup ("Character scale:", action.renderLock_scale);
 			if (action.renderLock_scale == RenderLock.Set)
 			{
-				action.scaleParameterID = Action.ChooseParameterGUI ("New scale (%):", parameters, action.scaleParameterID, ParameterType.Integer);
-				if (action.scaleParameterID < 0)
-				{
-					action.scale = EditorGUILayout.IntField ("New scale (%):", action.scale);
-				}
+				action.IntField ("New scale (%):", ref action.scale, parameters, ref action.scaleParameterID);
 			}
 
 			#endif

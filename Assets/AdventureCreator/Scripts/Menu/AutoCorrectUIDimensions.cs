@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"AutoCorrectUIDimensions.cs"
  * 
@@ -75,7 +75,7 @@ namespace AC
 			
 			if (updateScale && canvasScaler == null)
 			{
-				ACDebug.LogWarning ("The AutoCorrectUIDimensions component must be attached to a GameObject with a CanvasScaler component - be sure to attach it to the root Canvas object.", this);
+				ACDebug.LogWarning ("The Auto Correct UI Dimensions component on " + gameObject.name + " must be attached to a GameObject with a CanvasScaler component - be sure to attach it to the root Canvas object.", this);
 			}
 		}
 

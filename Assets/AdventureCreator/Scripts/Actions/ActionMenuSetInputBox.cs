@@ -1,11 +1,11 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionMenuSetInputBox.cs"
  * 
- *	This action replaces the text within an Input box element.
+ *	This action replaces the text within an element.
  * 
  */
 
@@ -33,6 +33,8 @@ namespace AC
 		public int newLabelLineID = -1;
 		private int runtimeLineID;
 
+		public bool preProcessTokens;
+
 		public enum SetMenuInputBoxSource { EnteredHere, FromGlobalVariable };
 		public SetMenuInputBoxSource setMenuInputBoxSource = SetMenuInputBoxSource.EnteredHere;
 
@@ -41,6 +43,8 @@ namespace AC
 
 		public int varID = 0;
 		public int varParameterID = -1;
+
+		public SelectedObjectiveLabelType selectedObjectiveLabelType = SelectedObjectiveLabelType.Title;
 
 		public Texture newTexture;
 		public int newTextureParameterID = -1;
@@ -85,7 +89,95 @@ namespace AC
 									runtimeLineID = document.titleLineID;
 								}
 							}
+							else if (parameter != null && parameter.parameterType == ParameterType.Objective)
+							{
+								newLabelLineID = -1;
+								Objective objective = KickStarter.inventoryManager.GetObjective (parameter.intValue);
+								if (objective != null)
+								{
+									switch (selectedObjectiveLabelType)
+									{
+										case SelectedObjectiveLabelType.Title:
+											runtimeNewLabel = objective.GetTitle (Options.GetLanguage ());
+											runtimeLineID = objective.titleLineID;
+											break;
+
+										case SelectedObjectiveLabelType.Description:
+											runtimeNewLabel = objective.GetDescription (Options.GetLanguage ());
+											runtimeLineID = objective.descriptionLineID;
+											break;
+
+										case SelectedObjectiveLabelType.StateLabel:
+										{
+											ObjectiveInstance objectiveInstance = KickStarter.runtimeObjectives.GetObjective (objective.ID);
+											if (objectiveInstance != null)
+											{
+												runtimeNewLabel = objectiveInstance.CurrentState.GetLabel (Options.GetLanguage ());
+												runtimeLineID = objectiveInstance.CurrentState.labelLineID;
+											}
+											else
+											{
+												LogWarning ("Cannot find Objective instance with ID = " + objective.ID);
+											}
+											break;
+										}
+
+										case SelectedObjectiveLabelType.StateDescription:
+										{
+											ObjectiveInstance objectiveInstance = KickStarter.runtimeObjectives.GetObjective (objective.ID);
+											if (objectiveInstance != null)
+											{
+												runtimeNewLabel = objectiveInstance.CurrentState.GetDescription (Options.GetLanguage ());
+												runtimeLineID = objectiveInstance.CurrentState.descriptionLineID;
+											}
+											else
+											{
+												LogWarning ("Cannot find Objective instance with ID = " + objective.ID);
+											}
+											break;
+										}
+
+										case SelectedObjectiveLabelType.StateType:
+										{
+											ObjectiveInstance objectiveInstance = KickStarter.runtimeObjectives.GetObjective (objective.ID);
+											if (objectiveInstance != null)
+											{
+												runtimeNewLabel = objectiveInstance.CurrentState.GetStateTypeText (Options.GetLanguage ());
+
+												var stateType = objectiveInstance.CurrentState.stateType;
+												switch (stateType)
+												{
+													case ObjectiveStateType.Active:
+														runtimeLineID = KickStarter.inventoryManager.objectiveStateActiveLabel.lineID;
+														break;
+
+													case ObjectiveStateType.Complete:
+														runtimeLineID = KickStarter.inventoryManager.objectiveStateCompleteLabel.lineID;
+														break;
+
+													case ObjectiveStateType.Fail:
+														runtimeLineID = KickStarter.inventoryManager.objectiveStateFailLabel.lineID;
+														break;
+
+													default:
+														break;
+												}
+											}
+											else
+											{
+												LogWarning ("Cannot find Objective instance with ID = " + objective.ID);
+											}
+											break;
+										}
+
+										default:
+											break;
+									}
+								}
+							}
 						}
+
+						runtimeNewLabel = AdvGame.ConvertParameterTokens (runtimeNewLabel, parameters, Options.GetLanguage ());
 					}
 					break;
 
@@ -112,6 +204,15 @@ namespace AC
 								if (document != null)
 								{
 									runtimeNewTexture = document.texture;
+								}
+							}
+							else if (parameter != null && parameter.parameterType == ParameterType.Objective)
+							{
+								int objectiveID = parameter.intValue;
+								Objective objective = KickStarter.inventoryManager.GetObjective (objectiveID);
+								if (objective != null)
+								{
+									runtimeNewTexture = objective.texture;
 								}
 							}
 						}
@@ -145,6 +246,11 @@ namespace AC
 								}
 								else
 								{
+									if (preProcessTokens)
+									{
+										runtimeNewLabel = AdvGame.ConvertTokens (runtimeNewLabel, Options.GetLanguage ());
+									}
+
 									menuElement.OverrideLabel (runtimeNewLabel, runtimeLineID);
 								}
 							}
@@ -180,7 +286,6 @@ namespace AC
 					LogWarning ("Cannot find Element '" + elementName + "' within Menu '" + menuName + "'");
 				}
 			}
-			
 			return 0f;
 		}
 		
@@ -189,17 +294,8 @@ namespace AC
 		
 		public override void ShowGUI (List<ActionParameter> parameters)
 		{
-			menuNameParameterID = Action.ChooseParameterGUI ("Menu containing Element:", parameters, menuNameParameterID, new ParameterType[2] { ParameterType.String, ParameterType.PopUp });
-			if (menuNameParameterID < 0)
-			{
-				menuName = TextField ("Menu containing Element:", menuName);
-			}
-			
-			elementNameParameterID = Action.ChooseParameterGUI ("Element name:", parameters, elementNameParameterID, new ParameterType[2] { ParameterType.String, ParameterType.PopUp });
-			if (elementNameParameterID < 0)
-			{
-				elementName = TextField ("Element name:", elementName);
-			}
+			TextField ("Menu containing Element:", ref menuName, parameters, ref menuNameParameterID);
+			TextField ("Element name:", ref elementName, parameters, ref elementNameParameterID);
 
 			elementContentType = (ElementContentType) EditorGUILayout.EnumPopup ("Content type:", elementContentType);
 			switch (elementContentType)
@@ -209,29 +305,30 @@ namespace AC
 						setMenuInputBoxSource = (SetMenuInputBoxSource) EditorGUILayout.EnumPopup ("New label is:", setMenuInputBoxSource);
 						if (setMenuInputBoxSource == SetMenuInputBoxSource.EnteredHere)
 						{
-							newLabelParameterID = Action.ChooseParameterGUI ("New label:", parameters, newLabelParameterID, new ParameterType[4] { ParameterType.String, ParameterType.PopUp, ParameterType.InventoryItem, ParameterType.Document });
-							if (newLabelParameterID < 0)
+							TextArea ("New label:", ref newLabel, 149f, parameters, ref newLabelParameterID, new ParameterType[5] { ParameterType.String, ParameterType.PopUp, ParameterType.InventoryItem, ParameterType.Document, ParameterType.Objective });
+
+							if (newLabelParameterID >= 0)
 							{
-								newLabel = TextField ("New label:", newLabel);
+								foreach (ActionParameter parameter in parameters)
+								{
+									if (parameter.ID == newLabelParameterID && parameter.parameterType == ParameterType.Objective)
+									{
+										selectedObjectiveLabelType = (SelectedObjectiveLabelType) EditorGUILayout.EnumPopup ("Objective label type:", selectedObjectiveLabelType);
+									}
+								}
 							}
+
+							preProcessTokens = EditorGUILayout.Toggle ("Pre-process tokens?", preProcessTokens);
 						}
 						else if (setMenuInputBoxSource == SetMenuInputBoxSource.FromGlobalVariable)
 						{
-							varParameterID = Action.ChooseParameterGUI ("String variable:", parameters, varParameterID, new ParameterType[2] { ParameterType.String, ParameterType.PopUp });
-							if (varParameterID == -1)
-							{
-								varID = AdvGame.GlobalVariableGUI ("String variable:", varID, new VariableType[2] { VariableType.String, VariableType.PopUp });
-							}
+							GlobalVariableField ("String variable:", ref varID, new VariableType[2] { VariableType.String, VariableType.PopUp }, parameters, ref varParameterID);
 						}
 					}
 					break;
 
 				case ElementContentType.Texture:
-					newTextureParameterID = Action.ChooseParameterGUI ("New texture:", parameters, newTextureParameterID, new ParameterType[3] { ParameterType.UnityObject, ParameterType.InventoryItem, ParameterType.Document });
-					if (newTextureParameterID < 0)
-					{
-						newTexture = (Texture) EditorGUILayout.ObjectField ("New texture:", newTexture, typeof (Texture), true);
-					}
+					AssetField ("New texture:", ref newTexture, parameters, ref newTextureParameterID, "New texture:", new ParameterType[4] { ParameterType.UnityObject, ParameterType.InventoryItem, ParameterType.Document, ParameterType.Objective });
 
 					if (newTextureParameterID >= 0 || newTexture)
 					{
@@ -449,6 +546,7 @@ namespace AC
 			ActionMenuSetInputBox newAction = CreateNew<ActionMenuSetInputBox> ();
 			newAction.menuName = menuName;
 			newAction.elementName = elementName;
+			newAction.setMenuInputBoxSource = SetMenuInputBoxSource.EnteredHere;
 			newAction.newLabel = newText;
 			return newAction;
 		}
@@ -466,6 +564,7 @@ namespace AC
 			ActionMenuSetInputBox newAction = CreateNew<ActionMenuSetInputBox> ();
 			newAction.menuName = menuName;
 			newAction.elementName = elementName;
+			newAction.setMenuInputBoxSource = SetMenuInputBoxSource.FromGlobalVariable;
 			newAction.varID = globalStringVariableID;
 			return newAction;
 		}

@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"Speech.cs"
  * 
@@ -31,7 +31,7 @@ namespace AC
 		/** True if the line is active */
 		public bool isAlive;
 		/** If True, the speech line has an AudioClip supplied */
-		public bool hasAudio { get; protected set; }
+		public bool hasAudio;
 		/** If not None, then the Action that ran this speech will end, but the speech line is still active */
 		public ContinueState continueState = ContinueState.None;
 
@@ -161,15 +161,6 @@ namespace AC
 					case LipSyncMode.ReadSapiFile:
 					case LipSyncMode.ReadPapagayoFile:
 						speaker.StartLipSync (KickStarter.dialog.GenerateLipSyncShapes (KickStarter.speechManager.lipSyncMode, lineID, speaker, Options.GetVoiceLanguageName (), log.fullText, lipsyncOverride, audioSource ? audioSource.clip : null));
-						break;
-
-					case LipSyncMode.RogoLipSync:
-						AudioSource lipsyncSource = RogoLipSyncIntegration.Play (_speaker, lineID, Options.GetVoiceLanguageName ());
-						if (lipsyncSource)
-						{
-							audioSource = lipsyncSource;
-							hasAudio = true;
-						}
 						break;
 				}
 			}
@@ -661,14 +652,7 @@ namespace AC
 									}
 									else
 									{
-										if (isRTL)
-										{
-											displayText = log.fullText.Substring (speechGaps[gapIndex].characterIndex);
-										}
-										else
-										{
-											displayText = log.fullText.Substring (0, speechGaps[gapIndex].characterIndex);
-										}
+										displayText = GetTextPortion (log.fullText, speechGaps[gapIndex].characterIndex);
 										currentCharIndex = speechGaps[gapIndex].characterIndex;
 										SetPauseGap ();
 									}
@@ -732,14 +716,7 @@ namespace AC
 									}
 									else
 									{
-										if (isRTL)
-										{
-											displayText = log.fullText.Substring (speechGaps[gapIndex].characterIndex);
-										}
-										else
-										{
-											displayText = log.fullText.Substring (0, speechGaps[gapIndex].characterIndex);
-										}
+										displayText = GetTextPortion (log.fullText, speechGaps[gapIndex].characterIndex);
 										currentCharIndex = speechGaps[gapIndex].characterIndex;
 										SetPauseGap ();
 									}
@@ -1474,7 +1451,7 @@ namespace AC
 
 			if (hasAudio && KickStarter.speechManager.syncSubtitlesToAudio)
 			{
-				if (KickStarter.speechManager.displayForever || (speaker == null && KickStarter.speechManager.displayNarrationForever))
+				if (!IsBackgroundSpeech () && (KickStarter.speechManager.displayForever || (speaker == null && KickStarter.speechManager.displayNarrationForever)))
 				{}
 				else
 				{
@@ -1652,11 +1629,6 @@ namespace AC
 
 				if (speaker)
 				{
-					if (!noAnimation && KickStarter.speechManager.lipSyncMode == LipSyncMode.FaceFX)
-					{
-						FaceFXIntegration.Play (speaker, log.speakerName + log.lineID, audioClip);
-					}
-
 					if (speaker.speechAudioSource)
 					{
 						audioSource = speaker.speechAudioSource;

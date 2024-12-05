@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"HeldObjectData.cs"
  * 
@@ -89,9 +89,12 @@ namespace AC
 			{
 				if (Input.touchCount > touchIndex)
 				{
-					Touch touch = Input.GetTouch (touchIndex);
-					deltaInput = touch.deltaPosition;
-					inputPosition = touch.position;
+					var touchInstance = KickStarter.playerInput.GetTouchInstance (touchIndex);
+					if (touchInstance != null)
+					{
+						deltaInput = touchInstance.delta;
+						inputPosition = touchInstance.position;
+					}
 				}
 				else
 				{
@@ -102,6 +105,11 @@ namespace AC
 			{
 				deltaInput = new Vector2 (-deltaInput.x, -deltaInput.y);
 			}
+
+			/*if (ACScreen.width > ACScreen.height)
+				deltaInput *= 1920 / ACScreen.width;
+			else
+				deltaInput *= 1080 / ACScreen.height;*/
 
 			dragForce = (KickStarter.CameraMainTransform.right * deltaInput.x) + (KickStarter.CameraMainTransform.up * deltaInput.y);
 

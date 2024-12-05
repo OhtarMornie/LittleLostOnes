@@ -1,8 +1,6 @@
 ﻿#if UNITY_EDITOR
 
-using UnityEngine;
 using UnityEditor;
-using System.Collections;
 
 namespace AC
 {
@@ -13,31 +11,22 @@ namespace AC
 		[MenuItem ("Adventure Creator/Getting started/Load 2D Demo", false, 5)]
 		static void Demo2D ()
 		{
-			ManagerPackage package = AssetDatabase.LoadAssetAtPath (Resource.MainFolderPath + "/2D Demo/ManagerPackage.asset", typeof (ManagerPackage)) as ManagerPackage;
-			if (package != null)
+			AdventureCreator.RefreshActions ();
+
+			if (!ACInstaller.IsInstalled ())
 			{
-				package.AssignManagers ();
-				AdventureCreator.RefreshActions ();
-
-				if (!ACInstaller.IsInstalled ())
-				{
-					ACInstaller.DoInstall ();
-				}
-
-				if (UnityVersionHandler.GetCurrentSceneName () != "Park")
-				{
-					bool canProceed = EditorUtility.DisplayDialog ("Open demo scene", "Would you like to open the 2D Demo scene, Park, now?", "Yes", "No");
-					if (canProceed)
-					{
-						if (UnityEditor.SceneManagement.EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo ())
-						{
-							UnityEditor.SceneManagement.EditorSceneManager.OpenScene (Resource.MainFolderPath + "/2D Demo/Scenes/Park.unity");
-						}
-					}
-				}
-
-				AdventureCreator.Init ();
+				ACInstaller.DoInstall ();
 			}
+
+			if (UnityVersionHandler.GetCurrentSceneName () != "Park")
+			{
+				if (UnityVersionHandler.SaveSceneIfUserWants ())
+				{
+					UnityEditor.SceneManagement.EditorSceneManager.OpenScene ("Assets/AdventureCreator/2D Demo/Scenes/Park.unity");
+				}
+			}
+
+			AdventureCreator.Init ();
 		}
 
 	}

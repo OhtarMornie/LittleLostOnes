@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionTeleport.cs"
  * 
@@ -195,13 +195,15 @@ namespace AC
 				Char charToMove = runtimeObToMove.GetComponent <Char>();
 				if (copyRotation)
 				{
-					runtimeObToMove.transform.rotation = rotation;
-
 					if (charToMove && runtimeTeleporter)
 					{
 						// Is a character, so set the lookDirection, otherwise will revert back to old rotation
 						charToMove.SetLookDirection (runtimeTeleporter.ForwardDirection, true);
 						charToMove.Halt ();
+					}
+					else
+					{
+						runtimeObToMove.transform.rotation = rotation;
 					}
 				}
 
@@ -236,69 +238,24 @@ namespace AC
 			isPlayer = EditorGUILayout.Toggle ("Is Player?", isPlayer);
 			if (isPlayer)
 			{
-				if (KickStarter.settingsManager != null && KickStarter.settingsManager.playerSwitching == PlayerSwitching.Allow)
-				{
-					playerParameterID = ChooseParameterGUI ("Player ID:", parameters, playerParameterID, ParameterType.Integer);
-					if (playerParameterID < 0)
-						playerID = ChoosePlayerGUI (playerID, true);
-				}
+				PlayerField (ref playerID, parameters, ref playerParameterID);
 			}
 			else
 			{
-				obToMoveParameterID = Action.ChooseParameterGUI ("Object to move:", parameters, obToMoveParameterID, ParameterType.GameObject);
-				if (obToMoveParameterID >= 0)
-				{
-					obToMoveID = 0;
-					obToMove = null;
-				}
-				else
-				{
-					obToMove = (GameObject) EditorGUILayout.ObjectField ("Object to move:", obToMove, typeof(GameObject), true);
-					
-					obToMoveID = FieldToID (obToMove, obToMoveID);
-					obToMove = IDToField (obToMove, obToMoveID, false);
-				}
+				GameObjectField ("Object to move:", ref obToMove, ref obToMoveID, parameters, ref obToMoveParameterID);
 			}
 
-			markerParameterID = Action.ChooseParameterGUI ("Teleport to:", parameters, markerParameterID, ParameterType.GameObject);
-			if (markerParameterID >= 0)
-			{
-				markerID = 0;
-				teleporter = null;
-			}
-			else
-			{
-				teleporter = (Marker) EditorGUILayout.ObjectField ("Teleport to:", teleporter, typeof (Marker), true);
-				
-				markerID = FieldToID <Marker> (teleporter, markerID);
-				teleporter = IDToField <Marker> (teleporter, markerID, false);
-			}
+			ComponentField ("Teleport to:", ref teleporter, ref markerID, parameters, ref markerParameterID);
 			
 			positionRelativeTo = (PositionRelativeTo) EditorGUILayout.EnumPopup ("Position relative to:", positionRelativeTo);
 
 			if (positionRelativeTo == PositionRelativeTo.RelativeToGameObject)
 			{
-				relativeGameObjectParameterID = Action.ChooseParameterGUI ("Relative GameObject:", parameters, relativeGameObjectParameterID, ParameterType.GameObject);
-				if (relativeGameObjectParameterID >= 0)
-				{
-					relativeGameObjectID = 0;
-					relativeGameObject = null;
-				}
-				else
-				{
-					relativeGameObject = (GameObject) EditorGUILayout.ObjectField ("Relative GameObject:", relativeGameObject, typeof (GameObject), true);
-					
-					relativeGameObjectID = FieldToID (relativeGameObject, relativeGameObjectID);
-					relativeGameObject = IDToField (relativeGameObject, relativeGameObjectID, false);
-				}
+				GameObjectField ("Relative GameObject:", ref relativeGameObject, ref relativeGameObjectID, parameters, ref relativeGameObjectParameterID);
 			}
 			else if (positionRelativeTo == PositionRelativeTo.EnteredValue)
 			{
-				relativeVectorParameterID = Action.ChooseParameterGUI ("Value:", parameters, relativeVectorParameterID, ParameterType.Vector3);
-				if (relativeVectorParameterID < 0)
-				{
-					relativeVector = EditorGUILayout.Vector3Field ("Value:", relativeVector);
-				}
+				Vector3Field ("Value:", ref relativeVector, parameters, ref relativeVectorParameterID);
 			}
 			else if (positionRelativeTo == PositionRelativeTo.VectorVariable)
 			{
@@ -307,21 +264,13 @@ namespace AC
 				switch (variableLocation)
 				{
 					case VariableLocation.Global:
-						vectorVarParameterID = Action.ChooseParameterGUI ("Vector3 variable:", parameters, vectorVarParameterID, ParameterType.GlobalVariable);
-						if (vectorVarParameterID < 0)
-						{
-							vectorVarID = AdvGame.GlobalVariableGUI ("Vector3 variable:", vectorVarID, VariableType.Vector3);
-						}
+						GlobalVariableField ("Vector3 variable:", ref vectorVarID, VariableType.Vector3, parameters, ref vectorVarParameterID);
 						break;
 
 					case VariableLocation.Local:
 						if (!isAssetFile)
 						{
-							vectorVarParameterID = Action.ChooseParameterGUI ("Vector3 variable:", parameters, vectorVarParameterID, ParameterType.LocalVariable);
-							if (vectorVarParameterID < 0)
-							{
-								vectorVarID = AdvGame.LocalVariableGUI ("Vector3 variable:", vectorVarID, VariableType.Vector3);
-							}
+							LocalVariableField ("Vector3 variable", ref vectorVarID, VariableType.Vector3, parameters, ref vectorVarParameterID);
 						}
 						else
 						{
@@ -330,23 +279,7 @@ namespace AC
 						break;
 
 					case VariableLocation.Component:
-						vectorVarParameterID = Action.ChooseParameterGUI ("Vector3 variable:", parameters, vectorVarParameterID, ParameterType.ComponentVariable);
-						if (vectorVarParameterID >= 0)
-						{
-							variables = null;
-							variablesConstantID = 0;	
-						}
-						else
-						{
-							variables = (Variables) EditorGUILayout.ObjectField ("Component:", variables, typeof (Variables), true);
-							variablesConstantID = FieldToID <Variables> (variables, variablesConstantID);
-							variables = IDToField <Variables> (variables, variablesConstantID, false);
-
-							if (variables != null)
-							{
-								vectorVarID = AdvGame.ComponentVariableGUI ("Vector3 variable:", vectorVarID, VariableType.Vector3, variables);
-							}
-						}
+						ComponentVariableField ("Vector3 variable:", ref variables, ref variablesConstantID, ref vectorVarID, VariableType.Vector3, parameters, ref vectorVarParameterID);
 						break;
 				}
 			}

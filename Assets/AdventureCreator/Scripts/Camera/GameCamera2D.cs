@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"GameCamera2D.cs"
  * 
@@ -37,7 +37,7 @@ namespace AC
 		public bool limitVertical;
 
 		/** If set, then the sprite's bounds will be used to set the horizontal and vertical limits, overriding constrainHorizontal and constrainVertical */
-		public SpriteRenderer backgroundConstraint = null;
+		public Renderer backgroundConstraint = null;
 		/** If True, and backgroundConstraint is set, then the camera will zoom in to fit the background if it is too zoomed out to fit */
 		public bool autoScaleToFitBackgroundConstraint = false;
 
@@ -66,9 +66,6 @@ namespace AC
 		protected Vector2 desiredOffset = Vector2.zero;
 		protected bool haveSetOriginalPosition = false;
 		private float lastOrthographicSize = 0f;
-
-		protected LerpUtils.FloatLerp xLerp = new LerpUtils.FloatLerp ();
-		protected LerpUtils.FloatLerp yLerp = new LerpUtils.FloatLerp ();
 
 		#endregion
 
@@ -167,12 +164,12 @@ namespace AC
 			
 				if (!lockHorizontal)
 				{
-					perspectiveOffset.x = xLerp.Update (desiredOffset.x, desiredOffset.x, dampSpeed);
+					perspectiveOffset.x = desiredOffset.x;
 				}
 				
 				if (!lockVertical)
 				{
-					perspectiveOffset.y = yLerp.Update (desiredOffset.y, desiredOffset.y, dampSpeed);
+					perspectiveOffset.y = desiredOffset.y;
 				}
 			}
 
@@ -485,16 +482,12 @@ namespace AC
 
 				if (!lockHorizontal)
 				{
-					perspectiveOffset.x = (dampSpeed > 0f)
-											? xLerp.Update (perspectiveOffset.x, desiredOffset.x, dampSpeed)
-											: desiredOffset.x;
+					perspectiveOffset.x = Mathf.Lerp (perspectiveOffset.x, desiredOffset.x, LerpSpeed);
 				}
 				
 				if (!lockVertical)
 				{
-					perspectiveOffset.y = (dampSpeed > 0f)
-											? yLerp.Update (perspectiveOffset.y, desiredOffset.y, dampSpeed)
-											: desiredOffset.y;
+					perspectiveOffset.y = Mathf.Lerp (perspectiveOffset.y, desiredOffset.y, LerpSpeed);
 				}
 
 			}
@@ -600,13 +593,9 @@ namespace AC
 
 		#region GetSet
 
-		public override TransparencySortMode TransparencySortMode
-		{
-			get
-			{
-				return TransparencySortMode.Orthographic;
-			}
-		}
+		public override TransparencySortMode TransparencySortMode { get { return TransparencySortMode.Orthographic; }}
+		
+		private float LerpSpeed { get { return (1f - Mathf.Pow (1f - Mathf.Clamp01 (dampSpeed), updateWhilePaused ? Time.unscaledDeltaTime : Time.deltaTime)); } }
 
 		#endregion
 

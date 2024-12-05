@@ -8,13 +8,27 @@ namespace AC
 
 		[SerializeField] private Conversation conversation = null;
 		[SerializeField] private StartEnd startEnd;
-		private enum StartEnd { Start, End };
+		public enum StartEnd { Start, End };
 
 
 		public override string[] EditorNames { get { return new string[] { "Conversation/Begin", "Conversation/End" }; } }
 		
 		protected override string EventName { get { return startEnd == StartEnd.Start ? "OnStartConversation" : "OnEndConversation"; } }
 		protected override string ConditionHelp { get { return "Whenever " + (conversation ? "Conversation '" + conversation.name + "' " : "a Converation ") + startEnd.ToString ().ToLower () + "s."; } }
+
+
+		public EventConversationStart (int _id, string _label, ActionListAsset _actionListAsset, int[] _parameterIDs, Conversation _conversation, StartEnd _startEnd)
+		{
+			id = _id;
+			label = _label;
+			actionListAsset = _actionListAsset;
+			parameterIDs = _parameterIDs;
+			conversation = _conversation;
+			startEnd = _startEnd;
+		}
+
+
+		public EventConversationStart () {}
 
 
 		public override void Register ()

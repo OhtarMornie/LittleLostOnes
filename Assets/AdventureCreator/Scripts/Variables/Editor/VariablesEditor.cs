@@ -34,13 +34,13 @@ namespace AC
 			ShowSettings ();
 
 			EditorGUILayout.Space ();
-			EditorGUILayout.BeginVertical (CustomStyles.thinBox);
 			showVariablesList = CustomGUILayout.ToggleHeader (showVariablesList, "Component variables");
 			if (showVariablesList)
 			{
+				CustomGUILayout.BeginVertical ();
 				selectedVar = VariablesManager.ShowVarList (selectedVar, _target.vars, VariableLocation.Component, varFilter, _target.filter, typeFilter, !Application.isPlaying, _target, ref lastDragOver, ref lastSwapIndex, IsDragging ());
+				CustomGUILayout.EndVertical ();
 			}
-			CustomGUILayout.EndVertical ();
 
 			if (selectedVar != null && !_target.vars.Contains (selectedVar))
 			{
@@ -65,10 +65,10 @@ namespace AC
 
 		private void ShowSettings ()
 		{
-			EditorGUILayout.BeginVertical (CustomStyles.thinBox);
 			showSettings = CustomGUILayout.ToggleHeader (showSettings, "Editor settings");
 			if (showSettings)
 			{
+				CustomGUILayout.BeginVertical ();
 				EditorGUILayout.BeginHorizontal ();
 				EditorGUILayout.LabelField ("Filter by:", GUILayout.Width (65f));
 				varFilter = (VarFilter) EditorGUILayout.EnumPopup (varFilter, GUILayout.MaxWidth (100f));
@@ -89,9 +89,8 @@ namespace AC
 					_target.filter = EditorGUILayout.TextField (_target.filter);
 				}
 				EditorGUILayout.EndHorizontal ();
+				CustomGUILayout.EndVertical ();
 			}
-		
-			CustomGUILayout.EndVertical ();
 		}
 
 

@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"DragTrack_Curved.cs"
  * 
@@ -67,7 +67,7 @@ namespace AC
 					deltaForce *= draggable.maxSpeed / deltaForce.magnitude;
 				}
 			
-				deltaForce -= draggable.Rigidbody.velocity;
+				deltaForce -= UnityVersionHandler.GetRigidbodyVelocity (draggable.Rigidbody);
 				draggable.Rigidbody.AddForce (deltaForce, ForceMode.VelocityChange);
 			}
 			else
@@ -225,10 +225,10 @@ namespace AC
 			// Limit velocity to just along track
 			if (draggable.UsesRigidbody)
 			{
-				Vector3 localVelocity = draggable.Transform.InverseTransformDirection (draggable.Rigidbody.velocity);
+				Vector3 localVelocity = draggable.Transform.InverseTransformDirection (UnityVersionHandler.GetRigidbodyVelocity (draggable.Rigidbody));
 				localVelocity.x = 0;
 				localVelocity.z = 0;
-				draggable.Rigidbody.velocity = draggable.Transform.TransformDirection (localVelocity);
+				UnityVersionHandler.SetRigidbodyVelocity (draggable.Rigidbody, draggable.Transform.TransformDirection (localVelocity));
 			}
 
 			float proportionAlong = Mathf.Clamp01 (GetDecimalAlong (draggable));

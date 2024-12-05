@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"EventManager.cs"
  * 
@@ -31,6 +31,7 @@ namespace AC
 			{
 				foreach (EventBase _event in KickStarter.settingsManager.events)
 				{
+					if (_event == null) continue;
 					_event.Register ();
 				}
 			}
@@ -45,6 +46,7 @@ namespace AC
 			{
 				foreach (EventBase _event in KickStarter.settingsManager.events)
 				{
+					if (_event == null) continue;
 					_event.Unregister ();
 				}
 			}
@@ -1256,7 +1258,7 @@ namespace AC
 		public static Delegate_OnOccupyPlayerStart OnOccupyPlayerStart;
 
 		/** A delegate for the OnPointClick event */
-		public delegate void Delegate_OnPointAndClick (Vector3[] pointArray, bool run);
+		public delegate void Delegate_OnPointAndClick (ref Vector3[] pointArray, bool run);
 		/** An event triggered whenever the player is commanded to move via point-and-click */
 		public static Delegate_OnPointAndClick OnPointAndClick;
 
@@ -1276,7 +1278,7 @@ namespace AC
 		public static Delegate_OnCharacterTeleport OnCharacterTeleport;
 
 		/** A delegate for the OnCharacerHoldObject / OnCharacerDropObject events */
-		public delegate void Delegate_OnCharacterHoldObject (AC.Char character, GameObject heldObject, Hand hand);
+		public delegate void Delegate_OnCharacterHoldObject (AC.Char character, GameObject heldObject, int attachmentPointID);
 		/** An event triggered whenever a character holds an object */
 		public static Delegate_OnCharacterHoldObject OnCharacterHoldObject;
 		/** An event triggered whenever a character drops an object */
@@ -1462,11 +1464,11 @@ namespace AC
 		 * <param name = "pointArray">An array of points for the Player to move along</param>
 		 * <param name = "run">If True, the Player should run along the points</param>
 		 */
-		public void Call_OnPointAndClick (Vector3[] pointArray, bool run)
+		public void Call_OnPointAndClick (ref Vector3[] pointArray, bool run)
 		{
 			if (OnPointAndClick != null)
 			{
-				OnPointAndClick (pointArray, run);
+				OnPointAndClick (ref pointArray, run);
 			}
 		}
 
@@ -1533,13 +1535,13 @@ namespace AC
 		 * <summary>Triggers the OnCharacterHoldObject event</summary>
 		 * <param name="character">The character being affected</param>
 		 * <param name="heldObject">The held object</param>
-		 * <param name="hand">Which hand the held object is in</param>
+		 * <param name="attachmentPointID">The ID of the attachment point the object is attached to</param>
 		 */
-		public void Call_OnCharacterHoldObject (AC.Char character, GameObject heldObject, Hand hand)
+		public void Call_OnCharacterHoldObject (AC.Char character, GameObject heldObject, int attachmentPointID)
 		{
 			if (OnCharacterHoldObject != null)
 			{
-				OnCharacterHoldObject (character, heldObject, hand);
+				OnCharacterHoldObject (character, heldObject, attachmentPointID);
 			}
 		}
 
@@ -1548,13 +1550,13 @@ namespace AC
 		 * <summary>Triggers the OnCharacerDropObject event</summary>
 		 * <param name="character">The character being affected</param>
 		 * <param name="heldObject">The dropped object</param>
-		 * <param name="hand">Which hand the dropped object was in</param>
+		 * <param name="attachmentPointID">The ID of the attachment point the object is attached to</param>
 		 */
-		public void Call_OnCharacterDropObject (AC.Char character, GameObject heldObject, Hand hand)
+		public void Call_OnCharacterDropObject (AC.Char character, GameObject heldObject, int attachmentPointID)
 		{
 			if (OnCharacterDropObject != null)
 			{
-				OnCharacterDropObject (character, heldObject, hand);
+				OnCharacterDropObject (character, heldObject, attachmentPointID);
 			}
 		}
 
@@ -2106,6 +2108,8 @@ namespace AC
 
 		#region Scene management
 
+		/** An event triggered when the game begins */
+		public static event Delegate_Generic OnBeginGame;
 		/** A delegate for the events that need no parameters */
 		public delegate void Delegate_NoParameters ();
 		/** A delegate for the OnAfterSceneChange event */
@@ -2130,6 +2134,16 @@ namespace AC
 		public delegate void Delegate_OnDelayChangeScene (SceneInfo sceneInfo, System.Action callback);
 		/** An event triggered just before the active scene is changed, but with a callback - the scene will not change until this is invoked */
 		public static event Delegate_OnDelayChangeScene OnDelayChangeScene;
+
+
+		/** Triggers the OnBeginGame event */
+		public void Call_OnBeginGame ()
+		{
+			if (OnBeginGame != null)
+			{
+				OnBeginGame ();
+			}
+		}
 
 
 		/** 
@@ -2420,6 +2434,10 @@ namespace AC
 		public static event Delegate_OnHandleSound OnPlaySound;
 		/** An event triggered when a Sound component stops playing audio */
 		public static event Delegate_OnHandleSound OnStopSound;
+		/** A delegate for the OnRequestFootstepSounds event */
+		public delegate void Delegate_FootstepSounds (FootstepSounds footstepSounds);
+		/** An event triggered when a FootstepSounds component wants to know which sounds to play */
+		public static event Delegate_FootstepSounds OnRequestFootstepSounds;
 
 
 		/**
@@ -2525,6 +2543,19 @@ namespace AC
 			}
 		}
 
+
+		/**
+		 * <summary>Triggers the OnRequestFootstepSounds event</summary>
+		 * <param name = "footstepSounds">The FootstepSounds component</param>
+		 */
+		public void Call_OnRequestFootstepSounds (FootstepSounds footstepSounds)
+		{
+			if (OnRequestFootstepSounds != null)
+			{
+				OnRequestFootstepSounds (footstepSounds);
+			}
+		}
+
 		#endregion
 
 
@@ -2619,13 +2650,12 @@ namespace AC
 		#endregion
 
 
-		#region Quick-time events
+		#region Input
 
 		/** A delegate for the OnQTEBegin event */
 		public delegate void Delegate_OnQTEBegin (QTEType qteType, string inputName, float duration);
 		/** An event triggered when quick-time event is begun */
 		public static event Delegate_OnQTEBegin OnQTEBegin;
-
 		/** A delegate for the OnQTEWin and OnQTELose events */
 		public delegate void Delegate_OnQTEWinLose (QTEType qteType);
 		/** An event triggered when a quick-time event is won */
@@ -2669,6 +2699,21 @@ namespace AC
 				{
 					OnQTELose (qteType);
 				}
+			}
+		}
+
+
+		/** A delegate for OnActiveInputFire event */
+		public delegate void Delegate_ActiveInput (ActiveInput activeInput);
+		/** An event triggered when an Active Input is fired */
+		public static event Delegate_ActiveInput OnActiveInputFire;
+
+		/** Triggers the OnActiveInputFire event */
+		public void Call_OnActiveInputFire (ActiveInput activeInput)
+		{
+			if (OnActiveInputFire != null)
+			{
+				OnActiveInputFire (activeInput);
 			}
 		}
 

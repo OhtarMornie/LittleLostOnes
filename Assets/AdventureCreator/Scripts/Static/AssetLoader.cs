@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"AssetLoader.cs"
  * 
@@ -16,7 +16,7 @@
 //#endif
 
 using UnityEngine;
-#if !ACIgnoreTimeline
+#if TimelineIsPresent
 using UnityEngine.Timeline;
 #endif
 #if ALLOW_VIDEO
@@ -38,7 +38,7 @@ namespace AC
 		private static Object[] materialAssets;
 		private static Object[] actionListAssets;
 		private static Object[] runtimeAnimatorControllerAssets;
-		#if !ACIgnoreTimeline
+		#if TimelineIsPresent
 		private static Object[] timelineAssets;
 		#endif
 		#if ALLOW_VIDEO
@@ -112,7 +112,7 @@ namespace AC
 			{
 				newFile = RetrieveActionListAssets (_name);
 			}
-			#if !ACIgnoreTimeline
+			#if TimelineIsPresent
 			else if (originalFile is TimelineAsset)
 			{
 				newFile = RetrieveTimelines (_name);
@@ -179,7 +179,7 @@ namespace AC
 		}
 
 
-		#if !ACIgnoreTimeline
+		#if TimelineIsPresent
 		private static TimelineAsset RetrieveTimelines (string _name)
 		{
 			RetrieveAssetFiles <TimelineAsset> (ref timelineAssets, "Timelines");
@@ -244,7 +244,7 @@ namespace AC
 			materialAssets = null;
 			actionListAssets = null;
 			runtimeAnimatorControllerAssets = null;
-			#if !ACIgnoreTimeline
+			#if TimelineIsPresent
 			timelineAssets = null;
 			#endif
 

@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"MenuToggle.cs"
  * 
@@ -69,10 +69,9 @@ namespace AC
 		public int offTextLineID = -1;
 
 		#if TextMeshProIsPresent
-		private TMPro.TextMeshProUGUI uiText;
-		#else
-		private Text uiText;
+		private TMPro.TextMeshProUGUI uiTextTMP;
 		#endif
+		private Text uiText;
 		private string fullText;
 
 
@@ -80,6 +79,9 @@ namespace AC
 		{
 			uiToggle = null;
 			uiText = null;
+			#if TextMeshProIsPresent
+			uiTextTMP = null;
+			#endif
 			label = "Toggle";
 			labelSuffix = defaultLabelSuffix;
 			isOn = false;
@@ -128,6 +130,9 @@ namespace AC
 			}
 
 			uiText = null;
+			#if TextMeshProIsPresent
+			uiTextTMP = null;
+			#endif
 			label = _element.label;
 			labelSuffix = _element.labelSuffix;
 			isOn = _element.isOn;
@@ -158,10 +163,13 @@ namespace AC
 			if (uiToggle)
 			{
 				#if TextMeshProIsPresent
-				uiText = uiToggle.GetComponentInChildren <TMPro.TextMeshProUGUI>();
-				#else
-				uiText = uiToggle.GetComponentInChildren <Text>();
+				if (_menu.useTextMeshProComponents)
+				{
+					uiTextTMP = uiToggle.GetComponentInChildren <TMPro.TextMeshProUGUI>();
+				}
+				if (!_menu.useTextMeshProComponents || uiTextTMP == null)
 				#endif
+					uiText = uiToggle.GetComponentInChildren <Text>();
 
 				uiToggle.interactable = isClickable;
 				if (isClickable)
@@ -210,7 +218,7 @@ namespace AC
 		
 		#if UNITY_EDITOR
 		
-		public override void ShowGUI (Menu menu)
+		public override void ShowGUI (Menu menu, System.Action<ActionListAsset> showALAEditor)
 		{
 			string apiPrefix = "(AC.PlayerMenus.GetElementWithName (\"" + menu.title + "\", \"" + title + "\") as AC.MenuToggle)";
 
@@ -219,7 +227,7 @@ namespace AC
 
 			if (source != MenuSource.AdventureCreator)
 			{
-				uiToggle = LinkedUiGUI <Toggle> (uiToggle, "Linked Toggle:", source, "The Unity UI Toggle this is linked to");
+				uiToggle = LinkedUiGUI <Toggle> (uiToggle, "Linked Toggle:", menu, "The Unity UI Toggle this is linked to");
 				uiSelectableHideStyle = (UISelectableHideStyle) CustomGUILayout.EnumPopup ("When invisible:", uiSelectableHideStyle, apiPrefix + ".uiSelectableHideStyle", "The method by which this element is hidden from view when made invisible");
 				CustomGUILayout.EndVertical ();
 				CustomGUILayout.BeginVertical ();
@@ -274,14 +282,14 @@ namespace AC
 			{
 				if (toggleType != AC_ToggleType.Subtitles)
 				{
-					actionListOnClick = (ActionListAsset) CustomGUILayout.ObjectField <ActionListAsset> ("ActionList on click:", actionListOnClick, false, apiPrefix + ".actionListOnClick", "An ActionList asset that will run when the element is clicked on");
+					actionListOnClick = ActionListAssetMenu.AssetGUI ("ActionList on click:", actionListOnClick, title + "_OnClick", apiPrefix + ".actionListOnClick", "An ActionList to run whenever the value is changed by the user", null, showALAEditor);
 				}
 				alternativeInputButton = CustomGUILayout.TextField ("Alternative input button:", alternativeInputButton, apiPrefix + ".alternativeInputButton", "The name of the input button that triggers the element when pressed");
 				ChangeCursorGUI (menu);
 			}
 			CustomGUILayout.EndVertical ();
 			
-			base.ShowGUI (menu);
+			base.ShowGUI (menu, showALAEditor);
 		}
 
 
@@ -360,6 +368,12 @@ namespace AC
 			{
 				return 0;
 			}
+			#if TextMeshProIsPresent
+			if (uiTextTMP && uiTextTMP.gameObject == gameObject)
+			{
+				return 0;
+			}
+			#endif
 			if (uiText && uiText.gameObject == gameObject)
 			{
 				return 0;
@@ -406,6 +420,13 @@ namespace AC
 
 			if (uiToggle)
 			{
+				#if TextMeshProIsPresent
+				if (uiTextTMP)
+				{
+					uiTextTMP.text = fullText;
+				}
+				else
+				#endif
 				if (uiText)
 				{
 					uiText.text = fullText;
@@ -501,6 +522,12 @@ namespace AC
 			}
 			return false;
 		}
+
+
+		public override bool SupportsRightClicks ()
+		{
+			return true;
+		}
 		
 
 		public override bool ProcessClick (AC.Menu _menu, int _slot, MouseState _mouseState)
@@ -508,6 +535,15 @@ namespace AC
 			if (!_menu.IsClickable ())
 			{
 				return false;
+			}
+
+			if (_mouseState == MouseState.RightClick)
+			{
+				if (toggleType == AC_ToggleType.CustomScript)
+				{
+					MenuSystem.OnElementClick (_menu, this, _slot, (int) _mouseState);
+				}
+				return base.ProcessClick (_menu, _slot, _mouseState);
 			}
 
 			if (uiToggle)

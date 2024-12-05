@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionCharFollow.cs"
  * 
@@ -126,73 +126,42 @@ namespace AC
 				if (movePlayer)
 				{
 					ignoreNPC = true;
-					npcToMoveParameterID = ChooseParameterGUI ("Move Player ID:", parameters, npcToMoveParameterID, ParameterType.Integer);
-					if (npcToMoveParameterID < 0)
-						movePlayerID = ChoosePlayerGUI (movePlayerID, false);
+					PlayerField ("Move Player:", "Move Player ID:", ref movePlayerID, parameters, ref npcToMoveParameterID, false);
 				}
 			}
 
 			if (!ignoreNPC)
 			{
-				npcToMoveParameterID = Action.ChooseParameterGUI ("NPC to affect:", parameters, npcToMoveParameterID, ParameterType.GameObject);
-				if (npcToMoveParameterID >= 0)
-				{
-					npcToMoveID = 0;
-					npcToMove = null;
-				}
-				else
-				{
-					npcToMove = (NPC)EditorGUILayout.ObjectField ("NPC to affect:", npcToMove, typeof (NPC), true);
-
-					npcToMoveID = FieldToID<NPC> (npcToMove, npcToMoveID);
-					npcToMove = IDToField<NPC> (npcToMove, npcToMoveID, false);
-				}
+				ComponentField ("NPC to move:", ref npcToMove, ref npcToMoveID, parameters, ref npcToMoveParameterID);
 			}
 
 			followType = (FollowType) EditorGUILayout.EnumPopup ("Follow type:", followType);
 			if (followType == FollowType.StartFollowing)
 			{
 				EditorGUILayout.Space ();
-
 				followPlayer = EditorGUILayout.Toggle ("Follow Player?", followPlayer);
 
 				if (followPlayer)
 				{
 					if (KickStarter.settingsManager != null && KickStarter.settingsManager.playerSwitching == PlayerSwitching.Allow)
 					{
-						charToFollowParameterID = ChooseParameterGUI ("Follow Player ID:", parameters, charToFollowParameterID, ParameterType.Integer);
-						if (charToFollowParameterID < 0)
+						PlayerField ("Follow Player:", "Follow Player ID:", ref followPlayerID, parameters, ref charToFollowParameterID);
+						if (charToFollowParameterID < 0 && movePlayer && npcToMoveParameterID < 0 && movePlayerID == followPlayerID)
 						{
-							followPlayerID = ChoosePlayerGUI (followPlayerID, true);
-
-							if (movePlayer && npcToMoveParameterID < 0 && movePlayerID == followPlayerID)
-							{
-								EditorGUILayout.HelpBox ("A character cannot follow themselves.", MessageType.Warning);
-							}
+							EditorGUILayout.HelpBox ("A character cannot follow themselves.", MessageType.Warning);
 						}
 					}
 				}
 				else
 				{
-					charToFollowParameterID = Action.ChooseParameterGUI ("Character to follow:", parameters, charToFollowParameterID, ParameterType.GameObject);
-					if (charToFollowParameterID >= 0)
+					ComponentField ("Character to follow:", ref charToFollow, ref charToFollowID, parameters, ref charToFollowParameterID);
+					if (charToFollowParameterID < 0)
 					{
-						charToFollowID = 0;
-						charToFollow = null;
-					}
-					else
-					{
-						charToFollow = (Char) EditorGUILayout.ObjectField ("Character to follow:", charToFollow, typeof(Char), true);
-						
 						if (charToFollow && charToFollow == (Char) npcToMove)
 						{
 							ACDebug.LogWarning ("An NPC cannot follow themselves!", charToFollow);
 							charToFollow = null;
-						}
-						else
-						{
-							charToFollowID = FieldToID <Char> (charToFollow, charToFollowID);
-							charToFollow = IDToField <Char> (charToFollow, charToFollowID, false);
+							charToFollowID = 0;
 						}
 					}
 				}

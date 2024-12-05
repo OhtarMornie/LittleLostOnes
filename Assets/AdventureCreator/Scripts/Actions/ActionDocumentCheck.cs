@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionDocumentCheck.cs"
  * 
@@ -48,11 +48,7 @@ namespace AC
 
 		public override void ShowGUI (List<ActionParameter> parameters)
 		{
-			parameterID = Action.ChooseParameterGUI ("Check carrying:", parameters, parameterID, ParameterType.Document);
-			if (parameterID < 0)
-			{
-				documentID = InventoryManager.DocumentSelectorList (documentID, "Check carrying:");
-			}
+			DocumentField ("Check carrying:", ref documentID, parameters, ref parameterID, "Check carrying ID:");
 		}
 
 

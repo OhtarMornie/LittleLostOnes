@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionInventoryCrafting.cs"
  * 
@@ -92,28 +92,16 @@ namespace AC
 			specificElement = EditorGUILayout.Toggle ("Specific element?", specificElement);
 			if (specificElement)
 			{
-				menuNameParameterID = ChooseParameterGUI ("Menu name:", parameters, menuNameParameterID, new ParameterType[2] { ParameterType.String, ParameterType.PopUp });
-				if (menuNameParameterID < 0)
-				{
-					menuName = TextField ("Menu name:", menuName);
-				}
+				TextField ("Menu name:", ref menuName, parameters, ref menuNameParameterID);
 
 				switch (craftingMethod)
 				{
 					case ActionCraftingMethod.ClearRecipe:
-						elementNameParameterID = ChooseParameterGUI ("'Ingredients' box name:", parameters, elementNameParameterID, new ParameterType[2] { ParameterType.String, ParameterType.PopUp });
-						if (elementNameParameterID < 0)
-						{
-							elementName = TextField ("'Ingredients' box name:", elementName);
-						}
+						TextField ("'Ingredients' box name:", ref elementName, parameters, ref elementNameParameterID);
 						break;
 
 					case ActionCraftingMethod.CreateRecipe:
-						elementNameParameterID = ChooseParameterGUI ("'Output' box name:", parameters, elementNameParameterID, new ParameterType[2] { ParameterType.String, ParameterType.PopUp });
-						if (elementNameParameterID < 0)
-						{
-							elementName = TextField ("'Output' box name:", elementName);
-						}
+						TextField ("'Output' box name:", ref elementName, parameters, ref elementNameParameterID);
 						break;
 				}
 			}

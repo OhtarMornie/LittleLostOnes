@@ -13,6 +13,20 @@ namespace AC
 		protected override string EventName { get { return "OnHotspotInteract"; } }
 		protected override string ConditionHelp { get { return "Whenever " + (hotspot ? "hotspot '" + hotspot.GetName (0) + "'" : "a Hotspot") + " is interacted with."; } }
 
+
+		public EventHotspotInteract (int _id, string _label, ActionListAsset _actionListAsset, int[] _parameterIDs, Hotspot _hotspot)
+		{
+			id = _id;
+			label = _label;
+			actionListAsset = _actionListAsset;
+			parameterIDs = _parameterIDs;
+			hotspot = _hotspot;
+		}
+
+
+		public EventHotspotInteract () {}
+
+
 		public override void Register ()
 		{
 			EventManager.OnHotspotInteract += OnHotspotInteract;

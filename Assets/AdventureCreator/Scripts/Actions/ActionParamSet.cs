@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionParamSet.cs"
  * 
@@ -189,6 +189,10 @@ namespace AC
 						intValue = AssignDocumentID (parameters, ownParamID, intValue);
 						break;
 
+					case ParameterType.Objective:
+						intValue = AssignObjectiveID (parameters, ownParamID, intValue);
+						break;
+
 					case ParameterType.String:
 						stringValue = AssignString (parameters, ownParamID, stringValue);
 						break;
@@ -212,6 +216,18 @@ namespace AC
 				else
 				{
 					runtimeVariable = GlobalVariables.GetVariable (globalVariableID);
+				}
+			}
+			else if (setParamMethod == SetParamMethod.CopiedFromLocalVariable)
+			{
+				ActionParameter parameter = GetParameterWithID (parameters, globalVariableParameterID);
+				if (parameter != null && parameter.parameterType == ParameterType.LocalVariable)
+				{
+					runtimeVariable = parameter.GetVariable ();
+				}
+				else
+				{
+					runtimeVariable = LocalVariables.GetVariable (globalVariableID);
 				}
 			}
 			else if (setParamMethod == SetParamMethod.CopiedFromAnimator)
@@ -246,11 +262,9 @@ namespace AC
 				return 0f;
 			}
 
-			if (setParamMethod == SetParamMethod.CopiedFromGlobalVariable)
-			{
-				SetValueFromVariable (runtimeVariable);
-			}
-			else if (setParamMethod == SetParamMethod.CopiedFromComponentVariable)
+			if (setParamMethod == SetParamMethod.CopiedFromGlobalVariable ||
+				setParamMethod == SetParamMethod.CopiedFromLocalVariable ||
+				setParamMethod == SetParamMethod.CopiedFromComponentVariable)
 			{
 				SetValueFromVariable (runtimeVariable);
 			}
@@ -264,6 +278,7 @@ namespace AC
 					case ParameterType.LocalVariable:
 					case ParameterType.InventoryItem:
 					case ParameterType.Document:
+					case ParameterType.Objective:
 					case ParameterType.PopUp:
 						_parameter.intValue = intValue;
 						break;
@@ -431,13 +446,14 @@ namespace AC
 						break;
 
 					case ParameterType.Document:
+					case ParameterType.Objective:
 						if (gVar.type == VariableType.Integer)
 						{
 							_parameter.SetValue (gVar.IntegerValue);
 						}
 						else
 						{
-							LogWarning ("Only variables of type Integer can update a Document parameter");
+							LogWarning ("Only variables of type Integer can update a " + _parameter.parameterType + " parameter");
 						}
 						break;
 
@@ -599,13 +615,13 @@ namespace AC
 						break;
 
 					case ParameterType.GlobalVariable:
-						if (AdvGame.GetReferences ().variablesManager == null || AdvGame.GetReferences ().variablesManager.vars == null || AdvGame.GetReferences ().variablesManager.vars.Count == 0)
+						if (KickStarter.variablesManager == null || KickStarter.variablesManager.vars == null || KickStarter.variablesManager.vars.Count == 0)
 						{
 							EditorGUILayout.HelpBox ("No Global variables exist!", MessageType.Info);
 						}
 						else
 						{
-							intValue = ShowVarSelectorGUI (AdvGame.GetReferences ().variablesManager.vars, intValue);
+							intValue = ShowVarSelectorGUI (KickStarter.variablesManager.vars, intValue);
 						}
 						break;
 
@@ -619,6 +635,10 @@ namespace AC
 
 					case ParameterType.Document:
 						intValue = ShowDocSelectorGUI (intValue);
+						break;
+
+					case ParameterType.Objective:
+						intValue = ShowObjectiveSelectorGUI (intValue);
 						break;
 
 					case ParameterType.LocalVariable:
@@ -681,10 +701,11 @@ namespace AC
 			}
 			else if (setParamMethod == SetParamMethod.CopiedFromGlobalVariable)
 			{
-				globalVariableParameterID = Action.ChooseParameterGUI ("Variable:", parameters, globalVariableParameterID, ParameterType.GlobalVariable);
-				if (globalVariableParameterID < 0)
+				ActionParameter[] filteredParameters = GetFilteredParameters (parameters, ParameterType.GlobalVariable);
+				bool parameterOverride = SmartFieldStart ("Variable:", filteredParameters, ref globalVariableParameterID, "Variable:");
+				if (!parameterOverride)
 				{
-					if (AdvGame.GetReferences () != null && AdvGame.GetReferences ().variablesManager != null && AdvGame.GetReferences ().variablesManager.vars != null && AdvGame.GetReferences ().variablesManager.vars.Count > 0)
+					if (KickStarter.variablesManager && KickStarter.variablesManager.vars != null && KickStarter.variablesManager.vars.Count > 0)
 					{
 						switch (_parameter.parameterType)
 						{
@@ -721,6 +742,7 @@ namespace AC
 								break;
 
 							case ParameterType.Document:
+							case ParameterType.Objective:
 								{
 									globalVariableID = AdvGame.GlobalVariableGUI ("Variable:", globalVariableID, VariableType.Integer);
 									GVar _gVar = KickStarter.variablesManager.GetVariable (globalVariableID);
@@ -728,7 +750,7 @@ namespace AC
 									{
 										if (_gVar.type == VariableType.Integer)
 										{
-											EditorGUILayout.HelpBox ("The Integer value will refer to the Document's ID.", MessageType.Info);
+											EditorGUILayout.HelpBox ("The Integer value will refer to the " + _parameter.parameterType + "'s ID.", MessageType.Info);
 										}
 									}
 								}
@@ -744,13 +766,92 @@ namespace AC
 						EditorGUILayout.HelpBox ("No Global Variables found!", MessageType.Warning);
 					}
 				}
+				SmartFieldEnd (filteredParameters, parameterOverride, ref globalVariableParameterID);
+			}
+			else if (setParamMethod == SetParamMethod.CopiedFromLocalVariable)
+			{
+				if (isAssetFile)
+				{
+					EditorGUILayout.HelpBox ("Local variables cannot be accessed from asset-based Actions", MessageType.Warning);
+				}
+				else
+				{
+					ActionParameter[] filteredParameters = GetFilteredParameters (parameters, ParameterType.LocalVariable);
+					bool parameterOverride = SmartFieldStart ("Variable:", filteredParameters, ref globalVariableParameterID, "Variable:");
+					if (!parameterOverride)
+					{
+						if (KickStarter.localVariables && KickStarter.localVariables.localVars != null && KickStarter.localVariables.localVars.Count > 0)
+						{
+							switch (_parameter.parameterType)
+							{
+								case ParameterType.Vector3:
+									globalVariableID = AdvGame.LocalVariableGUI ("Vector3 variable:", globalVariableID, VariableType.Vector3);
+									break;
+
+								case ParameterType.Boolean:
+								case ParameterType.Float:
+								case ParameterType.Integer:
+								case ParameterType.PopUp:
+								case ParameterType.String:
+								case ParameterType.GameObject:
+								case ParameterType.UnityObject:
+									globalVariableID = AdvGame.LocalVariableGUI ("Variable:", globalVariableID, null);
+									break;
+
+								case ParameterType.InventoryItem:
+									{
+										globalVariableID = AdvGame.LocalVariableGUI ("Variable:", globalVariableID, new VariableType[] { VariableType.Integer, VariableType.String });
+										GVar _gVar = LocalVariables.GetVariable (globalVariableID);
+										if (_gVar != null)
+										{
+											if (_gVar.type == VariableType.Integer)
+											{
+												EditorGUILayout.HelpBox ("The Integer value will refer to the Inventory item's ID.", MessageType.Info);
+											}
+											else if (_gVar.type == VariableType.String)
+											{
+												EditorGUILayout.HelpBox ("The String value will refer to the Inventory item's name.", MessageType.Info);
+											}
+										}
+									}
+									break;
+
+								case ParameterType.Document:
+								case ParameterType.Objective:
+									{
+										globalVariableID = AdvGame.LocalVariableGUI ("Variable:", globalVariableID, VariableType.Integer);
+										GVar _gVar = LocalVariables.GetVariable (globalVariableID);
+										if (_gVar != null)
+										{
+											if (_gVar.type == VariableType.Integer)
+											{
+												EditorGUILayout.HelpBox ("The Integer value will refer to the " + _parameter.parameterType + "'s ID.", MessageType.Info);
+											}
+										}
+									}
+									break;
+
+								default:
+									EditorGUILayout.HelpBox ("Parameters of type '" + _parameter.parameterType + "' cannot have values transferred from Local Variables.", MessageType.Warning);
+									break;
+							}
+						}
+						else
+						{
+							EditorGUILayout.HelpBox ("No Global Variables found!", MessageType.Warning);
+						}
+					}
+					SmartFieldEnd (filteredParameters, parameterOverride, ref globalVariableParameterID);
+				}
 			}
 			else if (setParamMethod == SetParamMethod.CopiedFromComponentVariable)
 			{
-				globalVariableParameterID = Action.ChooseParameterGUI ("Variable:", parameters, globalVariableParameterID, ParameterType.ComponentVariable);
-				if (globalVariableParameterID < 0)
+				ActionParameter[] filteredParameters = GetFilteredParameters (parameters, ParameterType.ComponentVariable);
+				bool parameterOverride = SmartFieldStart ("Variable:", filteredParameters, ref globalVariableParameterID, "Variable:");
+				if (!parameterOverride)
 				{
 					variables = (Variables) EditorGUILayout.ObjectField ("Component:", variables, typeof (Variables), true);
+					SmartFieldEnd (filteredParameters, parameterOverride, ref globalVariableParameterID);
 					gameObjectConstantID = FieldToID<Variables> (variables, gameObjectConstantID);
 					variables = IDToField<Variables> (variables, gameObjectConstantID, false);
 
@@ -809,14 +910,15 @@ namespace AC
 								break;
 
 							case ParameterType.Document:
+							case ParameterType.Objective:
 								{
-									globalVariableID = AdvGame.ComponentVariableGUI ("Document variable:", globalVariableID, VariableType.Integer, variables);
+									globalVariableID = AdvGame.ComponentVariableGUI (_parameter.parameterType + " variable:", globalVariableID, VariableType.Integer, variables);
 									GVar _gVar = variables.GetVariable (globalVariableID);
 									if (_gVar != null)
 									{
 										if (_gVar.type == VariableType.Integer)
 										{
-											EditorGUILayout.HelpBox ("The Integer value will refer to the Document's ID.", MessageType.Info);
+											EditorGUILayout.HelpBox ("The Integer value will refer to the " + _parameter.parameterType + "'s ID.", MessageType.Info);
 										}
 									}
 								}
@@ -829,8 +931,12 @@ namespace AC
 					}
 					else if (variables)
 					{
-						EditorGUILayout.HelpBox ("No Global Variables found!", MessageType.Warning);
+						EditorGUILayout.HelpBox ("No Component Variables found!", MessageType.Warning);
 					}
+				}
+				else
+				{
+					SmartFieldEnd (filteredParameters, parameterOverride, ref globalVariableParameterID);
 				}
 			}
 			else if (setParamMethod == SetParamMethod.CopiedFromParameter)
@@ -875,18 +981,7 @@ namespace AC
 					case ParameterType.Float:
 					case ParameterType.Integer:
 					case ParameterType.PopUp:
-						animatorParameterID = Action.ChooseParameterGUI ("Animator:", parameters, animatorParameterID, ParameterType.GameObject);
-						if (animatorParameterID >= 0)
-						{
-							animatorConstantID = 0;
-							animator = null;
-						}
-						else
-						{
-							animator = (Animator) EditorGUILayout.ObjectField ("Animator:", animator, typeof (Animator), true);
-							animatorConstantID = FieldToID<Animator> (animator, animatorConstantID);
-							animator = IDToField<Animator> (animator, animatorConstantID, true);
-						}
+						ComponentField ("Animator:", ref animator, ref animatorConstantID, parameters, ref animatorParameterID);
 
 						animatorParameterName = EditorGUILayout.TextField ("Animator parameter:", animatorParameterName);
 						if (!string.IsNullOrEmpty (animatorParameterName))
@@ -944,7 +1039,7 @@ namespace AC
 		
 		private int ShowInvSelectorGUI (int ID)
 		{
-			InventoryManager inventoryManager = AdvGame.GetReferences ().inventoryManager;
+			InventoryManager inventoryManager = KickStarter.inventoryManager;
 			if (inventoryManager == null)
 			{
 				return ID;
@@ -984,7 +1079,7 @@ namespace AC
 
 		private int ShowDocSelectorGUI (int ID)
 		{
-			InventoryManager inventoryManager = AdvGame.GetReferences ().inventoryManager;
+			InventoryManager inventoryManager = KickStarter.inventoryManager;
 			if (inventoryManager == null)
 			{
 				return ID;
@@ -1020,6 +1115,46 @@ namespace AC
 			
 			return ID;
 		}
+
+
+		private int ShowObjectiveSelectorGUI (int ID)
+		{
+			InventoryManager inventoryManager = KickStarter.inventoryManager;
+			if (inventoryManager == null)
+			{
+				return ID;
+			}
+			
+			int objNumber = -1;
+			List<string> labelList = new List<string>();
+			int i=0;
+			foreach (Objective _objective in inventoryManager.objectives)
+			{
+				labelList.Add (_objective.Title);
+				
+				// If an item has been removed, make sure selected variable is still valid
+				if (_objective.ID == ID)
+				{
+					objNumber = i;
+				}
+				
+				i++;
+			}
+			
+			if (objNumber == -1)
+			{
+				// Wasn't found (item was possibly deleted), so revert to zero
+				if (ID > 0) LogWarning ("Previously chosen Objective no longer exists!");
+				
+				objNumber = 0;
+				ID = 0;
+			}
+			
+			objNumber = EditorGUILayout.Popup ("Objective:", objNumber, labelList.ToArray());
+			ID = inventoryManager.objectives[objNumber].ID;
+			
+			return ID;
+		}
 		
 		
 		private int GetVarNumber (List<GVar> vars, int ID)
@@ -1041,6 +1176,11 @@ namespace AC
 		{
 			int thisCount = 0;
 			if (setParamMethod == SetParamMethod.CopiedFromGlobalVariable && location == VariableLocation.Global && globalVariableID == varID)
+			{
+				thisCount ++;
+			}
+
+			if (setParamMethod == SetParamMethod.CopiedFromLocalVariable && location == VariableLocation.Local && globalVariableID == varID)
 			{
 				thisCount ++;
 			}
@@ -1102,6 +1242,12 @@ namespace AC
 		{
 			int thisCount = 0;
 			if (setParamMethod == SetParamMethod.CopiedFromGlobalVariable && location == VariableLocation.Global && globalVariableID == oldVarID)
+			{
+				globalVariableID = newVarID;
+				thisCount++;
+			}
+
+			if (setParamMethod == SetParamMethod.CopiedFromLocalVariable && location == VariableLocation.Local && globalVariableID == oldVarID)
 			{
 				globalVariableID = newVarID;
 				thisCount++;
@@ -1184,6 +1330,18 @@ namespace AC
 		public int UpdateDocumentReferences (int oldDocumentID, int newDocumentID, List<ActionParameter> parameters)
 		{
 			return GetParamReferences (parameters, oldDocumentID, ParameterType.Document, true, newDocumentID);
+		}
+
+
+		public int GetNumObjectiveReferences (int _objectiveID, List<ActionParameter> parameters)
+		{
+			return GetParamReferences (parameters, _objectiveID, ParameterType.Objective);
+		}
+
+
+		public int UpdateObjectiveReferences (int oldObjectiveID, int newObjectiveID, List<ActionParameter> parameters)
+		{
+			return GetParamReferences (parameters, oldObjectiveID, ParameterType.Objective, true, newObjectiveID);
 		}
 
 

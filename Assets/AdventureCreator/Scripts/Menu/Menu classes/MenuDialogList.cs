@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"MenuDialogList.cs"
  * 
@@ -51,8 +51,12 @@ namespace AC
 		public Color alreadyChosenFontHighlightedColour = Color.white;
 		/** (Deprecated) */
 		public bool showIndexNumbers = false;
+		/** If True, and elementSlotMapping = ElementSlotMapping.FixedOptionID, then the option will display even when it is turned off */
+		public bool showWhenDisabled = false;
 		/** If displayType = ConversationDisplayType.TextOnly, how each option's index number is prefixed to the label */
 		public IndexPrefixDisplay indexPrefixDisplay = IndexPrefixDisplay.None;
+		/** If True, then the dialogue option will be run when clicked on */
+		public bool autoRunOption = true;
 
 		/** The method by which this element (or slots within it) are hidden from view when made invisible (DisableObject, ClearContent) */
 		public UIHideStyle uiHideStyle = UIHideStyle.DisableObject;
@@ -99,6 +103,8 @@ namespace AC
 			resetOffsetWhenRestart = true;
 			limitMaxScroll = true;
 			indexPrefixDisplay = IndexPrefixDisplay.None;
+			autoRunOption = true;
+			showWhenDisabled = false;
 
 			base.Declare ();
 		}
@@ -147,6 +153,8 @@ namespace AC
 			resetOffsetWhenRestart = _element.resetOffsetWhenRestart;
 			limitMaxScroll = _element.limitMaxScroll;
 			indexPrefixDisplay = _element.indexPrefixDisplay;
+			autoRunOption = _element.autoRunOption;
+			showWhenDisabled = _element.showWhenDisabled;
 
 			base.Copy (_element);
 
@@ -180,7 +188,7 @@ namespace AC
 			int i=0;
 			foreach (UISlot uiSlot in uiSlots)
 			{
-				uiSlot.LinkUIElements (canvas, linkUIGraphic);
+				uiSlot.LinkUIElements (_menu, canvas, linkUIGraphic);
 
 				if (displayType == ConversationDisplayType.TextOnly)
 				{
@@ -232,7 +240,7 @@ namespace AC
 		
 		#if UNITY_EDITOR
 		
-		public override void ShowGUI (Menu menu)
+		public override void ShowGUI (Menu menu, System.Action<ActionListAsset> showALAEditor)
 		{
 			string apiPrefix = "(AC.PlayerMenus.GetElementWithName (\"" + menu.title + "\", \"" + title + "\") as AC.MenuDialogList)";
 
@@ -275,7 +283,7 @@ namespace AC
 					{
 						numSlots = 1;
 						slotSpacing = 0f;
-						optionToShow = CustomGUILayout.IntSlider ("Slot index to display:", optionToShow, 1, 20, apiPrefix + ".optionToShow", "The slot index of the dialogue option to show");
+						optionToShow = CustomGUILayout.IntField ("Slot index to display:", optionToShow, apiPrefix + ".optionToShow", "The slot index of the dialogue option to show");
 					}
 					break;
 
@@ -283,7 +291,8 @@ namespace AC
 					{
 						numSlots = 1;
 						slotSpacing = 0f;
-						optionToShow = CustomGUILayout.IntSlider ("Option ID to display:", optionToShow, 1, 20, apiPrefix + ".optionToShow", "The ID of the dialogue option to show");
+						optionToShow = CustomGUILayout.IntField ("Option ID to display:", optionToShow, apiPrefix + ".optionToShow", "The ID of the dialogue option to show");
+						showWhenDisabled = CustomGUILayout.Toggle ("Ignore 'enabled' state?", showWhenDisabled, apiPrefix + ".showWhenDisabled", "If True, the option will be shown even if it is currently disabled.");
 					}
 					break;
 			}
@@ -295,6 +304,7 @@ namespace AC
 				EditorGUILayout.HelpBox ("'Icon And Text' mode is only available for Unity UI-based Menus.", MessageType.Warning);
 			}
 
+			autoRunOption = CustomGUILayout.Toggle ("Run options when clicked?", autoRunOption, apiPrefix + ".autoRunOption");
 			markAlreadyChosen = CustomGUILayout.Toggle ("Mark options already used?", markAlreadyChosen, apiPrefix + ".markAlreadyChosen", "If True, then options that have already been clicked can be displayed in a different colour");
 			if (markAlreadyChosen)
 			{
@@ -320,7 +330,7 @@ namespace AC
 
 				for (int i=0; i<uiSlots.Length; i++)
 				{
-					uiSlots[i].LinkedUiGUI (i, source);
+					uiSlots[i].LinkedUiGUI (i, menu);
 				}
 
 				linkUIGraphic = (LinkUIGraphic) CustomGUILayout.EnumPopup ("Link graphics to:", linkUIGraphic, "", "What Image component the element's graphics should be linked to");
@@ -334,7 +344,7 @@ namespace AC
 			ChangeCursorGUI (menu);
 			CustomGUILayout.EndVertical ();
 			
-			base.ShowGUI (menu);
+			base.ShowGUI (menu, showALAEditor);
 		}
 
 
@@ -384,7 +394,7 @@ namespace AC
 			{
 				if (uiSlots[i].uiButton && uiSlots[i].uiButton == gameObject)
 				{
-					return 0;
+					return i;
 				}
 			}
 			return base.GetSlotIndex (gameObject);
@@ -671,13 +681,25 @@ namespace AC
 
 									bool chosen = linkedConversation.OptionHasBeenChosen (optionToShow - 1);
 									optionReferences[0] = new DialogueOptionReference (label, icon, chosen);
+
+									if (markAlreadyChosen && source != MenuSource.AdventureCreator && uiSlots.Length > 0)
+									{
+										if (optionReferences[0].Chosen)
+										{
+											uiSlots[0].SetColours (alreadyChosenFontColour, alreadyChosenFontHighlightedColour);
+										}
+										else
+										{
+											uiSlots[0].RestoreColour ();
+										}
+									}
 								}
 							}
 							break;
 							
 						case ElementSlotMapping.FixedOptionID:
 							{
-								if (linkedConversation.OptionWithIDIsActive (optionToShow))
+								if ((showWhenDisabled && linkedConversation.GetOptionWithID (optionToShow) != null) || linkedConversation.OptionWithIDIsActive (optionToShow))
 								{
 									numSlots = 1;
 									optionReferences = new DialogueOptionReference[1];
@@ -690,6 +712,18 @@ namespace AC
 
 									bool chosen = linkedConversation.OptionWithIDHasBeenChosen (optionToShow);
 									optionReferences[0] = new DialogueOptionReference (label, icon, chosen);
+
+									if (markAlreadyChosen && source != MenuSource.AdventureCreator && uiSlots.Length > 0)
+									{
+										if (optionReferences[0].Chosen)
+										{
+											uiSlots[0].SetColours (alreadyChosenFontColour, alreadyChosenFontHighlightedColour);
+										}
+										else
+										{
+											uiSlots[0].RestoreColour ();
+										}
+									}
 								}
 								else
 								{
@@ -838,7 +872,7 @@ namespace AC
 				return false;
 			}
 			
-			if (linkedConversation && 
+			if (autoRunOption && linkedConversation && 
 				(linkedConversation == overrideConversation || (overrideConversation == null && KickStarter.playerInput.activeConversation)))
 			{
 				switch (elementSlotMapping)
@@ -852,7 +886,7 @@ namespace AC
 						break;
 
 					case ElementSlotMapping.FixedOptionID:
-						linkedConversation.RunOptionWithID (optionToShow);
+						linkedConversation.RunOptionWithID (optionToShow, showWhenDisabled);
 						break;
 				}
 			}

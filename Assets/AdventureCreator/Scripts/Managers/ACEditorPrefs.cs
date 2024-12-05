@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ACEditorPrefs.cs"
  * 
@@ -16,6 +16,7 @@
 using UnityEditor;
 #endif
 using System;
+using System.Text;
 using UnityEngine;
 
 namespace AC
@@ -38,7 +39,7 @@ namespace AC
 		[SerializeField] protected Color pathGizmoColor = Color.blue;
 		[SerializeField] protected int menuItemsBeforeScroll = 15;
 		[SerializeField] protected CSVFormat csvFormat = CSVFormat.Standard;
-		[SerializeField] protected bool showHierarchyIcons = true;
+		[SerializeField] protected ShowHierarchyIcons showHierarchyIcons = ShowHierarchyIcons.All;
 		[SerializeField] protected int editorLabelWidth = 0;
 		[SerializeField] protected int actionNodeWidth = 300;
 		[SerializeField] protected bool disableInstaller = false;
@@ -47,7 +48,8 @@ namespace AC
 		[SerializeField] protected bool retainExportFieldData = true;
 		[SerializeField] protected bool allowDragDrop = false;
 		[SerializeField] protected string actionListAssetPath = "";
-
+		[SerializeField] protected ExportEncoding exportEncoding = ExportEncoding.UTF8;
+		protected enum ExportEncoding { UTF8, ASCII, Unicode };
 
 		internal static ACEditorPrefs GetOrCreateSettings ()
 		{
@@ -103,6 +105,7 @@ namespace AC
 					settings.retainExportFieldData = DefaultRetainExportFieldData;
 					settings.allowDragDrop = DefaultAllowDragDrop;
 					settings.actionListAssetPath = DefaultActionListAssetPath;
+					settings.exportEncoding = DefaultExportEncoding;
 
 					try
 					{
@@ -222,7 +225,7 @@ namespace AC
 
 
 		/** If True, then icons can be displayed in the Hierarchy window */
-		public static bool ShowHierarchyIcons
+		public static ShowHierarchyIcons ShowHierarchyIcons
 		{
 			get
 			{
@@ -238,11 +241,11 @@ namespace AC
 		}
 
 
-		private static bool DefaultShowHierarchyIcons
+		private static ShowHierarchyIcons DefaultShowHierarchyIcons
 		{
 			get
 			{
-				return true;
+				return ShowHierarchyIcons.All;
 			}
 		}
 		
@@ -545,6 +548,37 @@ namespace AC
 			}
 		}
 
+
+		public static Encoding Encoding
+		{
+			get
+			{
+				ACEditorPrefs settings = GetOrCreateSettings ();
+				ExportEncoding exportEncoding = settings ? settings.exportEncoding : DefaultExportEncoding;
+
+				switch (exportEncoding)
+				{
+					case ExportEncoding.ASCII:
+						return Encoding.ASCII;
+
+					case ExportEncoding.Unicode:
+						return Encoding.Unicode;
+
+					default:
+						return Encoding.UTF8;
+				}
+			}
+		}
+
+
+		protected static ExportEncoding DefaultExportEncoding
+		{
+			get
+			{
+				return ExportEncoding.UTF8;
+			}
+		}
+
 		#endif
 
 	}
@@ -576,7 +610,7 @@ namespace AC
 						EditorGUILayout.Space ();
 						EditorGUILayout.LabelField ("Hierarchy icons", EditorStyles.boldLabel);
 						EditorGUILayout.PropertyField (settings.FindProperty ("showHierarchyIcons"), new GUIContent ("Show icons?", "If True, save and node icons will appear in the Hierarchy window"));
-						if (settings.FindProperty ("showHierarchyIcons") == null || settings.FindProperty ("showHierarchyIcons").boolValue)
+						if (settings.FindProperty ("showHierarchyIcons") == null || settings.FindProperty ("showHierarchyIcons").intValue < 2)
 						{
 							EditorGUILayout.PropertyField (settings.FindProperty ("hierarchyIconOffset"), new GUIContent ("Horizontal offset:", "A horizontal offset to apply to AC icons in the Hierarchy"));
 						}
@@ -605,6 +639,7 @@ namespace AC
 						EditorGUILayout.LabelField ("Import / export", EditorStyles.boldLabel);
 						EditorGUILayout.PropertyField (settings.FindProperty ("csvFormat"), new GUIContent ("CSV format:", "The formatting method to apply to CSV files"));
 						EditorGUILayout.PropertyField (settings.FindProperty ("retainExportFieldData"), new GUIContent ("Exporters retain fields?", "If True, the Text, Variable and Inventory export wizards will retain their field values upon being re-opened"));
+						EditorGUILayout.PropertyField (settings.FindProperty ("exportEncoding"), new GUIContent ("Export encoding:", "The encoding to use when writing files with the Text, Variable and Inventory export wizards"));
 
 						settings.ApplyModifiedProperties ();
 					}
@@ -646,7 +681,7 @@ namespace AC
 		{
 			UnityVersionHandler.OpenScene (sceneFile);
 
-			ActionList[] actionLists = UnityEngine.Object.FindObjectsOfType<ActionList> ();
+			ActionList[] actionLists = UnityVersionHandler.FindObjectsOfType<ActionList> ();
 			if (actionLists.Length == 0)
 			{
 				return;

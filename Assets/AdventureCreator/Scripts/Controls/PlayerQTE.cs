@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"PlayerQTE.cs"
  * 
@@ -102,7 +102,7 @@ namespace AC
 				_inputName = touchScreenTap;
 			}
 
-			if (string.IsNullOrEmpty (_inputName) || _duration <= 0f)
+			if (string.IsNullOrEmpty (_inputName))
 			{
 				return;
 			}
@@ -121,7 +121,7 @@ namespace AC
 		 */
 		public void StartSingleAxisQTE (string _inputName, float _duration, float _axisThreshold, Animator _animator = null, bool _wrongKeyFails = false)
 		{
-			if (string.IsNullOrEmpty (_inputName) || _duration <= 0f)
+			if (string.IsNullOrEmpty (_inputName))
 			{
 				return;
 			}
@@ -146,12 +146,12 @@ namespace AC
 				_inputName = touchScreenTap;
 			}
 
-			if (string.IsNullOrEmpty (_inputName) || _duration <= 0f)
+			if (string.IsNullOrEmpty (_inputName))
 			{
 				return;
 			}
 
-			if (_holdDuration > _duration)
+			if (_holdDuration > _duration && _duration >= 0f)
 			{
 				_holdDuration = _duration;
 			}
@@ -179,7 +179,7 @@ namespace AC
 				_inputName = touchScreenTap;
 			}
 
-			if (string.IsNullOrEmpty (_inputName) || _duration <= 0f)
+			if (string.IsNullOrEmpty (_inputName))
 			{
 				return;
 			}
@@ -321,7 +321,6 @@ namespace AC
 				Lose ();
 				return;
 			}
-
 			switch (qteType)
 			{
 				case QTEType.SingleKeypress:
@@ -341,7 +340,7 @@ namespace AC
 							Win ();
 							return;
 						}
-						else if (wrongKeyFails && KickStarter.playerInput.InputAnyKey () && KickStarter.playerInput.GetMouseState () == MouseState.Normal)
+						else if (wrongKeyFails && KickStarter.playerInput.InputAnyKeyDown () && KickStarter.playerInput.GetMouseState () == MouseState.Normal)
 						{
 							Lose ();
 							return;
@@ -413,6 +412,10 @@ namespace AC
 									if (lastPressTime >= Time.time) lastPressTime = 0f;
 									break;
 
+								case QTEHoldReleaseBehaviour.Reset:
+									lastPressTime = 0f;
+									break;
+
 								default:
 									break;
 							}
@@ -456,6 +459,10 @@ namespace AC
 								case QTEHoldReleaseBehaviour.Cooldown:
 									lastPressTime += Time.deltaTime * 2f;
 									if (lastPressTime >= Time.time) lastPressTime = 0f;
+									break;
+
+								case QTEHoldReleaseBehaviour.Reset:
+									lastPressTime = 0f;
 									break;
 
 								default:

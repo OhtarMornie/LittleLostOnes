@@ -8,12 +8,26 @@ namespace AC
 
 		[SerializeField] private GrabDrop grabDrop;
 		[SerializeField] private DragBase draggable = null;
-		private enum GrabDrop { Grabbed, Dropped };
+		public enum GrabDrop { Grabbed, Dropped };
 
 
 		public override string[] EditorNames { get { return new string[] { "Draggable/Grab", "Draggable/Drop" }; } }
 		protected override string EventName { get { return grabDrop == GrabDrop.Grabbed ? "OnGrabMoveable" : "OnDropMoveable"; } }
 		protected override string ConditionHelp { get { return "Whenever a Draggable is " + grabDrop.ToString ().ToLower () + "."; } }
+
+
+		public EventMoveableGrab (int _id, string _label, ActionListAsset _actionListAsset, int[] _parameterIDs, GrabDrop _grabDrop, DragBase _draggable)
+		{
+			id = _id;
+			label = _label;
+			actionListAsset = _actionListAsset;
+			parameterIDs = _parameterIDs;
+			grabDrop = _grabDrop;
+			draggable = _draggable;
+		}
+
+
+		public EventMoveableGrab () {}
 
 
 		public override void Register ()

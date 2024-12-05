@@ -155,8 +155,8 @@ namespace AC
 
 		public void ShowGUI ()
 		{
+			CustomGUILayout.Header ("Scene item");
 			CustomGUILayout.BeginVertical ();
-			EditorGUILayout.LabelField ("Scene item", EditorStyles.boldLabel);
 
 			if (Application.isPlaying && gameObject.activeInHierarchy)
 			{
@@ -246,6 +246,13 @@ namespace AC
 
 		public int itemID;
 		public int objectID;
+
+		public SceneItemSpawnData ()
+		{
+			itemID = -1;
+			objectID = 0;
+		}
+
 
 		public SceneItemSpawnData (SceneItem sceneItem, int _objectID)
 		{

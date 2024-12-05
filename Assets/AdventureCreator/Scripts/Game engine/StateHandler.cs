@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"StateHandler.cs"
  * 
@@ -400,10 +400,6 @@ namespace AC
 
 			if (KickStarter.settingsManager.IsInLoadingScene () || KickStarter.sceneChanger.IsLoading ())
 			{
-				if (!cameraIsOff && !KickStarter.settingsManager.IsInLoadingScene ())
-				{
-					KickStarter.mainCamera.DrawCameraFade ();
-				}
 				if (!menuIsOff)
 				{
 					if (KickStarter.settingsManager.IsInLoadingScene ())
@@ -417,6 +413,10 @@ namespace AC
 				}
 				if (!cameraIsOff)
 				{
+					if (!KickStarter.settingsManager.IsInLoadingScene ())
+					{
+						KickStarter.mainCamera.DrawCameraFade ();
+					}
 					KickStarter.mainCamera.DrawBorders ();
 				}
 
@@ -566,7 +566,7 @@ namespace AC
 		 */
 		public void Unregister (KickStarter kickStarter)
 		{
-			if (kickStarter != null && activeKickStarter == kickStarter)
+			if (activeKickStarter == kickStarter)
 			{
 				activeKickStarter = null;
 			}
@@ -610,6 +610,8 @@ namespace AC
 				AudioListener.pause = false;
 			}
 
+			KickStarter.eventManager.Call_OnBeginGame ();
+
 			if (KickStarter.settingsManager.actionListOnStart)
 			{
 				AdvGame.RunActionListAsset (KickStarter.settingsManager.actionListOnStart);
@@ -630,7 +632,7 @@ namespace AC
 		/** Calls Physics.IgnoreCollision on all appropriate Collider combinations (Unity 5 only). */
 		public void IgnoreNavMeshCollisions ()
 		{
-			Collider[] allColliders = FindObjectsOfType (typeof(Collider)) as Collider[];
+			Collider[] allColliders = UnityVersionHandler.FindObjectsOfType<Collider> ();
 			foreach (NavMeshBase navMeshBase in navMeshBases)
 			{
 				navMeshBase.IgnoreNavMeshCollisions (allColliders);
@@ -747,6 +749,16 @@ namespace AC
 			cursorIsOff = !state;
 		}
 
+		public bool CursorSystemIsEnabled { get { return !cursorIsOff; }}
+		public bool InputSystemIsEnabled { get { return !inputIsOff; }}
+		public bool InteractionSystemIsEnabled { get { return !interactionIsOff; }}
+		public bool DraggableSystemIsEnabled { get { return !draggablesIsOff; }}
+		public bool MenuSystemIsEnabled { get { return !menuIsOff; }}
+		public bool MovementSystemIsEnabled { get { return !movementIsOff; }}
+		public bool CameraSystemIsEnabled { get { return !cameraIsOff; }}
+		public bool TriggerSystemIsEnabled { get { return !triggerIsOff; }}
+		public bool PlayerSystemIsEnabled { get { return !playerIsOff; }}
+
 
 		/**
 		 * <summary>Sets the enabled state of the PlayerInput system.</summary>
@@ -795,6 +807,16 @@ namespace AC
 		public bool CanInteract ()
 		{
 			return !interactionIsOff;
+		}
+
+
+		/**
+		 * <summary>Checks if the input system is enabled.</summary>
+		 * <returns>True if the input system is enabled</returns>
+		 */
+		public bool CanReceiveInput ()
+		{
+			return !inputIsOff;
 		}
 
 
@@ -971,7 +993,7 @@ namespace AC
 		/** Creates an initial record of all ConstantID components in the Hierarchy. More may be added through OnEnable / Start functions, but this way those that are initially present are ensured to be included in initialisation processes */
 		public void RegisterInitialConstantIDs ()
 		{
-			ConstantID[] allConstantIDs = Object.FindObjectsOfType <ConstantID>();
+			ConstantID[] allConstantIDs = UnityVersionHandler.FindObjectsOfType <ConstantID>();
 			foreach (ConstantID constantID in allConstantIDs)
 			{
 				Register(constantID);

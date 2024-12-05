@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"RuntimeDocuments.cs"
  * 
@@ -24,7 +24,7 @@ namespace AC
 		#region Variables
 
 		protected DocumentInstance activeDocumentInstance;
-		protected readonly Dictionary<int, DocumentInstance> collectedDocumentsDict = new Dictionary<int, DocumentInstance> (); 
+		protected readonly List<DocumentInstance> collectedDocuments = new List<DocumentInstance> (); 
 		
 		#endregion
 
@@ -51,7 +51,7 @@ namespace AC
 		public void OnInitPersistentEngine ()
 		{
 			activeDocumentInstance = null;
-			collectedDocumentsDict.Clear ();
+			collectedDocuments.Clear ();
 
 			GetDocumentsOnStart ();
 		}
@@ -67,9 +67,10 @@ namespace AC
 			{
 				CloseDocument ();
 
-				if (collectedDocumentsDict.ContainsKey (document.ID))
+				DocumentInstance collectedDocument = GetCollectedDocumentInstance (document);
+				if (collectedDocument != null)
 				{
-					activeDocumentInstance = collectedDocumentsDict[document.ID];
+					activeDocumentInstance = collectedDocument;
 				}
 				else
 				{
@@ -113,7 +114,7 @@ namespace AC
 		 */
 		public bool DocumentIsInCollection (int documentID)
 		{
-			return collectedDocumentsDict.ContainsKey (documentID);
+			return GetCollectedDocumentInstance (documentID) != null;
 		}
 
 
@@ -126,8 +127,8 @@ namespace AC
 		{
 			if (document == null) return false;
 
-			DocumentInstance documentInstance = null;
-			if (collectedDocumentsDict.TryGetValue (document.ID, out documentInstance))
+			DocumentInstance documentInstance = GetCollectedDocumentInstance (document);
+			if (documentInstance != null)
 			{
 				return documentInstance.hasBeenViewed;
 			}
@@ -158,38 +159,50 @@ namespace AC
 		 */
 		public DocumentInstance GetCollectedDocumentInstance (Document document)
 		{
-			if (document == null) return null;
-
-			DocumentInstance documentInstance = null;
-			if (collectedDocumentsDict.TryGetValue (document.ID, out documentInstance))
+			if (document != null)
 			{
-				return documentInstance;
+				return GetCollectedDocumentInstance (document.ID);
+			}
+			return null;
+		}
+
+		
+		/**
+		 * <summary>Gets the DocumentInstance class for a Document present in the Player's collection</summary>
+		 * <param name = "documentID">The ID of the Document</param>
+		 * <returns>The DocumentInstance class, if present, or null otherwise</returns>
+		 */
+		public DocumentInstance GetCollectedDocumentInstance (int documentID)
+		{
+			foreach (DocumentInstance collectedDocument in collectedDocuments)
+			{
+				if (collectedDocument.DocumentID == documentID)
+				{
+					return collectedDocument;
+				}
 			}
 			return null;
 		}
 
 
 		/**
-		 * <summary>Gets the DocumentInstance class for a Document present in the Player's collection</summary>
-		 * <param name = "ID">The ID of the Document</param>
-		 * <returns>The DocumentInstance class, if present, or null otherwise</returns>
-		 */
-		public DocumentInstance GetCollectedDocumentInstance (int ID)
-		{
-			return GetCollectedDocumentInstance (KickStarter.inventoryManager.GetDocument (ID));
-		}
-
-
-		/**
 		 * <summary>Adds a Document to the Player's own collection</summary>
 		 * <param name = "document">The Document to add</param>
+		 * <param name = "addToFront">If True, the Document will be added to the front of the collection</param>
 		 */
-		public void AddToCollection (Document document)
+		public void AddToCollection (Document document, bool addToFront = false)
 		{
 			if (document == null || DocumentIsInCollection (document.ID)) return;
 
 			DocumentInstance documentInstance = new DocumentInstance (document);
-			collectedDocumentsDict.Add (document.ID, documentInstance);
+			if (addToFront)
+			{
+				collectedDocuments.Insert (0, documentInstance);
+			}
+			else
+			{
+				collectedDocuments.Add (documentInstance);
+			}
 			PlayerMenus.ResetInventoryBoxes ();
 
 			KickStarter.eventManager.Call_OnAddRemoveDocument (documentInstance, true);
@@ -213,11 +226,12 @@ namespace AC
 		 */
 		public void RemoveFromCollection (Document document)
 		{
-			if (document == null || !DocumentIsInCollection (document.ID)) return;
+			if (document == null) return;
 
-			DocumentInstance documentInstance = collectedDocumentsDict[document.ID];
+			DocumentInstance documentInstance = GetCollectedDocumentInstance (document);
+			if (documentInstance == null) return;
 
-			collectedDocumentsDict.Remove (document.ID);
+			collectedDocuments.Remove (documentInstance);
 			PlayerMenus.ResetInventoryBoxes ();
 
 			KickStarter.eventManager.Call_OnAddRemoveDocument (documentInstance, true);
@@ -238,7 +252,7 @@ namespace AC
 		/** Removes all Documents from the Player's own collection */
 		public void ClearCollection ()
 		{
-			collectedDocumentsDict.Clear ();
+			collectedDocuments.Clear ();
 			PlayerMenus.ResetInventoryBoxes ();
 		}
 
@@ -282,16 +296,16 @@ namespace AC
 			playerData.activeDocumentID = DocumentInstance.IsValid (activeDocumentInstance) ? activeDocumentInstance.DocumentID : -1;
 
 			System.Text.StringBuilder collectedDocumentsData = new System.Text.StringBuilder ();
-			foreach (int collectedDocument in collectedDocumentsDict.Keys)
+			foreach (DocumentInstance documentInstance in collectedDocuments)
 			{
-				collectedDocumentsData.Append (collectedDocument.ToString ());
+				collectedDocumentsData.Append (documentInstance.DocumentID.ToString ());
 				collectedDocumentsData.Append (SaveSystem.colon);
-				collectedDocumentsData.Append (collectedDocumentsDict[collectedDocument].lastOpenPage);
+				collectedDocumentsData.Append (documentInstance.lastOpenPage);
 				collectedDocumentsData.Append (SaveSystem.colon);
-				collectedDocumentsData.Append (collectedDocumentsDict[collectedDocument].hasBeenViewed ? 1 : 0);
+				collectedDocumentsData.Append (documentInstance.hasBeenViewed ? 1 : 0);
 				collectedDocumentsData.Append (SaveSystem.pipe);
 			}
-			if (collectedDocumentsDict.Count > 0)
+			if (collectedDocuments.Count > 0)
 			{
 				collectedDocumentsData.Remove (collectedDocumentsData.Length-1, 1);
 			}
@@ -308,7 +322,7 @@ namespace AC
 		 */
 		public void AssignPlayerDocuments (PlayerData playerData)
 		{
-			collectedDocumentsDict.Clear ();
+			collectedDocuments.Clear ();
 			if (!string.IsNullOrEmpty (playerData.collectedDocumentData))
 			{
 				string[] collectedDocumentArray = playerData.collectedDocumentData.Split (SaveSystem.pipe[0]);
@@ -351,7 +365,7 @@ namespace AC
 										}
 									}
 
-									collectedDocumentsDict.Add (_id, documentInstance);
+									collectedDocuments.Add (documentInstance);
 								}
 							}
 						}
@@ -370,31 +384,31 @@ namespace AC
 		 */
 		public int[] GetCollectedDocumentIDs (int[] limitToCategoryIDs = null)
 		{
-			if (limitToCategoryIDs != null && limitToCategoryIDs.Length >= 0)
+			List<int> limitedDocuments = new List<int> ();
+			foreach (DocumentInstance documentInstance in collectedDocuments)
 			{
-				List<int> limitedDocuments = new List<int> ();
-				foreach (int documentID in collectedDocumentsDict.Keys)
+				bool canAdd = false;
+				if (limitToCategoryIDs != null)
 				{
-					if (documentID >= 0)
+					foreach (int limitToCategoryID in limitToCategoryIDs)
 					{
-						Document document = KickStarter.inventoryManager.GetDocument (documentID);
-						bool canAdd = false;
-						foreach (int limitToCategoryID in limitToCategoryIDs)
+						if (documentInstance.Document.binID == limitToCategoryID)
 						{
-							if (document.binID == limitToCategoryID)
-							{
-								canAdd = true;
-							}
-						}
-						if (canAdd)
-						{
-							limitedDocuments.Add (documentID);
+							canAdd = true;
 						}
 					}
 				}
-				return limitedDocuments.ToArray ();
+				else
+				{
+					canAdd = true;
+				}
+
+				if (canAdd)
+				{
+					limitedDocuments.Add (documentInstance.DocumentID);
+				}
 			}
-			return collectedDocumentsDict.Keys.ToArray ();
+			return limitedDocuments.ToArray ();
 		}
 
 		#endregion
@@ -410,7 +424,7 @@ namespace AC
 				{
 					if (document.carryOnStart)
 					{
-						collectedDocumentsDict.Add (document.ID, new DocumentInstance (document));
+						collectedDocuments.Add (new DocumentInstance (document));
 					}
 				}
 			}

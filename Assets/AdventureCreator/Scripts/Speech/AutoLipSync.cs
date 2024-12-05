@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"AutoLipsync.cs"
  * 
@@ -54,6 +54,10 @@ namespace AC
 		{
 			_audio = GetComponent <AudioSource>();
 			_character = GetComponent <Char>();
+			if (_character && _character.speechAudioSource)
+			{
+				_audio = _character.speechAudioSource;
+			}
 			array = new float[width];	
 
 			originalRotation = jawBone.localRotation;

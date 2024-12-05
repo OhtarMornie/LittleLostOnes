@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"RememberAnimator.cs"
  * 
@@ -35,7 +35,23 @@ namespace AC
 		[SerializeField] private Animator animatorToSave = null;
 		[SerializeField] private bool saveController = false; 
 		[SerializeField] private bool setDefaultParameterValues = false;
+		[SerializeField] private bool retainParametersWhenDisabled = false;
 		[SerializeField] private List<DefaultAnimParameter> defaultAnimParameters = new List<DefaultAnimParameter>();
+
+		#endregion
+
+
+		#region UnityStandards
+
+		protected override void Start ()
+		{
+#if UNITY_2022_3_OR_NEWER
+			if (Animator) animatorToSave.keepAnimatorStateOnDisable = retainParametersWhenDisabled;
+#else
+			if (Animator) animatorToSave.keepAnimatorControllerStateOnDisable = retainParametersWhenDisabled;
+#endif
+			base.Start ();
+		}
 
 		#endregion
 
@@ -159,15 +175,15 @@ namespace AC
 
 		public void ShowGUI ()
 		{
+			CustomGUILayout.Header ("Animator");
 			CustomGUILayout.BeginVertical ();
-
-			EditorGUILayout.LabelField ("Animator", EditorStyles.boldLabel);
 
 			if (animatorToSave == null) animatorToSave = GetComponent<Animator> ();
 			animatorToSave = (Animator) CustomGUILayout.ObjectField<Animator> ("Animator to save:", animatorToSave, true);
 			saveController = EditorGUILayout.ToggleLeft ("Save change in Controller?", saveController);
 
 			setDefaultParameterValues = EditorGUILayout.ToggleLeft ("Set default parameters?", setDefaultParameterValues);
+			retainParametersWhenDisabled = EditorGUILayout.ToggleLeft ("Retain parameter values when disabled?", retainParametersWhenDisabled);
 			if (setDefaultParameterValues)
 			{
 				if (!UnityVersionHandler.IsPrefabEditing (gameObject) && !UnityVersionHandler.ObjectIsInActiveScene (gameObject))

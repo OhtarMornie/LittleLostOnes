@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionMoveableCheck.cs"
  * 
@@ -54,19 +54,7 @@ namespace AC
 		
 		public override void ShowGUI (List<ActionParameter> parameters)
 		{
-			parameterID = Action.ChooseParameterGUI ("Object to check:", parameters, parameterID, ParameterType.GameObject);
-			if (parameterID >= 0)
-			{
-				constantID = 0;
-				dragObject = null;
-			}
-			else
-			{
-				dragObject = (DragBase) EditorGUILayout.ObjectField ("Object to check:", dragObject, typeof (DragBase), true);
-
-				constantID = FieldToID <DragBase> (dragObject, constantID);
-				dragObject = IDToField <DragBase> (dragObject, constantID, false);
-			}
+			ComponentField ("Object to check:", ref dragObject, ref constantID, parameters, ref parameterID);
 		}
 
 

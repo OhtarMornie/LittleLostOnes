@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionCharHold.cs"
  * 
@@ -42,6 +42,9 @@ namespace AC
 
 		protected GameObject loadedObject = null;
 
+		public int droppedObjectParameterID = -1;
+		protected ActionParameter droppedObjectParameter;
+
 		public AnimationCurve ikTransitionCurve = AnimationCurve.Linear (0f, 0f, 1f, 1f);
 		protected enum CharHoldMethod { ParentObjectToHand, MoveHandWithIK, DropObject };
 		[SerializeField] protected CharHoldMethod charHoldMethod = CharHoldMethod.ParentObjectToHand;
@@ -50,15 +53,28 @@ namespace AC
 
 		[SerializeField] private bool deleteDroppedObject;
 
-		public Hand hand;
+		[SerializeField] private Hand hand;
+		public int attachmentPointID = -1;
+		public int attachmentPointParameterID = -1;
 
 		public override ActionCategory Category { get { return ActionCategory.Character; }}
 		public override string Title { get { return "Hold object"; }}
 		public override string Description { get { return "Parents a GameObject to a Character's hand Transform, as chosen in the Character's inspector. The local transforms of the GameObject will be cleared. Note that this action only works with 3D characters."; }}
 
 
+		public override void Upgrade ()
+		{
+			if (attachmentPointID < 0)
+			{
+				attachmentPointID = hand == Hand.Left ? 0 : 1;
+			}
+			base.Upgrade ();
+		}
+
+
 		public override void AssignValues (List<ActionParameter> parameters)
 		{
+			Upgrade ();
 			objectToHold = AssignFile (parameters, objectToHoldParameterID, objectToHoldID, objectToHold);
 
 			if (objectToHold != null && !objectToHold.activeInHierarchy)
@@ -76,6 +92,14 @@ namespace AC
 			}
 
 			localEulerAngles = AssignVector3 (parameters, localEulerAnglesParameterID, localEulerAngles);
+
+			droppedObjectParameter = GetParameterWithID (parameters, droppedObjectParameterID);
+			if (droppedObjectParameter != null && droppedObjectParameter.parameterType != ParameterType.GameObject)
+			{
+				droppedObjectParameter = null;
+			}
+
+			attachmentPointID = AssignInteger (parameters, attachmentPointParameterID, attachmentPointID);
 		}
 
 
@@ -99,6 +123,7 @@ namespace AC
 		{
 			if (runtimeChar != null)
 			{
+				runtimeChar.Upgrade ();
 				if (charHoldMethod == CharHoldMethod.MoveHandWithIK && runtimeChar.GetAnimEngine ().IKEnabled)
 				{
 					if (GetObjectToHold () == null && ikHoldMethod == IKHoldMethod.SetTarget) return 0f;
@@ -119,14 +144,18 @@ namespace AC
 				}
 				else if (charHoldMethod == CharHoldMethod.ParentObjectToHand)
 				{
-					if (runtimeChar.HoldObject (GetObjectToHold (), hand))
+					if (runtimeChar.HoldObject (GetObjectToHold (), attachmentPointID))
 					{
 						GetObjectToHold ().transform.localEulerAngles = localEulerAngles;
 					}
 				}
 				else if (charHoldMethod == CharHoldMethod.DropObject)
 				{
-					runtimeChar.ReleaseHeldObject (hand, deleteDroppedObject);
+					GameObject droppedObject = runtimeChar.ReleaseHeldObject (attachmentPointID, deleteDroppedObject);
+					if (droppedObjectParameter != null)
+					{
+						droppedObjectParameter.SetValue (droppedObject);
+					}
 				}
 			}
 			else
@@ -167,17 +196,13 @@ namespace AC
 		
 		public override void ShowGUI (List<ActionParameter> parameters)
 		{
+			Upgrade ();
 			Char editorChar = _char;
 
 			isPlayer = EditorGUILayout.Toggle ("Is Player?", isPlayer);
 			if (isPlayer)
 			{
-				if (KickStarter.settingsManager != null && KickStarter.settingsManager.playerSwitching == PlayerSwitching.Allow)
-				{
-					playerParameterID = ChooseParameterGUI ("Player ID:", parameters, playerParameterID, ParameterType.Integer);
-					if (playerParameterID < 0)
-						playerID = ChoosePlayerGUI (playerID, true);
-				}
+				PlayerField (ref playerID, parameters, ref playerParameterID);
 
 				if (playerParameterID < 0)
 				{
@@ -191,22 +216,19 @@ namespace AC
 					}
 					else
 					{
-						editorChar = (Application.isPlaying) ? KickStarter.player : AdvGame.GetReferences ().settingsManager.GetDefaultPlayer ();
+						editorChar = (Application.isPlaying) ? KickStarter.player : KickStarter.settingsManager.GetDefaultPlayer ();
 					}
 				}
 			}
 			else
 			{
-				editorChar = (Char) EditorGUILayout.ObjectField ("Character:", _char, typeof (Char), true);
-					
-				_charID = FieldToID <Char> (editorChar, _charID);
-				editorChar = IDToField <Char> (editorChar, _charID, true);
-
+				ComponentField ("Character:", ref editorChar, ref _charID, true);
 				_char = editorChar;
 			}
 
 			if (editorChar && editorChar.GetAnimEngine ())
 			{
+				editorChar.Upgrade ();
 				if (editorChar.GetAnimEngine ().IKEnabled)
 				{
 					charHoldMethod = (CharHoldMethod) EditorGUILayout.EnumPopup ("Hold method:", charHoldMethod);
@@ -223,30 +245,32 @@ namespace AC
 
 			if (charHoldMethod == CharHoldMethod.ParentObjectToHand || (charHoldMethod == CharHoldMethod.MoveHandWithIK && ikHoldMethod == IKHoldMethod.SetTarget))
 			{
-				objectToHoldParameterID = Action.ChooseParameterGUI ("Object to hold:", parameters, objectToHoldParameterID, ParameterType.GameObject);
-				if (objectToHoldParameterID >= 0)
-				{
-					objectToHoldID = 0;
-					objectToHold = null;
-				}
-				else
-				{
-					objectToHold = (GameObject)EditorGUILayout.ObjectField ("Object to hold:", objectToHold, typeof (GameObject), true);
-
-					objectToHoldID = FieldToID (objectToHold, objectToHoldID);
-					objectToHold = IDToField (objectToHold, objectToHoldID, false);
-				}
+				GameObjectField ("Object to hold:", ref objectToHold, ref objectToHoldID, parameters, ref objectToHoldParameterID);
 			}
 					
-			hand = (Hand) EditorGUILayout.EnumPopup ("Hand:", hand);
+			if (editorChar)
+			{
+				int index = 0;
+				string[] labelsArray = new string[editorChar.attachmentPoints.Length];
+				for (int i = 0; i < editorChar.attachmentPoints.Length; i++)
+				{
+					if (editorChar.attachmentPoints[i].ID == attachmentPointID)
+					{
+						index = i;
+					}
+					labelsArray[i] = editorChar.attachmentPoints[i].ID + ": " + editorChar.attachmentPoints[i].label;
+				}
+				index = EditorGUILayout.Popup ("Attachment point:", index, labelsArray);
+				attachmentPointID = (index >= 0 && index < editorChar.attachmentPoints.Length) ? editorChar.attachmentPoints[index].ID : 0;
+			}
+			else
+			{
+				IntField ("Attachment point ID:", ref attachmentPointID, parameters, ref attachmentPointParameterID);
+			}
 
 			if (charHoldMethod == CharHoldMethod.ParentObjectToHand)
 			{
-				localEulerAnglesParameterID = Action.ChooseParameterGUI ("Object local angles:", parameters, localEulerAnglesParameterID, ParameterType.Vector3);
-				if (localEulerAnglesParameterID < 0)
-				{
-					localEulerAngles = EditorGUILayout.Vector3Field ("Object local angles:", localEulerAngles);
-				}
+				Vector3Field ("Object local angles:", ref localEulerAngles, parameters, ref localEulerAnglesParameterID);
 			}
 			else if (charHoldMethod == CharHoldMethod.MoveHandWithIK && ikHoldMethod == IKHoldMethod.SetTarget)
 			{
@@ -255,6 +279,11 @@ namespace AC
 			else if (charHoldMethod == CharHoldMethod.DropObject)
 			{
 				deleteDroppedObject = EditorGUILayout.Toggle ("Delete dropped object?", deleteDroppedObject);
+
+				if (!deleteDroppedObject)
+				{
+					droppedObjectParameterID = ChooseParameterGUI ("Dropped object assignment:", parameters, droppedObjectParameterID, ParameterType.GameObject);
+				}
 			}
 		}
 
@@ -303,7 +332,7 @@ namespace AC
 				}
 				else
 				{
-					editorChar = AdvGame.GetReferences ().settingsManager.GetDefaultPlayer ();
+					editorChar = KickStarter.settingsManager.GetDefaultPlayer ();
 				}
 			}
 

@@ -40,7 +40,7 @@ namespace AC
 
 		private void OnGUI ()
 		{
-			settingsManager = AdvGame.GetReferences ().settingsManager;
+			settingsManager = KickStarter.settingsManager;
 
 			if (settingsManager == null)
 			{
@@ -74,11 +74,12 @@ namespace AC
 			}
 
 			EditorGUILayout.LabelField ("Save-game file manager", CustomStyles.managerHeader);
+			EditorGUILayout.Space ();
 
-			EditorGUILayout.BeginVertical (CustomStyles.thinBox);
 			showHandlers = CustomGUILayout.ToggleHeader (showHandlers, "File and format handlers");
 			if (showHandlers)
 			{
+				CustomGUILayout.BeginVertical ();
 				if (saveFileHandler != null)
 				{
 					EditorGUILayout.LabelField ("Save file location:", saveFileHandler.GetType ().Name);
@@ -100,18 +101,18 @@ namespace AC
 				}
 
 				EditorGUILayout.HelpBox ("Save format and location handlers can be modified through script - see the Manual's 'Custom save formats and handling' chapter.", MessageType.Info);
+				CustomGUILayout.EndVertical ();
 			}
-			CustomGUILayout.EndVertical ();
 
 			bool foundSome = false;
 			if (settingsManager.useProfiles)
 			{
 				EditorGUILayout.Space ();
 
-				EditorGUILayout.BeginVertical (CustomStyles.thinBox);
 				showProfiles = CustomGUILayout.ToggleHeader (showProfiles, "Profiles");
 				if (showProfiles)
 				{
+					CustomGUILayout.BeginVertical ();
 
 					for (int profileID = 0; profileID < Options.maxProfiles; profileID++)
 					{
@@ -143,8 +144,9 @@ namespace AC
 						selectedProfileID = -1;
 						EditorGUILayout.HelpBox ("No save profiles found.", MessageType.Warning);
 					}
+
+					CustomGUILayout.EndVertical ();
 				}
-				CustomGUILayout.EndVertical ();
 			}
 			else
 			{
@@ -160,10 +162,11 @@ namespace AC
 
 			EditorGUILayout.Space ();
 
-			EditorGUILayout.BeginVertical (CustomStyles.thinBox);
 			showProfile = CustomGUILayout.ToggleHeader (showProfile, "Profile " + selectedProfileID + ": Properties");
 			if (showProfile)
 			{
+				CustomGUILayout.BeginVertical ();
+
 				OptionsData prefsData = GetPrefsData (selectedProfileID);
 				if (prefsData != null)
 				{
@@ -217,18 +220,19 @@ namespace AC
 					}
 					EditorGUILayout.EndHorizontal ();
 				}
+
+				CustomGUILayout.EndVertical ();
 			}
-			CustomGUILayout.EndVertical ();
 
 			EditorGUILayout.Space ();
 
 			foundSaveFiles = saveFileHandler.GatherSaveFiles (selectedProfileID);
 			SaveSystem.UpdateSaveFileLabels (ref foundSaveFiles);
 
-			EditorGUILayout.BeginVertical (CustomStyles.thinBox);
 			showSaves = CustomGUILayout.ToggleHeader (showSaves, "Save game files");
 			if (showSaves)
 			{
+				CustomGUILayout.BeginVertical ();
 				if (foundSaveFiles != null)
 				{
 					for (int saveIndex = 0; saveIndex < foundSaveFiles.Count; saveIndex++)
@@ -278,8 +282,8 @@ namespace AC
 					}
 				}
 				CustomGUILayout.EndVertical ();
+				CustomGUILayout.EndVertical ();
 			}
-			CustomGUILayout.EndVertical ();
 
 			if (selectedSaveIndex < 0 || foundSaveFiles == null || selectedSaveIndex >= foundSaveFiles.Count)
 			{
@@ -290,10 +294,11 @@ namespace AC
 
 			SaveFile selectedSaveFile = foundSaveFiles[selectedSaveIndex];
 
-			EditorGUILayout.BeginVertical (CustomStyles.thinBox);
 			showSave = CustomGUILayout.ToggleHeader (showSave, "Save game " + selectedSaveIndex + ": Properties");
 			if (showSave)
 			{
+				CustomGUILayout.BeginVertical ();
+
 				EditorGUILayout.LabelField ("Label:", selectedSaveFile.label);
 				EditorGUILayout.LabelField ("ID:", selectedSaveFile.saveID.ToString ());
 
@@ -336,15 +341,15 @@ namespace AC
 					}
 				}
 				GUILayout.EndHorizontal ();
+				CustomGUILayout.EndVertical ();
 			}
-			CustomGUILayout.EndVertical ();
 
 			EditorGUILayout.Space ();
 
-			EditorGUILayout.BeginVertical (CustomStyles.thinBox);
 			showSaveData = CustomGUILayout.ToggleHeader (showSaveData, "Save game " + selectedSaveIndex + ": Data");
 			if (showSaveData)
 			{
+				CustomGUILayout.BeginVertical ();
 				if (GUI.changed || !runCache)
 				{
 					CacheSaveData (saveFileHandler, selectedSaveFile);
@@ -364,8 +369,8 @@ namespace AC
 						cachedLevelData[i].ShowGUI ();
 					}
 				}
+				CustomGUILayout.EndVertical ();
 			}
-			CustomGUILayout.EndVertical ();
 		}
 
 
@@ -378,6 +383,11 @@ namespace AC
 
 		private void OnCompleteLoadForCache (SaveFile saveFile, string fileData)
 		{
+			if (KickStarter.settingsManager.saveCompression)
+			{
+				fileData = SaveSystem.DecompressString (fileData);
+			}
+			
 			cachedSaveData = SaveSystem.ExtractMainData (fileData);
 			cachedLevelData = SaveSystem.ExtractSceneData (fileData);
 		}

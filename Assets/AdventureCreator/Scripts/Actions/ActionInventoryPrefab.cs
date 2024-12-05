@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionInstantiate.cs"
  * 
@@ -312,106 +312,19 @@ namespace AC
 
 			if (itemSpawnMethod == ItemSpawnMethod.SpecificItem)
 			{
-				int invNumber = 0;
 				if (inventoryManager)
 				{
-					invParameterID = Action.ChooseParameterGUI ("Item to spawn:", parameters, invParameterID, ParameterType.InventoryItem);
-					if (invParameterID < 0)
-					{
-						// Create a string List of the field's names (for the PopUp box)
-						List<string> labelList = new List<string> ();
-
-						int i = 0;
-
-						if (inventoryManager.items.Count > 0)
-						{
-							foreach (InvItem _item in inventoryManager.items)
-							{
-								labelList.Add (_item.label);
-
-								// If a item has been removed, make sure selected variable is still valid
-								if (_item.id == invID)
-								{
-									invNumber = i;
-								}
-
-								i++;
-							}
-
-							invNumber = EditorGUILayout.Popup ("Item to spawn:", invNumber, labelList.ToArray ());
-							invID = inventoryManager.items[invNumber].id;
-						}
-						else
-						{
-							EditorGUILayout.HelpBox ("No inventory items exist!", MessageType.Info);
-							invID = -1;
-						}
-					}
+					ItemField ("Item to spawn:", ref invID, parameters, ref invParameterID, "Item to spawn ID:");
 
 					itemSource = (ItemSource) EditorGUILayout.EnumPopup ("Item source:", itemSource);
 					switch (itemSource)
 					{
 						case ItemSource.PlayerInventory:
-							if (KickStarter.settingsManager && KickStarter.settingsManager.playerSwitching == PlayerSwitching.Allow && KickStarter.settingsManager.players.Count > 0)
-							{
-								playerIDParameterID = Action.ChooseParameterGUI ("Player ID:", parameters, playerIDParameterID, ParameterType.Integer);
-								if (playerIDParameterID == -1)
-								{
-									// Create a string List of the field's names (for the PopUp box)
-									List<string> labelList = new List<string> ();
-
-									int i = 0;
-									int playerNumber = -1;
-
-									foreach (PlayerPrefab playerPrefab in KickStarter.settingsManager.players)
-									{
-										if (playerPrefab.EditorPrefab != null)
-										{
-											labelList.Add (playerPrefab.EditorPrefab.name);
-										}
-										else
-										{
-											labelList.Add ("(Undefined prefab)");
-										}
-
-										// If a player has been removed, make sure selected player is still valid
-										if (playerPrefab.ID == playerID)
-										{
-											playerNumber = i;
-										}
-
-										i++;
-									}
-
-									if (playerNumber == -1)
-									{
-										// Wasn't found (item was possibly deleted), so revert to zero
-										if (playerID > 0) LogWarning ("Previously chosen Player no longer exists!");
-
-										playerNumber = 0;
-										playerID = 0;
-									}
-
-									playerNumber = EditorGUILayout.Popup ("Player:", playerNumber, labelList.ToArray ());
-									playerID = KickStarter.settingsManager.players[playerNumber].ID;
-								}
-							}
+							PlayerField (ref playerID, parameters, ref playerIDParameterID);
 							break;
 
 						case ItemSource.Container:
-							containerParameterID = Action.ChooseParameterGUI ("Container:", parameters, containerParameterID, ParameterType.GameObject);
-							if (containerParameterID >= 0)
-							{
-								containerConstantID = 0;
-								container = null;
-							}
-							else
-							{
-								container = (Container) EditorGUILayout.ObjectField ("Container:", container, typeof (Container), true);
-
-								containerConstantID = FieldToID<Container> (container, containerConstantID);
-								container = IDToField<Container> (container, containerConstantID, false);
-							}
+							ComponentField ("Container:", ref container, ref containerConstantID, parameters, ref containerParameterID);
 							break;
 					}
 				}
@@ -433,84 +346,17 @@ namespace AC
 
 		private void ShowGUI_SceneToItem (List<ActionParameter> parameters)
 		{
-			sceneItemParameterID = Action.ChooseParameterGUI ("Scene item:", parameters, sceneItemParameterID, ParameterType.GameObject);
-			if (sceneItemParameterID >= 0)
-			{
-				sceneItemConstantID = 0;
-				sceneItem = null;
-			}
-			else
-			{
-				sceneItem = (SceneItem) EditorGUILayout.ObjectField ("Scene item:", sceneItem, typeof (SceneItem), true);
-
-				sceneItemConstantID = FieldToID<SceneItem> (sceneItem, sceneItemConstantID);
-				sceneItem = IDToField<SceneItem> (sceneItem, sceneItemConstantID, true);
-			}
+			ComponentField ("Scene item:", ref sceneItem, ref sceneItemConstantID, parameters, ref sceneItemParameterID);
 
 			itemSource = (ItemSource) EditorGUILayout.EnumPopup ("New item location:", itemSource);
 			switch (itemSource)
 			{
 				case ItemSource.PlayerInventory:
-					if (KickStarter.settingsManager && KickStarter.settingsManager.playerSwitching == PlayerSwitching.Allow && KickStarter.settingsManager.players.Count > 0)
-					{
-						playerIDParameterID = Action.ChooseParameterGUI ("Player ID:", parameters, playerIDParameterID, ParameterType.Integer);
-						if (playerIDParameterID == -1)
-						{
-							// Create a string List of the field's names (for the PopUp box)
-							List<string> labelList = new List<string> ();
-
-							int i = 0;
-							int playerNumber = -1;
-
-							foreach (PlayerPrefab playerPrefab in KickStarter.settingsManager.players)
-							{
-								if (playerPrefab.EditorPrefab != null)
-								{
-									labelList.Add (playerPrefab.EditorPrefab.name);
-								}
-								else
-								{
-									labelList.Add ("(Undefined prefab)");
-								}
-
-								// If a player has been removed, make sure selected player is still valid
-								if (playerPrefab.ID == playerID)
-								{
-									playerNumber = i;
-								}
-
-								i++;
-							}
-
-							if (playerNumber == -1)
-							{
-								// Wasn't found (item was possibly deleted), so revert to zero
-								if (playerID > 0) LogWarning ("Previously chosen Player no longer exists!");
-
-								playerNumber = 0;
-								playerID = 0;
-							}
-
-							playerNumber = EditorGUILayout.Popup ("Player:", playerNumber, labelList.ToArray ());
-							playerID = KickStarter.settingsManager.players[playerNumber].ID;
-						}
-					}
+					PlayerField (ref playerID, parameters, ref playerIDParameterID);
 					break;
 
 				case ItemSource.Container:
-					containerParameterID = Action.ChooseParameterGUI ("Container:", parameters, containerParameterID, ParameterType.GameObject);
-					if (containerParameterID >= 0)
-					{
-						containerConstantID = 0;
-						container = null;
-					}
-					else
-					{
-						container = (Container) EditorGUILayout.ObjectField ("Container:", container, typeof (Container), true);
-
-						containerConstantID = FieldToID<Container> (container, containerConstantID);
-						container = IDToField<Container> (container, containerConstantID, false);
-					}
+					ComponentField ("Container:", ref container, ref containerConstantID, parameters, ref containerParameterID);
 					break;
 			}
 

@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"MenuInput.cs"
  * 
@@ -50,21 +50,20 @@ namespace AC
 		public bool requireSelection = false;
 
 		#if TextMeshProIsPresent
-		public TMPro.TMP_InputField uiInput;
-		#else
+		public TMPro.TMP_InputField uiInputTMP;
+		#endif
 		/** The Unity UI InputField this is linked to (Unity UI Menus only) */
 		public InputField uiInput;
-		#endif
 
 		private bool isSelected = false;
 
 
-		/**
-		 * Initialises the element when it is created within MenuManager.
-		 */
 		public override void Declare ()
 		{
 			uiInput = null;
+			#if TextMeshProIsPresent
+			uiInputTMP = null;
+			#endif
 			label = "Input";
 			isVisible = true;
 			isClickable = true;
@@ -104,6 +103,9 @@ namespace AC
 			else
 			{
 				uiInput = _element.uiInput;
+				#if TextMeshProIsPresent
+				uiInputTMP = _element.uiInputTMP;
+				#endif
 			}
 
 			label = _element.label;
@@ -125,16 +127,32 @@ namespace AC
 
 		public override void LoadUnityUI (AC.Menu _menu, Canvas canvas, bool addEventListeners = true)
 		{
-			LinkUIElement (canvas, ref uiInput);
-			CreateHoverSoundHandler (uiInput, _menu, 0);
+			#if TextMeshProIsPresent
+			if (_menu.useTextMeshProComponents)
+			{
+				LinkUIElement (canvas, ref uiInputTMP);
+				CreateHoverSoundHandler (uiInputTMP, _menu, 0);
+			}
+			if (!_menu.useTextMeshProComponents || uiInputTMP == null)
+			#endif
+			{
+				LinkUIElement (canvas, ref uiInput);
+				CreateHoverSoundHandler (uiInput, _menu, 0);
+			}
 		}
 		
 
 		public override RectTransform GetRectTransform (int _slot)
 		{
+			#if TextMeshProIsPresent
+			if (uiInputTMP)
+			{
+				return uiInputTMP.GetComponent <RectTransform> ();
+			}
+			#endif
 			if (uiInput)
 			{
-				return uiInput.GetComponent <RectTransform>();
+				return uiInput.GetComponent <RectTransform> ();
 			}
 			return null;
 		}
@@ -142,6 +160,12 @@ namespace AC
 
 		public override void SetUIInteractableState (bool state)
 		{
+			#if TextMeshProIsPresent
+			if (uiInputTMP)
+			{
+				uiInputTMP.interactable = state;
+			}
+			#endif
 			if (uiInput)
 			{
 				uiInput.interactable = state;
@@ -151,6 +175,12 @@ namespace AC
 
 		public override GameObject GetObjectToSelect (int slotIndex = 0)
 		{
+			#if TextMeshProIsPresent
+			if (uiInputTMP)
+			{
+				return uiInputTMP.gameObject;
+			}
+			#endif
 			if (uiInput)
 			{
 				return uiInput.gameObject;
@@ -161,7 +191,7 @@ namespace AC
 		
 		#if UNITY_EDITOR
 		
-		public override void ShowGUI (Menu menu)
+		public override void ShowGUI (Menu menu, System.Action<ActionListAsset> showALAEditor)
 		{
 			string apiPrefix = "(AC.PlayerMenus.GetElementWithName (\"" + menu.title + "\", \"" + title + "\") as AC.MenuInput)";
 
@@ -191,15 +221,18 @@ namespace AC
 			else
 			{
 				#if TextMeshProIsPresent
-				uiInput = LinkedUiGUI <TMPro.TMP_InputField> (uiInput, "Linked InputField:", source);
-				#else
-				uiInput = LinkedUiGUI <InputField> (uiInput, "Linked InputField:", source);
+				if (menu.useTextMeshProComponents)
+				{
+					uiInputTMP = LinkedUiGUI <TMPro.TMP_InputField> (uiInputTMP, "Linked InputField:", menu);
+				}
+				else
 				#endif
+					uiInput = LinkedUiGUI <InputField> (uiInput, "Linked InputField:", menu);
 				uiSelectableHideStyle = (UISelectableHideStyle) CustomGUILayout.EnumPopup ("When invisible:", uiSelectableHideStyle, apiPrefix + ".uiSelectableHideStyle", "The method by which this element is hidden from view when made invisible");
 			}
 			CustomGUILayout.EndVertical ();
 			
-			base.ShowGUI (menu);
+			base.ShowGUI (menu, showALAEditor);
 		}
 
 
@@ -219,6 +252,9 @@ namespace AC
 
 		public override bool ReferencesObjectOrID (GameObject gameObject, int id)
 		{
+			#if TextMeshProIsPresent
+			if (uiInputTMP && uiInputTMP.gameObject == gameObject) return true;
+			#endif
 			if (uiInput && uiInput.gameObject == gameObject) return true;
 			if (linkedUiID == id && id != 0) return true;
 			return false;
@@ -227,6 +263,12 @@ namespace AC
 
 		public override int GetSlotIndex (GameObject gameObject)
 		{
+			#if TextMeshProIsPresent
+			if (uiInputTMP && uiInputTMP.gameObject == gameObject)
+			{
+				return 0;
+			}
+			#endif
 			if (uiInput && uiInput.gameObject == gameObject)
 			{
 				return 0;
@@ -241,6 +283,12 @@ namespace AC
 		 */
 		public string GetContents ()
 		{
+			#if TextMeshProIsPresent
+			if (uiInputTMP)
+			{
+				return uiInputTMP.text;
+			}
+			#endif
 			if (uiInput)
 			{
 				return uiInput.text;
@@ -261,6 +309,12 @@ namespace AC
 
 		public override void PreDisplay (int _slot, int languageNumber, bool isActive)
 		{
+			#if TextMeshProIsPresent
+			if (uiInputTMP)
+			{
+				UpdateUISelectable (uiInputTMP, uiSelectableHideStyle);
+			}
+			#endif
 			if (uiInput)
 			{
 				UpdateUISelectable (uiInput, uiSelectableHideStyle);
@@ -302,6 +356,14 @@ namespace AC
 			lineID = _lineID;
 			ClearCache ();
 
+			#if TextMeshProIsPresent
+			if (uiInputTMP)
+			{
+				uiInputTMP.text = label;
+				return;
+			}
+			#endif
+
 			if (uiInput)
 			{
 				uiInput.text = label;
@@ -323,6 +385,12 @@ namespace AC
 
 		public override bool IsSelectedByEventSystem (int slotIndex)
 		{
+			#if TextMeshProIsPresent
+			if (uiInputTMP)
+			{
+				return KickStarter.playerMenus.IsEventSystemSelectingObject (uiInputTMP.gameObject);
+			}
+			#endif
 			if (uiInput)
 			{
 				return KickStarter.playerMenus.IsEventSystemSelectingObject (uiInput.gameObject);
@@ -333,6 +401,12 @@ namespace AC
 
 		public override bool IsSelectableInteractable (int slotIndex)
 		{
+			#if TextMeshProIsPresent
+			if (uiInputTMP)
+			{
+				return uiInputTMP.IsInteractable ();
+			}
+			#endif
 			if (uiInput)
 			{
 				return uiInput.IsInteractable ();
@@ -362,6 +436,13 @@ namespace AC
 		 */
 		public void CheckForInput (string keycode, string character, bool shift, string menuName)
 		{
+			#if TextMeshProIsPresent
+			if (uiInputTMP)
+			{
+				return;
+			}
+			#endif
+
 			if (uiInput)
 			{
 				return;

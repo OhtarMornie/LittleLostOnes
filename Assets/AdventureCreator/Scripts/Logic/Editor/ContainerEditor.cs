@@ -31,17 +31,17 @@ namespace AC
 				return;
 			}
 
-			inventoryManager = AdvGame.GetReferences ().inventoryManager;
+			inventoryManager = KickStarter.inventoryManager;
 
 			ShowCategoriesUI (_target);
 			EditorGUILayout.Space ();
 
-			EditorGUILayout.LabelField ("Stored Inventory items", EditorStyles.boldLabel);
+			CustomGUILayout.Header ("Stored items");
+			CustomGUILayout.BeginVertical ();
 			if (Application.isPlaying)
 			{
 				if (_target.InvCollection.InvInstances.Count > 0)
 				{
-					CustomGUILayout.BeginVertical ();
 					foreach (InvInstance invInstance in _target.InvCollection.InvInstances)
 					{
 						if (!InvInstance.IsValid (invInstance)) continue;
@@ -62,7 +62,6 @@ namespace AC
 
 						CustomGUILayout.DrawUILine ();
 					}
-					CustomGUILayout.EndVertical ();
 				}
 				else
 				{
@@ -73,7 +72,6 @@ namespace AC
 			{
 				if (_target.items.Count > 0)
 				{
-					CustomGUILayout.BeginVertical ();
 					for (int i=0; i<_target.items.Count; i++)
 					{
 						_target.items[i].ShowGUI (inventoryManager);
@@ -96,7 +94,6 @@ namespace AC
 
 						CustomGUILayout.DrawUILine ();
 					}
-					CustomGUILayout.EndVertical ();
 				}
 				else
 				{
@@ -143,6 +140,7 @@ namespace AC
 			{
 				EditorGUILayout.HelpBox ("The Container is full! Excess slots will be discarded.", MessageType.Warning);
 			}
+			CustomGUILayout.EndVertical ();
 
 			UnityVersionHandler.CustomSetDirty (_target);
 		}
@@ -150,6 +148,7 @@ namespace AC
 
 		private void ShowCategoriesUI (Container _target)
 		{
+			CustomGUILayout.Header ("Properties");
 			CustomGUILayout.BeginVertical ();
 
 			_target.label = CustomGUILayout.TextField ("Label:", _target.label, string.Empty, "The Container's display name");
@@ -161,7 +160,7 @@ namespace AC
 			_target.limitToCategory = CustomGUILayout.Toggle ("Limit by category?", _target.limitToCategory, "", "If True, only inventory items of a specific category will be displayed");
 			if (_target.limitToCategory)
 			{
-				List<InvBin> bins = AdvGame.GetReferences ().inventoryManager.bins;
+				List<InvBin> bins = KickStarter.inventoryManager.bins;
 
 				if (bins == null || bins.Count == 0)
 				{

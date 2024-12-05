@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"MenuManager.cs"
  * 
@@ -105,15 +105,14 @@ namespace AC
 
 
 		/** Shows the GUI. */
-		public void ShowGUI ()
+		public void ShowGUI (System.Action<ActionListAsset> showALAEditor)
 		{
-			EditorGUILayout.BeginVertical (CustomStyles.thinBox);
-
 			Upgrade ();
 
 			showSettings = CustomGUILayout.ToggleHeader (showSettings, "Global menu settings");
 			if (showSettings)
 			{
+				CustomGUILayout.BeginVertical ();
 				drawInEditor = CustomGUILayout.Toggle ("Preview in Game window?", drawInEditor, "", "If True, Adventure Creator-sourced menus will be displayed in the Game window in Edit mode so long as a GameEngine prefab is present in the scene.");
 				if (drawInEditor)
 				{
@@ -126,13 +125,13 @@ namespace AC
 				}
 				scaleTextEffects = CustomGUILayout.Toggle ("Scale text effects?", scaleTextEffects, "AC.KickStarter.menuManager.scaleTextEffects", "If True, then the size of text effects (shadows, outlines) will be based on the size of the text, rather than fixed");
 				EditorGUILayout.BeginHorizontal ();
-				EditorGUILayout.LabelField (new GUIContent ("Pause background texture:", "A texture to apply full-screen when a 'Pause' Menu is enabled"), GUILayout.Width (255f));
+				EditorGUILayout.LabelField (new GUIContent ("Pause background texture:", "A texture to apply full-screen when a 'Pause' Menu is enabled (AC menus only)"), GUILayout.Width (255f));
 				pauseTexture = (Texture2D) CustomGUILayout.ObjectField<Texture2D> (pauseTexture, false, GUILayout.Width (70f), GUILayout.Height (30f), "AC.Kickstarter.menuManager.pauseTexture");
 				EditorGUILayout.EndHorizontal ();
 				globalDepth = CustomGUILayout.IntField ("GUI depth:", globalDepth, "AC.KickStarter.menuManager.globalDepth", "The depth at which to draw OnGUI-based (Adventure Creator) menus");
 				eventSystem = (UnityEngine.EventSystems.EventSystem) CustomGUILayout.ObjectField<UnityEngine.EventSystems.EventSystem> ("Event system prefab:", eventSystem, false, "AC.KickStarter.menuManager.eventSystem", "The EventSystem to instantiate when Unity UI-based Menus are used. If none is set, a default one will be used");
 
-				if (AdvGame.GetReferences ().settingsManager != null && AdvGame.GetReferences ().settingsManager.inputMethod != InputMethod.TouchScreen)
+				if (KickStarter.settingsManager && KickStarter.settingsManager.inputMethod != InputMethod.TouchScreen)
 				{
 					EditorGUILayout.Space ();
 					keyboardControlWhenPaused = CustomGUILayout.ToggleLeft ("Directly-navigate Menus when paused?", keyboardControlWhenPaused, "AC.KickStarter.menuManager.keyboardControlWhenPaused", "If True, then Menus will be navigated directly, not with the cursor, when the game is paused");
@@ -145,7 +144,7 @@ namespace AC
 						//verticalInputAxis = CustomGUILayout.TextField ("Vertical input axis:", verticalInputAxis, "AC.KickStarter.menuManager.verticalInputAxis", "The vertical input axis to use when directly-navigating an AC menu.");
 					}
 
-					if (AdvGame.GetReferences ().settingsManager != null && AdvGame.GetReferences ().settingsManager.inputMethod == InputMethod.KeyboardOrController)
+					if (KickStarter.settingsManager && KickStarter.settingsManager.inputMethod == InputMethod.KeyboardOrController)
 					{
 						autoSelectValidRaycasts = CustomGUILayout.ToggleLeft ("Auto-select valid UI raycasts?", autoSelectValidRaycasts, "AC.KickStarter.menuManager.autoSelectValidRaycasts", "If True, then the simulated cursor will auto-select valid Unity UI elements");
 					}
@@ -159,20 +158,26 @@ namespace AC
 				}
 #endif
 
-				if (drawInEditor && KickStarter.menuPreview == null)
-				{
-					EditorGUILayout.HelpBox ("A GameEngine is required to display menus while editing - please set up the scene using the Scene Manager.", MessageType.Warning);
-				}
-				else if (drawInEditor && KickStarter.mainCamera == null)
-				{
-					EditorGUILayout.HelpBox ("An AC MainCamera is required to display menus while editing - please set up the scene using the Scene Manager.", MessageType.Warning);
-				}
-				else if (Application.isPlaying)
+				if (Application.isPlaying)
 				{
 					EditorGUILayout.HelpBox ("Changes made to the menus will not be registed by the game until the game is restarted.", MessageType.Info);
 				}
+				else if (drawInEditor)
+				{
+					if (selectedMenu != null && selectedMenu.menuSource == MenuSource.AdventureCreator)
+					{
+						if (KickStarter.menuPreview == null)
+						{
+							EditorGUILayout.HelpBox ("A GameEngine is required to display menus while editing - please set up the scene using the Scene Manager.", MessageType.Warning);
+						}
+						else if (KickStarter.mainCamera == null)
+						{
+							EditorGUILayout.HelpBox ("An AC MainCamera is required to display menus while editing - please set up the scene using the Scene Manager.", MessageType.Warning);
+						}
+					}
+				}
+				CustomGUILayout.EndVertical ();
 			}
-			CustomGUILayout.EndVertical ();
 
 			EditorGUILayout.Space ();
 
@@ -188,24 +193,24 @@ namespace AC
 					menuTitle = "(Untitled)";
 				}
 
-				EditorGUILayout.BeginVertical (CustomStyles.thinBox);
 
 				showMenuProperties = CustomGUILayout.ToggleHeader (showMenuProperties, "Menu " + selectedMenu.id + ": '" + menuTitle + "' properties");
 				if (showMenuProperties)
 				{
-					selectedMenu.ShowGUI ();
+					CustomGUILayout.BeginVertical ();
+					selectedMenu.ShowGUI (showALAEditor);
+					CustomGUILayout.EndVertical ();
 				}
-				CustomGUILayout.EndVertical ();
 
 				EditorGUILayout.Space ();
 
-				EditorGUILayout.BeginVertical (CustomStyles.thinBox);
 				showElementList = CustomGUILayout.ToggleHeader (showElementList, "Menu " + selectedMenu.id + ": '" + menuTitle + "' elements");
 				if (showElementList)
 				{
+					CustomGUILayout.BeginVertical ();
 					CreateElementsGUI (selectedMenu);
+					CustomGUILayout.EndVertical ();
 				}
-				CustomGUILayout.EndVertical ();
 
 				if (selectedMenuElement != null && selectedMenu.elements.Contains (selectedMenuElement))
 				{
@@ -227,16 +232,12 @@ namespace AC
 						}
 					}
 
-					EditorGUILayout.BeginVertical (CustomStyles.thinBox);
 					showElementProperties = CustomGUILayout.ToggleHeader (showElementProperties, elementType + " " + selectedMenuElement.ID + ": '" + elementName + "' properties");
 					if (showElementProperties)
 					{
+						CustomGUILayout.BeginVertical ();
 						oldVisibility = selectedMenuElement.IsVisible;
-						selectedMenuElement.ShowGUIStart (selectedMenu);
-					}
-					else
-					{
-						CustomGUILayout.EndVertical ();
+						selectedMenuElement.ShowGUIStart (selectedMenu, showALAEditor);
 					}
 					if (selectedMenuElement.IsVisible != oldVisibility)
 					{
@@ -257,10 +258,10 @@ namespace AC
 
 		private void CreateMenusGUI ()
 		{
-			EditorGUILayout.BeginVertical (CustomStyles.thinBox);
 			showMenuList = CustomGUILayout.ToggleHeader (showMenuList, "Menus");
 			if (showMenuList)
 			{
+				CustomGUILayout.BeginVertical ();
 				if (menus != null && menus.Count > 1)
 				{
 					EditorGUILayout.BeginHorizontal ();
@@ -314,7 +315,7 @@ namespace AC
 
 				if (numInFilter > 0)
 				{
-					scrollPos = EditorGUILayout.BeginScrollView (scrollPos, GUILayout.Height (Mathf.Min (numInFilter * 22, ACEditorPrefs.MenuItemsBeforeScroll * 22) + 9));
+					CustomGUILayout.BeginScrollView (ref scrollPos, numInFilter);
 
 					for (int i = 0; i < menus.Count; i++)
 					{
@@ -358,7 +359,7 @@ namespace AC
 						}
 					}
 
-					EditorGUILayout.EndScrollView ();
+					CustomGUILayout.EndScrollView ();
 
 					if (numInFilter != menus.Count)
 					{
@@ -400,12 +401,12 @@ namespace AC
 				}
 				GUI.enabled = true;
 				EditorGUILayout.EndHorizontal ();
+				CustomGUILayout.EndVertical ();
 			}
-			CustomGUILayout.EndVertical ();
 		}
 
 
-		private void CleanUpAsset ()
+		public void CleanUpAsset ()
 		{
 			string assetPath = AssetDatabase.GetAssetPath (this);
 			Object[] objects = AssetDatabase.LoadAllAssetsAtPath (assetPath);
@@ -505,7 +506,7 @@ namespace AC
 					lastSwapElementIndex = -1;
 				}
 
-				elementScrollPos = EditorGUILayout.BeginScrollView (elementScrollPos, GUILayout.Height (Mathf.Min (_menu.elements.Count * 22, 295f) + 9));
+				CustomGUILayout.BeginScrollView (ref elementScrollPos, _menu.elements.Count);
 
 				for (int i = 0; i < _menu.elements.Count; i++)
 				{
@@ -558,7 +559,7 @@ namespace AC
 					}
 				}
 
-				EditorGUILayout.EndScrollView ();
+				CustomGUILayout.EndScrollView ();
 			}
 
 			EditorGUILayout.BeginHorizontal ();
@@ -1144,7 +1145,7 @@ namespace AC
 					{
 						UnityVersionHandler.OpenScene (sceneFile);
 
-						MonoBehaviour[] sceneObjects = FindObjectsOfType<MonoBehaviour> ();
+						MonoBehaviour[] sceneObjects = UnityVersionHandler.FindObjectsOfType<MonoBehaviour> ();
 						for (int i = 0; i < sceneObjects.Length; i++)
 						{
 							MonoBehaviour currentObj = sceneObjects[i];
@@ -1165,9 +1166,9 @@ namespace AC
 					UnityVersionHandler.OpenScene (originalScene);
 
 					// Search assets
-					if (AdvGame.GetReferences ().speechManager != null)
+					if (KickStarter.speechManager)
 					{
-						ActionListAsset[] allActionListAssets = AdvGame.GetReferences ().speechManager.GetAllActionListAssets ();
+						ActionListAsset[] allActionListAssets = KickStarter.speechManager.GetAllActionListAssets ();
 						foreach (ActionListAsset actionListAsset in allActionListAssets)
 						{
 							ActionList.logSuffix = string.Empty;
@@ -1228,7 +1229,7 @@ namespace AC
 					{
 						UnityVersionHandler.OpenScene (sceneFile);
 
-						MonoBehaviour[] sceneObjects = FindObjectsOfType<MonoBehaviour> ();
+						MonoBehaviour[] sceneObjects = UnityVersionHandler.FindObjectsOfType<MonoBehaviour> ();
 						for (int i = 0; i < sceneObjects.Length; i++)
 						{
 							MonoBehaviour currentObj = sceneObjects[i];
@@ -1249,9 +1250,9 @@ namespace AC
 					UnityVersionHandler.OpenScene (originalScene);
 
 					// Search assets
-					if (AdvGame.GetReferences ().speechManager != null)
+					if (KickStarter.speechManager)
 					{
-						ActionListAsset[] allActionListAssets = AdvGame.GetReferences ().speechManager.GetAllActionListAssets ();
+						ActionListAsset[] allActionListAssets = KickStarter.speechManager.GetAllActionListAssets ();
 						foreach (ActionListAsset actionListAsset in allActionListAssets)
 						{
 							ActionList.logSuffix = string.Empty;
@@ -1298,9 +1299,9 @@ namespace AC
 		 */
 		public static MenuElement GetElementWithName (string menuName, string menuElementName)
 		{
-			if (AdvGame.GetReferences () && AdvGame.GetReferences ().menuManager)
+			if (KickStarter.menuManager)
 			{
-				foreach (AC.Menu menu in AdvGame.GetReferences ().menuManager.menus)
+				foreach (AC.Menu menu in KickStarter.menuManager.menus)
 				{
 					if (menu.title == menuName)
 					{
@@ -1392,7 +1393,7 @@ namespace AC
 		 */
 		public Menu CreatePreviewMenu (string previewMenuName)
 		{
-			if (KickStarter.speechManager != null && !string.IsNullOrEmpty (previewMenuName))
+			if (KickStarter.speechManager && !string.IsNullOrEmpty (previewMenuName))
 			{
 				foreach (Menu menu in menus)
 				{
@@ -1419,7 +1420,7 @@ namespace AC
 		 */
 		public void Upgrade ()
 		{
-			if (KickStarter.settingsManager != null && !hasUpgraded)
+			if (KickStarter.settingsManager && !hasUpgraded)
 			{
 				keyboardControlWhenPaused = (KickStarter.settingsManager.inputMethod == InputMethod.KeyboardOrController);
 				keyboardControlWhenDialogOptions = (KickStarter.settingsManager.inputMethod == InputMethod.KeyboardOrController);

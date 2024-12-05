@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"_Camera.cs"
  * 
@@ -35,6 +35,9 @@ namespace AC
 		/** The camera's focal distance */
 		public float focalDistance = 10f;
 
+		/** If True, the camera will not be frozen while the game is paused */
+		[HideInInspector] public bool updateWhilePaused = false;
+		
 		private Transform _transform;
 		private Transform _cameraTransform;
 

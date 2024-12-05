@@ -14,8 +14,8 @@ namespace AC
 		{
 			DragTrack_Curved _target = (DragTrack_Curved) target;
 
+			CustomGUILayout.Header ("Track shape:");
 			CustomGUILayout.BeginVertical ();
-			EditorGUILayout.LabelField ("Track shape:", EditorStyles.boldLabel);
 			
 			_target.radius = CustomGUILayout.FloatField ("Radius:", _target.radius, "", "The track's radius");
 			if (_target.radius < 0f) _target.radius = 0f;
@@ -36,8 +36,8 @@ namespace AC
 			
 			CustomGUILayout.EndVertical ();
 			
+			CustomGUILayout.Header ("End-colliders");
 			CustomGUILayout.BeginVertical ();
-			EditorGUILayout.LabelField ("End-colliders", EditorStyles.boldLabel);
 			
 			if (!_target.Loops)
 			{
@@ -45,7 +45,11 @@ namespace AC
 			}
 			if (_target.generateColliders && !_target.Loops)
 			{
+#if UNITY_6000_0_OR_NEWER
+				_target.colliderMaterial = (PhysicsMaterial) CustomGUILayout.ObjectField <PhysicsMaterial> ("Material:", _target.colliderMaterial, false, "", "Physics Material to give the track's end colliders");
+#else
 				_target.colliderMaterial = (PhysicMaterial) CustomGUILayout.ObjectField <PhysicMaterial> ("Material:", _target.colliderMaterial, false, "", "Physics Material to give the track's end colliders");
+#endif
 			}
 			
 			CustomGUILayout.EndVertical ();

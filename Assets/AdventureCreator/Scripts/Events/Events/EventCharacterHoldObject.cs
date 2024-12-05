@@ -9,12 +9,13 @@ namespace AC
 		[SerializeField] private bool isPlayer;
 		[SerializeField] private Char character = null;
 		[SerializeField] private HoldDrop holdDrop;
-		private enum HoldDrop { Hold, Drop };
+		public enum HoldDrop { Hold, Drop };
 
 
 		public override string[] EditorNames { get { return new string[] { "Character/Hold object", "Character/Drop object" }; } }
 		protected override string EventName { get { return holdDrop == HoldDrop.Hold ? "OnCharacterHoldObject" : "OnCharacterDropObject"; } }
-		
+
+
 		protected override string ConditionHelp
 		{
 			get
@@ -24,6 +25,21 @@ namespace AC
 				return "Whenever an object is " + ((holdDrop == HoldDrop.Hold) ? "held" : "dropped") + " by " + ending + "."; 
 			}
 		}
+
+
+		public EventCharacterHoldObject (int _id, string _label, ActionListAsset _actionListAsset, int[] _parameterIDs, bool _isPlayer, Char _character, HoldDrop _holdDrop)
+		{
+			id = _id;
+			label = _label;
+			actionListAsset = _actionListAsset;
+			parameterIDs = _parameterIDs;
+			isPlayer = _isPlayer;
+			character = _character;
+			holdDrop = _holdDrop;
+		}
+
+
+		public EventCharacterHoldObject () {}
 
 
 		public override void Register ()
@@ -40,7 +56,7 @@ namespace AC
 		}
 
 
-		private void OnCharacterHoldObject (Char _character, GameObject heldObject, Hand hand)
+		private void OnCharacterHoldObject (Char _character, GameObject heldObject, int attachmentPointID)
 		{
 			if (holdDrop == HoldDrop.Hold)
 			{
@@ -48,13 +64,13 @@ namespace AC
 					(!isPlayer && character == null) ||
 					(!isPlayer && character == _character))
 				{
-					Run (new object[] { _character.gameObject, heldObject, (hand == Hand.Right) });
+					Run (new object[] { _character.gameObject, heldObject, attachmentPointID });
 				}
 			}
 		}
 
 
-		private void OnCharacterDropObject (Char _character, GameObject heldObject, Hand hand)
+		private void OnCharacterDropObject (Char _character, GameObject heldObject, int attachmentPointID)
 		{
 			if (holdDrop == HoldDrop.Drop)
 			{
@@ -62,7 +78,7 @@ namespace AC
 					(!isPlayer && character == null) ||
 					(!isPlayer && character == _character))
 				{
-					Run (new object[] { _character.gameObject, heldObject, (hand == Hand.Right) });
+					Run (new object[] { _character.gameObject, heldObject, attachmentPointID });
 				}
 			}
 		}
@@ -74,7 +90,7 @@ namespace AC
 			{
 				new ParameterReference (ParameterType.GameObject, "Character"),
 				new ParameterReference (ParameterType.GameObject, "Held object"),
-				new ParameterReference (ParameterType.Boolean, "In right hand?"),
+				new ParameterReference (ParameterType.Integer, "Attachment point ID"),
 			};
 		}
 

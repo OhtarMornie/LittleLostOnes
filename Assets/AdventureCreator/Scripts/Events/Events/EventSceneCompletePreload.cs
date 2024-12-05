@@ -9,6 +9,18 @@
 		protected override string ConditionHelp { get { return "Whenever a scene has completed preloading."; } }
 
 
+		public EventSceneCompletePreload (int _id, string _label, ActionListAsset _actionListAsset, int[] _parameterIDs)
+		{
+			id = _id;
+			label = _label;
+			actionListAsset = _actionListAsset;
+			parameterIDs = _parameterIDs;
+		}
+
+
+		public EventSceneCompletePreload () {}
+
+
 		public override void Register ()
 		{
 			EventManager.OnCompleteScenePreload += OnCompleteScenePreload;

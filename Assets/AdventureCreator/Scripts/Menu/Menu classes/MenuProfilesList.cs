@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"MenuProfilesList.cs"
  * 
@@ -131,7 +131,7 @@ namespace AC
 			int i=0;
 			foreach (UISlot uiSlot in uiSlots)
 			{
-				uiSlot.LinkUIElements (canvas, linkUIGraphic);
+				uiSlot.LinkUIElements (_menu, canvas, linkUIGraphic);
 				if (addEventListeners)
 				{
 					if (uiSlot != null && uiSlot.uiButton)
@@ -182,7 +182,7 @@ namespace AC
 		
 		#if UNITY_EDITOR
 		
-		public override void ShowGUI (Menu menu)
+		public override void ShowGUI (Menu menu, System.Action<ActionListAsset> showALAEditor)
 		{
 			string apiPrefix = "(AC.PlayerMenus.GetElementWithName (\"" + menu.title + "\", \"" + title + "\") as AC.MenuProfilesList)";
 
@@ -225,11 +225,11 @@ namespace AC
 
 			if (autoHandle)
 			{
-				ActionListGUI ("ActionList after selecting:", menu.title, "After_Selecting", apiPrefix, "The ActionList asset to run once a profile has been switched to");
+				ActionListGUI ("ActionList after selecting:", menu.title, "After_Selecting", apiPrefix, "The ActionList asset to run once a profile has been switched to", showALAEditor);
 			}
 			else
 			{
-				ActionListGUI ("ActionList when click:", menu.title, "When_Click", apiPrefix, "The ActionList asset to run once a profile has been clicked on");
+				ActionListGUI ("ActionList when click:", menu.title, "When_Click", apiPrefix, "The ActionList asset to run once a profile has been clicked on", showALAEditor);
 			}
 
 			if (source != MenuSource.AdventureCreator)
@@ -242,7 +242,7 @@ namespace AC
 				uiSlots = ResizeUISlots (uiSlots, maxSlots);
 				for (int i=0; i<uiSlots.Length; i++)
 				{
-					uiSlots[i].LinkedUiGUI (i, source);
+					uiSlots[i].LinkedUiGUI (i, menu);
 				}
 
 				linkUIGraphic = (LinkUIGraphic) CustomGUILayout.EnumPopup ("Link graphics to:", linkUIGraphic, "", "What Image component the element's graphics should be linked to");
@@ -250,7 +250,7 @@ namespace AC
 			
 			CustomGUILayout.EndVertical ();
 			
-			base.ShowGUI (menu);
+			base.ShowGUI (menu, showALAEditor);
 		}
 
 
@@ -266,9 +266,9 @@ namespace AC
 		}
 
 
-		private void ActionListGUI (string label, string menuTitle, string suffix, string apiPrefix, string tooltip)
+		private void ActionListGUI (string label, string menuTitle, string suffix, string apiPrefix, string tooltip, System.Action<ActionListAsset> showALAEditor)
 		{
-			actionListOnClick = ActionListAssetMenu.AssetGUI (label, actionListOnClick, menuTitle + "_" + title + "_" + suffix, apiPrefix + ".actionListOnClick", tooltip);
+			actionListOnClick = ActionListAssetMenu.AssetGUI (label, actionListOnClick, menuTitle + "_" + title + "_" + suffix, apiPrefix + ".actionListOnClick", tooltip, null, showALAEditor);
 			
 			if (actionListOnClick && actionListOnClick.NumParameters > 0)
 			{
@@ -319,7 +319,7 @@ namespace AC
 			{
 				if (uiSlots[i].uiButton && uiSlots[i].uiButton == gameObject)
 				{
-					return 0;
+					return i;
 				}
 			}
 			return base.GetSlotIndex (gameObject);

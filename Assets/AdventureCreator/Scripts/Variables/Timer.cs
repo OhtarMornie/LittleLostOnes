@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"Timer.cs"
  * 
@@ -100,6 +100,7 @@ namespace AC
 		{
 			isOn = false;
 			variable = null;
+			unlinkedValue = updateIncreaseAmount > 0f ? minValue : maxValue;
 		}
 
 
@@ -195,14 +196,14 @@ namespace AC
 			{
 				if (Value >= maxValue && !loops)
 				{
-					return;
+					Value = minValue;
 				}
 			}
 			else
 			{
 				if (Value <= minValue && !loops)
 				{
-					return;
+					Value = maxValue;
 				}
 			}
 
@@ -253,7 +254,6 @@ namespace AC
 		/** Stops the Timer */
 		public void Stop ()
 		{
-			if (!isOn) return;
 			isOn = false;
 		}
 
@@ -324,8 +324,7 @@ namespace AC
 							timer.isOn = false;
 							timer.ticker = _ticker;
 							timer.Value = _value;
-							Debug.Log ("Load value:" + _value);
-
+							
 							if (_isRunning)
 							{
 								timer.Start ();
@@ -345,11 +344,13 @@ namespace AC
 
 		public void ShowGUI ()
 		{
-			CustomGUILayout.BeginVertical ();
-			EditorGUILayout.LabelField ("Settings", EditorStyles.boldLabel);
+			string apiPrefix = "AC.KickStarter.variablesManger.GetTimer (" + id + ")";
 
-			label = CustomGUILayout.TextField ("Label:", label);
-			linkToVariable = CustomGUILayout.Toggle ("Link to Global Variable?", linkToVariable);
+			CustomGUILayout.Header ("Settings");
+			CustomGUILayout.BeginVertical ();
+
+			label = CustomGUILayout.TextField ("Label:", label, apiPrefix);
+			linkToVariable = CustomGUILayout.Toggle ("Link to Global Variable?", linkToVariable, apiPrefix);
 
 			GVar _variable = null;
 			if (linkToVariable)
@@ -360,34 +361,34 @@ namespace AC
 
 			EditorGUILayout.Space ();
 
-			updateFrequency = CustomGUILayout.FloatField ("Tic duration (s):", updateFrequency);
+			updateFrequency = CustomGUILayout.FloatField ("Tic duration (s):", updateFrequency, apiPrefix);
 			if (_variable == null || _variable.type == VariableType.Float)
 			{
-				updateIncreaseAmount = CustomGUILayout.FloatField ("Value increase per tic:", updateIncreaseAmount);
-				minValue = CustomGUILayout.FloatField ("Min value:", minValue);
-				maxValue = CustomGUILayout.FloatField ("Max value:", maxValue);
+				updateIncreaseAmount = CustomGUILayout.FloatField ("Value increase per tic:", updateIncreaseAmount, apiPrefix);
+				minValue = CustomGUILayout.FloatField ("Min value:", minValue, apiPrefix + ".MinValue");
+				maxValue = CustomGUILayout.FloatField ("Max value:", maxValue, apiPrefix + ".MaxValue");
 			}
 			else
 			{
 				updateIncreaseAmount = CustomGUILayout.IntField ("Increase amount:", (int) updateIncreaseAmount);
-				minValue = CustomGUILayout.IntField ("Min value:", (int) minValue);
-				maxValue = CustomGUILayout.IntField ("Max value:", (int) maxValue);
+				minValue = CustomGUILayout.IntField ("Min value:", (int) minValue, apiPrefix + ".MinValue");
+				maxValue = CustomGUILayout.IntField ("Max value:", (int) maxValue, apiPrefix + ".MaxValue");
 			}
 
-			loops = CustomGUILayout.Toggle ("Run on a loop?", loops);
-			onlyRunDuringGameplay = CustomGUILayout.Toggle ("Only run during gameplay?", onlyRunDuringGameplay);
+			loops = CustomGUILayout.Toggle ("Run on a loop?", loops, apiPrefix);
+			onlyRunDuringGameplay = CustomGUILayout.Toggle ("Only run during gameplay?", onlyRunDuringGameplay, apiPrefix);
 
 			CustomGUILayout.EndVertical ();
 			EditorGUILayout.Space ();
 
+			CustomGUILayout.Header ("ActionLists");
 			CustomGUILayout.BeginVertical ();
-			EditorGUILayout.LabelField ("ActionLists", EditorStyles.boldLabel);
 
-			actionListAssetOnUpdate = (ActionListAsset) CustomGUILayout.ObjectField<ActionListAsset> ("ActionList on update:", actionListAssetOnUpdate, false);
-
+			actionListAssetOnUpdate = ActionListAssetMenu.AssetGUI ("ActionList on update:", actionListAssetOnUpdate, "Timer_" + label + "_OnUpdate", apiPrefix, "The ActionList asset to run when the Timer is updated");
+			
 			if (!loops)
 			{
-				actionListAssetOnComplete = (ActionListAsset) CustomGUILayout.ObjectField<ActionListAsset> ("ActionList on complete:", actionListAssetOnComplete, false);
+				actionListAssetOnComplete = ActionListAssetMenu.AssetGUI ("ActionList on complete:", actionListAssetOnComplete, "Timer_" + label + "_OnComplete", apiPrefix, "The ActionList asset to run when the Timer is completed");
 			}
 
 			CustomGUILayout.EndVertical ();
@@ -438,7 +439,11 @@ namespace AC
 		public int ID { get { return id; } }
 		/** If True, the Timer is running */
 		public bool IsRunning { get { return isOn; } }
-		
+
+		/** The Timer's minimum value */
+		public float MinValue { get { return minValue; } set { minValue = value; }}
+		/** The Timer's maximum value */
+		public float MaxValue { get { return maxValue; } set { maxValue = value; }}
 
 		/** The Timer's progress, as a decimal */
 		public float Progress
@@ -470,7 +475,7 @@ namespace AC
 				}
 				return 0f;
 			}
-			private set
+			set
 			{
 				if (!linkToVariable)
 				{

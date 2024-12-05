@@ -9,6 +9,18 @@
 		protected override string ConditionHelp { get { return "Whenever the scene's Hotspots are flashed with the FlashHotspots input."; } }
 
 
+		public EventHotspotFlash (int _id, string _label, ActionListAsset _actionListAsset, int[] _parameterIDs)
+		{
+			id = _id;
+			label = _label;
+			actionListAsset = _actionListAsset;
+			parameterIDs = _parameterIDs;
+		}
+
+
+		public EventHotspotFlash () {}
+
+
 		public override void Register ()
 		{
 			EventManager.OnHotspotsFlash += OnHotspotsFlash;

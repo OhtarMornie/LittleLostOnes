@@ -7,13 +7,27 @@ namespace AC
 	{
 
 		[SerializeField] private OpenClose openClose;
-		private enum OpenClose { Open, Close };
+		public enum OpenClose { Open, Close };
 		[SerializeField] private int documentID = -1;
 
 
 		public override string[] EditorNames { get { return new string[] { "Document/Open", "Document/Close" }; } }
 		protected override string EventName { get { return openClose == OpenClose.Open ? "OnDocumentOpen" : "OnDocumentClose"; } }
 		protected override string ConditionHelp { get { return "Whenever " + ((documentID >= 0) ? GetDocumentName () : "a Document") + " is " + ((openClose == OpenClose.Open) ? "opened." : "closed."); } }
+
+
+		public EventDocumentOpenClose (int _id, string _label, ActionListAsset _actionListAsset, int[] _parameterIDs, OpenClose _openClose, int _documentID)
+		{
+			id = _id;
+			label = _label;
+			actionListAsset = _actionListAsset;
+			parameterIDs = _parameterIDs;
+			openClose = _openClose;
+			documentID = _documentID;
+		}
+
+
+		public EventDocumentOpenClose () {}
 
 
 		public override void Register ()

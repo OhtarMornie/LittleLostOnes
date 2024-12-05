@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"MenuJournal.cs"
  * 
@@ -29,10 +29,9 @@ namespace AC
 
 		/** The Unity UI Text this is linked to (Unity UI Menus only) */
 		#if TextMeshProIsPresent
-		public TMPro.TextMeshProUGUI uiText;
-		#else
-		public Text uiText;
+		public TMPro.TextMeshProUGUI uiTextTMP;
 		#endif
+		public Text uiText;
 
 		/** A List of JournalPage instances that make up the pages within */
 		public List<JournalPage> pages = new List<JournalPage>();
@@ -58,10 +57,13 @@ namespace AC
 		public int pageOffset;
 		/** The name of the Journal element within the same Menu that is used as reference, if journalType = JournalType.DisplayExistingJournal) */
 		public string otherJournalTitle;
+		/** The change to make to the associated UI object when invisible */
+		public UIComponentHideStyle uiComponentHideStyle = UIComponentHideStyle.DisableObject;
 
 		private string fullText;
 		private MenuJournal otherJournal;
 		private DocumentInstance ownDocumentInstance;
+		private DocumentInstance overrideDocument;
 
 		#if UNITY_EDITOR
 		private int sideMenu;
@@ -71,6 +73,9 @@ namespace AC
 		public override void Declare ()
 		{
 			uiText = null;
+			#if TextMeshProIsPresent
+			uiTextTMP = null;
+			#endif
 
 			pages = new List<JournalPage>();
 			pages.Add (new JournalPage ());
@@ -89,6 +94,7 @@ namespace AC
 			journalType = JournalType.NewJournal;
 			pageOffset = 0;
 			otherJournalTitle = "";
+			uiComponentHideStyle = UIComponentHideStyle.DisableObject;
 
 			base.Declare ();
 		}
@@ -112,6 +118,9 @@ namespace AC
 			else
 			{
 				uiText = _element.uiText;
+				#if TextMeshProIsPresent
+				uiTextTMP = _element.uiTextTMP;
+				#endif
 			}
 
 			pages = new List<JournalPage>();
@@ -144,7 +153,8 @@ namespace AC
 			actionListOnAddPage = _element.actionListOnAddPage;
 			journalType = _element.journalType;
 			pageOffset = _element.pageOffset;
-			otherJournalTitle = _element.otherJournalTitle;;
+			otherJournalTitle = _element.otherJournalTitle;
+			uiComponentHideStyle = _element.uiComponentHideStyle;
 
 			base.Copy (_element);
 		}
@@ -167,12 +177,25 @@ namespace AC
 
 		public override void LoadUnityUI (AC.Menu _menu, Canvas canvas, bool addEventListeners = true)
 		{
-			LinkUIElement (canvas, ref uiText);
+			#if TextMeshProIsPresent
+			if (_menu.useTextMeshProComponents)
+			{
+				LinkUIElement (canvas, ref uiTextTMP);
+			}
+			if (!_menu.useTextMeshProComponents || uiTextTMP == null)
+			#endif
+				LinkUIElement (canvas, ref uiText);
 		}
 		
 
 		public override RectTransform GetRectTransform (int _slot)
 		{
+			#if TextMeshProIsPresent
+			if (uiTextTMP)
+			{
+				return uiTextTMP.rectTransform;
+			}
+			#endif
 			if (uiText)
 			{
 				return uiText.rectTransform;
@@ -223,7 +246,7 @@ namespace AC
 		
 		#if UNITY_EDITOR
 		
-		public override void ShowGUI (Menu menu)
+		public override void ShowGUI (Menu menu, System.Action<ActionListAsset> showALAEditor)
 		{
 			string apiPrefix = "(AC.PlayerMenus.GetElementWithName (\"" + menu.title + "\", \"" + title + "\") as AC.MenuJournal)";
 
@@ -333,20 +356,28 @@ namespace AC
 				CustomGUILayout.BeginVertical ();
 
 				#if TextMeshProIsPresent
-				uiText = LinkedUiGUI <TMPro.TextMeshProUGUI> (uiText, "Linked Text:", source);
-				#else
-				uiText = LinkedUiGUI <Text> (uiText, "Linked Text:", source);
+				if (menu.useTextMeshProComponents)
+				{
+					uiTextTMP = LinkedUiGUI <TMPro.TextMeshProUGUI> (uiTextTMP, "Linked Text:", menu);
+				}
+				else
 				#endif
+					uiText = LinkedUiGUI <Text> (uiText, "Linked Text:", menu);
 			}
 
 			if (journalType == JournalType.NewJournal)
 			{
-				actionListOnAddPage = (ActionListAsset) CustomGUILayout.ObjectField <ActionListAsset> ("ActionList on add page:", actionListOnAddPage, false, apiPrefix + ".actionListOnAddPage", "An ActionList to run whenever a new page is added");
+				actionListOnAddPage = ActionListAssetMenu.AssetGUI ("ActionList on add page:", actionListOnAddPage, title + "_OnAddPAge", apiPrefix + ".actionListOnAddPage", "An ActionList to run whenever a new page is added", null, showALAEditor);
+			}
+
+			if (menu.menuSource != MenuSource.AdventureCreator)
+			{
+				uiComponentHideStyle = (UIComponentHideStyle) CustomGUILayout.EnumPopup ("When invisible:", uiComponentHideStyle, apiPrefix + ".uiComponentHideStyle", "The method by which this element (or slots within it) are hidden from view when made invisible");
 			}
 
 			CustomGUILayout.EndVertical ();
 			
-			base.ShowGUI (menu);
+			base.ShowGUI (menu, showALAEditor);
 		}
 
 
@@ -513,6 +544,9 @@ namespace AC
 
 		public override bool ReferencesObjectOrID (GameObject gameObject, int id)
 		{
+			#if TextMeshProIsPresent
+			if (uiTextTMP && uiTextTMP.gameObject == gameObject) return true;
+			#endif
 			if (uiText && uiText.gameObject == gameObject) return true;
 			if (linkedUiID == id && id != 0) return true;
 			return false;
@@ -521,6 +555,12 @@ namespace AC
 
 		public override int GetSlotIndex (GameObject gameObject)
 		{
+			#if TextMeshProIsPresent
+			if (uiTextTMP && uiTextTMP.gameObject == gameObject)
+			{
+				return 0;
+			}
+			#endif
 			if (uiText && uiText.gameObject == gameObject)
 			{
 				return 0;
@@ -535,9 +575,9 @@ namespace AC
 
 			if (journalType == JournalType.DisplayActiveDocument)
 			{
-				if (DocumentInstance.IsValid (KickStarter.runtimeDocuments.ActiveDocumentInstance))
+				if (DocumentInstance.IsValid (DocumentInstance))
 				{
-					ownDocumentInstance = KickStarter.runtimeDocuments.ActiveDocumentInstance;
+					ownDocumentInstance = DocumentInstance;
 					pages = ownDocumentInstance.Document.pages;
 					showPage = KickStarter.runtimeDocuments.GetLastOpenPage (ownDocumentInstance);
 				}
@@ -567,9 +607,9 @@ namespace AC
 			{
 				if (Application.isPlaying && journalType == JournalType.DisplayActiveDocument)
 				{
-					if (DocumentInstance.IsValid (KickStarter.runtimeDocuments.ActiveDocumentInstance) && ownDocumentInstance != KickStarter.runtimeDocuments.ActiveDocumentInstance)
+					if (DocumentInstance.IsValid (DocumentInstance) && ownDocumentInstance != DocumentInstance)
 					{
-						ownDocumentInstance = KickStarter.runtimeDocuments.ActiveDocumentInstance;
+						ownDocumentInstance = DocumentInstance;
 						pages = ownDocumentInstance.Document.pages;
 						showPage = KickStarter.runtimeDocuments.GetLastOpenPage (ownDocumentInstance);
 					}
@@ -586,9 +626,17 @@ namespace AC
 				}
 			}
 
+			#if TextMeshProIsPresent
+			if (uiTextTMP)
+			{
+				UpdateUIElement (uiTextTMP, uiComponentHideStyle);
+				uiTextTMP.text = fullText;
+			}
+			else
+			#endif
 			if (uiText)
 			{
-				UpdateUIElement (uiText);
+				UpdateUIElement (uiText, uiComponentHideStyle);
 				uiText.text = fullText;
 			}
 		}
@@ -897,6 +945,36 @@ namespace AC
 			pages.Clear ();
 			showPage = 0;
 		}
+
+
+		private DocumentInstance DocumentInstance
+		{
+			get
+			{
+				if (DocumentInstance.IsValid (overrideDocument))
+				{
+					return overrideDocument;
+				}
+				return KickStarter.runtimeDocuments.ActiveDocumentInstance;
+			}
+		}
+
+
+		public DocumentInstance OverrideDocument
+		{
+			get
+			{
+				return overrideDocument;
+			}
+			set
+			{
+				if (overrideDocument != value)
+				{
+					overrideDocument = value;
+				}
+			}
+		}
+
 
 
 		#region ITranslatable

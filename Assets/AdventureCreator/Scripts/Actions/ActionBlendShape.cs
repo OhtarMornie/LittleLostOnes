@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionBlendShape.cs"
  * 
@@ -122,12 +122,7 @@ namespace AC
 			isPlayer = EditorGUILayout.Toggle ("Is player?", isPlayer);
 			if (isPlayer)
 			{
-				if (KickStarter.settingsManager && KickStarter.settingsManager.playerSwitching == PlayerSwitching.Allow)
-				{
-					playerParameterID = ChooseParameterGUI ("Player ID:", parameters, playerParameterID, ParameterType.Integer);
-					if (playerParameterID < 0)
-						playerID = ChoosePlayerGUI (playerID, true);
-				}
+				PlayerField (ref playerID, parameters, ref playerParameterID);
 
 				Player _player = null;
 
@@ -143,7 +138,7 @@ namespace AC
 					}
 					else
 					{
-						_player = (Application.isPlaying) ? KickStarter.player : AdvGame.GetReferences ().settingsManager.PlayerPrefab.EditorPrefab;
+						_player = (Application.isPlaying) ? KickStarter.player : KickStarter.settingsManager.PlayerPrefab.EditorPrefab;
 					}
 				}
 
@@ -159,20 +154,7 @@ namespace AC
 			}
 			else
 			{
-				parameterID = ChooseParameterGUI ("Object:", parameters, parameterID, ParameterType.GameObject);
-				if (parameterID >= 0)
-				{
-					constantID = 0;
-					editorShapeObject = null;
-				}
-				else
-				{
-					editorShapeObject = (Shapeable) EditorGUILayout.ObjectField ("Object:", editorShapeObject, typeof (Shapeable), true);
-					
-					constantID = FieldToID <Shapeable> (editorShapeObject, constantID);
-					editorShapeObject = IDToField <Shapeable> (editorShapeObject, constantID, false);
-				}
-
+				ComponentField ("Shapeable:", ref editorShapeObject, ref constantID, parameters, ref parameterID);
 				shapeObject = editorShapeObject;
 			}
 
@@ -325,14 +307,13 @@ namespace AC
 			{
 				if (!fromAssetFile)
 				{
-					Player charToUpdate = Object.FindObjectOfType<Player> ();
-					if (charToUpdate != null)
-						obToUpdate = charToUpdate.GetShapeable ();
+					Player charToUpdate = UnityVersionHandler.FindObjectOfType<Player> ();
+					if (charToUpdate) obToUpdate = charToUpdate.GetShapeable ();
 				}
 
-				if (obToUpdate == null && AdvGame.GetReferences ().settingsManager != null)
+				if (obToUpdate == null && KickStarter.settingsManager)
 				{
-					Player player = AdvGame.GetReferences ().settingsManager.PlayerPrefab.EditorPrefab;
+					Player player = KickStarter.settingsManager.PlayerPrefab.EditorPrefab;
 					obToUpdate = player.GetShapeable ();
 				}
 			}

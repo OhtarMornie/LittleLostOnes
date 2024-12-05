@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"RememberHotspot.cs"
  * 
@@ -121,8 +121,8 @@ namespace AC
 		{
 			if (hotspotToSave == null) hotspotToSave = GetComponent<Hotspot> ();
 
+			CustomGUILayout.Header ("Hotspot");
 			CustomGUILayout.BeginVertical ();
-			EditorGUILayout.LabelField ("Hotspot", EditorStyles.boldLabel);
 			hotspotToSave = (Hotspot) CustomGUILayout.ObjectField<Hotspot> ("Hotspot to save:", hotspotToSave, true);
 			startState = (AC_OnOff) CustomGUILayout.EnumPopup ("State on start:", startState, "The interactive state of the Hotspot when the game begins");
 			CustomGUILayout.EndVertical ();
@@ -147,7 +147,7 @@ namespace AC
 			if (KickStarter.settingsManager == null || KickStarter.settingsManager.interactionMethod == AC_InteractionMethod.ContextSensitive)
 			{
 				// Look interactions
-				if (hotspot.provideLookInteraction && hotspot.lookButton != null)
+				if (hotspot.provideLookInteraction && hotspot.lookButton != null && !string.IsNullOrEmpty (typesArray[0]))
 				{
 					hotspot.SetButtonState (hotspot.lookButton, !SetButtonDisabledValue (typesArray [0]));
 				}
@@ -159,6 +159,8 @@ namespace AC
 				
 				for (int i=0; i<usesArray.Length; i++)
 				{
+					if (string.IsNullOrEmpty (usesArray[i])) continue;
+
 					if (hotspot.useButtons.Count < i+1)
 					{
 						break;
@@ -175,12 +177,12 @@ namespace AC
 				
 				for (int i=0; i<invArray.Length; i++)
 				{
-					if (hotspot.invButtons.Count < i+1)
+					if (string.IsNullOrEmpty (invArray[i])) continue;
+
+					if (i < hotspot.invButtons.Count)
 					{
-						break;
+						hotspot.SetButtonState (hotspot.invButtons[i], !SetButtonDisabledValue (invArray [i]));
 					}
-					
-					hotspot.SetButtonState (hotspot.invButtons[i], !SetButtonDisabledValue (invArray [i]));
 				}
 			}
 		}
@@ -197,14 +199,6 @@ namespace AC
 				{
 					stateString.Append (GetButtonDisabledValue (hotspot.lookButton));
 				}
-				else
-				{
-					stateString.Append ("0");
-				}
-			}
-			else
-			{
-				stateString.Append ("0");
 			}
 
 			stateString.Append (SaveSystem.pipe);
@@ -221,15 +215,6 @@ namespace AC
 						stateString.Append (",");
 					}
 				}
-
-				if (hotspot.useButtons.Count == 0)
-				{
-					stateString.Append ("0");
-				}
-			}
-			else
-			{
-				stateString.Append ("0");
 			}
 				
 			stateString.Append (SaveSystem.pipe);
@@ -246,15 +231,6 @@ namespace AC
 						stateString.Append (",");
 					}
 				}
-
-				if (hotspot.invButtons.Count == 0)
-				{
-					stateString.Append ("0");
-				}
-			}
-			else
-			{
-				stateString.Append ("0");
 			}
 			
 			return stateString.ToString ();
@@ -263,12 +239,12 @@ namespace AC
 
 		private string GetButtonDisabledValue (AC.Button button)
 		{
-			if (button != null && !button.isDisabled)
+			if (button != null && button.isDisabled)
 			{
-				return ("1");
+				return ("0");
 			}
 			
-			return ("0");
+			return ("1");
 		}
 		
 		

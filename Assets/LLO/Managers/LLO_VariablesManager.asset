@@ -13,26 +13,6 @@ MonoBehaviour:
   m_Name: LLO_VariablesManager
   m_EditorClassIdentifier: 
   vars:
-  - label: Emotion
-    id: 0
-    type: 1
-    val: 0
-    floatVal: 0
-    textVal: 
-    gameObjectVal: {fileID: 0}
-    gameObjectSaveReferences: 1
-    objectVal: {fileID: 0}
-    popUps: []
-    vector3Val: {x: 0, y: 0, z: 0}
-    link: 0
-    pmVar: 
-    updateLinkOnStart: 0
-    canTranslate: 1
-    popUpID: 0
-    textValLineID: -1
-    popUpsLineID: -1
-    description: Lisas Emotion in scene
-    showInFilter: 1
   - label: HamsterFound
     id: 1
     type: 0
@@ -49,14 +29,135 @@ MonoBehaviour:
     updateLinkOnStart: 0
     canTranslate: 1
     popUpID: 0
+    ignorePresets: 0
     textValLineID: -1
     popUpsLineID: -1
     description: 
-    showInFilter: 1
+  - label: GraphicOptionsData
+    id: 2
+    type: 2
+    val: 0
+    floatVal: 0
+    textVal: 
+    gameObjectVal: {fileID: 0}
+    gameObjectSaveReferences: 1
+    objectVal: {fileID: 0}
+    popUps: []
+    vector3Val: {x: 0, y: 0, z: 0}
+    link: 2
+    pmVar: 
+    updateLinkOnStart: 0
+    canTranslate: 0
+    popUpID: 0
+    ignorePresets: 0
+    textValLineID: -1
+    popUpsLineID: -1
+    description: 
+  - label: FirstTime?
+    id: 3
+    type: 0
+    val: 1
+    floatVal: 0
+    textVal: 
+    gameObjectVal: {fileID: 0}
+    gameObjectSaveReferences: 1
+    objectVal: {fileID: 0}
+    popUps: []
+    vector3Val: {x: 0, y: 0, z: 0}
+    link: 0
+    pmVar: 
+    updateLinkOnStart: 0
+    canTranslate: 1
+    popUpID: 0
+    ignorePresets: 0
+    textValLineID: -1
+    popUpsLineID: -1
+    description: 
+  - label: ProloguePath
+    id: 0
+    type: 2
+    val: 0
+    floatVal: 0
+    textVal: A
+    gameObjectVal: {fileID: 0}
+    gameObjectSaveReferences: 1
+    objectVal: {fileID: 0}
+    popUps: []
+    vector3Val: {x: 0, y: 0, z: 0}
+    link: 0
+    pmVar: 
+    updateLinkOnStart: 0
+    canTranslate: 1
+    popUpID: 0
+    ignorePresets: 0
+    textValLineID: -1
+    popUpsLineID: -1
+    description: 
+  - label: PrologueWarderobe
+    id: 4
+    type: 0
+    val: 0
+    floatVal: 0
+    textVal: 
+    gameObjectVal: {fileID: 0}
+    gameObjectSaveReferences: 1
+    objectVal: {fileID: 0}
+    popUps: []
+    vector3Val: {x: 0, y: 0, z: 0}
+    link: 0
+    pmVar: 
+    updateLinkOnStart: 0
+    canTranslate: 1
+    popUpID: 0
+    ignorePresets: 0
+    textValLineID: -1
+    popUpsLineID: -1
+    description: 
+  - label: Prologe1stLesson
+    id: 5
+    type: 0
+    val: 0
+    floatVal: 0
+    textVal: 
+    gameObjectVal: {fileID: 0}
+    gameObjectSaveReferences: 1
+    objectVal: {fileID: 0}
+    popUps: []
+    vector3Val: {x: 0, y: 0, z: 0}
+    link: 0
+    pmVar: 
+    updateLinkOnStart: 0
+    canTranslate: 1
+    popUpID: 0
+    ignorePresets: 0
+    textValLineID: -1
+    popUpsLineID: -1
+    description: 
   varPresets:
   - label: New preset
     ID: 0
     presetValues:
+    - id: 1
+      val: 0
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+      gameObjectVal: {fileID: 0}
+      objectVal: {fileID: 0}
+    - id: 2
+      val: 0
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+      gameObjectVal: {fileID: 0}
+      objectVal: {fileID: 0}
+    - id: 3
+      val: 0
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+      gameObjectVal: {fileID: 0}
+      objectVal: {fileID: 0}
     - id: 0
       val: 0
       floatVal: 0
@@ -64,7 +165,14 @@ MonoBehaviour:
       vector3Val: {x: 0, y: 0, z: 0}
       gameObjectVal: {fileID: 0}
       objectVal: {fileID: 0}
-    - id: 1
+    - id: 4
+      val: 0
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+      gameObjectVal: {fileID: 0}
+      objectVal: {fileID: 0}
+    - id: 5
       val: 0
       floatVal: 0
       textVal: 

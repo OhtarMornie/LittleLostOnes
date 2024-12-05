@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionInventoryCheck.cs"
  * 
@@ -26,7 +26,6 @@ namespace AC
 
 		public int parameterID = -1;
 		public int invID;
-		protected int invNumber;
 
 		[SerializeField] protected InvCheckType invCheckType = InvCheckType.CarryingSpecificItem;
 		protected enum InvCheckType { CarryingSpecificItem, NumberOfItemsCarrying };
@@ -169,29 +168,18 @@ namespace AC
 		
 		public override void ShowGUI (List<ActionParameter> parameters)
 		{
-			if (inventoryManager == null && AdvGame.GetReferences ().inventoryManager)
-			{
-				inventoryManager = AdvGame.GetReferences ().inventoryManager;
-			}
-			if (settingsManager == null && AdvGame.GetReferences ().settingsManager)
-			{
-				settingsManager = AdvGame.GetReferences ().settingsManager;
-			}
+			inventoryManager = KickStarter.inventoryManager;
+			settingsManager = KickStarter.settingsManager;
 			
 			invCheckType = (InvCheckType) EditorGUILayout.EnumPopup ("Check to make:", invCheckType);
 			if (invCheckType == InvCheckType.NumberOfItemsCarrying)
 			{
 				intCondition = (IntCondition) EditorGUILayout.EnumPopup ("Count is:", intCondition);
 				
-				intValueParameterID = Action.ChooseParameterGUI (intCondition.ToString () + ":", parameters, intValueParameterID, ParameterType.Integer);
-				if (intValueParameterID < 0)
+				IntField (intCondition.ToString () + ":", ref intValue, parameters, ref intValueParameterID);
+				if (intValue < 0)
 				{
-					intValue = EditorGUILayout.IntField (intCondition.ToString () + ":", intValue);
-
-					if (intValue < 0)
-					{
-						intValue = 0;
-					}
+					intValue = 0;
 				}
 
 				if (inventoryManager != null && inventoryManager.bins != null && inventoryManager.bins.Count > 0)
@@ -222,69 +210,30 @@ namespace AC
 
 			if (inventoryManager)
 			{
-				// Create a string List of the field's names (for the PopUp box)
-				List<string> labelList = new List<string>();
-				
-				int i = 0;
-				if (parameterID == -1)
-				{
-					invNumber = -1;
-				}
-				
 				if (inventoryManager.items.Count > 0)
 				{
-					foreach (InvItem _item in inventoryManager.items)
+					ItemField (ref invID, parameters, ref parameterID);
+					
+					if (parameterID < 0)
 					{
-						labelList.Add (_item.label);
-						
-						// If an item has been removed, make sure selected variable is still valid
-						if (_item.id == invID)
+						InvItem item = inventoryManager.GetItem (invID);
+						if (item != null && item.canCarryMultiple)
 						{
-							invNumber = i;
-						}
-						i++;
-					}
-					
-					if (invNumber == -1)
-					{
-						// Wasn't found (item was possibly deleted), so revert to zero
-						if (invID > 0) LogWarning ("Previously chosen item no longer exists!");
+							doCount = EditorGUILayout.Toggle ("Query count?", doCount);
 						
-						invNumber = 0;
-						invID = 0;
-					}
-
-					//
-					parameterID = Action.ChooseParameterGUI ("Inventory item:", parameters, parameterID, ParameterType.InventoryItem);
-					if (parameterID >= 0)
-					{
-						invNumber = Mathf.Min (invNumber, inventoryManager.items.Count-1);
-						invID = -1;
-					}
-					else
-					{
-						invNumber = EditorGUILayout.Popup ("Inventory item:", invNumber, labelList.ToArray());
-						invID = inventoryManager.items[invNumber].id;
-					}
-					//
-					
-					if (inventoryManager.items[invNumber].canCarryMultiple)
-					{
-						doCount = EditorGUILayout.Toggle ("Query count?", doCount);
-					
-						if (doCount)
-						{
-							intCondition = (IntCondition) EditorGUILayout.EnumPopup ("Count is:", intCondition);
-							intValueParameterID = Action.ChooseParameterGUI (intCondition.ToString () + ":", parameters, intValueParameterID, ParameterType.Integer);
-							if (intValueParameterID < 0)
+							if (doCount)
 							{
-								intValue = EditorGUILayout.IntField (intCondition.ToString () + ":", intValue);
-						
+								intCondition = (IntCondition) EditorGUILayout.EnumPopup ("Count is:", intCondition);
+								IntField (intCondition.ToString () + ":", ref intValue, parameters, ref intValueParameterID);
 								if (intValue < 0)
 								{
 									intValue = 0;
 								}
 							}
+						}
+						else
+						{
+							doCount = false;
 						}
 					}
 					else
@@ -298,7 +247,6 @@ namespace AC
 				{
 					EditorGUILayout.LabelField ("No inventory items exist!");
 					invID = -1;
-					invNumber = -1;
 				}
 			}
 			else
@@ -329,11 +277,8 @@ namespace AC
 		
 		public override string SetLabel ()
 		{
-			if (!inventoryManager)
-			{
-				inventoryManager = AdvGame.GetReferences ().inventoryManager;
-			}
-
+			inventoryManager = KickStarter.inventoryManager;
+			
 			if (invCheckType == InvCheckType.NumberOfItemsCarrying)
 			{
 				return invCheckType.ToString ();

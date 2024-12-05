@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"SpeechPlayableClip.cs"
  * 
@@ -13,7 +13,7 @@
 using UnityEditor;
 #endif
 
-#if !ACIgnoreTimeline
+#if TimelineIsPresent
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;

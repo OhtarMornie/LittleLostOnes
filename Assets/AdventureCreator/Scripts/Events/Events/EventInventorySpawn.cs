@@ -14,6 +14,19 @@ namespace AC
 		protected override string ConditionHelp { get { return "Whenever " + ((itemID >= 0) ? GetItemName () : "an Inventory item") + " is spawned into the scene."; } }
 
 
+		public EventInventorySpawn (int _id, string _label, ActionListAsset _actionListAsset, int[] _parameterIDs, int _itemID)
+		{
+			id = _id;
+			label = _label;
+			actionListAsset = _actionListAsset;
+			parameterIDs = _parameterIDs;
+			itemID = _itemID;
+		}
+
+
+		public EventInventorySpawn () {}
+
+
 		public override void Register ()
 		{
 			EventManager.OnInventorySpawn += OnInventorySpawn;

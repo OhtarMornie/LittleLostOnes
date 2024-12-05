@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"FirstPersonCamera.cs"
  * 
@@ -51,6 +51,8 @@ namespace AC
 		public bool headBob = true;
 		/** The method of head-bobbing to employ, if headBob = True (BuiltIn, CustomAnimation, CustomScript) */
 		public FirstPersonHeadBobMethod headBobMethod = FirstPersonHeadBobMethod.BuiltIn;
+		/** The Transform to affect, if headBob = True and headBobMethod = FirstPersonHeadBobMethod.BuiltIn. If null, the component's transform will be used */
+		public Transform headBobTransform;
 		/** The bobbing speed, if headBob = True and headBobMethod = FirstPersonHeadBobMethod.BuiltIn */
 		public float builtInSpeedFactor = 1f;
 		/** The bobbing magnitude, if headBob = True and headBobMethod = FirstPersonHeadBobMethod.BuiltIn */
@@ -79,12 +81,10 @@ namespace AC
 
 		protected override void Awake ()
 		{
-			if (player == null)
-			{
-				height = transform.localPosition.y;
-				player = GetComponentInParent<Player> ();
-				headBobAnimator = GetComponent<Animator> ();
-			}
+			if (headBobTransform == null) headBobTransform = transform;
+			height = headBobTransform.localPosition.y;
+			player = GetComponentInParent<Player> ();
+			headBobAnimator = GetComponent<Animator> ();
 		}
 
 
@@ -112,8 +112,31 @@ namespace AC
 		
 
 		/** Updates the camera's transform. This is called every frame by StateHandler. */
-		public void _UpdateFPCamera ()
+		public void _UpdateFPCamera (bool fromLateUpdate)
 		{
+			if (fromLateUpdate)
+			{
+				if (headBob && headBobMethod == FirstPersonHeadBobMethod.BuiltIn)
+				{
+					deltaHeight = 0f;
+
+					float bobSpeed = GetHeadBobSpeed ();
+					float waveSlice = Mathf.Sin (bobTimer);
+			
+					bobTimer += Mathf.Abs (player.GetMoveSpeed ()) * Time.deltaTime * 5f * builtInSpeedFactor;
+
+					if (bobTimer > Mathf.PI * 2)
+					{
+						bobTimer -= (2f * Mathf.PI);
+					}
+
+					float totalAxes = Mathf.Clamp (bobSpeed, 0f, 1f);
+					deltaHeight = totalAxes * waveSlice * bobbingAmount;
+					headBobTransform.localPosition = new Vector3 (headBobTransform.localPosition.x, height + deltaHeight, headBobTransform.localPosition.z);
+				}
+				return;
+			}
+
 			if (actualTilt != targetTilt)
 			{
 				if (player)
@@ -128,76 +151,45 @@ namespace AC
 
 			ApplyTilt ();
 
-			if (headBob)
+			if (headBob && headBobMethod == FirstPersonHeadBobMethod.CustomAnimation && headBobAnimator)
 			{
-				switch (headBobMethod)
+				bool isGrounded = (player && player.IsGrounded (true));
+
+				if (!string.IsNullOrEmpty (headBobSpeedParameter))
 				{
-					case FirstPersonHeadBobMethod.BuiltIn:
-						{
-							deltaHeight = 0f;
+					float targetSpeed = 0f;
+					if (isGrounded)
+					{
+						float forwardDot = Vector3.Dot (player.TransformForward, player.GetMoveDirection ());
+						targetSpeed = player.GetMoveSpeed () * forwardDot;
+					}
 
-							float bobSpeed = GetHeadBobSpeed ();
-							float waveSlice = Mathf.Sin (bobTimer);
-					
-							bobTimer += Mathf.Abs (player.GetMoveSpeed ()) * Time.deltaTime * 5f * builtInSpeedFactor;
+					if (headBobLerpSpeed > 0f)
+					{
+						headBobAnimator.SetFloat (headBobSpeedParameter, Mathf.Lerp (headBobAnimator.GetFloat (headBobSpeedParameter), targetSpeed, Time.deltaTime * headBobLerpSpeed));
+					}
+					else
+					{
+						headBobAnimator.SetFloat (headBobSpeedParameter, targetSpeed);
+					}
+				}
+				if (!string.IsNullOrEmpty (headBobSpeedSideParameter))
+				{
+					float targetSpeed = 0f;
+					if (isGrounded)
+					{
+						float rightDot = Vector3.Dot (player.TransformRight, player.GetMoveDirection ());
+						targetSpeed = player.GetMoveSpeed () * rightDot;
+					}
 
-							if (bobTimer > Mathf.PI * 2)
-							{
-								bobTimer -= (2f * Mathf.PI);
-							}
-
-							float totalAxes = Mathf.Clamp (bobSpeed, 0f, 1f);
-							deltaHeight = totalAxes * waveSlice * bobbingAmount;
-							transform.localPosition = new Vector3 (transform.localPosition.x, height + deltaHeight, transform.localPosition.z);
-						}
-						break;
-
-					case FirstPersonHeadBobMethod.CustomAnimation:
-						if (headBobAnimator)
-						{
-							bool isGrounded = (player && player.IsGrounded (true));
-
-							if (!string.IsNullOrEmpty (headBobSpeedParameter))
-							{
-								float targetSpeed = 0f;
-								if (isGrounded)
-								{
-									float forwardDot = Vector3.Dot (player.TransformForward, player.GetMoveDirection ());
-									targetSpeed = player.GetMoveSpeed () * forwardDot;
-								}
-
-								if (headBobLerpSpeed > 0f)
-								{
-									headBobAnimator.SetFloat (headBobSpeedParameter, Mathf.Lerp (headBobAnimator.GetFloat (headBobSpeedParameter), targetSpeed, Time.deltaTime * headBobLerpSpeed));
-								}
-								else
-								{
-									headBobAnimator.SetFloat (headBobSpeedParameter, targetSpeed);
-								}
-							}
-							if (!string.IsNullOrEmpty (headBobSpeedSideParameter))
-							{
-								float targetSpeed = 0f;
-								if (isGrounded)
-								{
-									float rightDot = Vector3.Dot (player.TransformRight, player.GetMoveDirection ());
-									targetSpeed = player.GetMoveSpeed () * rightDot;
-								}
-
-								if (headBobLerpSpeed > 0f)
-								{
-									headBobAnimator.SetFloat (headBobSpeedSideParameter, Mathf.Lerp (headBobAnimator.GetFloat (headBobSpeedSideParameter), targetSpeed, Time.deltaTime * headBobLerpSpeed));
-								}
-								else
-								{
-									headBobAnimator.SetFloat (headBobSpeedSideParameter, targetSpeed);
-								}
-							}
-						}
-						break;
-
-					default:
-						break;
+					if (headBobLerpSpeed > 0f)
+					{
+						headBobAnimator.SetFloat (headBobSpeedSideParameter, Mathf.Lerp (headBobAnimator.GetFloat (headBobSpeedSideParameter), targetSpeed, Time.deltaTime * headBobLerpSpeed));
+					}
+					else
+					{
+						headBobAnimator.SetFloat (headBobSpeedSideParameter, targetSpeed);
+					}
 				}
 			}
 

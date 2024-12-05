@@ -5,7 +5,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"CursorIcon.cs"
  * 
@@ -287,9 +287,7 @@ namespace AC
 		private Rect firstFrameRect = new Rect ();
 
 
-		/**
-		 * The default Constructor.
-		 */
+		/** The default Constructor. */
 		public CursorIconBase ()
 		{
 			texture = null;
@@ -694,8 +692,7 @@ namespace AC
 					int i = Mathf.FloorToInt (frameIndex);
 					float frameSpeed = (frameSpeeds != null && i < frameSpeeds.Length) ? frameSpeeds[i] : 1f;
 
-					float deltaTime = Mathf.Approximately (Time.deltaTime, 0f) ? 0.02f : Time.deltaTime;
-					frameIndex += deltaTime * animSpeed * frameSpeed;
+					frameIndex += Time.unscaledDeltaTime * animSpeed * frameSpeed;
 				}
 			}
 
@@ -773,10 +770,8 @@ namespace AC
 		}
 		
 		
-		/**
-		 * Resets the animation, if the texture is animated.
-		 */
-		public void Reset ()
+		/**  Resets the animation, if the texture is animated. */
+		public void Reset (bool resetFrameIndex = true)
 		{
 			if (isAnimated)
 			{
@@ -784,7 +779,11 @@ namespace AC
 				{
 					frameWidth = 1f / numCols;
 					frameHeight = 1f / numRows;
-					frameIndex = 0f;
+
+					if (resetFrameIndex || frameIndex < 0f)
+					{
+						frameIndex = 0f;
+					}
 				}
 				else
 				{
@@ -799,7 +798,18 @@ namespace AC
 				firstFrameRect = new Rect (0f, 1f - frameHeight, frameWidth, frameHeight);
 			}
 		}
-		
+
+
+		/** Checks if a given class instance is valid, i.e. is non-null and has a texture */
+		public static bool IsValid (CursorIconBase cursorIcon)
+		{
+			if (cursorIcon == null || cursorIcon.texture == null)
+			{
+				return false;
+			}
+			return true;
+		}
+
 		
 		#if UNITY_EDITOR
 

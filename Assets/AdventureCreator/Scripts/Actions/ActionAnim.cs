@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionAnim.cs"
  * 
@@ -183,30 +183,33 @@ namespace AC
 				{
 					if (isPlayer)
 					{
-						if (!fromAssetFile && GameObject.FindObjectOfType <Player>() != null)
+						if (!fromAssetFile)
 						{
-							Player player = GameObject.FindObjectOfType <Player>();
-							shapeObject = player.GetComponent <Shapeable>();
+							Player _player = UnityVersionHandler.FindObjectOfType<Player> ();
+							if (_player)
+							{
+								shapeObject = _player.GetComponent <Shapeable>();
+							}
 						}
 
-						if (shapeObject == null && AdvGame.GetReferences ().settingsManager)
+						if (shapeObject == null && KickStarter.settingsManager)
 						{
-							Player player = AdvGame.GetReferences ().settingsManager.GetDefaultPlayer ();
-							if (player != null)
+							Player player = KickStarter.settingsManager.GetDefaultPlayer ();
+							if (player)
 							{
 								shapeObject = player.GetComponent <Shapeable>();
 							}
 						}
 					}
 
-					if (shapeObject != null)
+					if (shapeObject)
 					{
 						AddSaveScript <RememberShapeable> (shapeObject);
 					}
 				}
 
 				ResetAnimationEngine ();
-				if (animEngine != null && animator != null && animEngine.RequiresRememberAnimator (this))
+				if (animEngine != null && animator && animEngine.RequiresRememberAnimator (this))
 				{
 					animEngine.AddSaveScript (this, animator.gameObject);
 				}

@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"InvCollection.cs"
  * 
@@ -24,25 +24,33 @@ namespace AC
 		private int maxSlots;
 		private List<InvInstance> invInstances;
 		private List<int> limitToCategoryIDs;
+		private const string MaxSlotsSeparator = "_MAXSLOTS_";
 
 		#endregion
 
 
 		#region Constructors
 
-		/** The default Constructor */
-		public InvCollection ()
+		/**
+		 * <summary>The default Constructor</summary>
+		 * <param name = "maxSlots">If >0, the maximum number of slots</param>
+		 */
+		public InvCollection (int _maxSlots = 0)
 		{
 			invInstances = new List<InvInstance>();
 			limitToCategoryIDs = null;
-			maxSlots = 0;
+			maxSlots = _maxSlots;
 		}
 
 
-		/** A Constructor that populates itself with default inventory data */
-		public InvCollection (List<InvItem> invItems)
+		/**
+		 * <summary>A Constructor that populates itself with default inventory data</sumary>
+		 * <param name = "invItems">A list of default items</param>
+		 * <param name = "maxSlots">If >0, the maximum number of slots</param>
+		 */
+		public InvCollection (List<InvItem> invItems, int _maxSlots = 0)
 		{
-			maxSlots = 0;
+			maxSlots = _maxSlots;
 			limitToCategoryIDs = null;
 			invInstances = new List<InvInstance>();
 
@@ -82,12 +90,13 @@ namespace AC
 
 		/**
 		 * <summary>A Constructor that populates itself based on an existing list of inventory item instances.</summary>
-		 * <param name="_invInstances">A List of InvInstances that represent the items to be added</param>
-		 * <param name="allowEmptySlots">If True, then invalid or empty entries in the _invInstances List will be included and used to add empty slots, rather than removed</param>
+		 * <param name = "_invInstances">A List of InvInstances that represent the items to be added</param>
+		 * <param name = "allowEmptySlots">If True, then invalid or empty entries in the _invInstances List will be included and used to add empty slots, rather than removed</param>
+		 * <param name = "maxSlots">If >0, the maximum number of slots</param>
 		 */
-		public InvCollection (List<InvInstance> _invInstances, bool allowEmptySlots = false)
+		public InvCollection (List<InvInstance> _invInstances, bool allowEmptySlots = false, int _maxSlots = 0)
 		{
-			maxSlots = 0;
+			maxSlots = _maxSlots;
 			limitToCategoryIDs = null;
 			invInstances = new List<InvInstance> ();
 
@@ -705,15 +714,35 @@ namespace AC
 
 
 		/**
-		 * <summary>Deletes a set number of inventory item instances at a given index</summary>
-		 * <param name="index">The index to delete from</param>
+		 * <summary>Deletes a set number of inventory item instances</summary>
+		 * <param name="itemName">The name of the inventory item to delete</param>
 		 * <param name="amount">The amount to delete</param>
 		 */
-		public void DeleteAtIndex (int index, int amount)
+		public void Delete (string itemName, int amount)
+		{
+			InvItem invItem = (KickStarter.inventoryManager) ? KickStarter.inventoryManager.GetItem (itemName) : null;
+			if (invItem == null) return;
+			Delete (invItem.id, amount);
+		}
+
+
+		/**
+		 * <summary>Deletes a set number of inventory item instances at a given index</summary>
+		 * <param name="index">The index to delete from</param>
+		 * <param name="amount">The amount to delete, if non-negative.  Otherwise, all will be deleted</param>
+		 */
+		public void DeleteAtIndex (int index, int amount = -1)
 		{
 			if (index > 0 && index < invInstances.Count && InvInstance.IsValid (invInstances[index]))
 			{
-				invInstances[index].Clear (amount);
+				if (amount >= 0)
+				{
+					invInstances[index].Clear (amount);
+				}
+				else
+				{
+					invInstances[index].Clear ();
+				}
 
 				Clean ();
 				PlayerMenus.ResetInventoryBoxes ();
@@ -829,6 +858,8 @@ namespace AC
 			{
 				inventoryString.Remove (inventoryString.Length - 1, 1);
 			}
+
+			inventoryString.Append (MaxSlotsSeparator).Append (MaxSlots.ToString ());
 			return inventoryString.ToString ();
 		}
 
@@ -890,6 +921,20 @@ namespace AC
 				}
 			}
 			return count;
+		}
+
+
+		/**
+		 * <summary>Gets the amount of instances in the collection that represent a given inventory item</summary>
+		 * <param name="itemName">The inventory item's name</param>
+		 * <param name="includeMultipleInSameSlot">If True, then the result will account for multiple amounts of the item in a single slot</param>
+		 * <returns>The amount of instances in the collection that represent the inventory item</returns>
+		 */
+		public int GetCount (string itemName, bool includeMultipleInSameSlot = true)
+		{
+			InvItem invItem = (KickStarter.inventoryManager) ? KickStarter.inventoryManager.GetItem (itemName) : null;
+			if (invItem == null) return 0;
+			return GetCount (invItem.id, includeMultipleInSameSlot);
 		}
 
 
@@ -1249,7 +1294,7 @@ namespace AC
 				}
 			}
 
-			if (maxSlots > 0 && invInstances.Count >= maxSlots && ItemIsInEverySlot ())
+			if (MaxSlots > 0 && invInstances.Count >= MaxSlots && ItemIsInEverySlot ())
 			{
 				if (slot < 0)
 				{
@@ -1306,9 +1351,9 @@ namespace AC
 		private void Clean ()
 		{
 			// Limit max slots
-			if (maxSlots > 0 && maxSlots < invInstances.Count)
+			if (MaxSlots > 0 && maxSlots < invInstances.Count)
 			{
-				invInstances.RemoveRange (maxSlots, invInstances.Count - maxSlots);
+				invInstances.RemoveRange (MaxSlots, invInstances.Count - MaxSlots);
 			}
 
 			// Convert invalid to empty
@@ -1417,6 +1462,11 @@ namespace AC
 
 			if (!string.IsNullOrEmpty (data))
 			{
+				if (data.Contains (MaxSlotsSeparator))
+				{
+					data = data.Substring (0, data.IndexOf (MaxSlotsSeparator));
+				}
+
 				string[] countArray = data.Split (SaveSystem.pipe[0]);
 				foreach (string chunk in countArray)
 				{
@@ -1474,10 +1524,23 @@ namespace AC
 			return invInstances;
 		}
 		
-		/** Create a new class isntance based on a serialised data string generated by the GetSaveData function */
-		public static InvCollection LoadData (string data)
+
+		/** Create a new class instance based on a serialised data string generated by the GetSaveData function */
+		public static InvCollection LoadData (string data, Container container = null)
 		{
-			return new InvCollection (DataToInstances (data), true);
+			int maxSlots = 0;
+			if (data.Contains (MaxSlotsSeparator))
+			{
+				int.TryParse (data.Substring (data.IndexOf (MaxSlotsSeparator) + MaxSlotsSeparator.Length), out maxSlots);
+			}
+			
+			InvCollection invCollection = new InvCollection (DataToInstances (data), true, maxSlots);
+			if (container)
+			{
+				invCollection.maxSlots = container.maxSlots;
+				invCollection.limitToCategoryIDs = (container.limitToCategory) ? container.categoryIDs : null;
+			}
+			return invCollection;
 		}
 
 		#endregion

@@ -136,14 +136,14 @@ namespace AC
 
 		private static void GatherIDs (GameObject root = null)
 		{
-			if (!ACEditorPrefs.ShowHierarchyIcons)
+			if (ACEditorPrefs.ShowHierarchyIcons == ShowHierarchyIcons.None)
 			{
 				return;
 			}
 
 			if (root == null)
 			{
-				actionLists = Object.FindObjectsOfType (typeof (ActionList)) as ActionList[];
+				actionLists = UnityVersionHandler.FindObjectsOfType<ActionList> ();
 			}
 			else
 			{
@@ -156,9 +156,14 @@ namespace AC
 				actionListIDs.Add (actionList.gameObject.GetInstanceID ());
 			}
 
+			if (ACEditorPrefs.ShowHierarchyIcons == ShowHierarchyIcons.ActionListsOnly)
+			{
+				return;
+			}
+
 			if (root == null)
 			{
-				constantIDs = Object.FindObjectsOfType (typeof (ConstantID)) as ConstantID[];
+				constantIDs = UnityVersionHandler.FindObjectsOfType<ConstantID> ();
 			}
 			else
 			{
@@ -183,7 +188,7 @@ namespace AC
 
 		private static void HierarchyItemCB (int instanceID, Rect selectionRect)
 		{
-			if (!ACEditorPrefs.ShowHierarchyIcons)
+			if (ACEditorPrefs.ShowHierarchyIcons == ShowHierarchyIcons.None)
 			{
 				return;
 			}
@@ -213,6 +218,11 @@ namespace AC
 						}
 					}
 				}
+			}
+
+			if (ACEditorPrefs.ShowHierarchyIcons == ShowHierarchyIcons.ActionListsOnly)
+			{
+				return;
 			}
 
 			r.x -= rememberOffset;
@@ -477,11 +487,7 @@ namespace AC
 		[MenuItem ("GameObject/Adventure Creator/3D/Navigation/NavMesh", false, 10)]
 		private static void CreateNavMesh (MenuCommand menuCommand)
 		{
-			if (KickStarter.sceneSettings.navigationMethod == AC_NavigationMethod.UnityNavigation)
-			{
-				CreateObjectFromHierarchy (menuCommand, "Navigation", "NavMeshSegment");
-			}
-			else if (KickStarter.sceneSettings.navigationMethod == AC_NavigationMethod.meshCollider)
+			if (KickStarter.sceneSettings.navigationMethod == AC_NavigationMethod.meshCollider)
 			{
 				CreateObjectFromHierarchy (menuCommand, "Navigation", "NavMesh");
 			}

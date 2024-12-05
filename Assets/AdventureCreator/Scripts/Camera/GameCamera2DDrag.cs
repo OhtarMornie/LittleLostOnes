@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"GameCamera2DDrag.cs"
  * 
@@ -63,6 +63,11 @@ namespace AC
 		public float xOffset;
 		/** The Y offset */
 		public float yOffset;
+
+		/** The distance to the horizontal limit to slow movement when within */
+		public float xPadding = 5f;
+		/** The distance to the vertial limit to slow movement when within */
+		public float yPadding = 5f;
 
 		protected Vector2 deltaPosition;
 		protected Vector2 position;
@@ -142,20 +147,22 @@ namespace AC
 					}
 				}
 				
-				if (xLock == RotationLock.Limited)
+				if (xLock == RotationLock.Limited && xPadding > 0f)
 				{
 					if ((invertX && deltaPosition.x > 0f) || (!invertX && deltaPosition.x < 0f))
 					{
-						if (maxX - position.x < 5f)
+						float maxPadDistance = maxX - originalPosition.x - position.x;
+						if (maxPadDistance < xPadding)
 						{
-							deltaPosition.x *= (maxX - position.x) / 5f;
+							deltaPosition.x *= maxPadDistance / xPadding;
 						}
 					}
 					else if ((invertX && deltaPosition.x < 0f) || (!invertX && deltaPosition.x > 0f))
 					{
-						if (minX - position.x > -5f)
+						float minPadDistance = minX - originalPosition.x - position.x;
+						if (minPadDistance > -xPadding)
 						{
-							deltaPosition.x *= (minX - position.x) / -5f;
+							deltaPosition.x *= minPadDistance / -xPadding;
 						}
 					}
 				}
@@ -171,7 +178,7 @@ namespace AC
 				
 				if (xLock == RotationLock.Limited)
 				{
-					position.x = Mathf.Clamp (position.x, minX, maxX);
+				//	position.x = Mathf.Clamp (position.x, minX, maxX);
 				}
 			}
 
@@ -195,20 +202,22 @@ namespace AC
 					}
 				}
 				
-				if (yLock == RotationLock.Limited)
+				if (yLock == RotationLock.Limited && yPadding > 0f)
 				{
 					if ((invertY && deltaPosition.y > 0f) || (!invertY && deltaPosition.y < 0f))
 					{
-						if (maxY - position.y < 5f)
+						float maxPadDistance = maxY - originalPosition.y - position.y;
+						if (maxPadDistance < yPadding)
 						{
-							deltaPosition.y *= (maxY - position.y) / 5f;
+							deltaPosition.y *= maxPadDistance / yPadding;
 						}
 					}
 					else if ((invertY && deltaPosition.y < 0f) || (!invertY && deltaPosition.y > 0f))
 					{
-						if (minY - position.y > -5f)
+						float minPadDistance = minY - originalPosition.y - position.y;
+						if (minPadDistance > -yPadding)
 						{
-							deltaPosition.y *= (minY - position.y) / -5f;
+							deltaPosition.y *= minPadDistance / -yPadding;
 						}
 					}
 				}
@@ -221,20 +230,34 @@ namespace AC
 				{
 					position.y -= deltaPosition.y / 100f;
 				}
-				
-				if (yLock == RotationLock.Limited)
-				{
-					position.y = Mathf.Clamp (position.y, minY, maxY);
-				}
 			}
 
-			if (xLock != RotationLock.Locked)
+			switch (xLock)
 			{
-				perspectiveOffset.x = position.x + xOffset;
+				case RotationLock.Limited:
+					perspectiveOffset.x = position.x + xOffset;// Mathf.Clamp (position.x + xOffset, minX, maxX);
+					break;
+				
+				case RotationLock.Free:
+					perspectiveOffset.x = position.x + xOffset;
+					break;
+
+				default:
+					break;
 			}
-			if (yLock != RotationLock.Locked)
+
+			switch (yLock)
 			{
-				perspectiveOffset.y = position.y + yOffset;
+				case RotationLock.Limited:
+					perspectiveOffset.y = position.y + yOffset;//Mathf.Clamp (position.y + yOffset, minY, maxY);
+					break;
+				
+				case RotationLock.Free:
+					perspectiveOffset.y = position.y + yOffset;
+					break;
+
+				default:
+					break;
 			}
 
 			SetProjection ();
@@ -311,7 +334,15 @@ namespace AC
 			}
 			else
 			{
-				Transform.position = new Vector3 (originalPosition.x + perspectiveOffset.x, originalPosition.y + perspectiveOffset.y, originalPosition.z);
+				float newX = xLock == RotationLock.Limited
+							? (Mathf.Clamp (originalPosition.x + perspectiveOffset.x, minX, maxX) + xOffset)
+							: originalPosition.x + perspectiveOffset.x + xOffset;
+
+				float newY = yLock == RotationLock.Limited
+						   ? (Mathf.Clamp (originalPosition.y + perspectiveOffset.y, minY, maxY) + yOffset)
+						   : originalPosition.y + perspectiveOffset.y + yOffset;
+
+				Transform.position = new Vector3 (newX, newY, originalPosition.z);
 			}
 		}
 

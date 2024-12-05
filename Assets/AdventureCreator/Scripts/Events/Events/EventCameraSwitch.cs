@@ -14,6 +14,19 @@ namespace AC
 		protected override string ConditionHelp { get { return "Whenever the active camera is changed" + (camera ? " to '" + camera.name + "'." : "."); } }
 
 
+		public EventCameraSwitch (int _id, string _label, ActionListAsset _actionListAsset, int[] _parameterIDs, _Camera _camera)
+		{
+			id = _id;
+			label = _label;
+			actionListAsset = _actionListAsset;
+			parameterIDs = _parameterIDs;
+			camera = _camera;
+		}
+
+
+		public EventCameraSwitch () {}
+		
+		
 		public override void Register ()
 		{
 			EventManager.OnSwitchCamera += OnSwitchCamera;

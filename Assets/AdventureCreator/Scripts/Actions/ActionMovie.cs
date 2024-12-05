@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionMovie.cs"
  * 
@@ -166,7 +166,7 @@ namespace AC
 						{
 							runtimeVideoPlayer.Stop ();
 						}
-
+						isRunning = false;
 						return 0f;
 					}
 					else
@@ -329,36 +329,16 @@ namespace AC
 			{
 				#if ALLOW_VIDEO
 
-				videoPlayerParameterID = Action.ChooseParameterGUI ("Video player:", parameters, videoPlayerParameterID, ParameterType.GameObject);
-				if (videoPlayerParameterID >= 0)
-				{
-					videoPlayerConstantID = 0;
-					videoPlayer = null;
-				}
-				else
-				{
-					videoPlayer = (VideoPlayer) EditorGUILayout.ObjectField ("Video player:", videoPlayer, typeof (VideoPlayer), true);
-
-					videoPlayerConstantID = FieldToID <VideoPlayer> (videoPlayer, videoPlayerConstantID);
-					videoPlayer = IDToField <VideoPlayer> (videoPlayer, videoPlayerConstantID, false);
-				}
+				ComponentField ("Video player:", ref videoPlayer, ref videoPlayerConstantID, parameters, ref videoPlayerParameterID);
 
 				movieMaterialMethod = (MovieMaterialMethod) EditorGUILayout.EnumPopup ("Method:", movieMaterialMethod);
 
 				if (movieMaterialMethod == MovieMaterialMethod.PlayMovie)
 				{
 					#if UNITY_WEBGL
-					movieURLParameterID = Action.ChooseParameterGUI ("Movie URL:", parameters, movieURLParameterID, new ParameterType[2] { ParameterType.String, ParameterType.PopUp });
-					if (movieURLParameterID < 0)
-					{
-						movieURL = EditorGUILayout.TextField ("Movie URL:", movieURL);
-					}
+					TextField ("Movie URL:", ref movieURL, parameters, ref movieURLParameterID);
 					#else
-					newClipParameterID = Action.ChooseParameterGUI ("New clip (optional):", parameters, newClipParameterID, ParameterType.UnityObject);
-					if (newClipParameterID < 0)
-					{
-						newClip = (VideoClip) EditorGUILayout.ObjectField ("New Clip (optional):", newClip, typeof (VideoClip), true);
-					}
+					AssetField ("New clip (optional):", ref newClip, parameters, ref newClipParameterID);
 					#endif
             
 					prepareOnly = EditorGUILayout.Toggle ("Prepare only?", prepareOnly);
@@ -515,6 +495,7 @@ namespace AC
 		{
 			ActionMovie newAction = CreateNew<ActionMovie> ();
 			newAction.movieClipType = MovieClipType.VideoPlayer;
+			newAction.videoPlayer = videoPlayer;
 			newAction.movieMaterialMethod = (pauseOnly) ? MovieMaterialMethod.PauseMovie : MovieMaterialMethod.StopMovie;
 			return newAction;
 		}

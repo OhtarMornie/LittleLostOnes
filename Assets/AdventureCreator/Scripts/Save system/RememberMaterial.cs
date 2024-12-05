@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"RememberMaterial.cs"
  * 
@@ -89,6 +89,7 @@ namespace AC
 		{
 			if (rendererToSave == null) rendererToSave = GetComponent<Renderer> ();
 
+			CustomGUILayout.Header ("Material");
 			CustomGUILayout.BeginVertical ();
 			rendererToSave = (Renderer) CustomGUILayout.ObjectField<Renderer> ("Renderer to save:", rendererToSave, true);
 			CustomGUILayout.EndVertical ();

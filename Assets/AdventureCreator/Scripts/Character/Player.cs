@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"Player.cs"
  * 
@@ -36,12 +36,16 @@ namespace AC
 
 		private Transform directMovementTargetLock;
 
-		protected bool lockHotspotHeadTurning = false;
+		/** The enabled state of Player's ability to head-turn towards Hotspots. */
+		public bool LockHotspotHeadTurning { get; set; }
 		protected Transform firstPersonCameraTransform;
 		protected FirstPersonCamera firstPersonCamera;
 		protected bool prepareToJump;
 		/** If True, and player-switching is enabled, then the enabled state of attached Hotspots will be synced with the player's active state */
 		public bool autoSyncHotspotState = true;
+
+		/** The player's jump speed */
+		public float jumpSpeed = 4f;
 
 		protected SkinnedMeshRenderer[] skinnedMeshRenderers;
 
@@ -113,6 +117,7 @@ namespace AC
 		{
 			base.OnEnable ();
 			EventManager.OnSetPlayer += OnSetPlayer;
+			EventManager.OnBeforeLoading += OnBeforeLoading;
 			
 			AutoSyncHotspot ();
 		}
@@ -122,6 +127,7 @@ namespace AC
 		{
 			base.OnDisable ();
 			EventManager.OnSetPlayer -= OnSetPlayer;
+			EventManager.OnBeforeLoading -= OnBeforeLoading;
 		}
 
 
@@ -136,7 +142,7 @@ namespace AC
 
 			if (firstPersonCamera && !KickStarter.stateHandler.MovementIsOff)
 			{
-				firstPersonCamera._UpdateFPCamera ();
+				firstPersonCamera._UpdateFPCamera (false);
 			}
 
 			bool jumped = false;
@@ -194,8 +200,13 @@ namespace AC
 
 		public override void _LateUpdate ()
 		{
-			base._LateUpdate ();
+			if (firstPersonCamera && !KickStarter.stateHandler.MovementIsOff)
+			{
+				firstPersonCamera._UpdateFPCamera (true);
+			}
 
+			base._LateUpdate ();
+			
 			#if UNITY_2019_2_OR_NEWER
 			if (autoStickToNavMesh && KickStarter.stateHandler.IsInGameplay ())
 			{
@@ -210,7 +221,7 @@ namespace AC
 			if (prepareToJump)
 			{
 				prepareToJump = false;
-				_rigidbody.AddForce (Vector3.up * KickStarter.settingsManager.jumpSpeed, ForceMode.Impulse);
+				_rigidbody.AddForce (UpDirection * jumpSpeed, ForceMode.Impulse);
 			}
 
 			base._FixedUpdate ();
@@ -227,7 +238,10 @@ namespace AC
 		 */
 		public void TankTurnLeft (float intensity = 1f)
 		{
-			lookDirection = -(intensity * TransformRight) + ((1f - intensity) * TransformForward);
+			Quaternion rot = TransformRotation * Quaternion.Euler (-intensity * turnSpeed * Vector3.up * 60f * Time.deltaTime);
+			SetRotation (rot);
+
+			//lookDirection = -(intensity * TransformRight) + ((1f - intensity) * TransformForward);
 			tankTurning = true;
 			turnFloat = tankTurnFloat = -intensity;
 		}
@@ -239,7 +253,10 @@ namespace AC
 		 */
 		public void TankTurnRight (float intensity = 1f)
 		{
-			lookDirection = (intensity * TransformRight) + ((1f - intensity) * TransformForward);
+			Quaternion rot = TransformRotation * Quaternion.Euler (intensity * turnSpeed * Vector3.up * 60f * Time.deltaTime);
+			SetRotation (rot);
+
+			//lookDirection = (intensity * TransformRight) + ((1f - intensity) * TransformForward);
 			tankTurning = true;
 			turnFloat = tankTurnFloat = intensity;
 		}
@@ -303,7 +320,7 @@ namespace AC
 			}
 
 			bool isGrounded = IsGrounded ();
-			
+
 			if (activePath == null)
 			{
 				if (_characterController)
@@ -311,16 +328,16 @@ namespace AC
 					if (!isGrounded && mustBeGrounded)
 					{
 						RaycastHit hitDownInfo;
-						bool hitGround = Physics.Raycast (Transform.position + Vector3.up * _characterController.stepOffset, Vector3.down, out hitDownInfo, _characterController.stepOffset * 2f, groundCheckLayerMask);
+						bool hitGround = Physics.Raycast (Transform.position + UpDirection * _characterController.stepOffset, -UpDirection, out hitDownInfo, _characterController.stepOffset * 2f, groundCheckLayerMask);
 						if (!hitGround)
 						{
 							return false;
 						}
 					}
 
-					simulatedVerticalSpeed = KickStarter.settingsManager.jumpSpeed * 0.1f;
+					simulatedVerticalSpeed = jumpSpeed * 0.1f;
 					isJumping = true;
-					_characterController.Move (simulatedVerticalSpeed * Time.deltaTime * Vector3.up);
+					_characterController.Move (simulatedVerticalSpeed * Time.deltaTime * UpDirection);
 					KickStarter.eventManager.Call_OnPlayerJump (this);
 					return true;
 				}
@@ -332,7 +349,7 @@ namespace AC
 					}
 					else
 					{
-						_rigidbody.velocity = Vector3.up * KickStarter.settingsManager.jumpSpeed;
+						UnityVersionHandler.SetRigidbodyVelocity (_rigidbody, UpDirection * jumpSpeed);
 					}
 					isJumping = true;
 
@@ -504,7 +521,7 @@ namespace AC
 						ACDebug.LogWarning ("Cannot lock Player to path '" + pathOb + "' - node index " + startingNode + " is the end of the path, and bi-directional movement is disabled.", pathOb);
 
 						Vector3 direction = Transform.position - pathOb.nodes[targetNode-2];
-						Vector3 lookDir = new Vector3 (direction.x, 0f, direction.z);
+						Vector3 lookDir = Flatten3D (direction);
 						SetLookDirection (lookDir, true);
 
 						lockedPath = false;
@@ -515,7 +532,7 @@ namespace AC
 				if (activePath)
 				{
 					Vector3 direction = activePath.nodes[targetNode] - Transform.position;
-					Vector3 lookDir = new Vector3 (direction.x, 0f, direction.z);
+					Vector3 lookDir = Flatten3D (direction);
 					SetLookDirection (lookDir, true);
 				}
 
@@ -644,7 +661,7 @@ namespace AC
 				return;
 			}
 
-			if (_headFacing == HeadFacing.Hotspot && lockHotspotHeadTurning)
+			if (_headFacing == HeadFacing.Hotspot && LockHotspotHeadTurning)
 			{
 				ClearHeadTurnTarget (false, HeadFacing.Hotspot);
 			}
@@ -652,16 +669,6 @@ namespace AC
 			{
 				base.SetHeadTurnTarget (_headTurnTarget, _headTurnTargetOffset, isInstant, _headFacing);
 			}
-		}
-
-
-		/**
-		 * <summary>Sets the enabled state of Player's ability to head-turn towards Hotspots.</summary>
-		 * <param name = "state">If True, the Player's head will unable to face Hotspots</param>
-		 */
-		public void SetHotspotHeadTurnLock (bool state)
-		{
-			lockHotspotHeadTurning = state;
 		}
 
 
@@ -774,7 +781,7 @@ namespace AC
 			playerData.playerIgnoreGravity = ignoreGravity;
 			
 			// Head target
-			playerData.playerLockHotspotHeadTurning = lockHotspotHeadTurning;
+			playerData.playerLockHotspotHeadTurning = LockHotspotHeadTurning;
 			if (headFacing == HeadFacing.Manual && headTurnTarget)
 			{
 				playerData.isHeadTurning = true;
@@ -795,6 +802,8 @@ namespace AC
 				playerData.headTargetY = 0f;
 				playerData.headTargetZ = 0f;
 			}
+
+			playerData.fpCameraPitch = firstPersonCamera ? firstPersonCamera.GetTargetTilt () : 0f;
 
 			FollowSortingMap followSortingMap = GetComponentInChildren <FollowSortingMap>();
 			if (followSortingMap)
@@ -872,6 +881,12 @@ namespace AC
 
 			playerData.leftHandIKState = LeftHandIKController.CreateSaveData ();
 			playerData.rightHandIKState = RightHandIKController.CreateSaveData ();
+
+			playerData.attachmentPointDatas = new AttachmentPointData[attachmentPoints.Length];
+			for (int i = 0; i < attachmentPoints.Length; i++)
+			{
+				playerData.attachmentPointDatas[i] = new AttachmentPointData (attachmentPoints[i]);
+			}
 
 			playerData.spriteDirectionData = spriteDirectionData.SaveData ();
 
@@ -999,8 +1014,12 @@ namespace AC
 
 			// Active path
 			Halt ();
-			ForceIdle ();
-			
+
+			if (!playerData.inCustomCharState)
+			{
+				ForceIdle ();
+			}
+
 			if (!string.IsNullOrEmpty (playerData.playerPathData) && ownPath)
 			{
 				Paths savedPath = ownPath;
@@ -1041,7 +1060,10 @@ namespace AC
 			else
 			{
 				Halt ();
-				ForceIdle ();
+				if (!playerData.inCustomCharState)
+				{
+					ForceIdle ();
+				}
 			}
 			
 			// Previous path
@@ -1054,8 +1076,13 @@ namespace AC
 				}
 			}
 			
+			if (firstPersonCamera)
+			{
+				firstPersonCamera.SetPitch (playerData.fpCameraPitch);
+			}
+
 			// Head target
-			lockHotspotHeadTurning = playerData.playerLockHotspotHeadTurning;
+			LockHotspotHeadTurning = playerData.playerLockHotspotHeadTurning;
 			if (playerData.isHeadTurning)
 			{
 				ConstantID _headTargetID = ConstantID.GetComponent <ConstantID> (playerData.headTargetID);
@@ -1103,9 +1130,51 @@ namespace AC
 			}
 
 			_spriteDirectionData.LoadData (playerData.spriteDirectionData);
-			
+
+			// Hands
+			if ((playerData.leftHandSceneItemConstantID != 0 || playerData.rightHandSceneItemConstantID != 0) && playerData.attachmentPointDatas.Length == 0)
+			{
+				playerData.attachmentPointDatas = new AttachmentPointData[2] { new AttachmentPointData (0, playerData.leftHandSceneItemConstantID), new AttachmentPointData (1, playerData.rightHandSceneItemConstantID) };
+			}
+
+			GameObject[] heldObjectsToSpawn = (playerData.attachmentPointDatas != null) ? new GameObject[playerData.attachmentPointDatas.Length] : new GameObject[0];
+			for (int i = 0; i < playerData.attachmentPointDatas.Length; i++)
+			{
+				if (playerData.attachmentPointDatas[i].heldSceneItemConstantID != 0 && i < attachmentPoints.Length && attachmentPoints[i].transform)
+				{
+					foreach (ScriptData scriptData in playerData.playerScriptData)
+					{
+						if (scriptData.objectID == playerData.attachmentPointDatas[i].heldSceneItemConstantID)
+						{
+							SceneItemData data = Serializer.LoadScriptData<SceneItemData> (scriptData.data);
+							if (data == null) continue;
+
+							var attachmentPoint = GetAttachmentPoint (playerData.attachmentPointDatas[i].attachmentPointID);
+							if (attachmentPoint == null) continue;
+
+							InvInstance invInstance = InvInstance.LoadData (data.invInstanceData);
+							if (!InvInstance.IsValid (invInstance) || invInstance.InvItem.linkedPrefab == null) continue;
+
+							heldObjectsToSpawn[i] = Instantiate (invInstance.InvItem.linkedPrefab);
+							heldObjectsToSpawn[i].name = invInstance.InvItem.linkedPrefab.name;
+							heldObjectsToSpawn[i].GetComponent<RememberSceneItem> ().SetManualID (playerData.attachmentPointDatas[i].heldSceneItemConstantID);
+							heldObjectsToSpawn[i].transform.SetParent (attachmentPoint.transform);
+							heldObjectsToSpawn[i].transform.localPosition = Vector3.zero;
+							heldObjectsToSpawn[i].transform.localEulerAngles = Vector3.zero;
+						}
+					}
+				}
+			}
+
 			// Remember scripts
-			if (!IsLocalPlayer ())
+			if (IsLocalPlayer ())
+			{
+				if (GetAnimator ())
+				{
+					GetAnimator ().Update (0f);
+				}
+			}
+			else
 			{
 				var loadPlayerScriptDataCoroutine = KickStarter.levelStorage.LoadPlayerData (this, playerData);
 				while (loadPlayerScriptDataCoroutine.MoveNext ())
@@ -1113,13 +1182,23 @@ namespace AC
 					yield return loadPlayerScriptDataCoroutine.Current;
 				}
 			}
-			else
+
+			for (int i = 0; i < heldObjectsToSpawn.Length; i++)
 			{
-				if (GetAnimator ())
-				{
-					GetAnimator ().Update (0f);
-				}
+				if (i < attachmentPoints.Length)
+					HoldObject (heldObjectsToSpawn[i], attachmentPoints[i].ID);
 			}
+		}
+
+
+		private AttachmentPoint GetAttachmentPoint (int ID)
+		{
+			if (attachmentPoints == null) return null;
+			foreach (var attachmentPoint in attachmentPoints)
+			{
+				if (attachmentPoint.ID == ID) return attachmentPoint;
+			}
+			return null;
 		}
 
 
@@ -1262,6 +1341,23 @@ namespace AC
 		}
 
 
+		protected void OnBeforeLoading (SaveFile saveFile)
+		{
+			// Delete held objects that get saved
+			for (int i = 0; i < attachmentPoints.Length; i++)
+			{
+				if (attachmentPoints[i].heldObject)
+				{
+					RememberSceneItem rememberSceneItem = attachmentPoints[i].heldObject.GetComponent<RememberSceneItem> ();
+					if (rememberSceneItem)
+					{
+						DestroyImmediate (attachmentPoints[i].heldObject);
+					}
+				}
+			}
+		}
+
+
 		protected void AutoSyncHotspot ()
 		{
 			bool enable = (KickStarter.player == null || KickStarter.player != this);
@@ -1313,6 +1409,10 @@ namespace AC
 		{
 			get
 			{
+				if (firstPersonCameraTransform == null && FirstPersonCameraComponent)
+				{
+					firstPersonCameraTransform = FirstPersonCamera.transform;
+				}
 				return firstPersonCameraTransform;
 			}
 			set
@@ -1326,6 +1426,10 @@ namespace AC
 		{
 			get
 			{
+				if (firstPersonCamera == null)
+				{
+					firstPersonCamera = GetComponentInChildren <FirstPersonCamera>();
+				}
 				return firstPersonCamera;
 			}
 		}

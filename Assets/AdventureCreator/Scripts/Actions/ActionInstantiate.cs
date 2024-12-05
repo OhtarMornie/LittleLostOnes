@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionInstantiate.cs"
  * 
@@ -76,6 +76,8 @@ namespace AC
 		public override string Title { get { return "Add or remove"; }}
 		public override string Description { get { return "Instantiates or deletes GameObjects within the current scene. To ensure this works with save games correctly, place any prefabs to be added in a Resources asset folder."; }}
 
+		bool isInBackground;
+
 
 		public override void AssignValues (List<ActionParameter> parameters)
 		{
@@ -128,7 +130,7 @@ namespace AC
 						}
 						else
 						{
-							SceneItem[] sceneItems = FindObjectsOfType<SceneItem> ();
+							SceneItem[] sceneItems = UnityVersionHandler.FindObjectsOfType<SceneItem> ();
 							foreach (SceneItem sceneItem in sceneItems)
 							{
 								if (InvInstance.IsValid (sceneItem.LinkedInvInstance) && sceneItem.LinkedInvInstance.ItemID == parameter.intValue)
@@ -204,6 +206,8 @@ namespace AC
 
 		public override void AssignParentList (ActionList actionList)
 		{
+			isInBackground = actionList && actionList.actionListType == ActionListType.RunInBackground;
+			
 			if (actionList != null)
 			{
 				localVariables = UnityVersionHandler.GetLocalVariablesOfGameObject (actionList.gameObject);
@@ -420,10 +424,10 @@ namespace AC
 			GameObject newObject = wasSpawnedByAddressable ? newOb : Object.Instantiate (newOb, position, rotation);
 			if (wasSpawnedByAddressable)
 			{
-				newOb.transform.SetPositionAndRotation (position, rotation);
-				if (newOb.gameObject.name.EndsWith ("(Clone)"))
+				newObject.transform.SetPositionAndRotation (position, rotation);
+				if (newObject.gameObject.name.EndsWith ("(Clone)"))
 				{
-					newOb.gameObject.name = newOb.gameObject.name.Substring (0, newOb.gameObject.name.Length - 7);
+					newObject.gameObject.name = newObject.gameObject.name.Substring (0, newObject.gameObject.name.Length - 7);
 				}
 			}
 			else
@@ -431,12 +435,16 @@ namespace AC
 				newObject.name = newOb.name;
 			}
 
-			if (newObject.GetComponent<RememberTransform> ())
+			Remember[] remembers = newObject.GetComponentsInChildren<Remember> ();
+			foreach (Remember remember in remembers)
 			{
-				newObject.GetComponent<RememberTransform> ().OnSpawn ();
+				remember.OnSpawn ();
 			}
 
-			KickStarter.actionListManager.RegisterCutsceneSpawnedObject (newObject);
+			if (!isInBackground)
+			{
+				KickStarter.actionListManager.RegisterCutsceneSpawnedObject (newObject);
+			}
 
 			KickStarter.stateHandler.IgnoreNavMeshCollisions ();
 
@@ -471,11 +479,7 @@ namespace AC
 
 			if (referenceByAddressable && invAction != InvAction.Remove)
 			{
-				addressableNameParameterID = ChooseParameterGUI ("Addressable name:", parameters, addressableNameParameterID, new ParameterType[2] { ParameterType.String, ParameterType.PopUp });
-				if (addressableNameParameterID < 0)
-				{
-					addressableName = TextField ("Addressable name:", addressableName);
-				}
+				TextField ("Addressable name:", ref addressableName, parameters, ref addressableNameParameterID);
 
 				if (gameObject)
 				{
@@ -491,27 +495,7 @@ namespace AC
 					parameterTypes = new ParameterType[2] { ParameterType.GameObject, ParameterType.InventoryItem };
 				}
 
-				parameterID = ChooseParameterGUI (_label, parameters, parameterID, parameterTypes);
-				if (parameterID >= 0)
-				{
-					constantID = 0;
-					gameObject = null;
-				}
-				else
-				{
-					if (invAction == InvAction.Add)
-					{
-						gameObject = (GameObject) EditorGUILayout.ObjectField (_label, gameObject, typeof (GameObject), false);
-						constantID = FieldToID (gameObject, constantID);
-					}
-					else
-					{
-						gameObject = (GameObject) EditorGUILayout.ObjectField (_label, gameObject, typeof (GameObject), true);
-
-						constantID = FieldToID (gameObject, constantID);
-						gameObject = IDToField (gameObject, constantID, false);
-					}
-				}
+				GameObjectField (_label, ref gameObject, ref constantID, parameters, ref parameterID);
 			}
 
 			if (invAction == InvAction.Add)
@@ -520,27 +504,11 @@ namespace AC
 
 				if (positionRelativeTo == PositionRelativeTo.RelativeToGameObject)
 				{
-					relativeGameObjectParameterID = ChooseParameterGUI ("Relative GameObject:", parameters, relativeGameObjectParameterID, ParameterType.GameObject);
-					if (relativeGameObjectParameterID >= 0)
-					{
-						relativeGameObjectID = 0;
-						relativeGameObject = null;
-					}
-					else
-					{
-						relativeGameObject = (GameObject) EditorGUILayout.ObjectField ("Relative GameObject:", relativeGameObject, typeof (GameObject), true);
-						
-						relativeGameObjectID = FieldToID (relativeGameObject, relativeGameObjectID);
-						relativeGameObject = IDToField (relativeGameObject, relativeGameObjectID, false);
-					}
+					GameObjectField ("Relative GameObject:", ref relativeGameObject, ref relativeGameObjectID, parameters, ref relativeGameObjectParameterID);
 				}
 				else if (positionRelativeTo == PositionRelativeTo.EnteredValue)
 				{
-					relativeVectorParameterID = ChooseParameterGUI ("Value:", parameters, relativeVectorParameterID, ParameterType.Vector3);
-					if (relativeVectorParameterID < 0)
-					{
-						relativeVector = EditorGUILayout.Vector3Field ("Value:", relativeVector);
-					}
+					Vector3Field ("Value:", ref relativeVector, parameters, ref relativeVectorParameterID);
 				}
 				else if (positionRelativeTo == PositionRelativeTo.VectorVariable)
 				{
@@ -549,21 +517,13 @@ namespace AC
 					switch (variableLocation)
 					{
 						case VariableLocation.Global:
-							vectorVarParameterID = ChooseParameterGUI ("Vector3 variable:", parameters, vectorVarParameterID, ParameterType.GlobalVariable);
-							if (vectorVarParameterID < 0)
-							{
-								vectorVarID = AdvGame.GlobalVariableGUI ("Vector3 variable:", vectorVarID, VariableType.Vector3);
-							}
+							GlobalVariableField ("Vector3 variable:", ref vectorVarID, VariableType.Vector3, parameters, ref vectorVarParameterID);
 							break;
 
 						case VariableLocation.Local:
 							if (!isAssetFile)
 							{
-								vectorVarParameterID = ChooseParameterGUI ("Vector3 variable:", parameters, vectorVarParameterID, ParameterType.LocalVariable);
-								if (vectorVarParameterID < 0)
-								{
-									vectorVarID = AdvGame.LocalVariableGUI ("Vector3 variable:", vectorVarID, VariableType.Vector3);
-								}
+								LocalVariableField ("Vector3 variable:", ref vectorVarID, VariableType.Vector3, parameters, ref vectorVarParameterID);
 							}
 							else
 							{
@@ -572,23 +532,7 @@ namespace AC
 							break;
 
 						case VariableLocation.Component:
-							vectorVarParameterID = ChooseParameterGUI ("Vector3 variable:", parameters, vectorVarParameterID, ParameterType.ComponentVariable);
-							if (vectorVarParameterID >= 0)
-							{
-								variables = null;
-								variablesConstantID = 0;	
-							}
-							else
-							{
-								variables = (Variables) EditorGUILayout.ObjectField ("Component:", variables, typeof (Variables), true);
-								variablesConstantID = FieldToID <Variables> (variables, variablesConstantID);
-								variables = IDToField <Variables> (variables, variablesConstantID, false);
-								
-								if (variables != null)
-								{
-									vectorVarID = AdvGame.ComponentVariableGUI ("Vector3 variable:", vectorVarID, VariableType.Vector3, variables);
-								}
-							}
+							ComponentVariableField ("Vector3 variable:", ref variables, ref variablesConstantID, ref vectorVarID, VariableType.Vector3, parameters, ref vectorVarParameterID);
 							break;
 					}
 				}
@@ -598,19 +542,7 @@ namespace AC
 			else if (invAction == InvAction.Replace)
 			{
 				EditorGUILayout.Space ();
-				replaceParameterID = ChooseParameterGUI ("Object to delete:", parameters, replaceParameterID, ParameterType.GameObject);
-				if (replaceParameterID >= 0)
-				{
-					replaceConstantID = 0;
-					replaceGameObject = null;
-				}
-				else
-				{
-					replaceGameObject = (GameObject) EditorGUILayout.ObjectField ("Object to delete:", replaceGameObject, typeof (GameObject), true);
-					
-					replaceConstantID = FieldToID (replaceGameObject, replaceConstantID);
-					replaceGameObject = IDToField (replaceGameObject, replaceConstantID, false);
-				}
+				GameObjectField ("Object to delete:", ref replaceGameObject, ref replaceConstantID, parameters, ref replaceParameterID);
 			}
 		}
 

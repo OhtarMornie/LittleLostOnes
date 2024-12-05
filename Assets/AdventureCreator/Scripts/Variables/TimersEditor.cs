@@ -31,9 +31,9 @@ namespace AC
 
 		private void OnEnable ()
 		{
-			if (AdvGame.GetReferences () && AdvGame.GetReferences ().variablesManager)
+			if (KickStarter.variablesManager)
 			{
-				variablesManager = AdvGame.GetReferences ().variablesManager;
+				variablesManager = KickStarter.variablesManager;
 			}
 		}
 
@@ -47,6 +47,7 @@ namespace AC
 			}
 
 			EditorGUILayout.LabelField ("Timers", CustomStyles.managerHeader);
+			GUILayout.Space (20f);
 
 			ShowTimersGUI ();
 
@@ -56,10 +57,10 @@ namespace AC
 
 		private void ShowTimersGUI ()
 		{
-			EditorGUILayout.BeginVertical (CustomStyles.thinBox);
 			showTimersList = CustomGUILayout.ToggleHeader (showTimersList, "Timers");
 			if (showTimersList)
 			{
+				CustomGUILayout.BeginVertical ();
 				scrollPos = EditorGUILayout.BeginScrollView (scrollPos);
 				foreach (Timer timer in variablesManager.timers)
 				{
@@ -133,14 +134,14 @@ namespace AC
 
 			if (selectedTimer != null && variablesManager.timers.Contains (selectedTimer))
 			{
-				EditorGUILayout.BeginVertical (CustomStyles.thinBox);
 
 				showSelectedTimer = CustomGUILayout.ToggleHeader (showSelectedTimer, "Timer #" + selectedTimer.ID + ": " + selectedTimer.Label);
 				if (showSelectedTimer)
 				{
+					CustomGUILayout.BeginVertical ();
 					selectedTimer.ShowGUI ();
+					CustomGUILayout.EndVertical ();
 				}
-				CustomGUILayout.EndVertical ();
 			}
 		}
 

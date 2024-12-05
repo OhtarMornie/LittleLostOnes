@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"RememberTransform.cs"
  * 
@@ -56,8 +56,7 @@ namespace AC
 		}
 
 
-		/** Initialises the component.  This needs to be called if the object it is attached to is generated/spawned at runtime manually through code. */
-		public void OnSpawn ()
+		public override void OnSpawn ()
 		{
 			if (linkedPrefabID != 0)
 			{
@@ -153,44 +152,39 @@ namespace AC
 				{
 					t = t.parent;
 
-					AC.Char parentCharacter = t.GetComponent <AC.Char>();
+					AC.Char parentCharacter = t.GetComponent<AC.Char> ();
 					if (parentCharacter)
 					{						
-						if (parentCharacter.IsPlayer || (parentCharacter.GetComponent <ConstantID>() && parentCharacter.GetComponent <ConstantID>().constantID != 0))
+						if (parentCharacter.IsPlayer || (parentCharacter.GetComponent<ConstantID> () && parentCharacter.GetComponent<ConstantID> ().constantID != 0))
 						{
-							if (transform.parent == parentCharacter.leftHandBone || transform.parent == parentCharacter.rightHandBone)
+							foreach (var attachmentPoint in parentCharacter.attachmentPoints)
 							{
-								if (parentCharacter.IsPlayer)
+								if (transform.parent && transform.parent == attachmentPoint.transform)
 								{
-									transformData.parentIsPlayer = true;
-									transformData.parentIsNPC = false;
-									transformData.parentID = 0;
-									transformData.parentPlayerID = -1;
-
-									if (KickStarter.settingsManager.playerSwitching == PlayerSwitching.Allow && parentCharacter != KickStarter.player)
+									if (parentCharacter.IsPlayer)
 									{
-										Player player = parentCharacter as Player;
-										transformData.parentPlayerID = player.ID;
+										transformData.parentIsPlayer = true;
+										transformData.parentIsNPC = false;
+										transformData.parentID = 0;
+										transformData.parentPlayerID = -1;
+
+										if (KickStarter.settingsManager.playerSwitching == PlayerSwitching.Allow && parentCharacter != KickStarter.player)
+										{
+											Player player = parentCharacter as Player;
+											transformData.parentPlayerID = player.ID;
+										}
 									}
+									else
+									{
+										transformData.parentIsPlayer = false;
+										transformData.parentIsNPC = true;
+										transformData.parentID = parentCharacter.GetComponent<ConstantID> ().constantID;
+										transformData.parentPlayerID = -1;
+									}
+									
+									transformData.heldAttachmentPointID = attachmentPoint.ID;
+									return transformData;
 								}
-								else
-								{
-									transformData.parentIsPlayer = false;
-									transformData.parentIsNPC = true;
-									transformData.parentID = parentCharacter.GetComponent <ConstantID>().constantID;
-									transformData.parentPlayerID = -1;
-								}
-								
-								if (transform.parent == parentCharacter.leftHandBone)
-								{
-									transformData.heldHand = Hand.Left;
-								}
-								else
-								{
-									transformData.heldHand = Hand.Right;
-								}
-								
-								return transformData;
 							}
 						}
 						
@@ -198,9 +192,9 @@ namespace AC
 					}
 				}
 
-				if (transform.parent.GetComponent <ConstantID>() && transform.parent.GetComponent <ConstantID>().constantID != 0)
+				if (transform.parent.GetComponent<ConstantID> () && transform.parent.GetComponent<ConstantID> ().constantID != 0)
 				{
-					transformData.parentID = transform.parent.GetComponent <ConstantID>().constantID;
+					transformData.parentID = transform.parent.GetComponent<ConstantID>().constantID;
 				}
 				else
 				{
@@ -221,7 +215,7 @@ namespace AC
 		{
 			if (data == null) return;
 			savePrevented = data.savePrevented; if (savePrevented) return;
-			
+
 			if (data.parentIsPlayer)
 			{
 				Player player = KickStarter.player;
@@ -238,13 +232,17 @@ namespace AC
 
 				if (player)
 				{
-					if (data.heldHand == Hand.Left)
+					if (data.heldHand == Hand.Right)
 					{
-						transform.parent = player.leftHandBone;
+						data.heldAttachmentPointID = 1;
 					}
-					else
+
+					foreach (var attachmentPoint in player.attachmentPoints)
 					{
-						transform.parent = player.rightHandBone;
+						if (attachmentPoint.ID == data.heldAttachmentPointID)
+						{
+							transform.SetParent (attachmentPoint.transform);
+						}
 					}
 				}
 			}
@@ -259,19 +257,23 @@ namespace AC
 						Char _char = parentObject.GetComponent<NPC> ();
 						if (_char && !_char.IsPlayer)
 						{
-							if (data.heldHand == Hand.Left)
+							if (data.heldHand == Hand.Right)
 							{
-								transform.parent = _char.leftHandBone;
+								data.heldAttachmentPointID = 1;
 							}
-							else
+
+							foreach (var attachmentPoint in _char.attachmentPoints)
 							{
-								transform.parent = _char.rightHandBone;
+								if (attachmentPoint.ID == data.heldAttachmentPointID)
+								{
+									transform.SetParent (attachmentPoint.transform);
+								}
 							}
 						}
 					}
 					else
 					{
-						transform.parent = parentObject.gameObject.transform;
+						transform.SetParent (parentObject.gameObject.transform);
 					}
 				}
 			}
@@ -357,14 +359,14 @@ namespace AC
 		public bool parentIsNPC = false;
 		/** True if the GameObject's parent is the Player */
 		public bool parentIsPlayer = false;
-		/** If the GameObject's parent is a Character, which hand is it held in? (Left, Right) */
+		/** (Deprecated) */
 		public Hand heldHand;
+		/** If the object's parent is a characer, which attachment points is it held by */
+		public int heldAttachmentPointID;
 		/** If player-switching is allowed, and the GameObject's parent is an inactive Player, the ID number of that Player */
 		public int parentPlayerID = -1;
 
-		/**
-		 * The default Constructor.
-		 */
+		/** The default Constructor. */
 		public TransformData () { }
 		
 	}

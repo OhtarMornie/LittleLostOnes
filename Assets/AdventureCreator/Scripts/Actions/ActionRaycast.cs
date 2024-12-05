@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionRaycast.cs"
  * 
@@ -23,6 +23,13 @@ namespace AC
 	public class ActionRaycast : ActionCheck
 	{
 
+		public DirectionMode directionMode = DirectionMode.FromOriginForward;
+		public enum DirectionMode { FromOriginForward, ToSetDestination };
+		public Transform destinationTransform;
+		public int destinationTransformConstantID = 0;
+		public int destinationTransformParameterID = -1;
+		private Transform runtimeDestinationTransform;
+
 		public Transform originTransform;
 		public int originConstantID = 0;
 		public int originParameterID = -1;
@@ -34,6 +41,9 @@ namespace AC
 
 		public float distance = 10f;
 		public int distanceParameterID = -1;
+		private float runtimeDistance;
+
+		public float debugDrawDuration = 1f;
 
 		public float radius = 0f;
 		public int radiusParameterID = -1;
@@ -72,7 +82,7 @@ namespace AC
 				}
 			}
 
-			distance = AssignFloat (parameters, distanceParameterID, distance);
+			runtimeDistance = AssignFloat (parameters, distanceParameterID, distance);
 			radius = AssignFloat (parameters, radiusParameterID, radius);
 
 			detectedGameObjectParameter = GetParameterWithID (parameters, detectedGameObjectParameterID);
@@ -86,16 +96,34 @@ namespace AC
 			{
 				detectedPositionParameter = null;
 			}
+
+			if (directionMode == DirectionMode.ToSetDestination)
+			{
+				runtimeDestinationTransform = AssignFile (parameters, destinationTransformParameterID, destinationTransformConstantID, destinationTransform);
+			}
+			else
+			{
+				runtimeDestinationTransform = null;
+			}
 		}
 		
 		
 		public override bool CheckCondition ()
 		{
-			Debug.DrawRay (runtimeOrigin, runtimeDirection * distance, Color.red, 1f);
+			if (runtimeDestinationTransform)
+			{
+				runtimeDistance = Vector3.Distance (runtimeOrigin, runtimeDestinationTransform.position);
+				runtimeDirection = (runtimeDestinationTransform.position - runtimeOrigin).normalized;
+			}
+			
+			if (debugDrawDuration > 0f)
+			{
+				Debug.DrawRay (runtimeOrigin, runtimeDirection * runtimeDistance, Color.red, debugDrawDuration);
+			}
 			
 			if (SceneSettings.IsUnity2D ())
 			{
-				RaycastHit2D hitInfo2D = UnityVersionHandler.Perform2DRaycast (runtimeOrigin, runtimeDirection, distance, layerMask);
+				RaycastHit2D hitInfo2D = UnityVersionHandler.Perform2DRaycast (runtimeOrigin, runtimeDirection, runtimeDistance, layerMask);
 				if (hitInfo2D.collider)
 				{
 					if (detectedGameObjectParameter != null)
@@ -113,8 +141,8 @@ namespace AC
 			}
 
 			RaycastHit hitInfo;
-			if ((radius <= 0f && Physics.Raycast (runtimeOrigin, runtimeDirection, out hitInfo, distance, layerMask)) ||
-				(radius > 0f && Physics.SphereCast (runtimeOrigin, radius, runtimeDirection, out hitInfo, distance, layerMask)))
+			if ((radius <= 0f && Physics.Raycast (runtimeOrigin, runtimeDirection, out hitInfo, runtimeDistance, layerMask)) ||
+				(radius > 0f && Physics.SphereCast (runtimeOrigin, radius, runtimeDirection, out hitInfo, runtimeDistance, layerMask)))
 			{
 				if (detectedGameObjectParameter != null)
 				{
@@ -135,47 +163,36 @@ namespace AC
 		
 		public override void ShowGUI (List<ActionParameter> parameters)
 		{
-			originParameterID = Action.ChooseParameterGUI ("Origin:", parameters, originParameterID, new ParameterType[] { ParameterType.GameObject, ParameterType.Vector3 });
+			ComponentField ("Origin:", ref originTransform, ref originConstantID, parameters, ref originParameterID);
+
 			if (originParameterID >= 0)
 			{
-				originConstantID = 0;
-				originTransform = null;
-
 				if (GetParameterWithID (parameters, originParameterID) != null && GetParameterWithID (parameters, originParameterID).parameterType == ParameterType.Vector3)
 				{
-					directionParameterID = ChooseParameterGUI ("Direction:", parameters, directionParameterID, ParameterType.Vector3);
-					if (directionParameterID < 0)
-					{
-						direction = EditorGUILayout.Vector3Field ("Direction:", direction);
-					}
+					Vector3Field ("Direction:", ref direction, parameters, ref directionParameterID);
 				}
 			}
-			else
-			{
-				originTransform = (Transform) EditorGUILayout.ObjectField ("Origin:", originTransform, typeof (Transform), true);
 
-				originConstantID = FieldToID (originTransform, originConstantID);
-				originTransform = IDToField (originTransform, originConstantID, false);
+			directionMode = (DirectionMode) EditorGUILayout.EnumPopup ("Direction mode:", directionMode);
+			if (directionMode == DirectionMode.FromOriginForward)
+			{
+				FloatField ("Distance:", ref distance, parameters, ref distanceParameterID);
 			}
-
-			distanceParameterID = ChooseParameterGUI ("Distance:", parameters, distanceParameterID, ParameterType.Float);
-			if (distanceParameterID < 0)
+			else if (directionMode == DirectionMode.ToSetDestination)
 			{
-				distance = EditorGUILayout.FloatField ("Distance:", distance);
+				ComponentField ("Destination:", ref destinationTransform, ref destinationTransformConstantID, parameters, ref destinationTransformParameterID);
 			}
 
 			if (!SceneSettings.IsUnity2D ())
 			{
-				radiusParameterID = ChooseParameterGUI ("Radius:", parameters, radiusParameterID, ParameterType.Float);
-				if (radiusParameterID < 0)
-				{
-					radius = EditorGUILayout.FloatField ("Radius:", radius);
-				}
+				FloatField ("Radius:", ref radius, parameters, ref radiusParameterID);
 			}
 
 			layerMask = AdvGame.LayerMaskField ("Layer mask:", layerMask);
 			detectedGameObjectParameterID = ChooseParameterGUI ("Hit GameObject:", parameters, detectedGameObjectParameterID, ParameterType.GameObject);
 			detectedPositionParameterID = ChooseParameterGUI ("Detection point:", parameters, detectedPositionParameterID, ParameterType.Vector3);
+
+			debugDrawDuration = EditorGUILayout.FloatField ("Debug draw time (s):", debugDrawDuration);
 		}
 
 

@@ -51,8 +51,8 @@ namespace AC
 		{
 			EditorGUILayout.HelpBox ("Active Inputs are used to trigger ActionList assets when an input key is pressed under certain gameplay conditions.", MessageType.Info);
 
-			EditorGUILayout.BeginVertical (CustomStyles.thinBox);
 			showActiveInputsList = CustomGUILayout.ToggleHeader (showActiveInputsList, "Active inputs");
+			CustomGUILayout.BeginVertical ();
 			if (showActiveInputsList)
 			{
 				scrollPos = EditorGUILayout.BeginScrollView (scrollPos);
@@ -121,14 +121,13 @@ namespace AC
 
 			if (selectedActiveInput != null && settingsManager.activeInputs.Contains (selectedActiveInput))
 			{
-				EditorGUILayout.BeginVertical (CustomStyles.thinBox);
-
 				showSelectedActiveInput = CustomGUILayout.ToggleHeader (showSelectedActiveInput, "Input #" + selectedActiveInput.ID + ": " + selectedActiveInput.label);
 				if (showSelectedActiveInput)
 				{
+					CustomGUILayout.BeginVertical ();
 					selectedActiveInput.ShowGUI ();
+					CustomGUILayout.EndVertical ();
 				}
-				CustomGUILayout.EndVertical ();
 			}
 		}
 

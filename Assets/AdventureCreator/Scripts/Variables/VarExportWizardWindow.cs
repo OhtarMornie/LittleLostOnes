@@ -230,9 +230,9 @@ namespace AC
 			}
 
 			string suggestedFilename = "";
-			if (AdvGame.GetReferences ().settingsManager)
+			if (KickStarter.settingsManager)
 			{
-				suggestedFilename = AdvGame.GetReferences ().settingsManager.saveFileName + " - ";
+				suggestedFilename = KickStarter.settingsManager.saveFileName + " - ";
 			}
 			if (variableLocation == VariableLocation.Local && allScenes)
 			{
@@ -303,14 +303,11 @@ namespace AC
 					{
 						UnityVersionHandler.OpenScene (sceneFile);
 
-						if (FindObjectOfType <LocalVariables>())
+						LocalVariables localVariables = UnityVersionHandler.FindObjectOfType <LocalVariables>();
+						if (localVariables != null)
 						{
-							LocalVariables localVariables = FindObjectOfType <LocalVariables>();
-							if (localVariables != null)
-							{
-								string sceneName = UnityVersionHandler.GetCurrentSceneName ();
-								output = GatherOutput (output, localVariables.localVars, sceneName);
-							}
+							string sceneName = UnityVersionHandler.GetCurrentSceneName ();
+							output = GatherOutput (output, localVariables.localVars, sceneName);
 						}
 					}
 

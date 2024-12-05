@@ -15,6 +15,20 @@ namespace AC
 		protected override string ConditionHelp { get { return "Whenever " + (string.IsNullOrEmpty (menuName) ? "a menu" : "menu '" + menuName + "'") + " is turned " + onOff.ToString ().ToLower () + "."; } }
 
 
+		public EventMenuTurnOnOff (int _id, string _label, ActionListAsset _actionListAsset, int[] _parameterIDs, AC_OnOff _onOff, string _menuName)
+		{
+			id = _id;
+			label = _label;
+			actionListAsset = _actionListAsset;
+			parameterIDs = _parameterIDs;
+			onOff = _onOff;
+			menuName = _menuName;
+		}
+
+
+		public EventMenuTurnOnOff () {}
+
+
 		public override void Register ()
 		{
 			EventManager.OnMenuTurnOn += OnMenuTurnOn;

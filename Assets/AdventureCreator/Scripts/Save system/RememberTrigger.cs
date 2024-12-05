@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"RememberTrigger.cs"
  * 
@@ -118,8 +118,8 @@ namespace AC
 		{
 			if (triggerToSave == null) triggerToSave = GetComponent<AC_Trigger> ();
 
+			CustomGUILayout.Header ("Trigger");
 			CustomGUILayout.BeginVertical ();
-			EditorGUILayout.LabelField ("Trigger", EditorStyles.boldLabel);
 			triggerToSave = (AC_Trigger) CustomGUILayout.ObjectField<AC_Trigger> ("Trigger:", triggerToSave, true);
 			startState = (AC_OnOff) CustomGUILayout.EnumPopup ("Trigger state on start:", startState, "", "The enabled state of the Trigger when the game begins");
 			CustomGUILayout.EndVertical ();

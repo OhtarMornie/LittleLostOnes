@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"RememberMoveable.cs"
  * 
@@ -224,8 +224,8 @@ namespace AC
 		{
 			if (moveableToSave == null) moveableToSave = GetComponent<Moveable> ();
 
+			CustomGUILayout.Header ("Moveable");
 			CustomGUILayout.BeginVertical ();
-			EditorGUILayout.LabelField ("Moveable", EditorStyles.boldLabel);
 			moveableToSave = (Moveable) CustomGUILayout.ObjectField<Moveable> ("Moveable to save:", moveableToSave, true);
 			startState = (AC_OnOff) CustomGUILayout.EnumPopup ("Moveable state on start:", startState, "", "The interactive state of the object when the game begins");
 			saveTransformInSpace = (RememberMoveable.Space) CustomGUILayout.EnumPopup ("Save Transforms in:", saveTransformInSpace, "", "The co-ordinate system to record the object's Transform values in");

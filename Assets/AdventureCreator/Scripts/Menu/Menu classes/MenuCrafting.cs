@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"MenuCrafting.cs"
  * 
@@ -155,7 +155,7 @@ namespace AC
 			int i = 0;
 			foreach (UISlot uiSlot in uiSlots)
 			{
-				uiSlot.LinkUIElements (canvas, linkUIGraphic, emptySlotTexture);
+				uiSlot.LinkUIElements (_menu, canvas, linkUIGraphic, emptySlotTexture);
 
 				if (addEventListeners)
 				{
@@ -201,7 +201,7 @@ namespace AC
 
 #if UNITY_EDITOR
 
-		public override void ShowGUI (Menu menu)
+		public override void ShowGUI (Menu menu, System.Action<ActionListAsset> showALAEditor)
 		{
 			string apiPrefix = "(AC.PlayerMenus.GetElementWithName (\"" + menu.title + "\", \"" + title + "\") as AC.MenuCrafting)";
 
@@ -231,7 +231,7 @@ namespace AC
 				preventDefaultClicks = CustomGUILayout.Toggle ("Prevent default clicks?", preventDefaultClicks, apiPrefix + ".preventDefaultClicks", "If True, then default behavior when clicked is disabled.");
 
 				numSlots = 1;
-				actionListOnWrongIngredients = ActionListAssetMenu.AssetGUI ("ActionList on fail:", actionListOnWrongIngredients, menu.title + "_OnFailRecipe", apiPrefix + ".actionListOnWrongIngredients", "Ahe ActionList asset to run if a crafting attempt is made but no succesful recipe is possible. This only works if crafting is performed manually via the Inventory: Crafting Action.");
+				actionListOnWrongIngredients = ActionListAssetMenu.AssetGUI ("ActionList on fail:", actionListOnWrongIngredients, menu.title + "_OnFailRecipe", apiPrefix + ".actionListOnWrongIngredients", "The ActionList asset to run if a crafting attempt is made but no succesful recipe is possible. This only works if crafting is performed manually via the Inventory: Crafting Action.", null, showALAEditor);
 				if (actionListOnWrongIngredients != null)
 				{
 					EditorGUILayout.HelpBox ("This ActionList will only be run if the result is calculated manually via the 'Inventory: Crafting' Action.", MessageType.Info);
@@ -267,7 +267,7 @@ namespace AC
 
 				for (int i = 0; i < uiSlots.Length; i++)
 				{
-					uiSlots[i].LinkedUiGUI (i, source);
+					uiSlots[i].LinkedUiGUI (i, menu);
 				}
 
 				linkUIGraphic = (LinkUIGraphic) CustomGUILayout.EnumPopup ("Link graphics to:", linkUIGraphic, "", "What Image component the element's graphics should be linked to");
@@ -279,7 +279,7 @@ namespace AC
 			ShowCategoriesUI (apiPrefix);
 
 			PopulateList ();
-			base.ShowGUI (menu);
+			base.ShowGUI (menu, showALAEditor);
 		}
 
 
@@ -309,9 +309,9 @@ namespace AC
 			limitToCategory = CustomGUILayout.Toggle ("Limit by category?", limitToCategory, apiPrefix + ".limitToCategory", "If True, only items with a specific category will be displayed");
 			if (limitToCategory)
 			{
-				if (AdvGame.GetReferences ().inventoryManager)
+				if (KickStarter.inventoryManager)
 				{
-					List<InvBin> bins = AdvGame.GetReferences ().inventoryManager.bins;
+					List<InvBin> bins = KickStarter.inventoryManager.bins;
 
 					if (bins == null || bins.Count == 0)
 					{
@@ -378,7 +378,7 @@ namespace AC
 			{
 				if (uiSlots[i].uiButton && uiSlots[i].uiButton == gameObject)
 				{
-					return 0;
+					return i;
 				}
 			}
 			return base.GetSlotIndex (gameObject);
@@ -396,7 +396,7 @@ namespace AC
 			if (uiSlots != null && _slot < uiSlots.Length && !uiSlots[_slot].CanOverrideHotspotLabel) return string.Empty;
 
 			InvInstance invInstance = GetInstance (_slot);
-			if (!InvInstance.IsValid (invInstance))
+			if (InvInstance.IsValid (invInstance))
 			{
 				if (_language == Options.GetLanguage ())
 				{
@@ -650,6 +650,12 @@ namespace AC
 		}
 
 
+		public override bool SupportsRightClicks ()
+		{
+			return true;
+		}
+
+
 		private bool ClickOutput (AC.Menu _menu, MouseState _mouseState)
 		{
 			if (invInstances.Count > 0)
@@ -726,7 +732,7 @@ namespace AC
 						}
 						else if (activeRecipe != null)
 						{
-							Recipe recipe = KickStarter.runtimeInventory.CalculateRecipe (IngredientsInvCollection);
+							Recipe recipe = KickStarter.runtimeInventory.CalculateRecipe (IngredientsInvCollection, (limitToCategory && categoryIDs.Count > 0) ? categoryIDs.ToArray () : null);
 							if (recipe != activeRecipe)
 							{
 								activeRecipe = null;
@@ -742,9 +748,9 @@ namespace AC
 			else
 			{
 				invInstances = new List<InvInstance> ();
-				if (AdvGame.GetReferences ().inventoryManager)
+				if (KickStarter.inventoryManager)
 				{
-					foreach (InvItem _item in AdvGame.GetReferences ().inventoryManager.items)
+					foreach (InvItem _item in KickStarter.inventoryManager.items)
 					{
 						invInstances.Add (new InvInstance (_item));
 
@@ -775,16 +781,11 @@ namespace AC
 
 			invInstances = new List<InvInstance> ();
 
-			activeRecipe = KickStarter.runtimeInventory.CalculateRecipe (IngredientsInvCollection);
+			activeRecipe = KickStarter.runtimeInventory.CalculateRecipe (IngredientsInvCollection, (limitToCategory && categoryIDs.Count > 0) ? categoryIDs.ToArray () : null);
 			if (activeRecipe != null)
 			{
 				InvItem invItem = KickStarter.inventoryManager.GetItem (activeRecipe.resultID);
 				if (invItem == null)
-				{
-					activeRecipe = null;
-					return;
-				}
-				else if (limitToCategory && categoryIDs.Count > 0 && !categoryIDs.Contains (invItem.binID))
 				{
 					activeRecipe = null;
 					return;
@@ -1049,7 +1050,7 @@ namespace AC
 					return i - offset;
 				}
 			}
-			return 0;
+			return -1;
 		}
 
 
@@ -1067,7 +1068,7 @@ namespace AC
 					return i - offset;
 				}
 			}
-			return 0;
+			return -1;
 		}
 
 

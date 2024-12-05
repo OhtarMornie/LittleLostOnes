@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"Moveable_Drag.cs"
  * 
@@ -14,6 +14,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Events;
 
 namespace AC
 {
@@ -102,6 +103,7 @@ namespace AC
 		private float lastFrameTrackValue;
 		private float lastFrameTotalPositionAlong;
 		private float heldIntensity = 0f;
+		private bool isInitialising;
 		
 		#endregion
 
@@ -226,7 +228,7 @@ namespace AC
 
 			if (_rigidbody)
 			{
-				_rigidbody.velocity = Vector3.zero;
+				UnityVersionHandler.SetRigidbodyVelocity (_rigidbody, Vector3.zero);
 				_rigidbody.angularVelocity = Vector3.zero;
 			}
 		}
@@ -260,12 +262,14 @@ namespace AC
 
 		public override void UpdateMovement ()
 		{
+			if (isInitialising) return;
 			base.UpdateMovement ();
+
 			if (dragMode == DragMode.LockToTrack && track)
 			{
 				track.UpdateDraggable (this);
 				
-				if (UsesRigidbody && (_rigidbody.angularVelocity != Vector3.zero || _rigidbody.velocity != Vector3.zero))
+				if (UsesRigidbody && (_rigidbody.angularVelocity != Vector3.zero || UnityVersionHandler.GetRigidbodyVelocity (_rigidbody) != Vector3.zero))
 				{
 					RunInteraction (true);
 				}
@@ -338,7 +342,7 @@ namespace AC
 				}
 				else if (_rigidbody)
 				{
-					PlayMoveSound (_rigidbody.velocity.magnitude);
+					PlayMoveSound (UnityVersionHandler.GetRigidbodyVelocity (_rigidbody).magnitude);
 				}
 			}
 
@@ -514,7 +518,7 @@ namespace AC
 
 			if (dragMode == DragMode.RotateOnly && UsesRigidbody)
 			{
-				_rigidbody.velocity = Vector3.zero;
+				UnityVersionHandler.SetRigidbodyVelocity (_rigidbody, Vector3.zero);
 			}
 
 			if (!ignoreInteractions)
@@ -585,7 +589,7 @@ namespace AC
 
 			if (dragMode == DragMode.RotateOnly && UsesRigidbody)
 			{
-				_rigidbody.velocity = Vector3.zero;
+				UnityVersionHandler.SetRigidbodyVelocity (_rigidbody, Vector3.zero);
 			}
 
 			KickStarter.eventManager.Call_OnGrabMoveable (this);
@@ -617,7 +621,7 @@ namespace AC
 
 				if (UsesRigidbody)
 				{
-					_rigidbody.velocity = Vector3.zero;
+					UnityVersionHandler.SetRigidbodyVelocity (_rigidbody, Vector3.zero);
 					_rigidbody.angularVelocity = Vector3.zero;
 				}
 			}
@@ -679,6 +683,17 @@ namespace AC
 				{
 					activeAutoMove = null;
 					track.SetPositionAlong (_targetTrackValue, this);
+					lastFrameTrackValue = trackValue;
+					return;
+				}
+
+				if (Mathf.Abs (trackValue - _targetTrackValue) < 0.001f)
+				{
+					activeAutoMove = null;
+					track.SetPositionAlong (_targetTrackValue, this);
+					lastFrameTrackValue = trackValue;
+					var autoMove = new AutoMoveTrackData (_targetTrackValue, _targetTrackSpeed / 6000f, layerMask, snapID);
+					autoMove.CheckForEnd (this);
 					return;
 				}
 
@@ -691,7 +706,7 @@ namespace AC
 			}
 			else
 			{
-				ACDebug.LogWarning ("Cannot move " + this.name + " along a track, because no track has been assigned to it", this);
+				ACDebug.LogWarning ("Cannot move " + name + " along a track, because no track has been assigned to it", this);
 			}
 		}
 
@@ -725,6 +740,7 @@ namespace AC
 		{
 			if (track)
 			{
+				isInitialising = true;
 				ChildTransformData[] childTransformData = GetChildTransforms ();
 
 				track.Connect (this);
@@ -745,6 +761,7 @@ namespace AC
 					track.SnapToTrack (this, true);
 				}
 				trackValue = track.GetDecimalAlong (this);
+				isInitialising = false;
 			}
 		}
 

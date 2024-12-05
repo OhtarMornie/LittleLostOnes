@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"SceneChanger.cs"
  * 
@@ -252,8 +252,8 @@ namespace AC
 						preloadSceneIndex = -1;
 					}
 
-					PrepareSceneForExit (!KickStarter.settingsManager.useAsyncLoading, saveRoomData, doOverlay);
 					KickStarter.eventManager.Call_OnBeforeChangeScene (IndexToName (nextSceneIndex));
+					PrepareSceneForExit (!KickStarter.settingsManager.useAsyncLoading, saveRoomData, doOverlay);
 					return LoadLevel (nextSceneIndex, KickStarter.settingsManager.useLoadingScreen, KickStarter.settingsManager.useAsyncLoading, forceReload, doOverlay);
 				}
 			}
@@ -299,8 +299,8 @@ namespace AC
 						preloadSceneName = string.Empty;
 					}
 
-					PrepareSceneForExit (!KickStarter.settingsManager.useAsyncLoading, saveRoomData, doOverlay);
 					KickStarter.eventManager.Call_OnBeforeChangeScene (nextSceneName);
+					PrepareSceneForExit (!KickStarter.settingsManager.useAsyncLoading, saveRoomData, doOverlay);
 					return LoadLevel (nextSceneName, KickStarter.settingsManager.useLoadingScreen, KickStarter.settingsManager.useAsyncLoading, forceReload, doOverlay);
 				}
 			}
@@ -669,7 +669,7 @@ namespace AC
 					KickStarter.player.Teleport (KickStarter.player.Transform.position + new Vector3 (0f, -10000f, 0f));
 				}
 
-				if (FindObjectOfType<LoadingMenuDisabler> () == null)
+				if (UnityVersionHandler.FindObjectOfType<LoadingMenuDisabler> () == null)
 				{
 					GameObject gameObject = new GameObject ("LoadingMenuDisabler");
 					gameObject.AddComponent<LoadingMenuDisabler> ();
@@ -1180,7 +1180,7 @@ namespace AC
 
 			if (KickStarter.dialog) KickStarter.dialog.KillDialog (true, true);
 
-			Sound[] sounds = FindObjectsOfType (typeof (Sound)) as Sound[];
+			Sound[] sounds = UnityVersionHandler.FindObjectsOfType<Sound> ();
 			foreach (Sound sound in sounds)
 			{
 				sound.TryDestroy ();
@@ -1194,6 +1194,33 @@ namespace AC
 				
 				KickStarter.saveSystem.SaveNonPlayerData (true);
 				KickStarter.saveSystem.SaveCurrentPlayerData ();
+			}
+
+			foreach (var subScene in subScenes)
+			{
+				switch (KickStarter.settingsManager.referenceScenesInSave)
+				{
+					case ChooseSceneBy.Name:
+					{
+						if (string.IsNullOrEmpty (subScene.SceneName)) continue;
+						SceneInfo subSceneInfo = GetSceneInfo (subScene.SceneName);
+						if (subSceneInfo != null)
+							subSceneInfo.Close ();
+						break;
+					}
+
+					case ChooseSceneBy.Number:
+					{
+						if (subScene.SceneIndex < 0) continue;
+						SceneInfo subSceneInfo = GetSceneInfo (subScene.SceneIndex);
+						if (subSceneInfo != null)
+							subSceneInfo.Close ();
+						break;
+					}
+
+					default:
+						break;
+				}
 			}
 			subScenes.Clear ();
 
@@ -1317,9 +1344,7 @@ namespace AC
 				subScenes.Add (subScene);
 
 				KickStarter.saveSystem.SaveNonPlayerData (false);
-
-				KickStarter.levelStorage.ReturnSubSceneData (subScene);
-				if (KickStarter.eventManager) KickStarter.eventManager.Call_OnAddSubScene (subScene);
+				StartCoroutine (KickStarter.levelStorage.ReturnSubSceneData (subScene));
 			}
 		}
 

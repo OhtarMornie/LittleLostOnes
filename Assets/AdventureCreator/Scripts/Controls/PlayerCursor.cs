@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"PlayerCursor.cs"
  * 
@@ -47,6 +47,7 @@ namespace AC
 		protected bool isDrawingHiddenCursor = false;
 
 		protected bool forceOffCursor;
+		protected static GameObject uiCursor;
 
 
 		public void OnInitialiseScene ()
@@ -58,12 +59,12 @@ namespace AC
 					ACDebug.LogWarning ("Main cursor has no texture - please assign one in the Cursor Manager.");
 				}
 
-				if (KickStarter.cursorManager.cursorRendering == CursorRendering.UnityUI)
+				if (KickStarter.cursorManager.cursorRendering == CursorRendering.UnityUI && uiCursor == null)
 				{
 					if (KickStarter.cursorManager.uiCursorPrefab)
 					{
-						GameObject newInstance = Instantiate (KickStarter.cursorManager.uiCursorPrefab);
-						newInstance.name = KickStarter.cursorManager.uiCursorPrefab.name;
+						uiCursor = Instantiate (KickStarter.cursorManager.uiCursorPrefab);
+						uiCursor.name = KickStarter.cursorManager.uiCursorPrefab.name;
 					}
 					else
 					{

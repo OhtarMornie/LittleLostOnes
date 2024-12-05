@@ -10,6 +10,18 @@
 		protected override string ConditionHelp { get { return "Whenever the active profile is set."; } }
 
 
+		public EventSaveProfile (int _id, string _label, ActionListAsset _actionListAsset, int[] _parameterIDs)
+		{
+			id = _id;
+			label = _label;
+			actionListAsset = _actionListAsset;
+			parameterIDs = _parameterIDs;
+		}
+
+
+		public EventSaveProfile () {}
+
+
 		public override void Register ()
 		{
 			EventManager.OnSwitchProfile += OnSwitchProfile;

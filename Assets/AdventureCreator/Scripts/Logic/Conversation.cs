@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"Conversation.cs"
  * 
@@ -164,7 +164,6 @@ namespace AC
 				}
 			}
 
-			KickStarter.eventManager.Call_OnStartConversation (this);
 
 			CancelInvoke ("RunDefault");
 			int numPresent = 0;
@@ -182,6 +181,7 @@ namespace AC
 				{
 					if (_option.CanShow ())
 					{
+						KickStarter.eventManager.Call_OnStartConversation (this);
 						RunOption (_option);
 						return;
 					}
@@ -189,6 +189,7 @@ namespace AC
 			}
 			else if (numPresent > 0)
 			{
+				KickStarter.eventManager.Call_OnStartConversation (this);
 				KickStarter.playerInput.activeConversation = this;
 			}
 			else
@@ -267,13 +268,14 @@ namespace AC
 		 */
 		public void RunOption (int slot, bool force = false)
 		{
-			CancelInvoke ("RunDefault");
 			int i = ConvertSlotToOption (slot, force);
 			if (i == -1 || i >= options.Count)
 			{
 				return;
 			}
 
+			CancelInvoke ("RunDefault");
+			
 			ButtonDialog buttonDialog = options[i];
 			if (interactionSource == InteractionSource.CustomScript)
 			{
@@ -285,6 +287,11 @@ namespace AC
 			}
 
 			KickStarter.playerInput.activeConversation = null;
+
+			if (overrideActiveList != null)
+			{
+				KickStarter.eventManager.Call_OnEndConversation (this);
+			}
 		}
 
 
@@ -295,12 +302,12 @@ namespace AC
 		 */
 		public void RunOptionWithID (int ID, bool force = false)
 		{
-			CancelInvoke ("RunDefault");
-			
 			ButtonDialog buttonDialog = GetOptionWithID (ID);
 			if (buttonDialog == null) return;
 
 			if (!buttonDialog.isOn && !force) return;
+
+			CancelInvoke ("RunDefault");
 
 			if (!gameObject.activeInHierarchy || interactionSource == AC.InteractionSource.CustomScript)
 			{
@@ -312,6 +319,11 @@ namespace AC
 			}
 
 			KickStarter.playerInput.activeConversation = null;
+
+			if (overrideActiveList != null)
+			{
+				KickStarter.eventManager.Call_OnEndConversation (this);
+			}
 		}
 
 
@@ -703,6 +715,13 @@ namespace AC
 			return (overrideActiveList != null);
 		}
 
+		
+		/** Checks if the Converations options are currently being overridden by a specific ActionList */
+		public bool IsOverridingActionList (ActionList actionList)
+		{
+			return overrideActiveList != null && overrideActiveList.actionList == actionList;
+		}
+
 		#endregion
 
 
@@ -722,22 +741,24 @@ namespace AC
 
 				if (overrideActiveList != null)
 				{
-					if (overrideActiveList.actionListAsset)
+					KickStarter.eventManager.Call_OnClickConversation (this, _option.ID);
+					ActiveList _activeList = overrideActiveList;
+					overrideActiveList = null;
+					if (_activeList.actionListAsset)
 					{
-						overrideActiveList.actionList = AdvGame.RunActionListAsset (overrideActiveList.actionListAsset, overrideActiveList.startIndex, true);
+						_activeList.actionList = AdvGame.RunActionListAsset (_activeList.actionListAsset, _activeList.startIndex, true);
 					}
-					else if (overrideActiveList.actionList)
+					else if (_activeList.actionList)
 					{
-						overrideActiveList.actionList.Interact (overrideActiveList.startIndex, true);
+						_activeList.actionList.Interact (_activeList.startIndex, true);
 					}
 
-					KickStarter.eventManager.Call_OnClickConversation (this, _option.ID);
-					overrideActiveList = null;
 					return;
 				}
 				lastOption = -1;
 			}
 
+			
 			Conversation endConversation = null;
 			if (interactionSource != AC.InteractionSource.CustomScript)
 			{
@@ -751,6 +772,8 @@ namespace AC
 				}
 			}
 
+			KickStarter.eventManager.Call_OnClickConversation (this, _option.ID);
+			
 			if (interactionSource == AC.InteractionSource.AssetFile && _option.assetFile)
 			{
 				AdvGame.RunActionListAsset (_option.assetFile, endConversation);
@@ -777,8 +800,6 @@ namespace AC
 					endConversation.Interact ();
 				}
 			}
-
-			KickStarter.eventManager.Call_OnClickConversation (this, _option.ID);
 		}
 		
 

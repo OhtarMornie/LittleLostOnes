@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"Button.cs"
  * 
@@ -55,6 +55,8 @@ namespace AC
 		public bool faceAfter = false;
 		/** If True, and playerAction = PlayerAction.WalkTo / WalkToMarker, then gameplay will be blocked while the Player moves */
 		public bool isBlocking = false;
+
+		public bool stopPlayer = true;
 
 		/** If >=0, The ID number of the GameObject ActionParameter in assetFile / interaction to set to the Hotspot that the Button is a part of */
 		public int parameterID = -1;

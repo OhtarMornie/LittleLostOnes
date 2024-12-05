@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"Dialog.cs"
  * 
@@ -292,6 +292,11 @@ namespace AC
 
 				if (audioSource == null)
 				{
+					if (KickStarter.speechManager.speechScrollAudioSource == SpeechScrollAudioSource.Speech)
+					{
+						audioSource = GetNarratorAudioSource ();
+					}
+
 					if (defaultAudioSource == null && KickStarter.sceneSettings.defaultSound)
 					{
 						defaultAudioSource = KickStarter.sceneSettings.defaultSound.audioSource;
@@ -568,7 +573,7 @@ namespace AC
 
 		/**
 		 * <summary>Generates the animation data for lipsyncing a given Speech line.</summary>
-		 * <param name = "_lipSyncMode">The chosen method of lipsyncing (Off, FromSpeechText, ReadPamelaFile, ReadSapiFile, ReadPapagayoFile, FaceFX, Salsa2D)</param>
+		 * <param name = "_lipSyncMode">The chosen method of lipsyncing (Off, FromSpeechText, ReadPamelaFile, ReadSapiFile, ReadPapagayoFile, Salsa2D)</param>
 		 * <param name = "lineID">The speech line's ID number</param>
 		 * <param name = "_speaker">The speaking character</param>
 		 * <param name = "language">The name of the current language</param>

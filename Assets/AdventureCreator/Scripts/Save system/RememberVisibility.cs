@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"RememberVisibility.cs"
  * 
@@ -255,8 +255,8 @@ namespace AC
 		{
 			OnValidate ();
 
+			CustomGUILayout.Header ("Visibility");
 			CustomGUILayout.BeginVertical ();
-			EditorGUILayout.LabelField ("Visibility", EditorStyles.boldLabel);
 			rendererToSave = (Renderer) CustomGUILayout.ObjectField<Renderer> ("Renderer to save:", rendererToSave, true); 
 			startState = (AC_OnOff) CustomGUILayout.EnumPopup ("Visibility on start:", startState, "", "The Renderer's enabled state when the game begins");
 			affectChildren = CustomGUILayout.Toggle ("Affect children?", affectChildren, "", "If True, child Renderers should be affected as well");

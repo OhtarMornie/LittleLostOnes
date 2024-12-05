@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: 3
   title: TakeAllButton
-  slotSize: {x: 8.378728, y: 3.5353358}
+  slotSize: {x: 8.042735, y: 3.5058413}
   sizeType: 0
   positionType: 2
   slotSpacing: 0
@@ -39,10 +39,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 475.3594
-    y: 99.44536
-    width: 84.29001
-    height: 20.01
+    x: 718.70935
+    y: 150.39792
+    width: 122.33
+    height: 30.010002
   relativePosition: {x: 84.9, y: 43.6}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -109,6 +109,7 @@ MonoBehaviour:
   actionListOnTurnOff: {fileID: 0}
   updateWhenFadeOut: 1
   hideDuringSaveScreenshots: 1
+  useTextMeshProComponents: 0
   fitWithinScreen: 1
   backgroundTexture: {fileID: 2800000, guid: cd7371767712fb04c8b093c90539a194, type: 3}
   visibleElements:
@@ -168,11 +169,81 @@ MonoBehaviour:
   biggestElementSize: {x: 70.244, y: 33.053}
   rect:
     serializedVersion: 2
-    x: 75.45
+    x: 114.075005
     y: 0
-    width: 50.3
-    height: 107.54
-  showInFilter: 1
+    width: 76.05
+    height: 162.64
+--- !u!114 &-8763433593999027666
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64747f67d47cb4e04a88bea43b7c1cfd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ID: 6
+  title: GraphicOptions
+  slotSize: {x: 36, y: 5}
+  sizeType: 1
+  positionType: 0
+  slotSpacing: 0
+  lineID: 77
+  alternativeInputButton: 
+  font: {fileID: 12800000, guid: 19fe8e01a5566b6418798a251023299d, type: 3}
+  fontScaleFactor: 2
+  fontColor: {r: 1, g: 1, b: 1, a: 1}
+  fontHighlightColor: {r: 1, g: 1, b: 1, a: 1}
+  isVisible: 1
+  isClickable: 1
+  orientation: 1
+  gridWidth: 3
+  backgroundTexture: {fileID: 0}
+  singleSlotBackgrounds: 0
+  highlightTexture: {fileID: 2800000, guid: b0f21634eff10204da99534a5293d073, type: 3}
+  hoverSound: {fileID: 0}
+  clickSound: {fileID: 0}
+  changeCursor: 0
+  cursorID: 0
+  linkedUiID: 76162
+  maxAutoWidthFactor: 0.5
+  relativeRect:
+    serializedVersion: 2
+    x: 7.76
+    y: 59.169994
+    width: 558.72003
+    height: 43.649998
+  relativePosition: {x: 0, y: 0}
+  numSlots: 1
+  uiButton: {fileID: 0}
+  uiPointerState: 0
+  _label: "\u041D\u0430\u0441\u0442\u0440\u043E\u0439\u043A\u0438 \u0433\u0440\u0430\u0444\u0438\u043A\u0438"
+  hotspotLabel: 
+  hotspotLabelID: -1
+  anchor: 3
+  textEffects: 0
+  outlineSize: 2
+  effectColour: {r: 0, g: 0, b: 0, a: 1}
+  buttonClickType: 1
+  actionList: {fileID: 0}
+  parameterID: -1
+  parameterValue: 0
+  doFade: 1
+  switchMenuTitle: GraphicOptions
+  inventoryBoxTitle: 
+  shiftInventory: 0
+  shiftAmount: 1
+  onlyShowWhenEffective: 0
+  loopJournal: 0
+  inputAxis: 
+  simulateInput: 0
+  simulateValue: 1
+  clickTexture: {fileID: 0}
+  allowContinuousClick: 0
+  uiSelectableHideStyle: 0
 --- !u!114 &-8626052875183314548
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -212,10 +283,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 33.594303
-    y: 145.97484
-    width: 503.00003
-    height: 56.6
+    x: 50.792183
+    y: 220.7676
+    width: 760.5
+    height: 85.600006
   relativePosition: {x: 6, y: 64}
   numSlots: 5
   uiSlots:
@@ -251,6 +322,7 @@ MonoBehaviour:
   preventSelection: 0
   limitMaxScroll: 1
   highlightEmptySlots: 0
+  canBeLooped: 0
   markAlreadyRead: 0
   alreadyReadFontColour: {r: 1, g: 1, b: 1, a: 1}
   alreadyReadFontHighlightedColour: {r: 1, g: 1, b: 1, a: 1}
@@ -262,7 +334,73 @@ MonoBehaviour:
   autoOpenDocument: 1
   emptySlotTexture: {fileID: 0}
   inventoryItemCountDisplay: 0
+  indexPrefixDisplay: 0
   objectiveDisplayType: 0
+  objectiveSorting: 0
+--- !u!114 &-8611781365601114462
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d40ecbe0a1e5041fa8d2703183379581, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ID: 11
+  title: Prologue2A Toggle
+  slotSize: {x: 12.415593, y: 3.9679265}
+  sizeType: 0
+  positionType: 0
+  slotSpacing: 0
+  lineID: -1
+  alternativeInputButton: 
+  font: {fileID: 0}
+  fontScaleFactor: 2
+  fontColor: {r: 1, g: 1, b: 1, a: 1}
+  fontHighlightColor: {r: 1, g: 1, b: 1, a: 1}
+  isVisible: 1
+  isClickable: 1
+  orientation: 1
+  gridWidth: 3
+  backgroundTexture: {fileID: 0}
+  singleSlotBackgrounds: 0
+  highlightTexture: {fileID: 0}
+  hoverSound: {fileID: 0}
+  clickSound: {fileID: 0}
+  changeCursor: 0
+  cursorID: 0
+  linkedUiID: 0
+  maxAutoWidthFactor: 0.5
+  relativeRect:
+    serializedVersion: 2
+    x: 7.76
+    y: 285.18
+    width: 192.69002
+    height: 34.639996
+  relativePosition: {x: 0, y: 0}
+  numSlots: 1
+  uiToggle: {fileID: 0}
+  toggleType: 1
+  actionListOnClick: {fileID: 11400000, guid: eee15e6a49e7d5848bebd44cfaf3ed0d, type: 2}
+  label: Prologue2A
+  labelSuffix: ' : '
+  isOn: 0
+  textEffects: 0
+  outlineSize: 2
+  effectColour: {r: 0, g: 0, b: 0, a: 1}
+  anchor: 3
+  varID: 3
+  appendState: 1
+  onTexture: {fileID: 0}
+  offTexture: {fileID: 0}
+  uiSelectableHideStyle: 0
+  onText: Active
+  onTextLineID: -1
+  offText: Inactive
+  offTextLineID: -1
 --- !u!114 &-8538456470206460773
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -286,9 +424,9 @@ MonoBehaviour:
   _isLocked: 0
   id: 0
   title: Options
-  manualSize: {x: 37, y: 30.332153}
+  manualSize: {x: 37.000004, y: 36.22222}
   positionType: 0
-  manualPosition: {x: 503, y: 283}
+  manualPosition: {x: 776, y: 436.5}
   positionSmoothing: 0
   alignment: 0
   toggleKey: 
@@ -301,10 +439,12 @@ MonoBehaviour:
   actionListOnTurnOff: {fileID: 11400000, guid: 35adf74749c8c2b409e02c95af81d60a, type: 2}
   updateWhenFadeOut: 1
   hideDuringSaveScreenshots: 1
+  useTextMeshProComponents: 0
   fitWithinScreen: 1
   backgroundTexture: {fileID: 2800000, guid: 32eeed3cce2b89f4994178eccd22f28a, type: 3}
   visibleElements:
   - {fileID: 9018407992942834673}
+  - {fileID: -8763433593999027666}
   - {fileID: -4644285933541075022}
   - {fileID: 1501898469002875387}
   - {fileID: -2027884909293867179}
@@ -322,6 +462,7 @@ MonoBehaviour:
   firstSelectedElement: 
   elements:
   - {fileID: 9018407992942834673}
+  - {fileID: -8763433593999027666}
   - {fileID: -5256063611011824365}
   - {fileID: -4644285933541075022}
   - {fileID: 1501898469002875387}
@@ -367,14 +508,13 @@ MonoBehaviour:
   speechProximityLimit: 0
   speechProximityDistance: 10
   deleteUIWhenTurnOff: 0
-  biggestElementSize: {x: 367.19, y: 166.65}
+  biggestElementSize: {x: 566.48004, y: 308.46}
   rect:
     serializedVersion: 2
-    x: 316.89
-    y: 197.16
-    width: 372.22
-    height: 171.68
-  showInFilter: 1
+    x: 488.87997
+    y: 278.39
+    width: 574.24005
+    height: 316.22
 --- !u!114 &-8524565214133171708
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -413,6 +553,7 @@ MonoBehaviour:
   actionListOnTurnOff: {fileID: 0}
   updateWhenFadeOut: 1
   hideDuringSaveScreenshots: 1
+  useTextMeshProComponents: 0
   fitWithinScreen: 1
   backgroundTexture: {fileID: 2800000, guid: 32eeed3cce2b89f4994178eccd22f28a, type: 3}
   visibleElements:
@@ -485,7 +626,6 @@ MonoBehaviour:
     y: 197.16
     width: 171.02
     height: 171.68
-  showInFilter: 1
 --- !u!114 &-8393783915366683310
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -527,8 +667,8 @@ MonoBehaviour:
     serializedVersion: 2
     x: 0
     y: 0
-    width: 50.300003
-    height: 107.53999
+    width: 76.05
+    height: 162.64001
   relativePosition: {x: 0, y: 0}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -582,7 +722,7 @@ MonoBehaviour:
   title: Document
   manualSize: {x: 54.3, y: 65.80534}
   positionType: 0
-  manualPosition: {x: 503, y: 283}
+  manualPosition: {x: 760.5, y: 428}
   positionSmoothing: 0
   alignment: 4
   toggleKey: 
@@ -595,6 +735,7 @@ MonoBehaviour:
   actionListOnTurnOff: {fileID: 0}
   updateWhenFadeOut: 1
   hideDuringSaveScreenshots: 1
+  useTextMeshProComponents: 0
   fitWithinScreen: 1
   backgroundTexture: {fileID: 2800000, guid: 5f4f3dd6223164fe49aea7eb6c0bc529, type: 3}
   visibleElements:
@@ -664,11 +805,10 @@ MonoBehaviour:
   biggestElementSize: {x: 0, y: 0}
   rect:
     serializedVersion: 2
-    x: 229.871
-    y: 96.770874
-    width: 546.258
-    height: 372.45825
-  showInFilter: 1
+    x: 347.54852
+    y: 146.35312
+    width: 825.90295
+    height: 563.29376
 --- !u!114 &-8338318977613324641
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -708,10 +848,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 5.0702395
-    y: 410.8415
-    width: 553.30005
-    height: 28.3
+    x: 7.82208
+    y: 633.68304
+    width: 853.60004
+    height: 43.649998
   relativePosition: {x: 0.9, y: 92.4}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -779,12 +919,14 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 85.7615
-    y: 38.204998
-    width: 189.128
-    height: 28.3
+    x: 129.66524
+    y: 57.779995
+    width: 285.948
+    height: 42.800003
   relativePosition: {x: 27.5, y: 15}
   numSlots: 1
+  uiTextTMP: {fileID: 0}
+  hideScrollingCharacters: 0
   uiText: {fileID: 0}
   _label: Active save profile
   anchor: 3
@@ -802,6 +944,7 @@ MonoBehaviour:
   inventoryPropertyType: 0
   selectedObjectiveLabelType: 0
   itemSlotNumber: 0
+  uiComponentHideStyle: 0
 --- !u!114 &-7973516843057518696
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -841,10 +984,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 33.594303
-    y: 29.651138
-    width: 503.00003
-    height: 56.6
+    x: 50.792183
+    y: 44.84342
+    width: 760.5
+    height: 85.600006
   relativePosition: {x: 6, y: 13}
   numSlots: 5
   uiSlots:
@@ -880,6 +1023,7 @@ MonoBehaviour:
   preventSelection: 0
   limitMaxScroll: 1
   highlightEmptySlots: 0
+  canBeLooped: 0
   markAlreadyRead: 0
   alreadyReadFontColour: {r: 1, g: 1, b: 1, a: 1}
   alreadyReadFontHighlightedColour: {r: 1, g: 1, b: 1, a: 1}
@@ -891,7 +1035,9 @@ MonoBehaviour:
   autoOpenDocument: 1
   emptySlotTexture: {fileID: 0}
   inventoryItemCountDisplay: 0
+  indexPrefixDisplay: 0
   objectiveDisplayType: 0
+  objectiveSorting: 0
 --- !u!114 &-7973088309127719817
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -931,10 +1077,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 5.30162
-    y: 71.315994
-    width: 30.18
-    height: 28.3
+    x: 8.015669
+    y: 107.855995
+    width: 45.63
+    height: 42.800003
   relativePosition: {x: 1.7, y: 28}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -963,6 +1109,70 @@ MonoBehaviour:
   clickTexture: {fileID: 0}
   allowContinuousClick: 0
   uiSelectableHideStyle: 0
+--- !u!114 &-7310679797935732007
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d40ecbe0a1e5041fa8d2703183379581, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ID: 14
+  title: Prologue3B Toggle
+  slotSize: {x: 12.415593, y: 3.9679265}
+  sizeType: 0
+  positionType: 0
+  slotSpacing: 0
+  lineID: -1
+  alternativeInputButton: 
+  font: {fileID: 0}
+  fontScaleFactor: 2
+  fontColor: {r: 1, g: 1, b: 1, a: 1}
+  fontHighlightColor: {r: 1, g: 1, b: 1, a: 1}
+  isVisible: 1
+  isClickable: 1
+  orientation: 1
+  gridWidth: 3
+  backgroundTexture: {fileID: 0}
+  singleSlotBackgrounds: 0
+  highlightTexture: {fileID: 0}
+  hoverSound: {fileID: 0}
+  clickSound: {fileID: 0}
+  changeCursor: 0
+  cursorID: 0
+  linkedUiID: 0
+  maxAutoWidthFactor: 0.5
+  relativeRect:
+    serializedVersion: 2
+    x: 7.76
+    y: 285.18
+    width: 192.69002
+    height: 34.639996
+  relativePosition: {x: 0, y: 0}
+  numSlots: 1
+  uiToggle: {fileID: 0}
+  toggleType: 1
+  actionListOnClick: {fileID: 11400000, guid: a7c3ea99edd76924899bd263279723e1, type: 2}
+  label: Prologue3B
+  labelSuffix: ' : '
+  isOn: 0
+  textEffects: 0
+  outlineSize: 2
+  effectColour: {r: 0, g: 0, b: 0, a: 1}
+  anchor: 3
+  varID: 3
+  appendState: 1
+  onTexture: {fileID: 0}
+  offTexture: {fileID: 0}
+  uiSelectableHideStyle: 0
+  onText: Active
+  onTextLineID: -1
+  offText: Inactive
+  offTextLineID: -1
 --- !u!114 &-7256685007595807292
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1001,6 +1211,7 @@ MonoBehaviour:
   actionListOnTurnOff: {fileID: 0}
   updateWhenFadeOut: 1
   hideDuringSaveScreenshots: 1
+  useTextMeshProComponents: 0
   fitWithinScreen: 1
   backgroundTexture: {fileID: 0}
   visibleElements: []
@@ -1062,7 +1273,6 @@ MonoBehaviour:
     y: 280.485
     width: 5.03
     height: 5.03
-  showInFilter: 1
 --- !u!114 &-6833001136226385979
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1102,10 +1312,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 211.40184
-    y: 333.7226
-    width: 20.078981
-    height: 31.13
+    x: 319.62445
+    y: 504.71118
+    width: 30.35798
+    height: 47.08
   relativePosition: {x: 38.7, y: 89.6}
   numSlots: 1
   uiButton: {fileID: 11478532, guid: f15f8212986624a8899a47f0054ebbc1, type: 3}
@@ -1157,9 +1367,9 @@ MonoBehaviour:
   _isLocked: 0
   id: 2
   title: Load
-  manualSize: {x: 31.000002, y: 33.55477}
+  manualSize: {x: 31, y: 33.55374}
   positionType: 0
-  manualPosition: {x: 503, y: 283}
+  manualPosition: {x: 760.5, y: 428}
   positionSmoothing: 0
   alignment: 0
   toggleKey: 
@@ -1172,6 +1382,7 @@ MonoBehaviour:
   actionListOnTurnOff: {fileID: 11400000, guid: 35adf74749c8c2b409e02c95af81d60a, type: 2}
   updateWhenFadeOut: 1
   hideDuringSaveScreenshots: 1
+  useTextMeshProComponents: 0
   fitWithinScreen: 1
   backgroundTexture: {fileID: 2800000, guid: 32eeed3cce2b89f4994178eccd22f28a, type: 3}
   visibleElements:
@@ -1232,14 +1443,13 @@ MonoBehaviour:
   speechProximityLimit: 0
   speechProximityDistance: 10
   deleteUIWhenTurnOff: 0
-  biggestElementSize: {x: 306.83002, y: 184.89}
+  biggestElementSize: {x: 463.905, y: 279.61502}
   rect:
     serializedVersion: 2
-    x: 347.07
-    y: 188.04001
-    width: 311.86002
-    height: 189.92
-  showInFilter: 1
+    x: 524.745
+    y: 284.38998
+    width: 471.51
+    height: 287.22003
 --- !u!114 &-5868799109543510147
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1279,10 +1489,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 419.12878
-    y: 258.5035
-    width: 20.12
-    height: 90.56
+    x: 633.6927
+    y: 390.95233
+    width: 30.42
+    height: 136.96
   relativePosition: {x: 92, y: 66}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -1350,10 +1560,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 5.03
-    y: 38.359997
-    width: 301.80002
-    height: 113.2
+    x: 7.605
+    y: 58.010002
+    width: 456.3
+    height: 171.20001
   relativePosition: {x: 0, y: 0}
   numSlots: 4
   uiSlots:
@@ -1436,10 +1646,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 13.667242
-    y: 39.1672
-    width: 181.08
-    height: 181.12
+    x: 20.66389
+    y: 59.2352
+    width: 273.78
+    height: 273.92
   relativePosition: {x: 3, y: 10}
   numSlots: 4
   uiSlots:
@@ -1485,7 +1695,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: 0
   title: CloseButton
-  slotSize: {x: 5.67495, y: 3.5353358}
+  slotSize: {x: 5.342538, y: 3.5058413}
   sizeType: 0
   positionType: 2
   slotSpacing: 0
@@ -1510,10 +1720,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 501.11502
-    y: 205.73328
-    width: 57.09
-    height: 20.01
+    x: 757.65
+    y: 311.14432
+    width: 81.26
+    height: 30.010002
   relativePosition: {x: 89.5, y: 90.2}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -1531,6 +1741,77 @@ MonoBehaviour:
   parameterValue: 0
   doFade: 1
   switchMenuTitle: 
+  inventoryBoxTitle: 
+  shiftInventory: 0
+  shiftAmount: 1
+  onlyShowWhenEffective: 0
+  loopJournal: 0
+  inputAxis: 
+  simulateInput: 0
+  simulateValue: 1
+  clickTexture: {fileID: 0}
+  allowContinuousClick: 0
+  uiSelectableHideStyle: 0
+--- !u!114 &-5531264130136148117
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64747f67d47cb4e04a88bea43b7c1cfd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ID: 3
+  title: BackButton
+  slotSize: {x: 10, y: 5}
+  sizeType: 0
+  positionType: 0
+  slotSpacing: 0
+  lineID: -1
+  alternativeInputButton: 
+  font: {fileID: 0}
+  fontScaleFactor: 2
+  fontColor: {r: 1, g: 1, b: 1, a: 1}
+  fontHighlightColor: {r: 1, g: 1, b: 1, a: 1}
+  isVisible: 1
+  isClickable: 1
+  orientation: 1
+  gridWidth: 3
+  backgroundTexture: {fileID: 0}
+  singleSlotBackgrounds: 0
+  highlightTexture: {fileID: 0}
+  hoverSound: {fileID: 0}
+  clickSound: {fileID: 0}
+  changeCursor: 0
+  cursorID: 0
+  linkedUiID: 20578
+  maxAutoWidthFactor: 0.5
+  relativeRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
+  relativePosition: {x: 0, y: 0}
+  numSlots: 1
+  uiButton: {fileID: 6533498990527272177, guid: 466fa6d84c1880c4f83b848f9f3737f8, type: 3}
+  uiPointerState: 0
+  _label: Back
+  hotspotLabel: 
+  hotspotLabelID: -1
+  anchor: 4
+  textEffects: 0
+  outlineSize: 2
+  effectColour: {r: 0, g: 0, b: 0, a: 1}
+  buttonClickType: 1
+  actionList: {fileID: 0}
+  parameterID: -1
+  parameterValue: 0
+  doFade: 0
+  switchMenuTitle: Options
   inventoryBoxTitle: 
   shiftInventory: 0
   shiftAmount: 1
@@ -1583,8 +1864,8 @@ MonoBehaviour:
     serializedVersion: 2
     x: 5.7
     y: 43.45
-    width: 362.16
-    height: 28.3
+    width: 558.72003
+    height: 43.649998
   relativePosition: {x: 0, y: 0}
   numSlots: 1
   uiSlider: {fileID: 0}
@@ -1606,6 +1887,195 @@ MonoBehaviour:
   numberOfSteps: 0
   actionListOnChange: {fileID: 0}
   uiSelectableHideStyle: 0
+--- !u!114 &-5162682942953485023
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86ae5c94351944600a4b0aec144476b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ID: 4
+  title: QualityPresetLabel
+  slotSize: {x: 10, y: 5}
+  sizeType: 0
+  positionType: 0
+  slotSpacing: 0
+  lineID: -1
+  alternativeInputButton: 
+  font: {fileID: 0}
+  fontScaleFactor: 2
+  fontColor: {r: 1, g: 1, b: 1, a: 1}
+  fontHighlightColor: {r: 1, g: 1, b: 1, a: 1}
+  isVisible: 1
+  isClickable: 0
+  orientation: 1
+  gridWidth: 3
+  backgroundTexture: {fileID: 0}
+  singleSlotBackgrounds: 0
+  highlightTexture: {fileID: 0}
+  hoverSound: {fileID: 0}
+  clickSound: {fileID: 0}
+  changeCursor: 0
+  cursorID: 0
+  linkedUiID: 38746
+  maxAutoWidthFactor: 0.5
+  relativeRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
+  relativePosition: {x: 0, y: 0}
+  numSlots: 1
+  uiTextTMP: {fileID: 0}
+  hideScrollingCharacters: 0
+  uiText: {fileID: 0}
+  _label: Quality preset
+  anchor: 4
+  textEffects: 0
+  outlineSize: 2
+  effectColour: {r: 0, g: 0, b: 0, a: 1}
+  labelType: 0
+  variableID: 0
+  useCharacterColour: 0
+  autoAdjustHeight: 1
+  updateIfEmpty: 0
+  showPendingWhileMovingToHotspot: 0
+  itemPropertyID: 0
+  multiplyByItemCount: 0
+  inventoryPropertyType: 0
+  selectedObjectiveLabelType: 0
+  itemSlotNumber: 0
+  uiComponentHideStyle: 0
+--- !u!114 &-5137290109407337423
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5f455f0e4a864975bf60bc153fbe20d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  menuSource: 1
+  canvas: {fileID: 6533498990535238339, guid: d92f22565eea5764288085c557440a40, type: 3}
+  canvasAssetKey: 
+  canvasID: 0
+  rectTransform: {fileID: 0}
+  rectTransformID: 19572
+  uiTransitionType: 0
+  uiPositionType: 0
+  _isLocked: 0
+  id: 18
+  title: GraphicOptions
+  manualSize: {x: 0, y: 0}
+  positionType: 0
+  manualPosition: {x: 0, y: 0}
+  positionSmoothing: 0
+  alignment: 4
+  toggleKey: 
+  ignoreMouseClicks: 0
+  pauseWhenEnabled: 1
+  showWhenPaused: 0
+  canClickInCutscene: 0
+  enabledOnStart: 0
+  actionListOnTurnOn: {fileID: 0}
+  actionListOnTurnOff: {fileID: 0}
+  updateWhenFadeOut: 1
+  hideDuringSaveScreenshots: 1
+  useTextMeshProComponents: 0
+  fitWithinScreen: 1
+  backgroundTexture: {fileID: 0}
+  visibleElements:
+  - {fileID: 3608164810648431924}
+  - {fileID: 6116219780420390447}
+  - {fileID: 2339237233771472072}
+  - {fileID: -5162682942953485023}
+  - {fileID: -3626160039445242550}
+  - {fileID: 7895880111269493948}
+  - {fileID: -1174724201380968471}
+  - {fileID: 8951843476916778181}
+  - {fileID: 2070974413144229181}
+  - {fileID: 2476187503903892820}
+  - {fileID: 3022858225979827244}
+  - {fileID: -5531264130136148117}
+  transitionProgress: 0
+  appearType: 0
+  speechMenuType: 0
+  speechMenuLimit: 0
+  limitToCharacters: 
+  forceSubtitles: 0
+  moveWithCharacter: 1
+  selected_element: {fileID: 0}
+  selected_slot: 0
+  autoSelectFirstVisibleElement: 0
+  firstSelectedElement: 
+  elements:
+  - {fileID: 3608164810648431924}
+  - {fileID: 6116219780420390447}
+  - {fileID: 2339237233771472072}
+  - {fileID: -5162682942953485023}
+  - {fileID: -3626160039445242550}
+  - {fileID: 7895880111269493948}
+  - {fileID: -1174724201380968471}
+  - {fileID: 8951843476916778181}
+  - {fileID: 2070974413144229181}
+  - {fileID: 2476187503903892820}
+  - {fileID: 3022858225979827244}
+  - {fileID: -5531264130136148117}
+  spacing: 0.5
+  sizeType: 0
+  autoSizeEveryFrame: 0
+  orientation: 1
+  transitionType: 4
+  panDirection: 0
+  panMovement: 0
+  timeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panDistance: 0.5
+  fadeSpeed: 0
+  zoomAnchor: 4
+  zoomElements: 0
+  oneMenuPerSpeech: 0
+  speechProximityLimit: 0
+  speechProximityDistance: 10
+  deleteUIWhenTurnOff: 0
+  biggestElementSize: {x: 0, y: 0}
+  rect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
 --- !u!114 &-4846450264503876346
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1645,13 +2115,15 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 129.3306
-    y: 74.1184
-    width: 701.19
-    height: 31.300001
+    x: 180.3424
+    y: 103.363205
+    width: 977.76
+    height: 43.649998
   relativePosition: {x: 14, y: 32}
   numSlots: 1
-  uiText: {fileID: 0}
+  uiTextTMP: {fileID: 0}
+  hideScrollingCharacters: 0
+  uiText: {fileID: 11400000, guid: d54965938232edc4c90d92b571cd02b5, type: 3}
   _label: Hi!
   anchor: 0
   textEffects: 0
@@ -1668,6 +2140,7 @@ MonoBehaviour:
   inventoryPropertyType: 0
   selectedObjectiveLabelType: 0
   itemSlotNumber: 0
+  uiComponentHideStyle: 0
 --- !u!114 &-4797360437511062332
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1707,10 +2180,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 531.9098
-    y: 30.791567
-    width: 20.12
-    height: 56.6
+    x: 804.20953
+    y: 46.568165
+    width: 30.42
+    height: 85.600006
   relativePosition: {x: 95, y: 13.5}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -1778,10 +2251,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 5.03
-    y: 38.359997
-    width: 362.16
-    height: 28.3
+    x: 7.76
+    y: 110.579994
+    width: 558.72003
+    height: 43.649998
   relativePosition: {x: 0, y: 0}
   numSlots: 1
   uiSlider: {fileID: 0}
@@ -1817,7 +2290,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: 7
   title: IngredientsLabel
-  slotSize: {x: 11.606362, y: 3.5353358}
+  slotSize: {x: 11.274161, y: 3.5058413}
   sizeType: 0
   positionType: 2
   slotSpacing: 0
@@ -1842,12 +2315,14 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 13.667242
-    y: 11.75016
-    width: 116.76001
-    height: 20.01
+    x: 20.66389
+    y: 17.770561
+    width: 171.48
+    height: 30.010002
   relativePosition: {x: 3, y: 3}
   numSlots: 1
+  uiTextTMP: {fileID: 0}
+  hideScrollingCharacters: 0
   uiText: {fileID: 0}
   _label: Ingredients
   anchor: 4
@@ -1865,6 +2340,7 @@ MonoBehaviour:
   inventoryPropertyType: 0
   selectedObjectiveLabelType: 0
   itemSlotNumber: 0
+  uiComponentHideStyle: 0
 --- !u!114 &-4183906931500305522
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1906,8 +2382,8 @@ MonoBehaviour:
     serializedVersion: 2
     x: 4.845
     y: 133.225
-    width: 160.96
-    height: 28.3
+    width: 243.36
+    height: 42.800003
   relativePosition: {x: 0, y: 0}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -2045,6 +2521,7 @@ MonoBehaviour:
   actionListOnTurnOff: {fileID: 0}
   updateWhenFadeOut: 1
   hideDuringSaveScreenshots: 1
+  useTextMeshProComponents: 0
   fitWithinScreen: 1
   backgroundTexture: {fileID: 0}
   visibleElements:
@@ -2108,7 +2585,77 @@ MonoBehaviour:
     y: 30.475002
     width: 407.37003
     height: 103.52999
-  showInFilter: 1
+--- !u!114 &-3626160039445242550
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 299fc094732cd49c7ae92dda3f837440, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ID: 11
+  title: Quality
+  slotSize: {x: 15, y: 5}
+  sizeType: 0
+  positionType: 0
+  slotSpacing: 0
+  lineID: -1
+  alternativeInputButton: 
+  font: {fileID: 0}
+  fontScaleFactor: 2
+  fontColor: {r: 1, g: 1, b: 1, a: 1}
+  fontHighlightColor: {r: 1, g: 1, b: 1, a: 1}
+  isVisible: 1
+  isClickable: 1
+  orientation: 1
+  gridWidth: 3
+  backgroundTexture: {fileID: 0}
+  singleSlotBackgrounds: 0
+  highlightTexture: {fileID: 0}
+  hoverSound: {fileID: 0}
+  clickSound: {fileID: 0}
+  changeCursor: 0
+  cursorID: 0
+  linkedUiID: 6762
+  maxAutoWidthFactor: 0.5
+  relativeRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
+  relativePosition: {x: 0, y: 0}
+  numSlots: 1
+  uiButton: {fileID: 0}
+  uiDropdownTMP: {fileID: 0}
+  uiDropdown: {fileID: 0}
+  actionListOnClick: {fileID: 0}
+  label: Cycle
+  labelSuffix: ' : '
+  textEffects: 0
+  outlineSize: 2
+  effectColour: {r: 0, g: 0, b: 0, a: 1}
+  anchor: 3
+  selected: 0
+  optionsArray:
+  - Very Low
+  - Low
+  - Medium
+  - High
+  - Very High
+  - Ultra
+  - Custom
+  cycleType: 1
+  splitLanguageType: 0
+  varID: 0
+  uiSelectableHideStyle: 1
+  cycleUIBasis: 1
+  optionTextures: []
+  rightClickGoesBack: 0
 --- !u!114 &-3195948078066433111
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2147,6 +2694,7 @@ MonoBehaviour:
   actionListOnTurnOff: {fileID: 0}
   updateWhenFadeOut: 1
   hideDuringSaveScreenshots: 1
+  useTextMeshProComponents: 0
   fitWithinScreen: 1
   backgroundTexture: {fileID: 2800000, guid: 32eeed3cce2b89f4994178eccd22f28a, type: 3}
   visibleElements:
@@ -2213,11 +2761,10 @@ MonoBehaviour:
   biggestElementSize: {x: 165.99, y: 133.31999}
   rect:
     serializedVersion: 2
-    x: 115.69
-    y: 133.01001
-    width: 291.74
-    height: 254.7
-  showInFilter: 1
+    x: 174.915
+    y: 201.16002
+    width: 441.09
+    height: 385.19998
 --- !u!114 &-3129397385325406047
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2257,10 +2804,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 5.03
-    y: 66.659996
-    width: 281.68002
-    height: 56.6
+    x: 7.605
+    y: 100.81001
+    width: 425.88
+    height: 85.600006
   relativePosition: {x: 0, y: 0}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -2328,10 +2875,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 192.10574
-    y: 198.75124
-    width: 80.48
-    height: 28.3
+    x: 296.3699
+    y: 306.55444
+    width: 124.16
+    height: 43.649998
   relativePosition: {x: 34.1, y: 44.7}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -2470,12 +3017,14 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 5.03
-    y: 38.359997
-    width: 80.48
-    height: 28.3
+    x: 7.605
+    y: 58.010002
+    width: 121.68
+    height: 42.800003
   relativePosition: {x: 0, y: 0}
   numSlots: 1
+  uiTextTMP: {fileID: 0}
+  hideScrollingCharacters: 0
   uiText: {fileID: 0}
   _label: 'Current:'
   anchor: 3
@@ -2493,6 +3042,7 @@ MonoBehaviour:
   inventoryPropertyType: 0
   selectedObjectiveLabelType: 0
   itemSlotNumber: 0
+  uiComponentHideStyle: 0
 --- !u!114 &-2027884909293867179
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2532,13 +3082,14 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 5.03
-    y: 105.02
-    width: 362.16
-    height: 28.3
+    x: 7.76
+    y: 213.4
+    width: 558.72003
+    height: 43.649998
   relativePosition: {x: 0, y: 0}
   numSlots: 1
   uiButton: {fileID: 0}
+  uiDropdownTMP: {fileID: 0}
   uiDropdown: {fileID: 0}
   actionListOnClick: {fileID: 0}
   label: "\u042F\u0437\u044B\u043A"
@@ -2549,7 +3100,8 @@ MonoBehaviour:
   anchor: 3
   selected: 0
   optionsArray:
-  - Original
+  - "\u0420\u0443\u0441\u0441\u043A\u0438\u0439"
+  - English
   cycleType: 0
   splitLanguageType: 0
   varID: 0
@@ -2571,7 +3123,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: 0
   title: Look
-  slotSize: {x: 3.1809144, y: 5.6537104}
+  slotSize: {x: 2.103879, y: 3.7383177}
   sizeType: 0
   positionType: 0
   slotSpacing: 0
@@ -2596,8 +3148,8 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 72.148605
-    y: 2.7162
+    x: 76.3201
+    y: 4.1067
     width: 32
     height: 32
   relativePosition: {x: 0, y: 0}
@@ -2656,12 +3208,14 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 5.03
-    y: 5.03
-    width: 553.30005
-    height: 28.3
+    x: 7.76
+    y: 7.76
+    width: 853.60004
+    height: 43.649998
   relativePosition: {x: 0, y: 0}
   numSlots: 1
+  uiTextTMP: {fileID: 0}
+  hideScrollingCharacters: 0
   uiText: {fileID: 0}
   _label: Objectives
   anchor: 4
@@ -2679,6 +3233,7 @@ MonoBehaviour:
   inventoryPropertyType: 0
   selectedObjectiveLabelType: 0
   itemSlotNumber: 0
+  uiComponentHideStyle: 0
 --- !u!114 &-1626808599790226785
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2720,8 +3275,8 @@ MonoBehaviour:
     serializedVersion: 2
     x: 5.165
     y: 5.165
-    width: 28.5
-    height: 70.509995
+    width: 38.800003
+    height: 96.03
   relativePosition: {x: 0, y: 0}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -2789,10 +3344,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 106.86481
-    y: 2.7162
+    x: 112.426796
+    y: 4.1067
     width: 0
-    height: 33.96
+    height: 51.36
   relativePosition: {x: 0, y: 0}
   numSlots: 0
   uiSlots:
@@ -2822,6 +3377,7 @@ MonoBehaviour:
   preventSelection: 0
   limitMaxScroll: 1
   highlightEmptySlots: 0
+  canBeLooped: 0
   markAlreadyRead: 0
   alreadyReadFontColour: {r: 1, g: 1, b: 1, a: 1}
   alreadyReadFontHighlightedColour: {r: 1, g: 1, b: 1, a: 1}
@@ -2833,7 +3389,9 @@ MonoBehaviour:
   autoOpenDocument: 1
   emptySlotTexture: {fileID: 0}
   inventoryItemCountDisplay: 0
+  indexPrefixDisplay: 0
   objectiveDisplayType: 0
+  objectiveSorting: 0
 --- !u!114 &-1416225872818500184
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2875,21 +3433,21 @@ MonoBehaviour:
     serializedVersion: 2
     x: 5.7
     y: 156.7
-    width: 362.16
-    height: 28.3
+    width: 558.72003
+    height: 43.649998
   relativePosition: {x: 0, y: 0}
   numSlots: 1
   uiToggle: {fileID: 0}
-  toggleType: 0
+  toggleType: 1
   actionListOnClick: {fileID: 0}
   label: Subtitles
   labelSuffix: ' : '
-  isOn: 1
+  isOn: 0
   textEffects: 0
   outlineSize: 2
   effectColour: {r: 0, g: 0, b: 0, a: 1}
   anchor: 3
-  varID: 0
+  varID: 1
   appendState: 1
   onTexture: {fileID: 0}
   offTexture: {fileID: 0}
@@ -2898,6 +3456,74 @@ MonoBehaviour:
   onTextLineID: -1
   offText: Off
   offTextLineID: -1
+--- !u!114 &-1174724201380968471
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 299fc094732cd49c7ae92dda3f837440, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ID: 8
+  title: AntiAliasing
+  slotSize: {x: 15, y: 5}
+  sizeType: 0
+  positionType: 0
+  slotSpacing: 0
+  lineID: -1
+  alternativeInputButton: 
+  font: {fileID: 0}
+  fontScaleFactor: 2
+  fontColor: {r: 1, g: 1, b: 1, a: 1}
+  fontHighlightColor: {r: 1, g: 1, b: 1, a: 1}
+  isVisible: 1
+  isClickable: 1
+  orientation: 1
+  gridWidth: 3
+  backgroundTexture: {fileID: 0}
+  singleSlotBackgrounds: 0
+  highlightTexture: {fileID: 0}
+  hoverSound: {fileID: 0}
+  clickSound: {fileID: 0}
+  changeCursor: 0
+  cursorID: 0
+  linkedUiID: 4610
+  maxAutoWidthFactor: 0.5
+  relativeRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
+  relativePosition: {x: 0, y: 0}
+  numSlots: 1
+  uiButton: {fileID: 0}
+  uiDropdownTMP: {fileID: 0}
+  uiDropdown: {fileID: 0}
+  actionListOnClick: {fileID: 0}
+  label: Cycle
+  labelSuffix: ' : '
+  textEffects: 0
+  outlineSize: 2
+  effectColour: {r: 0, g: 0, b: 0, a: 1}
+  anchor: 3
+  selected: 0
+  optionsArray:
+  - Off
+  - 2x
+  - 4x
+  - 8x
+  cycleType: 1
+  splitLanguageType: 0
+  varID: 0
+  uiSelectableHideStyle: 1
+  cycleUIBasis: 1
+  optionTextures: []
+  rightClickGoesBack: 0
 --- !u!114 &-1105682486333624643
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2939,8 +3565,8 @@ MonoBehaviour:
     serializedVersion: 2
     x: 1002.01
     y: 6.590124
-    width: 28.5
-    height: 70.509995
+    width: 38.800003
+    height: 96.03
   relativePosition: {x: 97, y: 9}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -2983,7 +3609,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: 8
   title: InventoryLabel
-  slotSize: {x: 9.90159, y: 3.5353358}
+  slotSize: {x: 9.524654, y: 3.5058413}
   sizeType: 0
   positionType: 2
   slotSpacing: 0
@@ -3008,12 +3634,14 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 16.856266
-    y: 235.00319
-    width: 99.61
-    height: 20.01
+    x: 25.485466
+    y: 355.4112
+    width: 144.87
+    height: 30.010002
   relativePosition: {x: 3.7, y: 60}
   numSlots: 1
+  uiTextTMP: {fileID: 0}
+  hideScrollingCharacters: 0
   uiText: {fileID: 0}
   _label: Inventory
   anchor: 4
@@ -3031,6 +3659,7 @@ MonoBehaviour:
   inventoryPropertyType: 0
   selectedObjectiveLabelType: 0
   itemSlotNumber: 0
+  uiComponentHideStyle: 0
 --- !u!114 &-939293993548674941
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3070,10 +3699,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 49.59
-    y: 28.37707
-    width: 896.04
-    height: 64.1
+    x: 67.51199
+    y: 38.64771
+    width: 1219.8721
+    height: 87.299995
   relativePosition: {x: 5, y: 23.3}
   numSlots: 12
   uiSlots:
@@ -3133,6 +3762,7 @@ MonoBehaviour:
   preventSelection: 0
   limitMaxScroll: 1
   highlightEmptySlots: 0
+  canBeLooped: 0
   markAlreadyRead: 0
   alreadyReadFontColour: {r: 1, g: 1, b: 1, a: 1}
   alreadyReadFontHighlightedColour: {r: 1, g: 1, b: 1, a: 1}
@@ -3144,7 +3774,9 @@ MonoBehaviour:
   autoOpenDocument: 1
   emptySlotTexture: {fileID: 0}
   inventoryItemCountDisplay: 0
+  indexPrefixDisplay: 0
   objectiveDisplayType: 0
+  objectiveSorting: 0
 --- !u!114 &-932324660180708919
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3168,7 +3800,7 @@ MonoBehaviour:
   _isLocked: 0
   id: 5
   title: Conversation
-  manualSize: {x: 36, y: 29.666075}
+  manualSize: {x: 35.999996, y: 29.665302}
   positionType: 2
   manualPosition: {x: 24, y: 69.7}
   positionSmoothing: 0
@@ -3183,6 +3815,7 @@ MonoBehaviour:
   actionListOnTurnOff: {fileID: 0}
   updateWhenFadeOut: 1
   hideDuringSaveScreenshots: 1
+  useTextMeshProComponents: 0
   fitWithinScreen: 1
   backgroundTexture: {fileID: 2800000, guid: 5f4f3dd6223164fe49aea7eb6c0bc529, type: 3}
   visibleElements:
@@ -3241,14 +3874,13 @@ MonoBehaviour:
   speechProximityLimit: 0
   speechProximityDistance: 10
   deleteUIWhenTurnOff: 0
-  biggestElementSize: {x: 357.13, y: 162.87999}
+  biggestElementSize: {x: 539.95496, y: 246.32999}
   rect:
     serializedVersion: 2
-    x: 60.359985
-    y: 310.547
-    width: 362.16
-    height: 167.90999
-  showInFilter: 1
+    x: 91.26001
+    y: 469.66446
+    width: 547.55994
+    height: 253.93498
 --- !u!114 &-520764633406007490
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3288,10 +3920,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 5.03
-    y: 38.359997
-    width: 553.30005
-    height: 141.5
+    x: 7.76
+    y: 59.169994
+    width: 853.60004
+    height: 218.24998
   relativePosition: {x: 0, y: 0}
   numSlots: 5
   uiSlots:
@@ -3327,6 +3959,7 @@ MonoBehaviour:
   preventSelection: 0
   limitMaxScroll: 1
   highlightEmptySlots: 0
+  canBeLooped: 0
   markAlreadyRead: 0
   alreadyReadFontColour: {r: 1, g: 1, b: 1, a: 1}
   alreadyReadFontHighlightedColour: {r: 1, g: 1, b: 1, a: 1}
@@ -3338,7 +3971,9 @@ MonoBehaviour:
   autoOpenDocument: 1
   emptySlotTexture: {fileID: 0}
   inventoryItemCountDisplay: 0
+  indexPrefixDisplay: 0
   objectiveDisplayType: 0
+  objectiveSorting: 0
 --- !u!114 &-513237095292220923
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3378,10 +4013,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 5.03
-    y: 128.29
-    width: 281.68002
-    height: 56.6
+    x: 7.605
+    y: 194.01501
+    width: 425.88
+    height: 85.600006
   relativePosition: {x: 0, y: 0}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -3449,10 +4084,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 8.398576
-    y: 30.791567
-    width: 20.12
-    height: 56.6
+    x: 12.698046
+    y: 46.568165
+    width: 30.42
+    height: 85.600006
   relativePosition: {x: 1.5, y: 13.5}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -3520,10 +4155,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 303.08768
-    y: 198.75124
-    width: 80.48
-    height: 28.3
+    x: 467.58658
+    y: 306.55444
+    width: 124.16
+    height: 43.649998
   relativePosition: {x: 53.8, y: 44.7}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -3655,9 +4290,10 @@ MonoBehaviour:
   - {fileID: -3195948078066433111}
   - {fileID: -7256685007595807292}
   - {fileID: -3739747484772353638}
+  - {fileID: -5137290109407337423}
   globalDepth: 0
   pauseTexture: {fileID: 0}
-  scaleTextEffects: 0
+  scaleTextEffects: 1
   keyboardControlWhenPaused: 0
   keyboardControlWhenCutscene: 0
   keyboardControlWhenDialogOptions: 0
@@ -3692,7 +4328,7 @@ MonoBehaviour:
   _isLocked: 0
   id: 6
   title: Interaction
-  manualSize: {x: 10.892744, y: 6.9597883}
+  manualSize: {x: 7.661637, y: 6.95951}
   positionType: 4
   manualPosition: {x: 50, y: 50}
   positionSmoothing: 0
@@ -3707,6 +4343,7 @@ MonoBehaviour:
   actionListOnTurnOff: {fileID: 0}
   updateWhenFadeOut: 1
   hideDuringSaveScreenshots: 1
+  useTextMeshProComponents: 0
   fitWithinScreen: 1
   backgroundTexture: {fileID: 2800000, guid: 5f4f3dd6223164fe49aea7eb6c0bc529, type: 3}
   visibleElements:
@@ -3769,14 +4406,13 @@ MonoBehaviour:
   speechProximityLimit: 0
   speechProximityDistance: 10
   deleteUIWhenTurnOff: 0
-  biggestElementSize: {x: 106.86481, y: 36.6762}
+  biggestElementSize: {x: 112.426796, y: 55.4667}
   rect:
     serializedVersion: 2
-    x: 448.2095
-    y: 263.3038
-    width: 109.58101
-    height: 39.392403
-  showInFilter: 1
+    x: 702.2333
+    y: 398.2133
+    width: 116.53349
+    height: 59.573402
 --- !u!114 &422190922617874043
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3816,10 +4452,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 515.1213
-    y: 333.7226
-    width: 20.078987
-    height: 31.13
+    x: 778.8265
+    y: 504.71118
+    width: 30.35799
+    height: 47.08
   relativePosition: {x: 94.3, y: 89.6}
   numSlots: 1
   uiButton: {fileID: 11435390, guid: f15f8212986624a8899a47f0054ebbc1, type: 3}
@@ -3887,12 +4523,14 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 5.0702395
-    y: 245.88239
-    width: 251.50002
-    height: 28.3
+    x: 7.82208
+    y: 379.24966
+    width: 388
+    height: 43.649998
   relativePosition: {x: 0.9, y: 55.3}
   numSlots: 1
+  uiTextTMP: {fileID: 0}
+  hideScrollingCharacters: 0
   uiText: {fileID: 0}
   _label: Objective title
   anchor: 4
@@ -3910,6 +4548,7 @@ MonoBehaviour:
   inventoryPropertyType: 0
   selectedObjectiveLabelType: 0
   itemSlotNumber: 0
+  uiComponentHideStyle: 0
 --- !u!114 &889589301963082171
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3948,6 +4587,7 @@ MonoBehaviour:
   actionListOnTurnOff: {fileID: 0}
   updateWhenFadeOut: 1
   hideDuringSaveScreenshots: 1
+  useTextMeshProComponents: 0
   fitWithinScreen: 1
   backgroundTexture: {fileID: 2800000, guid: 3e7f5045e830a504594d388057e56b9f, type: 3}
   visibleElements:
@@ -4009,11 +4649,10 @@ MonoBehaviour:
   biggestElementSize: {x: 0, y: 0}
   rect:
     serializedVersion: 2
-    x: 74.100006
-    y: 490.36502
-    width: 991.8
-    height: 121.79
-  showInFilter: 1
+    x: 100.880005
+    y: 667.84503
+    width: 1350.24
+    height: 165.87
 --- !u!114 &950801710509751006
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4028,7 +4667,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: 9
   title: OutputLabel
-  slotSize: {x: 7.0964212, y: 3.5353358}
+  slotSize: {x: 6.771203, y: 3.5058413}
   sizeType: 0
   positionType: 2
   slotSpacing: 0
@@ -4053,12 +4692,14 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 328.01382
-    y: 11.75016
-    width: 71.39
-    height: 20.01
+    x: 495.93338
+    y: 17.770561
+    width: 102.99
+    height: 30.010002
   relativePosition: {x: 72, y: 3}
   numSlots: 1
+  uiTextTMP: {fileID: 0}
+  hideScrollingCharacters: 0
   uiText: {fileID: 0}
   _label: Output
   anchor: 4
@@ -4076,6 +4717,7 @@ MonoBehaviour:
   inventoryPropertyType: 0
   selectedObjectiveLabelType: 0
   itemSlotNumber: 0
+  uiComponentHideStyle: 0
 --- !u!114 &1123741832505342015
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4115,12 +4757,14 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 5.0702395
-    y: 314.35596
-    width: 251.50002
-    height: 89.428
+    x: 7.82208
+    y: 484.8635
+    width: 388
+    height: 137.93399
   relativePosition: {x: 0.9, y: 70.7}
   numSlots: 1
+  uiTextTMP: {fileID: 0}
+  hideScrollingCharacters: 0
   uiText: {fileID: 0}
   _label: Description
   anchor: 0
@@ -4138,6 +4782,7 @@ MonoBehaviour:
   inventoryPropertyType: 0
   selectedObjectiveLabelType: 1
   itemSlotNumber: 0
+  uiComponentHideStyle: 0
 --- !u!114 &1407291966296820014
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4177,10 +4822,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 5.03
-    y: 38.359997
-    width: 301.80002
-    height: 113.2
+    x: 7.605
+    y: 58.010002
+    width: 456.3
+    height: 171.20001
   relativePosition: {x: 0, y: 0}
   numSlots: 4
   uiSlots:
@@ -4263,10 +4908,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 5.03
-    y: 189.92
-    width: 281.68002
-    height: 56.6
+    x: 7.605
+    y: 287.22003
+    width: 425.88
+    height: 85.600006
   relativePosition: {x: 0, y: 0}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -4334,10 +4979,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 5.03
-    y: 71.689995
-    width: 362.16
-    height: 28.3
+    x: 7.76
+    y: 161.98999
+    width: 558.72003
+    height: 43.649998
   relativePosition: {x: 0, y: 0}
   numSlots: 1
   uiSlider: {fileID: 0}
@@ -4398,12 +5043,13 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 208.67055
-    y: 40.970406
-    width: 326.95
-    height: 287.52798
+    x: 315.49493
+    y: 61.96231
+    width: 494.325
+    height: 434.84802
   relativePosition: {x: 38.2, y: 11}
   numSlots: 1
+  uiTextTMP: {fileID: 0}
   uiText: {fileID: 11435218, guid: f15f8212986624a8899a47f0054ebbc1, type: 3}
   pages:
   - lineID: -1
@@ -4420,6 +5066,75 @@ MonoBehaviour:
   journalType: 2
   pageOffset: 0
   otherJournalTitle: 
+  uiComponentHideStyle: 0
+--- !u!114 &2070974413144229181
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 299fc094732cd49c7ae92dda3f837440, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ID: 9
+  title: TextureQuality
+  slotSize: {x: 15, y: 5}
+  sizeType: 0
+  positionType: 0
+  slotSpacing: 0
+  lineID: -1
+  alternativeInputButton: 
+  font: {fileID: 0}
+  fontScaleFactor: 2
+  fontColor: {r: 1, g: 1, b: 1, a: 1}
+  fontHighlightColor: {r: 1, g: 1, b: 1, a: 1}
+  isVisible: 1
+  isClickable: 1
+  orientation: 1
+  gridWidth: 3
+  backgroundTexture: {fileID: 0}
+  singleSlotBackgrounds: 0
+  highlightTexture: {fileID: 0}
+  hoverSound: {fileID: 0}
+  clickSound: {fileID: 0}
+  changeCursor: 0
+  cursorID: 0
+  linkedUiID: 4842
+  maxAutoWidthFactor: 0.5
+  relativeRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
+  relativePosition: {x: 0, y: 0}
+  numSlots: 1
+  uiButton: {fileID: 0}
+  uiDropdownTMP: {fileID: 0}
+  uiDropdown: {fileID: 0}
+  actionListOnClick: {fileID: 0}
+  label: Cycle
+  labelSuffix: ' : '
+  textEffects: 0
+  outlineSize: 2
+  effectColour: {r: 0, g: 0, b: 0, a: 1}
+  anchor: 3
+  selected: 0
+  optionsArray:
+  - Max
+  - High
+  - Med
+  - Low
+  cycleType: 1
+  splitLanguageType: 0
+  varID: 0
+  uiSelectableHideStyle: 1
+  cycleUIBasis: 1
+  optionTextures: []
+  rightClickGoesBack: 0
 --- !u!114 &2155484929205939670
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4459,10 +5174,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 5.03
-    y: 5.03
-    width: 281.68002
-    height: 56.6
+    x: 7.605
+    y: 7.605
+    width: 425.88
+    height: 85.600006
   relativePosition: {x: 0, y: 0}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -4491,6 +5206,203 @@ MonoBehaviour:
   clickTexture: {fileID: 0}
   allowContinuousClick: 0
   uiSelectableHideStyle: 0
+--- !u!114 &2339237233771472072
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86ae5c94351944600a4b0aec144476b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ID: 2
+  title: FullScreenLabel
+  slotSize: {x: 10, y: 5}
+  sizeType: 0
+  positionType: 0
+  slotSpacing: 0
+  lineID: -1
+  alternativeInputButton: 
+  font: {fileID: 0}
+  fontScaleFactor: 2
+  fontColor: {r: 1, g: 1, b: 1, a: 1}
+  fontHighlightColor: {r: 1, g: 1, b: 1, a: 1}
+  isVisible: 1
+  isClickable: 0
+  orientation: 1
+  gridWidth: 3
+  backgroundTexture: {fileID: 0}
+  singleSlotBackgrounds: 0
+  highlightTexture: {fileID: 0}
+  hoverSound: {fileID: 0}
+  clickSound: {fileID: 0}
+  changeCursor: 0
+  cursorID: 0
+  linkedUiID: 20324
+  maxAutoWidthFactor: 0.5
+  relativeRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
+  relativePosition: {x: 0, y: 0}
+  numSlots: 1
+  uiTextTMP: {fileID: 0}
+  hideScrollingCharacters: 0
+  uiText: {fileID: 6533498990527272163, guid: 466fa6d84c1880c4f83b848f9f3737f8, type: 3}
+  _label: Full screen
+  anchor: 4
+  textEffects: 0
+  outlineSize: 2
+  effectColour: {r: 0, g: 0, b: 0, a: 1}
+  labelType: 0
+  variableID: 0
+  useCharacterColour: 0
+  autoAdjustHeight: 1
+  updateIfEmpty: 0
+  showPendingWhileMovingToHotspot: 0
+  itemPropertyID: 0
+  multiplyByItemCount: 0
+  inventoryPropertyType: 0
+  selectedObjectiveLabelType: 0
+  itemSlotNumber: 0
+  uiComponentHideStyle: 0
+--- !u!114 &2476187503903892820
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86ae5c94351944600a4b0aec144476b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ID: 7
+  title: VSyncLabel
+  slotSize: {x: 10, y: 5}
+  sizeType: 0
+  positionType: 0
+  slotSpacing: 0
+  lineID: -1
+  alternativeInputButton: 
+  font: {fileID: 0}
+  fontScaleFactor: 2
+  fontColor: {r: 1, g: 1, b: 1, a: 1}
+  fontHighlightColor: {r: 1, g: 1, b: 1, a: 1}
+  isVisible: 1
+  isClickable: 0
+  orientation: 1
+  gridWidth: 3
+  backgroundTexture: {fileID: 0}
+  singleSlotBackgrounds: 0
+  highlightTexture: {fileID: 0}
+  hoverSound: {fileID: 0}
+  clickSound: {fileID: 0}
+  changeCursor: 0
+  cursorID: 0
+  linkedUiID: 166562
+  maxAutoWidthFactor: 0.5
+  relativeRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
+  relativePosition: {x: 0, y: 0}
+  numSlots: 1
+  uiTextTMP: {fileID: 0}
+  hideScrollingCharacters: 0
+  uiText: {fileID: 1381723500073277999, guid: 466fa6d84c1880c4f83b848f9f3737f8, type: 3}
+  _label: V Sync
+  anchor: 4
+  textEffects: 0
+  outlineSize: 2
+  effectColour: {r: 0, g: 0, b: 0, a: 1}
+  labelType: 0
+  variableID: 0
+  useCharacterColour: 0
+  autoAdjustHeight: 1
+  updateIfEmpty: 0
+  showPendingWhileMovingToHotspot: 0
+  itemPropertyID: 0
+  multiplyByItemCount: 0
+  inventoryPropertyType: 0
+  selectedObjectiveLabelType: 0
+  itemSlotNumber: 0
+  uiComponentHideStyle: 0
+--- !u!114 &3022858225979827244
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 299fc094732cd49c7ae92dda3f837440, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ID: 10
+  title: VSync
+  slotSize: {x: 15, y: 5}
+  sizeType: 0
+  positionType: 0
+  slotSpacing: 0
+  lineID: -1
+  alternativeInputButton: 
+  font: {fileID: 0}
+  fontScaleFactor: 2
+  fontColor: {r: 1, g: 1, b: 1, a: 1}
+  fontHighlightColor: {r: 1, g: 1, b: 1, a: 1}
+  isVisible: 1
+  isClickable: 1
+  orientation: 1
+  gridWidth: 3
+  backgroundTexture: {fileID: 0}
+  singleSlotBackgrounds: 0
+  highlightTexture: {fileID: 0}
+  hoverSound: {fileID: 0}
+  clickSound: {fileID: 0}
+  changeCursor: 0
+  cursorID: 0
+  linkedUiID: 5372
+  maxAutoWidthFactor: 0.5
+  relativeRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
+  relativePosition: {x: 0, y: 0}
+  numSlots: 1
+  uiButton: {fileID: 0}
+  uiDropdownTMP: {fileID: 0}
+  uiDropdown: {fileID: 3377809982968561684, guid: 466fa6d84c1880c4f83b848f9f3737f8, type: 3}
+  actionListOnClick: {fileID: 0}
+  label: Cycle
+  labelSuffix: ' : '
+  textEffects: 0
+  outlineSize: 2
+  effectColour: {r: 0, g: 0, b: 0, a: 1}
+  anchor: 3
+  selected: 0
+  optionsArray:
+  - Don't Sync
+  - Every V Blank
+  - Every Second V Blank
+  cycleType: 1
+  splitLanguageType: 0
+  varID: 0
+  uiSelectableHideStyle: 1
+  cycleUIBasis: 1
+  optionTextures: []
+  rightClickGoesBack: 0
 --- !u!114 &3039492823592049031
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4530,10 +5442,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 5.03
-    y: 156.59
-    width: 301.80002
-    height: 28.3
+    x: 7.605
+    y: 236.81502
+    width: 456.3
+    height: 42.800003
   relativePosition: {x: 0, y: 0}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -4562,6 +5474,70 @@ MonoBehaviour:
   clickTexture: {fileID: 0}
   allowContinuousClick: 0
   uiSelectableHideStyle: 0
+--- !u!114 &3139073237816281785
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d40ecbe0a1e5041fa8d2703183379581, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ID: 10
+  title: Prologue1 Toggle
+  slotSize: {x: 12.415593, y: 3.9679265}
+  sizeType: 0
+  positionType: 0
+  slotSpacing: 0
+  lineID: -1
+  alternativeInputButton: 
+  font: {fileID: 0}
+  fontScaleFactor: 2
+  fontColor: {r: 1, g: 1, b: 1, a: 1}
+  fontHighlightColor: {r: 1, g: 1, b: 1, a: 1}
+  isVisible: 1
+  isClickable: 1
+  orientation: 1
+  gridWidth: 3
+  backgroundTexture: {fileID: 0}
+  singleSlotBackgrounds: 0
+  highlightTexture: {fileID: 0}
+  hoverSound: {fileID: 0}
+  clickSound: {fileID: 0}
+  changeCursor: 0
+  cursorID: 0
+  linkedUiID: 0
+  maxAutoWidthFactor: 0.5
+  relativeRect:
+    serializedVersion: 2
+    x: 7.76
+    y: 285.18
+    width: 192.69002
+    height: 34.639996
+  relativePosition: {x: 0, y: 0}
+  numSlots: 1
+  uiToggle: {fileID: 0}
+  toggleType: 1
+  actionListOnClick: {fileID: 11400000, guid: 752fc150d280806489f4d2f2e47f2979, type: 2}
+  label: Prologue1
+  labelSuffix: ' : '
+  isOn: 0
+  textEffects: 0
+  outlineSize: 2
+  effectColour: {r: 0, g: 0, b: 0, a: 1}
+  anchor: 3
+  varID: 3
+  appendState: 1
+  onTexture: {fileID: 0}
+  offTexture: {fileID: 0}
+  uiSelectableHideStyle: 0
+  onText: Active
+  onTextLineID: -1
+  offText: Inactive
+  offTextLineID: -1
 --- !u!114 &3164684831562675796
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4601,10 +5577,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 18.22299
-    y: 258.5035
-    width: 20.12
-    height: 90.56
+    x: 27.551855
+    y: 390.95233
+    width: 30.42
+    height: 136.96
   relativePosition: {x: 4, y: 66}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -4672,10 +5648,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 5.03
-    y: 157.21999
-    width: 352.1
-    height: 5.66
+    x: 7.605
+    y: 237.76999
+    width: 532.35
+    height: 8.56
   relativePosition: {x: 0, y: 0}
   numSlots: 1
   uiSlider: {fileID: 0}
@@ -4725,10 +5701,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 35.8639
-    y: 71.315994
-    width: 270.614
-    height: 113.2
+    x: 54.22364
+    y: 107.855995
+    width: 409.149
+    height: 171.20001
   relativePosition: {x: 11.5, y: 28}
   numSlots: 4
   uiSlots:
@@ -4796,10 +5772,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 51.024372
-    y: 258.5035
-    width: 362.16
-    height: 90.56
+    x: 77.145195
+    y: 390.95233
+    width: 547.56
+    height: 136.96
   relativePosition: {x: 11.2, y: 66}
   numSlots: 4
   uiSlots:
@@ -4832,6 +5808,7 @@ MonoBehaviour:
   preventSelection: 0
   limitMaxScroll: 1
   highlightEmptySlots: 0
+  canBeLooped: 0
   markAlreadyRead: 0
   alreadyReadFontColour: {r: 1, g: 1, b: 1, a: 1}
   alreadyReadFontHighlightedColour: {r: 1, g: 1, b: 1, a: 1}
@@ -4843,7 +5820,73 @@ MonoBehaviour:
   autoOpenDocument: 1
   emptySlotTexture: {fileID: 0}
   inventoryItemCountDisplay: 0
+  indexPrefixDisplay: 0
   objectiveDisplayType: 0
+  objectiveSorting: 0
+--- !u!114 &3334884817402364572
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d40ecbe0a1e5041fa8d2703183379581, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ID: 12
+  title: Prologue2B Toggle
+  slotSize: {x: 12.415593, y: 3.9679265}
+  sizeType: 0
+  positionType: 0
+  slotSpacing: 0
+  lineID: -1
+  alternativeInputButton: 
+  font: {fileID: 0}
+  fontScaleFactor: 2
+  fontColor: {r: 1, g: 1, b: 1, a: 1}
+  fontHighlightColor: {r: 1, g: 1, b: 1, a: 1}
+  isVisible: 1
+  isClickable: 1
+  orientation: 1
+  gridWidth: 3
+  backgroundTexture: {fileID: 0}
+  singleSlotBackgrounds: 0
+  highlightTexture: {fileID: 0}
+  hoverSound: {fileID: 0}
+  clickSound: {fileID: 0}
+  changeCursor: 0
+  cursorID: 0
+  linkedUiID: 0
+  maxAutoWidthFactor: 0.5
+  relativeRect:
+    serializedVersion: 2
+    x: 7.76
+    y: 285.18
+    width: 192.69002
+    height: 34.639996
+  relativePosition: {x: 0, y: 0}
+  numSlots: 1
+  uiToggle: {fileID: 0}
+  toggleType: 1
+  actionListOnClick: {fileID: 11400000, guid: 3de90f5d0be373d4b87e675c2d92ae23, type: 2}
+  label: Prologue2B
+  labelSuffix: ' : '
+  isOn: 0
+  textEffects: 0
+  outlineSize: 2
+  effectColour: {r: 0, g: 0, b: 0, a: 1}
+  anchor: 3
+  varID: 3
+  appendState: 1
+  onTexture: {fileID: 0}
+  offTexture: {fileID: 0}
+  uiSelectableHideStyle: 0
+  onText: Active
+  onTextLineID: -1
+  offText: Inactive
+  offTextLineID: -1
 --- !u!114 &3383025989987235839
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4869,7 +5912,7 @@ MonoBehaviour:
   title: Profiles
   manualSize: {x: 30.999998, y: 45}
   positionType: 0
-  manualPosition: {x: 503, y: 283}
+  manualPosition: {x: 760.5, y: 428}
   positionSmoothing: 0
   alignment: 4
   toggleKey: 
@@ -4882,6 +5925,7 @@ MonoBehaviour:
   actionListOnTurnOff: {fileID: 0}
   updateWhenFadeOut: 1
   hideDuringSaveScreenshots: 1
+  useTextMeshProComponents: 0
   fitWithinScreen: 1
   backgroundTexture: {fileID: 2800000, guid: 5f4f3dd6223164fe49aea7eb6c0bc529, type: 3}
   visibleElements:
@@ -4957,11 +6001,10 @@ MonoBehaviour:
   biggestElementSize: {x: 0, y: 0}
   rect:
     serializedVersion: 2
-    x: 347.07
-    y: 155.65
-    width: 311.86
-    height: 254.7
-  showInFilter: 1
+    x: 524.745
+    y: 235.40001
+    width: 471.50995
+    height: 385.19998
 --- !u!114 &3428595588637174890
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5001,10 +6044,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 8.398576
-    y: 145.97484
-    width: 20.12
-    height: 56.6
+    x: 12.698046
+    y: 220.7676
+    width: 30.42
+    height: 85.600006
   relativePosition: {x: 1.5, y: 64}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -5033,6 +6076,71 @@ MonoBehaviour:
   clickTexture: {fileID: 0}
   allowContinuousClick: 0
   uiSelectableHideStyle: 0
+--- !u!114 &3608164810648431924
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86ae5c94351944600a4b0aec144476b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ID: 0
+  title: TitleLabel
+  slotSize: {x: 10, y: 5}
+  sizeType: 0
+  positionType: 0
+  slotSpacing: 0
+  lineID: -1
+  alternativeInputButton: 
+  font: {fileID: 0}
+  fontScaleFactor: 2
+  fontColor: {r: 1, g: 1, b: 1, a: 1}
+  fontHighlightColor: {r: 1, g: 1, b: 1, a: 1}
+  isVisible: 1
+  isClickable: 0
+  orientation: 1
+  gridWidth: 3
+  backgroundTexture: {fileID: 0}
+  singleSlotBackgrounds: 0
+  highlightTexture: {fileID: 0}
+  hoverSound: {fileID: 0}
+  clickSound: {fileID: 0}
+  changeCursor: 0
+  cursorID: 0
+  linkedUiID: 19822
+  maxAutoWidthFactor: 0.5
+  relativeRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
+  relativePosition: {x: 0, y: 0}
+  numSlots: 1
+  uiTextTMP: {fileID: 0}
+  hideScrollingCharacters: 0
+  uiText: {fileID: 0}
+  _label: Graphic options
+  anchor: 4
+  textEffects: 0
+  outlineSize: 2
+  effectColour: {r: 0, g: 0, b: 0, a: 1}
+  labelType: 0
+  variableID: 0
+  useCharacterColour: 0
+  autoAdjustHeight: 1
+  updateIfEmpty: 0
+  showPendingWhileMovingToHotspot: 0
+  itemPropertyID: 0
+  multiplyByItemCount: 0
+  inventoryPropertyType: 0
+  selectedObjectiveLabelType: 0
+  itemSlotNumber: 0
+  uiComponentHideStyle: 0
 --- !u!114 &3813622240962878110
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5072,12 +6180,14 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 5.03
-    y: 5.03
-    width: 301.80002
-    height: 28.3
+    x: 7.605
+    y: 7.605
+    width: 456.3
+    height: 42.800003
   relativePosition: {x: 0, y: 0}
   numSlots: 1
+  uiTextTMP: {fileID: 0}
+  hideScrollingCharacters: 0
   uiText: {fileID: 0}
   _label: "\u0421\u043E\u0445\u0440\u0430\u043D\u0438\u0442\u044C \u0438\u0433\u0440\u0443"
   anchor: 4
@@ -5095,6 +6205,7 @@ MonoBehaviour:
   inventoryPropertyType: 0
   selectedObjectiveLabelType: 0
   itemSlotNumber: 0
+  uiComponentHideStyle: 0
 --- !u!114 &4039314451052062233
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5134,10 +6245,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 5.30162
-    y: 155.36699
-    width: 30.18
-    height: 28.3
+    x: 8.015669
+    y: 234.97198
+    width: 45.63
+    height: 42.800003
   relativePosition: {x: 1.7, y: 61}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -5205,12 +6316,14 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 5.03
-    y: 5.03
-    width: 301.80002
-    height: 28.3
+    x: 7.605
+    y: 7.605
+    width: 456.3
+    height: 42.800003
   relativePosition: {x: 0, y: 0}
   numSlots: 1
+  uiTextTMP: {fileID: 0}
+  hideScrollingCharacters: 0
   uiText: {fileID: 0}
   _label: "\u0417\u0430\u0433\u0440\u0443\u0437\u0438\u0442\u044C \u0438\u0433\u0440\u0443"
   anchor: 4
@@ -5228,6 +6341,7 @@ MonoBehaviour:
   inventoryPropertyType: 0
   selectedObjectiveLabelType: 0
   itemSlotNumber: 0
+  uiComponentHideStyle: 0
 --- !u!114 &4604682636061770902
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5338,12 +6452,14 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 5.5990505
-    y: 123.16627
-    width: 549.276
-    height: 16.295584
+    x: 8.4653635
+    y: 186.27266
+    width: 830.466
+    height: 24.644915
   relativePosition: {x: 1, y: 54}
   numSlots: 1
+  uiTextTMP: {fileID: 0}
+  hideScrollingCharacters: 0
   uiText: {fileID: 0}
   _label: Inventory
   anchor: 4
@@ -5361,6 +6477,7 @@ MonoBehaviour:
   inventoryPropertyType: 0
   selectedObjectiveLabelType: 0
   itemSlotNumber: 0
+  uiComponentHideStyle: 0
 --- !u!114 &4764254311277576909
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5400,10 +6517,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 5.03
-    y: 138.34999
-    width: 362.16
-    height: 28.3
+    x: 7.76
+    y: 264.81
+    width: 558.72003
+    height: 43.649998
   relativePosition: {x: 0, y: 0}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -5457,7 +6574,7 @@ MonoBehaviour:
   title: Crafting
   manualSize: {x: 45.28576, y: 69.2}
   positionType: 0
-  manualPosition: {x: 503, y: 283}
+  manualPosition: {x: 760.5, y: 428}
   positionSmoothing: 0
   alignment: 5
   toggleKey: 
@@ -5470,6 +6587,7 @@ MonoBehaviour:
   actionListOnTurnOff: {fileID: 0}
   updateWhenFadeOut: 1
   hideDuringSaveScreenshots: 1
+  useTextMeshProComponents: 0
   fitWithinScreen: 1
   backgroundTexture: {fileID: 2800000, guid: 5f4f3dd6223164fe49aea7eb6c0bc529, type: 3}
   visibleElements:
@@ -5547,11 +6665,10 @@ MonoBehaviour:
   biggestElementSize: {x: 0, y: 0}
   rect:
     serializedVersion: 2
-    x: 275.21265
-    y: 87.164
-    width: 455.57474
-    height: 391.672
-  showInFilter: 1
+    x: 416.1018
+    y: 131.824
+    width: 688.7964
+    height: 592.352
 --- !u!114 &4937945808107548735
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5577,7 +6694,7 @@ MonoBehaviour:
   title: Container
   manualSize: {x: 55.656563, y: 40.297825}
   positionType: 0
-  manualPosition: {x: 503, y: 283}
+  manualPosition: {x: 760.5, y: 428}
   positionSmoothing: 0
   alignment: 4
   toggleKey: 
@@ -5590,6 +6707,7 @@ MonoBehaviour:
   actionListOnTurnOff: {fileID: 0}
   updateWhenFadeOut: 1
   hideDuringSaveScreenshots: 1
+  useTextMeshProComponents: 0
   fitWithinScreen: 1
   backgroundTexture: {fileID: 2800000, guid: 5f4f3dd6223164fe49aea7eb6c0bc529, type: 3}
   visibleElements:
@@ -5667,11 +6785,10 @@ MonoBehaviour:
   biggestElementSize: {x: 0, y: 0}
   rect:
     serializedVersion: 2
-    x: 223.04749
-    y: 168.95715
-    width: 559.905
-    height: 228.08568
-  showInFilter: 1
+    x: 337.23184
+    y: 255.52531
+    width: 846.5363
+    height: 344.94937
 --- !u!114 &5019330248974654066
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5711,10 +6828,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 4.98976
-    y: 188.478
-    width: 301.80002
-    height: 28.3
+    x: 7.544159
+    y: 285.04797
+    width: 456.3
+    height: 42.800003
   relativePosition: {x: 1.6, y: 74}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -5757,7 +6874,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: 6
   title: CloseButton
-  slotSize: {x: 5.67495, y: 3.5353358}
+  slotSize: {x: 5.342538, y: 3.5058413}
   sizeType: 0
   positionType: 2
   slotSpacing: 0
@@ -5782,10 +6899,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 385.8718
-    y: 360.33823
-    width: 57.09
-    height: 20.01
+    x: 583.4105
+    y: 544.96387
+    width: 81.26
+    height: 30.010002
   relativePosition: {x: 84.7, y: 92}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -5853,10 +6970,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 331.57858
-    y: 335.58487
-    width: 87.522
-    height: 23.76336
+    x: 501.3231
+    y: 507.52765
+    width: 132.327
+    height: 35.938934
   relativePosition: {x: 60.7, y: 90.1}
   numSlots: 1
   uiButton: {fileID: 11470026, guid: f15f8212986624a8899a47f0054ebbc1, type: 3}
@@ -5924,12 +7041,14 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 5.03
-    y: 5.03
-    width: 549.276
-    height: 17.381958
+    x: 7.605
+    y: 7.605
+    width: 830.466
+    height: 26.287909
   relativePosition: {x: 0, y: 0}
   numSlots: 1
+  uiTextTMP: {fileID: 0}
+  hideScrollingCharacters: 0
   uiText: {fileID: 0}
   _label: Container
   anchor: 4
@@ -5947,6 +7066,7 @@ MonoBehaviour:
   inventoryPropertyType: 0
   selectedObjectiveLabelType: 0
   itemSlotNumber: 0
+  uiComponentHideStyle: 0
 --- !u!114 &6016285950768903307
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6010,6 +7130,7 @@ MonoBehaviour:
   uiRawImage: {fileID: 0}
   uiImageType: 0
   linkedJournalElementName: 
+  uiComponentHideStyle: 0
 --- !u!114 &6023802789748033188
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6051,10 +7172,12 @@ MonoBehaviour:
     serializedVersion: 2
     x: 0
     y: 0
-    width: 342.04
-    height: 67.92
+    width: 517.14
+    height: 102.72
   relativePosition: {x: 0, y: 0}
   numSlots: 1
+  uiTextTMP: {fileID: 0}
+  hideScrollingCharacters: 0
   uiText: {fileID: 0}
   _label: Test
   anchor: 4
@@ -6072,6 +7195,72 @@ MonoBehaviour:
   inventoryPropertyType: 0
   selectedObjectiveLabelType: 0
   itemSlotNumber: 0
+  uiComponentHideStyle: 0
+--- !u!114 &6116219780420390447
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86ae5c94351944600a4b0aec144476b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ID: 1
+  title: ResolutionLabel
+  slotSize: {x: 10, y: 5}
+  sizeType: 0
+  positionType: 0
+  slotSpacing: 0
+  lineID: -1
+  alternativeInputButton: 
+  font: {fileID: 0}
+  fontScaleFactor: 2
+  fontColor: {r: 1, g: 1, b: 1, a: 1}
+  fontHighlightColor: {r: 1, g: 1, b: 1, a: 1}
+  isVisible: 1
+  isClickable: 0
+  orientation: 1
+  gridWidth: 3
+  backgroundTexture: {fileID: 0}
+  singleSlotBackgrounds: 0
+  highlightTexture: {fileID: 0}
+  hoverSound: {fileID: 0}
+  clickSound: {fileID: 0}
+  changeCursor: 0
+  cursorID: 0
+  linkedUiID: 20072
+  maxAutoWidthFactor: 0.5
+  relativeRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
+  relativePosition: {x: 0, y: 0}
+  numSlots: 1
+  uiTextTMP: {fileID: 0}
+  hideScrollingCharacters: 0
+  uiText: {fileID: 0}
+  _label: Resolution
+  anchor: 4
+  textEffects: 0
+  outlineSize: 2
+  effectColour: {r: 0, g: 0, b: 0, a: 1}
+  labelType: 0
+  variableID: 0
+  useCharacterColour: 0
+  autoAdjustHeight: 1
+  updateIfEmpty: 0
+  showPendingWhileMovingToHotspot: 0
+  itemPropertyID: 0
+  multiplyByItemCount: 0
+  inventoryPropertyType: 0
+  selectedObjectiveLabelType: 0
+  itemSlotNumber: 0
+  uiComponentHideStyle: 0
 --- !u!114 &6154891013733994572
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6111,10 +7300,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 531.9098
-    y: 145.97484
-    width: 20.12
-    height: 56.6
+    x: 804.20953
+    y: 220.7676
+    width: 30.42
+    height: 85.600006
   relativePosition: {x: 95, y: 64}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -6182,10 +7371,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 275.0605
-    y: 38.204998
-    width: 30.18
-    height: 28.3
+    x: 415.87173
+    y: 57.779995
+    width: 45.63
+    height: 42.800003
   relativePosition: {x: 88.2, y: 15}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -6228,7 +7417,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: 1
   title: Use
-  slotSize: {x: 3.1809144, y: 5.6537104}
+  slotSize: {x: 2.103879, y: 3.7383177}
   sizeType: 0
   positionType: 0
   slotSpacing: 0
@@ -6253,8 +7442,8 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 2.7162
-    y: 2.7162
+    x: 4.1067
+    y: 4.1067
     width: 32
     height: 32
   relativePosition: {x: 0, y: 0}
@@ -6313,10 +7502,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 328.01382
-    y: 39.1672
-    width: 90.54
-    height: 90.56
+    x: 495.93338
+    y: 59.2352
+    width: 136.89
+    height: 136.96
   relativePosition: {x: 72, y: 10}
   numSlots: 1
   uiSlots:
@@ -6378,12 +7567,14 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 152.42535
-    y: 19.919321
-    width: 634.41003
-    height: 43.82
+    x: 212.5464
+    y: 27.778862
+    width: 884.64
+    height: 61.109997
   relativePosition: {x: 16.5, y: 8.6}
   numSlots: 1
+  uiTextTMP: {fileID: 0}
+  hideScrollingCharacters: 0
   uiText: {fileID: 0}
   _label: Brain
   anchor: 0
@@ -6394,13 +7585,14 @@ MonoBehaviour:
   variableID: 0
   useCharacterColour: 1
   autoAdjustHeight: 1
-  updateIfEmpty: 0
+  updateIfEmpty: 1
   showPendingWhileMovingToHotspot: 0
   itemPropertyID: 0
   multiplyByItemCount: 0
   inventoryPropertyType: 0
   selectedObjectiveLabelType: 0
   itemSlotNumber: 0
+  uiComponentHideStyle: 0
 --- !u!114 &7183224995459554882
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6440,10 +7632,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 5.4625797
-    y: 43.20516
-    width: 194.158
-    height: 172.62999
+    x: 8.259029
+    y: 65.34208
+    width: 293.55298
+    height: 261.08002
   relativePosition: {x: 1, y: 11.6}
   numSlots: 1
   uiImage: {fileID: 11483092, guid: f15f8212986624a8899a47f0054ebbc1, type: 3}
@@ -6464,6 +7656,71 @@ MonoBehaviour:
   uiRawImage: {fileID: 0}
   uiImageType: 0
   linkedJournalElementName: 
+  uiComponentHideStyle: 0
+--- !u!114 &7239493445976331043
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d40ecbe0a1e5041fa8d2703183379581, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ID: 13
+  title: Prologue3A Toggle
+  slotSize: {x: 12.415593, y: 3.9679265}
+  sizeType: 0
+  positionType: 0
+  slotSpacing: 0
+  lineID: -1
+  alternativeInputButton: 
+  font: {fileID: 0}
+  fontScaleFactor: 2
+  fontColor: {r: 1, g: 1, b: 1, a: 1}
+  fontHighlightColor: {r: 1, g: 1, b: 1, a: 1}
+  isVisible: 1
+  isClickable: 1
+  orientation: 1
+  gridWidth: 3
+  backgroundTexture: {fileID: 0}
+  singleSlotBackgrounds: 0
+  highlightTexture: {fileID: 0}
+  hoverSound: {fileID: 0}
+  clickSound: {fileID: 0}
+  changeCursor: 0
+  cursorID: 0
+  linkedUiID: 0
+  maxAutoWidthFactor: 0.5
+  relativeRect:
+    serializedVersion: 2
+    x: 7.76
+    y: 285.18
+    width: 192.69002
+    height: 34.639996
+  relativePosition: {x: 0, y: 0}
+  numSlots: 1
+  uiToggle: {fileID: 0}
+  toggleType: 1
+  actionListOnClick: {fileID: 11400000, guid: 37fea96f73c0d11458ac7bdcd2c58451, type: 2}
+  label: Prologue3A
+  labelSuffix: ' : '
+  isOn: 0
+  textEffects: 0
+  outlineSize: 2
+  effectColour: {r: 0, g: 0, b: 0, a: 1}
+  anchor: 3
+  varID: 3
+  appendState: 1
+  onTexture: {fileID: 0}
+  offTexture: {fileID: 0}
+  uiSelectableHideStyle: 0
+  onText: Active
+  onTextLineID: -1
+  offText: Inactive
+  offTextLineID: -1
 --- !u!114 &7391542106018581899
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6503,10 +7760,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 5.03
-    y: 5.03
-    width: 352.1
-    height: 147.15999
+    x: 7.605
+    y: 7.605
+    width: 532.35
+    height: 222.56
   relativePosition: {x: 0, y: 0}
   numSlots: 5
   uiSlots:
@@ -6538,7 +7795,9 @@ MonoBehaviour:
   alreadyChosenFontColour: {r: 1, g: 1, b: 1, a: 1}
   alreadyChosenFontHighlightedColour: {r: 1, g: 1, b: 1, a: 1}
   showIndexNumbers: 0
+  showWhenDisabled: 0
   indexPrefixDisplay: 0
+  autoRunOption: 1
   uiHideStyle: 0
   linkUIGraphic: 0
   resetOffsetWhenRestart: 1
@@ -6583,12 +7842,14 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 5.0702395
-    y: 280.11917
-    width: 251.50002
-    height: 28.3
+    x: 7.82208
+    y: 432.0566
+    width: 388
+    height: 43.649998
   relativePosition: {x: 0.9, y: 63}
   numSlots: 1
+  uiTextTMP: {fileID: 0}
+  hideScrollingCharacters: 0
   uiText: {fileID: 0}
   _label: State type
   anchor: 4
@@ -6606,6 +7867,7 @@ MonoBehaviour:
   inventoryPropertyType: 0
   selectedObjectiveLabelType: 4
   itemSlotNumber: 0
+  uiComponentHideStyle: 0
 --- !u!114 &7469263583582186611
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6629,9 +7891,9 @@ MonoBehaviour:
   _isLocked: 0
   id: 1
   title: Save
-  manualSize: {x: 31.000002, y: 33.55477}
+  manualSize: {x: 31, y: 33.55374}
   positionType: 0
-  manualPosition: {x: 503, y: 283}
+  manualPosition: {x: 760.5, y: 428}
   positionSmoothing: 0
   alignment: 0
   toggleKey: 
@@ -6644,6 +7906,7 @@ MonoBehaviour:
   actionListOnTurnOff: {fileID: 11400000, guid: 35adf74749c8c2b409e02c95af81d60a, type: 2}
   updateWhenFadeOut: 1
   hideDuringSaveScreenshots: 1
+  useTextMeshProComponents: 0
   fitWithinScreen: 1
   backgroundTexture: {fileID: 2800000, guid: 32eeed3cce2b89f4994178eccd22f28a, type: 3}
   visibleElements:
@@ -6704,14 +7967,13 @@ MonoBehaviour:
   speechProximityLimit: 0
   speechProximityDistance: 10
   deleteUIWhenTurnOff: 0
-  biggestElementSize: {x: 306.83002, y: 184.89}
+  biggestElementSize: {x: 463.905, y: 279.61502}
   rect:
     serializedVersion: 2
-    x: 347.07
-    y: 188.04001
-    width: 311.86002
-    height: 189.92
-  showInFilter: 1
+    x: 524.745
+    y: 284.38998
+    width: 471.51
+    height: 287.22003
 --- !u!114 &7562815720846962571
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6808,10 +8070,10 @@ MonoBehaviour:
   title: Objectives
   manualSize: {x: 56, y: 78.557175}
   positionType: 0
-  manualPosition: {x: 503, y: 283}
+  manualPosition: {x: 776, y: 436.5}
   positionSmoothing: 0
   alignment: 0
-  toggleKey: 
+  toggleKey: Debug
   ignoreMouseClicks: 0
   pauseWhenEnabled: 0
   showWhenPaused: 0
@@ -6821,6 +8083,7 @@ MonoBehaviour:
   actionListOnTurnOff: {fileID: 0}
   updateWhenFadeOut: 1
   hideDuringSaveScreenshots: 1
+  useTextMeshProComponents: 0
   fitWithinScreen: 1
   backgroundTexture: {fileID: 2800000, guid: 5f4f3dd6223164fe49aea7eb6c0bc529, type: 3}
   visibleElements:
@@ -6833,8 +8096,10 @@ MonoBehaviour:
   - {fileID: 1123741832505342015}
   - {fileID: 9216711386886247804}
   - {fileID: -8338318977613324641}
+  - {fileID: 3139073237816281785}
+  - {fileID: 0}
   transitionProgress: 0
-  appearType: 0
+  appearType: 3
   speechMenuType: 0
   speechMenuLimit: 0
   limitToCharacters: 
@@ -6854,6 +8119,11 @@ MonoBehaviour:
   - {fileID: 1123741832505342015}
   - {fileID: 9216711386886247804}
   - {fileID: -8338318977613324641}
+  - {fileID: 3139073237816281785}
+  - {fileID: -8611781365601114462}
+  - {fileID: 3334884817402364572}
+  - {fileID: 7239493445976331043}
+  - {fileID: -7310679797935732007}
   spacing: 0.5
   sizeType: 1
   autoSizeEveryFrame: 0
@@ -6896,11 +8166,75 @@ MonoBehaviour:
   biggestElementSize: {x: 0, y: 0}
   rect:
     serializedVersion: 2
-    x: 221.32
-    y: 60.683197
-    width: 563.36
-    height: 444.6336
-  showInFilter: 1
+    x: 341.44
+    y: 93.59793
+    width: 869.12
+    height: 685.80414
+--- !u!114 &7895880111269493948
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86ae5c94351944600a4b0aec144476b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ID: 5
+  title: AntiAliasingLabel
+  slotSize: {x: 10, y: 5}
+  sizeType: 0
+  positionType: 0
+  slotSpacing: 0
+  lineID: -1
+  alternativeInputButton: 
+  font: {fileID: 0}
+  fontScaleFactor: 2
+  fontColor: {r: 1, g: 1, b: 1, a: 1}
+  fontHighlightColor: {r: 1, g: 1, b: 1, a: 1}
+  isVisible: 1
+  isClickable: 0
+  orientation: 1
+  gridWidth: 3
+  backgroundTexture: {fileID: 0}
+  singleSlotBackgrounds: 0
+  highlightTexture: {fileID: 0}
+  hoverSound: {fileID: 0}
+  clickSound: {fileID: 0}
+  changeCursor: 0
+  cursorID: 0
+  linkedUiID: 6786
+  maxAutoWidthFactor: 0.5
+  relativeRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
+  relativePosition: {x: 0, y: 0}
+  numSlots: 1
+  uiTextTMP: {fileID: 0}
+  hideScrollingCharacters: 0
+  uiText: {fileID: 576220929040269697, guid: 466fa6d84c1880c4f83b848f9f3737f8, type: 3}
+  _label: Anti-aliasing
+  anchor: 4
+  textEffects: 0
+  outlineSize: 2
+  effectColour: {r: 0, g: 0, b: 0, a: 1}
+  labelType: 0
+  variableID: 0
+  useCharacterColour: 0
+  autoAdjustHeight: 1
+  updateIfEmpty: 0
+  showPendingWhileMovingToHotspot: 0
+  itemPropertyID: 0
+  multiplyByItemCount: 0
+  inventoryPropertyType: 0
+  selectedObjectiveLabelType: 0
+  itemSlotNumber: 0
+  uiComponentHideStyle: 0
 --- !u!114 &7975958200063420664
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6915,7 +8249,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: 5
   title: CreateButton
-  slotSize: {x: 6.6789265, y: 3.5353358}
+  slotSize: {x: 6.3392506, y: 3.5058413}
   sizeType: 0
   positionType: 2
   slotSpacing: 0
@@ -6940,10 +8274,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 328.01382
-    y: 148.4437
-    width: 67.19
-    height: 20.01
+    x: 495.93338
+    y: 224.50142
+    width: 96.42
+    height: 30.010002
   relativePosition: {x: 72, y: 37.9}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -7010,6 +8344,7 @@ MonoBehaviour:
   actionListOnTurnOff: {fileID: 0}
   updateWhenFadeOut: 1
   hideDuringSaveScreenshots: 1
+  useTextMeshProComponents: 0
   fitWithinScreen: 1
   backgroundTexture: {fileID: 0}
   visibleElements:
@@ -7066,14 +8401,13 @@ MonoBehaviour:
   speechProximityLimit: 0
   speechProximityDistance: 10
   deleteUIWhenTurnOff: 0
-  biggestElementSize: {x: 342.04, y: 67.92}
+  biggestElementSize: {x: 517.14, y: 102.72}
   rect:
     serializedVersion: 2
-    x: 331.97998
-    y: 217.344
-    width: 342.04
-    height: 67.92
-  showInFilter: 1
+    x: 501.93
+    y: 328.70398
+    width: 517.14
+    height: 102.72
 --- !u!114 &8410957598520014097
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -7113,12 +8447,14 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 5.03
-    y: 5.03
-    width: 301.80002
-    height: 28.3
+    x: 7.605
+    y: 7.605
+    width: 456.3
+    height: 42.800003
   relativePosition: {x: 0, y: 0}
   numSlots: 1
+  uiTextTMP: {fileID: 0}
+  hideScrollingCharacters: 0
   uiText: {fileID: 0}
   _label: Profiles
   anchor: 4
@@ -7136,6 +8472,7 @@ MonoBehaviour:
   inventoryPropertyType: 0
   selectedObjectiveLabelType: 0
   itemSlotNumber: 0
+  uiComponentHideStyle: 0
 --- !u!114 &8419440959905982833
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -7152,7 +8489,7 @@ MonoBehaviour:
   canvas: {fileID: 22300000, guid: d54965938232edc4c90d92b571cd02b5, type: 3}
   canvasAssetKey: 
   canvasID: 0
-  rectTransform: {fileID: 0}
+  rectTransform: {fileID: 22400004, guid: d54965938232edc4c90d92b571cd02b5, type: 3}
   rectTransformID: 14532472
   uiTransitionType: 1
   uiPositionType: 0
@@ -7161,19 +8498,20 @@ MonoBehaviour:
   title: Subtitles
   manualSize: {x: 83, y: 37}
   positionType: 2
-  manualPosition: {x: 49, y: 100}
+  manualPosition: {x: 50, y: 100}
   positionSmoothing: 0
   alignment: 0
   toggleKey: 
   ignoreMouseClicks: 0
   pauseWhenEnabled: 0
   showWhenPaused: 0
-  canClickInCutscene: 1
+  canClickInCutscene: 0
   enabledOnStart: 0
   actionListOnTurnOn: {fileID: 11400000, guid: f9d350b5e3cc275448a15b42145dff2c, type: 2}
   actionListOnTurnOff: {fileID: 11400000, guid: 7ea477d7a33355749a04a03f53f8767d, type: 2}
   updateWhenFadeOut: 1
   hideDuringSaveScreenshots: 1
+  useTextMeshProComponents: 0
   fitWithinScreen: 1
   backgroundTexture: {fileID: 2800000, guid: dbcaefbea795f1745b213f5a19a310fc, type: 3}
   visibleElements:
@@ -7225,21 +8563,20 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   panDistance: 0.5
-  fadeSpeed: 0.2
+  fadeSpeed: 0.46
   zoomAnchor: 4
   zoomElements: 0
-  oneMenuPerSpeech: 0
+  oneMenuPerSpeech: 1
   speechProximityLimit: 0
   speechProximityDistance: 10
   deleteUIWhenTurnOff: 0
   biggestElementSize: {x: 0, y: 0}
   rect:
     serializedVersion: 2
-    x: 83.475006
-    y: 394.38
-    width: 923.79
-    height: 231.62001
-  showInFilter: 1
+    x: 131.91998
+    y: 549.99
+    width: 1288.16
+    height: 323.01
 --- !u!114 &8591270506127999559
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -7325,7 +8662,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: 3
   title: Talk
-  slotSize: {x: 3.1809144, y: 5.6537104}
+  slotSize: {x: 2.103879, y: 3.7383177}
   sizeType: 0
   positionType: 0
   slotSpacing: 0
@@ -7350,8 +8687,8 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 37.432404
-    y: 2.7162
+    x: 40.2134
+    y: 4.1067
     width: 32
     height: 32
   relativePosition: {x: 0, y: 0}
@@ -7410,10 +8747,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 4.98976
-    y: 221.58899
-    width: 301.80002
-    height: 28.3
+    x: 7.544159
+    y: 335.124
+    width: 456.3
+    height: 42.800003
   relativePosition: {x: 1.6, y: 87}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -7442,6 +8779,71 @@ MonoBehaviour:
   clickTexture: {fileID: 0}
   allowContinuousClick: 0
   uiSelectableHideStyle: 0
+--- !u!114 &8951843476916778181
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86ae5c94351944600a4b0aec144476b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ID: 6
+  title: TextureQualityLabel
+  slotSize: {x: 10, y: 5}
+  sizeType: 0
+  positionType: 0
+  slotSpacing: 0
+  lineID: -1
+  alternativeInputButton: 
+  font: {fileID: 0}
+  fontScaleFactor: 2
+  fontColor: {r: 1, g: 1, b: 1, a: 1}
+  fontHighlightColor: {r: 1, g: 1, b: 1, a: 1}
+  isVisible: 1
+  isClickable: 0
+  orientation: 1
+  gridWidth: 3
+  backgroundTexture: {fileID: 0}
+  singleSlotBackgrounds: 0
+  highlightTexture: {fileID: 0}
+  hoverSound: {fileID: 0}
+  clickSound: {fileID: 0}
+  changeCursor: 0
+  cursorID: 0
+  linkedUiID: 8772
+  maxAutoWidthFactor: 0.5
+  relativeRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
+  relativePosition: {x: 0, y: 0}
+  numSlots: 1
+  uiTextTMP: {fileID: 0}
+  hideScrollingCharacters: 0
+  uiText: {fileID: 0}
+  _label: Texture quality
+  anchor: 4
+  textEffects: 0
+  outlineSize: 2
+  effectColour: {r: 0, g: 0, b: 0, a: 1}
+  labelType: 0
+  variableID: 0
+  useCharacterColour: 0
+  autoAdjustHeight: 1
+  updateIfEmpty: 0
+  showPendingWhileMovingToHotspot: 0
+  itemPropertyID: 0
+  multiplyByItemCount: 0
+  inventoryPropertyType: 0
+  selectedObjectiveLabelType: 0
+  itemSlotNumber: 0
+  uiComponentHideStyle: 0
 --- !u!114 &9018407992942834673
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -7481,12 +8883,14 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 5.03
-    y: 5.03
-    width: 362.16
-    height: 28.3
+    x: 7.76
+    y: 7.76
+    width: 558.72003
+    height: 43.649998
   relativePosition: {x: 0, y: 0}
   numSlots: 1
+  uiTextTMP: {fileID: 0}
+  hideScrollingCharacters: 0
   uiText: {fileID: 0}
   _label: "\u041D\u0430\u0441\u0442\u0440\u043E\u0439\u043A\u0438"
   anchor: 4
@@ -7504,6 +8908,7 @@ MonoBehaviour:
   inventoryPropertyType: 0
   selectedObjectiveLabelType: 0
   itemSlotNumber: 0
+  uiComponentHideStyle: 0
 --- !u!114 &9139813989138831392
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -7543,10 +8948,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 5.03
-    y: 156.59
-    width: 301.80002
-    height: 28.3
+    x: 7.605
+    y: 236.81502
+    width: 456.3
+    height: 42.800003
   relativePosition: {x: 0, y: 0}
   numSlots: 1
   uiButton: {fileID: 0}
@@ -7614,12 +9019,14 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 4.9163218
-    y: 4.469499
-    width: 535.192
-    height: 23.76336
+    x: 7.4331264
+    y: 6.7595253
+    width: 809.172
+    height: 35.938934
   relativePosition: {x: 0.9, y: 1.2}
   numSlots: 1
+  uiTextTMP: {fileID: 0}
+  hideScrollingCharacters: 0
   uiText: {fileID: 11405610, guid: f15f8212986624a8899a47f0054ebbc1, type: 3}
   _label: Document title
   anchor: 4
@@ -7637,6 +9044,7 @@ MonoBehaviour:
   inventoryPropertyType: 0
   selectedObjectiveLabelType: 0
   itemSlotNumber: 0
+  uiComponentHideStyle: 0
 --- !u!114 &9216711386886247804
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -7676,10 +9084,10 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 264.77917
-    y: 245.88239
-    width: 291.74002
-    height: 158.48
+    x: 408.48642
+    y: 379.24966
+    width: 450.08002
+    height: 244.43999
   relativePosition: {x: 47, y: 55.3}
   numSlots: 1
   uiImage: {fileID: 0}
@@ -7700,3 +9108,4 @@ MonoBehaviour:
   uiRawImage: {fileID: 0}
   uiImageType: 0
   linkedJournalElementName: 
+  uiComponentHideStyle: 0

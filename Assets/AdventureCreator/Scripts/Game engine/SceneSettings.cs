@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"SceneSettings.cs"
  * 
@@ -154,7 +154,7 @@ namespace AC
 			tintMap = _tintMap;
 
 			// Reset all FollowTintMap components
-			FollowTintMap[] followTintMaps = FindObjectsOfType (typeof (FollowTintMap)) as FollowTintMap[];
+			FollowTintMap[] followTintMaps = UnityVersionHandler.FindObjectsOfType<FollowTintMap> ();
 			foreach (FollowTintMap followTintMap in followTintMaps)
 			{
 				followTintMap.ResetTintMap ();
@@ -166,9 +166,9 @@ namespace AC
 		 * <summary>Gets the appropriate PlayerStart to use when the scene begins.</summary>
 		 * <returns>The appropriate PlayerStart to use when the scene begins</returns>
 		 */
-		public PlayerStart GetPlayerStart (int playerID)
+		public PlayerStart GetPlayerStart (int playerID, bool canAcceptEmpty = false)
 		{
-			PlayerStart[] startersArray = FindObjectsOfType (typeof (PlayerStart)) as PlayerStart[];
+			PlayerStart[] startersArray = UnityVersionHandler.FindObjectsOfType<PlayerStart> ();
 
 			List<PlayerStart> starters = new List<PlayerStart>();
 			foreach (PlayerStart starter in startersArray)
@@ -186,7 +186,7 @@ namespace AC
 
 			foreach (PlayerStart starter in starters)
 			{
-				if (starter.MatchesPreviousScene (playerID))
+				if (starter.MatchesPreviousScene (playerID, canAcceptEmpty))
 				{
 					return starter;
 				}
@@ -493,7 +493,7 @@ namespace AC
 			{
 				if (actionListAssetOnStart == actionListAsset) return true;
 				if (actionListAssetOnLoad == actionListAsset) return true;
-				if (actionListAssetOnVarChange == actionListAsset) return true;
+				//if (actionListAssetOnVarChange == actionListAsset) return true;
 			}
 			return false;
 		}
@@ -507,7 +507,7 @@ namespace AC
 				{
 					actionListAssetOnStart,
 					actionListAssetOnLoad,
-					actionListAssetOnVarChange,
+					//actionListAssetOnVarChange,
 				};
 			}
 			return null;

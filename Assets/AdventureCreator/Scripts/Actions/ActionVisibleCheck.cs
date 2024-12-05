@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionVisibleCheck.cs"
  * 
@@ -92,20 +92,7 @@ namespace AC
 		
 		public override void ShowGUI (List<ActionParameter> parameters)
 		{
-			parameterID = Action.ChooseParameterGUI ("Object to check:", parameters, parameterID, ParameterType.GameObject);
-			if (parameterID >= 0)
-			{
-				constantID = 0;
-				obToAffect = null;
-			}
-			else
-			{
-				obToAffect = (GameObject) EditorGUILayout.ObjectField ("Object to check:", obToAffect, typeof (GameObject), true);
-				
-				constantID = FieldToID (obToAffect, constantID);
-				obToAffect = IDToField (obToAffect, constantID, false);
-			}
-
+			GameObjectField ("Object to check:", ref obToAffect, ref constantID, parameters, ref parameterID);
 			checkVisState = (CheckVisState) EditorGUILayout.EnumPopup ("Visibility to check:", checkVisState);
 		}
 

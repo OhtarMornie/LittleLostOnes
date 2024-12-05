@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"InvInstance.cs"
  * 
@@ -46,6 +46,7 @@ namespace AC
 		private Texture overrideActiveTex;
 		private Texture overrideSelectedTex;
 		private string overrideLabel;
+		private bool treatOverridesAsSeparate;
 
 		#endregion
 
@@ -1190,7 +1191,7 @@ namespace AC
 
 			if (checkProperties)
 			{
-				if (overrideActiveTex != invInstance.overrideActiveTex || overrideTex != invInstance.overrideTex || overrideSelectedTex != invInstance.overrideSelectedTex || overrideLabel != invInstance.overrideLabel)
+				if (treatOverridesAsSeparate && (overrideActiveTex != invInstance.overrideActiveTex || overrideTex != invInstance.overrideTex || overrideSelectedTex != invInstance.overrideSelectedTex || overrideLabel != invInstance.overrideLabel))
 				{
 					return false;
 				}
@@ -1309,7 +1310,7 @@ namespace AC
 
 		public SceneItem GetLinkedSceneItem ()
 		{
-			SceneItem[] sceneItems = Object.FindObjectsOfType<SceneItem> ();
+			SceneItem[] sceneItems = UnityVersionHandler.FindObjectsOfType<SceneItem> ();
 			foreach (SceneItem sceneItem in sceneItems)
 			{
 				if (sceneItem.LinkedInvInstance == this)
@@ -1395,7 +1396,6 @@ namespace AC
 			{
 				data.Remove (data.Length - 1, 1);
 			}
-
 			return data.ToString ();
 		}
 
@@ -1458,6 +1458,7 @@ namespace AC
 		{
 			if (string.IsNullOrEmpty (dataString)) return;
 
+			disabledInteractionIDs.Clear ();
 			string[] dataArray = dataString.Split ("#"[0]);
 			if (dataArray.Length > 0)
 			{
@@ -1885,7 +1886,21 @@ namespace AC
 		}
 
 
-		/** The item's main graphic. Setting this will override the default. */
+		/** If True, then the InvInstance will be considered different to other InvInstances of the same item if the Textures or Label has been overridden by setting its Tex, OverrideTex, SelectedTex or ItemLabel properties */
+		public bool TreatOverridesAsSeparate
+		{
+			get
+			{
+				return treatOverridesAsSeparate;
+			}
+			set
+			{
+				treatOverridesAsSeparate = value;
+			}
+		}
+
+
+		/** The item's main graphic. Setting this will override the default. To have this be considered a separate same item to its original, set TreatOverridesAsSeparate to True. */
 		public Texture Tex
 		{
 			get
@@ -1903,7 +1918,7 @@ namespace AC
 		}
 
 
-		/** The item's 'highlighted' graphic. Setting this will override the default. */
+		/** The item's 'highlighted' graphic. Setting this will override the default. To have this be considered a separate same item to its original, set TreatOverridesAsSeparate to True. */
 		public Texture ActiveTex
 		{
 			get
@@ -1921,7 +1936,7 @@ namespace AC
 		}
 
 
-		/** The item's 'selected' graphic (if SettingsManager's selectInventoryDisplay = SelectInventoryDisplay.ShowSelectedGraphic). Setting this will override the default. */
+		/** The item's 'selected' graphic (if SettingsManager's selectInventoryDisplay = SelectInventoryDisplay.ShowSelectedGraphic). Setting this will override the default. To have this be considered a separate same item to its original, set TreatOverridesAsSeparate to True. */
 		public Texture SelectedTex
 		{
 			get
@@ -1939,7 +1954,7 @@ namespace AC
 		}
 
 
-		/** The inventory item's label, in the current language. Setting this will override the default */
+		/** The inventory item's label, in the current language. Setting this will override the default. To have this be considered a separate same item to its original, set TreatOverridesAsSeparate to True. */
 		public string ItemLabel
 		{
 			get

@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"KickStarter.cs"
  * 
@@ -189,46 +189,6 @@ namespace AC
 		}
 
 
-		public void CheckRequiredManagerPackage (ManagerPackage requiredManagerPackage)
-		{
-			if (requiredManagerPackage == null)
-			{
-				return;
-			}
-
-			#if UNITY_EDITOR
-
-			if ((requiredManagerPackage.sceneManager && requiredManagerPackage.sceneManager != KickStarter.sceneManager) ||
-				(requiredManagerPackage.settingsManager && requiredManagerPackage.settingsManager != KickStarter.settingsManager) ||
-				(requiredManagerPackage.actionsManager && requiredManagerPackage.actionsManager != KickStarter.actionsManager) ||
-				(requiredManagerPackage.variablesManager && requiredManagerPackage.variablesManager != KickStarter.variablesManager) ||
-				(requiredManagerPackage.inventoryManager && requiredManagerPackage.inventoryManager != KickStarter.inventoryManager) ||
-				(requiredManagerPackage.speechManager && requiredManagerPackage.speechManager != KickStarter.speechManager) ||
-				(requiredManagerPackage.cursorManager && requiredManagerPackage.cursorManager != KickStarter.cursorManager) ||
-				(requiredManagerPackage.menuManager && requiredManagerPackage.menuManager != KickStarter.menuManager))
-			{
-				if (requiredManagerPackage.settingsManager)
-				{
-					if (requiredManagerPackage.settingsManager.name == "Demo_SettingsManager" && UnityVersionHandler.GetCurrentSceneName () == "Basement")
-					{
-						ACDebug.LogWarning ("The demo scene's required Manager asset files are not all loaded - please stop the game, and choose 'Adventure Creator -> Getting started -> Load 3D Demo managers from the top toolbar, and re-load the scene.", requiredManagerPackage);
-						return;
-					}
-					else if (requiredManagerPackage.settingsManager.name == "Demo2D_SettingsManager" && UnityVersionHandler.GetCurrentSceneName () == "Park")
-					{
-						ACDebug.LogWarning ("The 2D demo scene's required Manager asset files are not all loaded - please stop the game, and choose 'Adventure Creator -> Getting started -> Load 2D Demo managers from the top toolbar, and re-load the scene.", requiredManagerPackage);
-						return;
-					}
-				}
-
-				ACDebug.LogWarning ("This scene's required Manager asset files are not all loaded - please find the asset file '" + requiredManagerPackage.name + "' and click 'Assign managers' in its Inspector.", requiredManagerPackage);
-			}
-
-			#endif
-
-		}
-
-
 		#if UNITY_EDITOR
 
 		private static bool TestPersistentEngine (GameObject _persistentEngine)
@@ -264,6 +224,11 @@ namespace AC
 		{
 			get
 			{
+				if (KickStarter.sceneSettings && KickStarter.sceneSettings.requiredManagerPackage && KickStarter.sceneSettings.requiredManagerPackage.sceneManager)
+				{
+					return KickStarter.sceneSettings.requiredManagerPackage.sceneManager;
+				}
+
 				if (sceneManagerPrefab) return sceneManagerPrefab;
 				else if (AdvGame.GetReferences () && AdvGame.GetReferences ().sceneManager)
 				{
@@ -283,6 +248,11 @@ namespace AC
 		{
 			get
 			{
+				if (KickStarter.sceneSettings && KickStarter.sceneSettings.requiredManagerPackage && KickStarter.sceneSettings.requiredManagerPackage.settingsManager)
+				{
+					return KickStarter.sceneSettings.requiredManagerPackage.settingsManager;
+				}
+
 				if (settingsManagerPrefab) return settingsManagerPrefab;
 				else if (AdvGame.GetReferences () && AdvGame.GetReferences ().settingsManager)
 				{
@@ -302,6 +272,11 @@ namespace AC
 		{
 			get
 			{
+				if (KickStarter.sceneSettings && KickStarter.sceneSettings.requiredManagerPackage && KickStarter.sceneSettings.requiredManagerPackage.actionsManager)
+				{
+					return KickStarter.sceneSettings.requiredManagerPackage.actionsManager;
+				}
+
 				if (actionsManagerPrefab) return actionsManagerPrefab;
 				else if (AdvGame.GetReferences () && AdvGame.GetReferences ().actionsManager)
 				{
@@ -321,6 +296,11 @@ namespace AC
 		{
 			get
 			{
+				if (KickStarter.sceneSettings && KickStarter.sceneSettings.requiredManagerPackage && KickStarter.sceneSettings.requiredManagerPackage.variablesManager)
+				{
+					return KickStarter.sceneSettings.requiredManagerPackage.variablesManager;
+				}
+
 				if (variablesManagerPrefab) return variablesManagerPrefab;
 				else if (AdvGame.GetReferences () && AdvGame.GetReferences ().variablesManager)
 				{
@@ -340,6 +320,11 @@ namespace AC
 		{
 			get
 			{
+				if (KickStarter.sceneSettings && KickStarter.sceneSettings.requiredManagerPackage && KickStarter.sceneSettings.requiredManagerPackage.inventoryManager)
+				{
+					return KickStarter.sceneSettings.requiredManagerPackage.inventoryManager;
+				}
+
 				if (inventoryManagerPrefab) return inventoryManagerPrefab;
 				else if (AdvGame.GetReferences () && AdvGame.GetReferences ().inventoryManager)
 				{
@@ -359,6 +344,11 @@ namespace AC
 		{
 			get
 			{
+				if (KickStarter.sceneSettings && KickStarter.sceneSettings.requiredManagerPackage && KickStarter.sceneSettings.requiredManagerPackage.speechManager)
+				{
+					return KickStarter.sceneSettings.requiredManagerPackage.speechManager;
+				}
+
 				if (speechManagerPrefab) return speechManagerPrefab;
 				else if (AdvGame.GetReferences () && AdvGame.GetReferences ().speechManager)
 				{
@@ -378,6 +368,11 @@ namespace AC
 		{
 			get
 			{
+				if (KickStarter.sceneSettings && KickStarter.sceneSettings.requiredManagerPackage && KickStarter.sceneSettings.requiredManagerPackage.cursorManager)
+				{
+					return KickStarter.sceneSettings.requiredManagerPackage.cursorManager;
+				}
+
 				if (cursorManagerPrefab) return cursorManagerPrefab;
 				else if (AdvGame.GetReferences () && AdvGame.GetReferences ().cursorManager)
 				{
@@ -397,6 +392,11 @@ namespace AC
 		{
 			get
 			{
+				if (KickStarter.sceneSettings && KickStarter.sceneSettings.requiredManagerPackage && KickStarter.sceneSettings.requiredManagerPackage.menuManager)
+				{
+					return KickStarter.sceneSettings.requiredManagerPackage.menuManager;
+				}
+
 				if (menuManagerPrefab) return menuManagerPrefab;
 				else if (AdvGame.GetReferences () && AdvGame.GetReferences ().menuManager)
 				{
@@ -764,7 +764,7 @@ namespace AC
 		{
 			get
 			{
-				if (sceneSettingsComponent && Application.isPlaying) return sceneSettingsComponent;
+				if (sceneSettingsComponent) return sceneSettingsComponent;
 				else
 				{
 					SetGameEngine ();
@@ -938,7 +938,7 @@ namespace AC
 						if (playerPrefab.IsLocalPlayer ())
 						{
 							// Remove others
-							Player[] allPlayers = FindObjectsOfType<Player> ();
+							Player[] allPlayers = UnityVersionHandler.FindObjectsOfType<Player> ();
 							foreach (Player allPlayer in allPlayers)
 							{
 								if (allPlayer != playerPrefab)
@@ -1028,7 +1028,7 @@ namespace AC
 				}
 				else
 				{
-					MainCamera _mainCamera = (MainCamera) FindObjectOfType (typeof (MainCamera));
+					MainCamera _mainCamera = UnityVersionHandler.FindObjectOfType<MainCamera> ();
 					if (_mainCamera)
 					{
 						mainCameraPrefab = _mainCamera;
@@ -1088,13 +1088,19 @@ namespace AC
 			}
 		}
 
-
+		private bool isInitialised;
 		public void Initialise ()
 		{
+			isInitialised = false;
 			if (settingsManager.IsInLoadingScene ())
 			{
 				ACDebug.Log ("Bypassing regular AC startup because the current scene is the 'Loading' scene.");
 				return;
+			}
+
+			if (settingsManager.useInvariantCulture)
+			{
+				System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
 			}
 
 			ClearVariables ();
@@ -1105,8 +1111,6 @@ namespace AC
 			{
 				return;
 			}
-
-			CheckRequiredManagerPackage (sceneSettings.requiredManagerPackage);
 
 			if (mainCamera)
 			{
@@ -1120,8 +1124,13 @@ namespace AC
 			playerInput.OnInitGameEngine ();
 			localVariables.OnInitGameEngine ();
 			sceneSettings.OnInitGameEngine ();
+
+			isInitialised = true;
 		}
 
+
+		/** Returns True if AC has been initialised by this component */
+		public bool HasInitialisedAC { get { return isInitialised; } }
 
 
 		/** Turns Adventure Creator off. */

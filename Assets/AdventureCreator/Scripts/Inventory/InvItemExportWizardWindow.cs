@@ -212,9 +212,9 @@ namespace AC
 			if (inventoryManager == null || exportData.exportColumns == null || exportData.exportColumns.Count == 0 || inventoryManager.items == null || inventoryManager.items.Count == 0) return;
 
 			string suggestedFilename = "";
-			if (AdvGame.GetReferences ().settingsManager)
+			if (KickStarter.settingsManager)
 			{
-				suggestedFilename = AdvGame.GetReferences ().settingsManager.saveFileName + " - ";
+				suggestedFilename = KickStarter.settingsManager.saveFileName + " - ";
 			}
 
 			string extension;
@@ -250,7 +250,17 @@ namespace AC
 			headerList.Add ("ID");
 			foreach (ExportColumn exportColumn in exportData.exportColumns)
 			{
-				headerList.Add (exportColumn.GetHeader ());
+				if (exportColumn.columnType == ExportColumn.ColumnType.Properties)
+				{
+					for (int p = 0; p < KickStarter.inventoryManager.invVars.Count; p++)
+					{
+						headerList.Add (exportColumn.GetHeader (p));
+					}
+				}
+				else
+				{
+					headerList.Add (exportColumn.GetHeader (0));
+				}
 			}
 			output.Add (headerList.ToArray ());
 			
@@ -260,8 +270,19 @@ namespace AC
 				rowList.Add (exportItem.id.ToString ());
 				foreach (ExportColumn exportColumn in exportData.exportColumns)
 				{
-					string cellText = exportColumn.GetCellText (exportItem, inventoryManager);
-					rowList.Add (cellText);
+					if (exportColumn.columnType == ExportColumn.ColumnType.Properties)
+					{
+						for (int p = 0; p < KickStarter.inventoryManager.invVars.Count; p++)
+						{
+							string cellText = exportColumn.GetCellText (exportItem, inventoryManager, p);
+							rowList.Add (cellText);
+						}
+					}
+					else
+					{
+						string cellText = exportColumn.GetCellText (exportItem, inventoryManager, 0);
+						rowList.Add (cellText);
+					}
 				}
 				output.Add (rowList.ToArray ());
 			}
@@ -281,7 +302,7 @@ namespace AC
 
 			if (!string.IsNullOrEmpty (fileContents) && Serializer.SaveFile (fileName, fileContents))
 			{
-				ACDebug.Log ((exportItems.Count-1).ToString () + " items exported.");
+				ACDebug.Log (exportItems.Count.ToString () + " items exported.");
 			}
 
 			//this.Close ();
@@ -293,8 +314,8 @@ namespace AC
 		private class ExportColumn
 		{
 
-			[SerializeField] private ColumnType columnType;
-			public enum ColumnType { InternalName, Label, MainGraphic, Category, CategoryID, CarryOnStart, CanCarryMultiple };
+			public ColumnType columnType;
+			public enum ColumnType { InternalName, Label, MainGraphic, Category, CategoryID, CarryOnStart, CanCarryMultiple, Properties };
 
 
 			public ExportColumn ()
@@ -315,13 +336,17 @@ namespace AC
 			}
 
 
-			public string GetHeader ()
+			public string GetHeader (int propertyIndex)
 			{
+				if (columnType == ColumnType.Properties)
+				{
+					return KickStarter.inventoryManager.invVars[propertyIndex].label;
+				}
 				return columnType.ToString ();
 			}
 
 
-			public string GetCellText (InvItem invItem, InventoryManager inventoryManager)
+			public string GetCellText (InvItem invItem, InventoryManager inventoryManager, int propertyIndex)
 			{
 				string cellText = " ";
 
@@ -357,6 +382,10 @@ namespace AC
 
 					case ColumnType.CanCarryMultiple:
 						cellText = (invItem.canCarryMultiple) ? "True" : "False";
+						break;
+
+					case ColumnType.Properties:
+						cellText = invItem.vars[propertyIndex].GetDisplayValue ();
 						break;
 				}
 

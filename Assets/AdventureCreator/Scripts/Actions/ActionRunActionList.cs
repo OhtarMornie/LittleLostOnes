@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionRunActionList.cs"
  * 
@@ -26,6 +26,8 @@ namespace AC
 		public enum ListSource { InScene, AssetFile };
 		public ListSource listSource = ListSource.InScene;
 
+		private ActionListManager.NestedAwaitingActiveList nestedAwaitingActiveList;
+
 		public ActionList actionList;
 		public int constantID = 0;
 		public int parameterID = -1;
@@ -49,6 +51,7 @@ namespace AC
 		protected bool isAwaitingDelay;
 
 		protected RuntimeActionList runtimeActionList;
+		protected Conversation[] conversations;
 
 		[SerializeField] protected RunMode runMode = RunMode.RunOnly;
 		protected RunMode runtimeRunMode;
@@ -82,6 +85,7 @@ namespace AC
 		{
 			runtimeRunMode = runMode;
 			isAwaitingDelay = false;
+			nestedAwaitingActiveList = null;
 
 			if (listSource == ListSource.InScene)
 			{
@@ -103,7 +107,7 @@ namespace AC
 				}
 			}
 
-			if (localParameters != null && localParameters.Count > 0)
+			if (localParameters != null && localParameters.Count > 0 && parameters != null)
 			{
 				for (int i=0; i<localParameters.Count; i++)
 				{
@@ -243,9 +247,45 @@ namespace AC
 							}
 							else if (KickStarter.actionListManager.IsListRunning (actionList))
 							{
+								if (nestedAwaitingActiveList == null)
+								{
+									ActiveList nextActiveList = GetNextActiveList ();
+									if (nextActiveList != null && KickStarter.actionListManager.IsNestedAwaiting (nextActiveList))
+									{
+										nestedAwaitingActiveList = new ActionListManager.NestedAwaitingActiveList (GetActiveList (), null, actionList);
+										KickStarter.actionListManager.SetActionPendingState (nestedAwaitingActiveList, true);
+									}
+								}
+
 								isAwaitingDelay = false;
 								EventManager.OnEndActionList -= OnEndActionList;
 								return defaultPauseTime;
+							}
+							else if (nestedAwaitingActiveList != null && nestedAwaitingActiveList.Conversation)
+							{
+								if (nestedAwaitingActiveList.Conversation.IsOverridingActionList (actionList))
+								{
+									return defaultPauseTime;
+								}
+							}
+							else
+							{
+								if (conversations == null)
+								{
+									conversations = UnityVersionHandler.FindObjectsOfType<Conversation> ();
+								}
+								foreach (Conversation conversation in conversations)
+								{
+									if (conversation.IsOverridingActionList (actionList))
+									{
+										nestedAwaitingActiveList = new ActionListManager.NestedAwaitingActiveList (GetActiveList (), conversation, actionList);
+										KickStarter.actionListManager.SetActionPendingState (nestedAwaitingActiveList, true);
+
+										isAwaitingDelay = false;
+										EventManager.OnEndActionList -= OnEndActionList;
+										return defaultPauseTime;
+									}
+								}
 							}
 						}
 						break;
@@ -255,9 +295,43 @@ namespace AC
 						{
 							if (invActionList.canRunMultipleInstances)
 							{
-								if (runtimeActionList != null && KickStarter.actionListManager.IsListRunning (runtimeActionList))
+								if (runtimeActionList)
 								{
-									return defaultPauseTime;
+									if (KickStarter.actionListManager.IsListRunning (runtimeActionList))
+									{
+										ActiveList nextActiveList = GetNextActiveList ();
+										if (nextActiveList != null && KickStarter.actionListManager.IsNestedAwaiting (nextActiveList))
+										{
+											nestedAwaitingActiveList = new ActionListManager.NestedAwaitingActiveList (GetActiveList (), null, runtimeActionList);
+											KickStarter.actionListManager.SetActionPendingState (nestedAwaitingActiveList, true);
+										}
+
+										return defaultPauseTime;
+									}
+
+									if (nestedAwaitingActiveList != null && nestedAwaitingActiveList.Conversation)
+									{
+										if (nestedAwaitingActiveList.Conversation.IsOverridingActionList (runtimeActionList))
+										{
+											return defaultPauseTime;
+										}
+									}
+									else
+									{
+										if (conversations == null)
+										{
+											conversations = UnityVersionHandler.FindObjectsOfType<Conversation> ();
+										}
+										foreach (Conversation conversation in conversations)
+										{
+											if (conversation.IsOverridingActionList (runtimeActionList))
+											{
+												nestedAwaitingActiveList = new ActionListManager.NestedAwaitingActiveList (GetActiveList (), conversation, runtimeActionList);
+												KickStarter.actionListManager.SetActionPendingState (nestedAwaitingActiveList, true);
+												return defaultPauseTime;
+											}
+										}
+									}
 								}
 							}
 							else
@@ -275,10 +349,68 @@ namespace AC
 				}
 			}
 
+			if (nestedAwaitingActiveList != null)
+			{
+				KickStarter.actionListManager.SetActionPendingState (nestedAwaitingActiveList, false);
+				nestedAwaitingActiveList = null;
+			}
 			EventManager.OnEndActionList -= OnEndActionList;
 			isAwaitingDelay = false;
 			isRunning = false;
 			return 0f;
+		}
+
+
+		private ActiveList GetActiveList ()
+		{
+			foreach (var activeList in KickStarter.actionListManager.ActiveLists)
+			{
+				if (activeList.actionList == null) continue;
+				if (activeList.actionList.actions.Contains (this))
+				{
+					return activeList;
+				}
+			}
+
+			foreach (var activeList in KickStarter.actionListAssetManager.ActiveLists)
+			{
+				if (activeList.actionList == null) continue;
+				if (activeList.actionList.actions.Contains (this))
+				{
+					return activeList;
+				}
+			}
+			return null;
+		}
+
+
+		private ActiveList GetNextActiveList ()
+		{
+			if (listSource == ListSource.InScene)
+			{
+				foreach (var activeList in KickStarter.actionListManager.ActiveLists)
+				{
+					if (activeList.actionList == null) continue;
+					if (activeList.actionList == actionList)
+					{
+						return activeList;
+					}
+				}
+			}
+			else if (listSource == ListSource.AssetFile)
+			{
+				foreach (var activeList in KickStarter.actionListAssetManager.ActiveLists)
+				{
+					if (activeList.actionList == null) continue;
+					if (activeList.actionList == runtimeActionList)
+					{
+						return activeList;
+					}
+				}
+			}
+			
+			
+			return null;
 		}
 
 
@@ -294,6 +426,12 @@ namespace AC
 
 		public override void Skip ()
 		{
+			if (nestedAwaitingActiveList != null)
+			{
+				KickStarter.actionListManager.SetActionPendingState (nestedAwaitingActiveList, false);
+				nestedAwaitingActiveList = null;
+			}
+
 			switch (listSource)
 			{
 				case ListSource.InScene:
@@ -397,50 +535,39 @@ namespace AC
 			listSource = (ListSource) EditorGUILayout.EnumPopup ("Source:", listSource);
 			if (listSource == ListSource.InScene)
 			{
-				parameterID = Action.ChooseParameterGUI ("ActionList:", parameters, parameterID, ParameterType.GameObject);
+				ComponentField ("ActionList:", ref actionList, ref constantID, parameters, ref parameterID);
 				if (parameterID >= 0)
 				{
 					localParameters.Clear ();
-					constantID = 0;
-					actionList = null;
 
 					if (setParameters)
 					{
 						EditorGUILayout.HelpBox ("If the ActionList has parameters, they will be set here - unset the parameter to edit them.", MessageType.Info);
 					}
 				}
-				else
+				else if (actionList)
 				{
-					actionList = ActionListAssetMenu.ActionListGUI ("ActionList:", actionList);
-					
-					constantID = FieldToID <ActionList> (actionList, constantID);
-					actionList = IDToField <ActionList> (actionList, constantID, true);
-
-					if (actionList != null)
+					if (actionList.actions.Contains (this))
 					{
-						if (actionList.actions.Contains (this))
+						EditorGUILayout.HelpBox ("This Action cannot be used to run the ActionList it is in - use the Skip option below instead.", MessageType.Warning);
+					}
+					else if (actionList.source == ActionListSource.AssetFile && actionList.assetFile != null && actionList.assetFile.NumParameters > 0)
+					{
+						SetParametersGUI (actionList.assetFile.DefaultParameters, parameters);
+						if (runMode == RunMode.SetParametersOnly)
 						{
-							EditorGUILayout.HelpBox ("This Action cannot be used to run the ActionList it is in - use the Skip option below instead.", MessageType.Warning);
+							return;
 						}
-						else if (actionList.source == ActionListSource.AssetFile && actionList.assetFile != null && actionList.assetFile.NumParameters > 0)
+					}
+					else if (actionList.source == ActionListSource.InScene && actionList.NumParameters > 0)
+					{
+						SetParametersGUI (actionList.parameters, parameters);
+						if (runMode == RunMode.SetParametersOnly)
 						{
-							SetParametersGUI (actionList.assetFile.DefaultParameters, parameters);
-							if (runMode == RunMode.SetParametersOnly)
-							{
-								return;
-							}
-						}
-						else if (actionList.source == ActionListSource.InScene && actionList.NumParameters > 0)
-						{
-							SetParametersGUI (actionList.parameters, parameters);
-							if (runMode == RunMode.SetParametersOnly)
-							{
-								return;
-							}
+							return;
 						}
 					}
 				}
-
 
 				runFromStart = EditorGUILayout.Toggle ("Run from start?", runFromStart);
 
@@ -455,11 +582,7 @@ namespace AC
 			}
 			else if (listSource == ListSource.AssetFile)
 			{
-				assetParameterID = Action.ChooseParameterGUI ("ActionList asset:", parameters, assetParameterID, ParameterType.UnityObject);
-				if (assetParameterID < 0)
-				{
-					invActionList = ActionListAssetMenu.AssetGUI ("ActionList asset", invActionList);
-				}
+				AssetField ("ActionList asset:", ref invActionList, parameters, ref assetParameterID);
 
 				if (assetParameterID >= 0)
 				{
@@ -847,6 +970,18 @@ namespace AC
 		public int UpdateDocumentReferences (int oldDocumentID, int newDocumentID, List<ActionParameter> parameters)
 		{
 			return GetParameterReferences (parameters, oldDocumentID, ParameterType.Document, true, newDocumentID);
+		}
+
+
+		public int GetNumObjectiveReferences (int _objectiveID, List<ActionParameter> parameters)
+		{
+			return GetParameterReferences (parameters, _objectiveID, ParameterType.Objective);
+		}
+
+
+		public int UpdateObjectiveReferences (int oldObjectiveID, int newObjectiveID, List<ActionParameter> parameters)
+		{
+			return GetParameterReferences (parameters, oldObjectiveID, ParameterType.Objective, true, newObjectiveID);
 		}
 
 

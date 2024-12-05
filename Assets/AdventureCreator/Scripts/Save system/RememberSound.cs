@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"RememberSound.cs"
  * 
@@ -107,8 +107,8 @@ namespace AC
 		{
 			if (soundToSave == null) soundToSave = GetComponent<Sound> ();
 
+			CustomGUILayout.Header ("Sound");
 			CustomGUILayout.BeginVertical ();
-			EditorGUILayout.LabelField ("Sound", EditorStyles.boldLabel);
 			soundToSave = (Sound) CustomGUILayout.ObjectField<Sound> ("Sound to save:", soundToSave, true);
 			saveClip = CustomGUILayout.ToggleLeft ("Save change in AudioClip asset?", saveClip, "If True, the currently-playing clip asset will be saved and restored.");
 			CustomGUILayout.EndVertical ();

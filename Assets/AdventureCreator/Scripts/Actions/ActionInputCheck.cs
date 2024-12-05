@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionInputCheck.cs"
  * 
@@ -129,11 +129,7 @@ namespace AC
 			
 			if (checkType == InputCheckType.Axis || checkType == InputCheckType.Button)
 			{
-				parameterID = Action.ChooseParameterGUI (checkType.ToString () + " name:", parameters, parameterID, new ParameterType[2] { ParameterType.String, ParameterType.PopUp });
-				if (parameterID < 0)
-				{
-					inputName = TextField (checkType.ToString () + " name:", inputName);
-				}
+				TextField (checkType.ToString () + " name:", ref inputName, parameters, ref parameterID);
 				
 				if (checkType == InputCheckType.Axis)
 				{

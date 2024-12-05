@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionInputCheck.cs"
  * 
@@ -33,26 +33,16 @@ namespace AC
 
 		public override float Run ()
 		{
-			if (KickStarter.settingsManager != null && KickStarter.settingsManager.activeInputs != null)
+			ActiveInput activeInput = KickStarter.settingsManager.GetActiveInput (activeInputID);
+			if (activeInput != null)
 			{
-				foreach (ActiveInput activeInput in KickStarter.settingsManager.activeInputs)
-				{
-					if (activeInput.ID == activeInputID)
-					{
-						activeInput.IsEnabled = newState;
-						return 0f;
-					}
-				}
-
-				LogWarning ("Couldn't find the Active Input with ID=" + activeInputID);
+				activeInput.IsEnabled = newState;
 				return 0f;
 			}
-
-			LogWarning ("No Active Inputs found! Is the Settings Manager assigned properly?");
+			LogWarning ("Couldn't find the Active Input with ID=" + activeInputID);
 			return 0f;
 		}
 		
-
 		
 		#if UNITY_EDITOR
 		

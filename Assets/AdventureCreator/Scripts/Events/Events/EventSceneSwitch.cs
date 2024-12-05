@@ -7,14 +7,31 @@ namespace AC
 	{
 
 		[SerializeField] private BeforeAfter beforeAfter;
-		private enum BeforeAfter { Before, After };
-		[SerializeField] private bool dueToLoadingSave;
+		public enum BeforeAfter { Before, After };
+		[SerializeField] private DueToLoadingSave dueToLoadingSave;
+		public enum DueToLoadingSave { No, Yes, Either };
 
 
 		public override string[] EditorNames { get { return new string[] { "Scene/Change/Before", "Scene/Change/After" }; } }
 		protected override string EventName { get { return beforeAfter == BeforeAfter.Before ? "OnBeforeChangeScene" : "OnAfterChangeScene"; } }
-		protected override string ConditionHelp { get { return beforeAfter.ToString () + " a change in the active scene, due to " + (dueToLoadingSave ? "loading a save-file." : "gameplay."); } }
 		
+		
+		protected override string ConditionHelp { get { return beforeAfter.ToString () + " a change in the active scene" + (dueToLoadingSave == DueToLoadingSave.Either ? "." : (", due to " + (dueToLoadingSave == DueToLoadingSave.Yes ? "loading a save-file." : "gameplay."))); } }
+
+
+		public EventSceneSwitch (int _id, string _label, ActionListAsset _actionListAsset, int[] _parameterIDs, BeforeAfter _beforeAfter, DueToLoadingSave _dueToLoadingSave)
+		{
+			id = _id;
+			label = _label;
+			actionListAsset = _actionListAsset;
+			parameterIDs = _parameterIDs;
+			beforeAfter = _beforeAfter;
+			dueToLoadingSave = _dueToLoadingSave;
+		}
+
+
+		public EventSceneSwitch () {}
+
 
 		public override void Register ()
 		{
@@ -35,8 +52,8 @@ namespace AC
 			if (beforeAfter == BeforeAfter.Before)
 			{
 				LoadingGame loadingGame = KickStarter.saveSystem.loadingGame;
-				if (dueToLoadingSave && (loadingGame == LoadingGame.No || loadingGame == LoadingGame.JustSwitchingPlayer)) return;
-				if (!dueToLoadingSave && (loadingGame == LoadingGame.InNewScene || loadingGame == LoadingGame.InSameScene)) return;
+				if (dueToLoadingSave == DueToLoadingSave.Yes && (loadingGame == LoadingGame.No || loadingGame == LoadingGame.JustSwitchingPlayer)) return;
+				if (dueToLoadingSave == DueToLoadingSave.No && (loadingGame == LoadingGame.InNewScene || loadingGame == LoadingGame.InSameScene)) return;
 
 				Run (new object[] { nextSceneName });
 			}
@@ -47,8 +64,8 @@ namespace AC
 		{
 			if (beforeAfter == BeforeAfter.After)
 			{
-				if (dueToLoadingSave && (loadingGame == LoadingGame.No || loadingGame == LoadingGame.JustSwitchingPlayer)) return;
-				if (!dueToLoadingSave && (loadingGame == LoadingGame.InNewScene || loadingGame == LoadingGame.InSameScene)) return;
+				if (dueToLoadingSave == DueToLoadingSave.Yes && (loadingGame == LoadingGame.No || loadingGame == LoadingGame.JustSwitchingPlayer)) return;
+				if (dueToLoadingSave == DueToLoadingSave.No && (loadingGame == LoadingGame.InNewScene || loadingGame == LoadingGame.InSameScene)) return;
 
 				Run (new object[] { KickStarter.sceneSettings.gameObject.scene.name });
 			}
@@ -68,7 +85,7 @@ namespace AC
 
 		protected override void ShowConditionGUI (bool isAssetFile)
 		{
-			dueToLoadingSave = CustomGUILayout.Toggle ("Due to loading save-file?", dueToLoadingSave);
+			dueToLoadingSave = (DueToLoadingSave) CustomGUILayout.EnumPopup ("Due to loading save-file:", dueToLoadingSave);
 		}
 
 

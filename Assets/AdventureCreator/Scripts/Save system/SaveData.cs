@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"SaveData.cs"
  * 
@@ -240,10 +240,18 @@ namespace AC
 				EditorGUILayout.LabelField ("Persistent data:");
 				foreach (ScriptData scriptData in persistentScriptData)
 				{
-					RememberData rememberData = SaveSystem.FileFormatHandler.DeserializeObject<RememberData> (scriptData.data);
-					if (rememberData != null)
+					try
 					{
-						CustomGUILayout.MultiLineLabelGUI ("   " + rememberData.GetType ().ToString () + ":", EditorJsonUtility.ToJson (rememberData, true));
+						RememberData rememberData = SaveSystem.FileFormatHandler.DeserializeObject<RememberData> (scriptData.data);
+						if (rememberData != null)
+						{
+							CustomGUILayout.MultiLineLabelGUI ("   " + rememberData.GetType ().ToString () + ":", EditorJsonUtility.ToJson (rememberData, true));
+						}
+					}
+					catch (System.Exception)
+					{
+						ACDebug.LogWarning ("Error displying persistent Remember data '" + scriptData.data + "'");
+						continue;
 					}
 				}
 			}

@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"MenuButton.cs"
  * 
@@ -91,15 +91,17 @@ namespace AC
 		private bool disabledUI = false;
 
 		#if TextMeshProIsPresent
-		private TMPro.TextMeshProUGUI uiText;
-		#else
-		private Text uiText;
+		private TMPro.TextMeshProUGUI uiTextTMP;
 		#endif
+		private Text uiText;
 
 
 		public override void Declare ()
 		{
 			uiText = null;
+			#if TextMeshProIsPresent
+			uiTextTMP = null;
+			#endif
 			uiButton = null;
 			uiPointerState = UIPointerState.PointerClick;
 			_label = "Button";
@@ -151,11 +153,17 @@ namespace AC
 			{
 				uiButton = null;
 				uiText = null;
+				#if TextMeshProIsPresent
+				uiTextTMP = null;
+				#endif
 			}
 			else
 			{
 				uiButton = _element.uiButton;
 				uiText = _element.uiText;
+				#if TextMeshProIsPresent
+				uiTextTMP = _element.uiTextTMP;
+				#endif
 			}
 			uiPointerState = _element.uiPointerState;
 
@@ -207,10 +215,13 @@ namespace AC
 			if (uiButton)
 			{
 				#if TextMeshProIsPresent
-				uiText = uiButton.GetComponentInChildren <TMPro.TextMeshProUGUI>();
-				#else
-				uiText = uiButton.GetComponentInChildren <Text>();
+				if (_menu.useTextMeshProComponents)
+				{
+					uiTextTMP = uiButton.GetComponentInChildren <TMPro.TextMeshProUGUI>();
+				}
+				if (!_menu.useTextMeshProComponents || uiTextTMP == null)
 				#endif
+					uiText = uiButton.GetComponentInChildren <Text>();
 
 				if (addEventListeners)
 				{
@@ -268,7 +279,7 @@ namespace AC
 
 		#if UNITY_EDITOR
 		
-		public override void ShowGUI (Menu menu)
+		public override void ShowGUI (Menu menu, System.Action<ActionListAsset> showALAEditor)
 		{
 			string apiPrefix = "(AC.PlayerMenus.GetElementWithName (\"" + menu.title + "\", \"" + title + "\") as AC.MenuButton)";
 
@@ -277,7 +288,7 @@ namespace AC
 
 			if (source != MenuSource.AdventureCreator)
 			{
-				uiButton = LinkedUiGUI <UnityEngine.UI.Button> (uiButton, "Linked Button:", source, "The Unity UI Button this is linked to");
+				uiButton = LinkedUiGUI <UnityEngine.UI.Button> (uiButton, "Linked Button:", menu, "The Unity UI Button this is linked to");
 				uiSelectableHideStyle = (UISelectableHideStyle) CustomGUILayout.EnumPopup ("When invisible:", uiSelectableHideStyle, apiPrefix + ".uiSelectableHideStyle", "The method by which this element is hidden from view when made invisible");
 				uiPointerState = (UIPointerState) CustomGUILayout.EnumPopup ("Responds to:", uiPointerState, apiPrefix + ".uiPointerState", "What pointer state registers as a 'click' for Unity UI Menus");
 				CustomGUILayout.EndVertical ();
@@ -312,7 +323,7 @@ namespace AC
 			}
 			else if (buttonClickType == AC_ButtonClickType.RunActionList)
 			{
-				ActionListGUI (menu.title, apiPrefix);
+				ActionListGUI (menu.title, apiPrefix, showALAEditor);
 			}
 			else if (buttonClickType == AC_ButtonClickType.CustomScript)
 			{
@@ -334,7 +345,7 @@ namespace AC
 			ChangeCursorGUI (menu);
 			CustomGUILayout.EndVertical ();
 			
-			base.ShowGUI (menu);
+			base.ShowGUI (menu, showALAEditor);
 		}
 
 
@@ -359,9 +370,9 @@ namespace AC
 		}
 
 
-		private void ActionListGUI (string menuTitle, string apiPrefix)
+		private void ActionListGUI (string menuTitle, string apiPrefix, System.Action<ActionListAsset> showALAEditor)
 		{
-			actionList = ActionListAssetMenu.AssetGUI ("ActionList to run:", actionList, menuTitle + "_" + title + "_OnClick", apiPrefix + ".actionList", "The ActionList asset to run when clicked");
+			actionList = ActionListAssetMenu.AssetGUI ("ActionList to run:", actionList, menuTitle + "_" + title + "_OnClick", apiPrefix + ".actionList", "The ActionList asset to run when clicked", null, showALAEditor);
 			if (actionList && actionList.NumParameters > 0)
 			{
 				CustomGUILayout.BeginVertical ();
@@ -438,6 +449,12 @@ namespace AC
 			{
 				return 0;
 			}
+			#if TextMeshProIsPresent
+			if (uiTextTMP && uiTextTMP.gameObject == gameObject)
+			{
+				return 0;
+			}
+			#endif
 			if (uiText && uiText.gameObject == gameObject)
 			{
 				return 0;
@@ -495,6 +512,13 @@ namespace AC
 				{
 					UpdateUISelectable (uiButton, uiSelectableHideStyle);
 				}
+
+				#if TextMeshProIsPresent
+				if (uiTextTMP)
+				{
+					uiTextTMP.text = fullText;
+				}
+				#endif
 
 				if (uiText)
 				{

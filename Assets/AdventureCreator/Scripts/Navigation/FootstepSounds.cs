@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"FootstepSounds.cs"
  * 
@@ -28,10 +28,8 @@ namespace AC
 
 		#region Variables
 
-		/** An array of footstep AudioClips to play at random */
-		public AudioClip[] footstepSounds;
-		/** An array of footstep AudioClips to play at random when running - if left blank, normal sounds will play */
-		public AudioClip[] runSounds;
+		[SerializeField] private AudioClip[] footstepSounds;
+		[SerializeField] private AudioClip[] runSounds;
 		/** The Sound object to play from */
 		public Sound soundToPlayFrom;
 		/** How the sounds are played */
@@ -43,6 +41,12 @@ namespace AC
 		public bool doGroundedCheck = false;
 		/** If True, and character is assigned, sounds will only play when the character is moving */
 		public bool doMovementCheck = true;
+		/** If True, then raycasting will be used to auto-detect the current Surface */
+		public bool autoDetectSurface = true;
+
+		public float raycastLength = 0.5f;
+
+		public LayerMask layerMask = new LayerMask ();
 
 		/** How much the audio pitch can randomly vary by */
 		public float pitchVariance = 0f;
@@ -54,6 +58,9 @@ namespace AC
 		/** The separation time between sounds when running */
 		public float runSeparationTime = 0.25f;
 
+		/** The current surface to get sounds from */
+		public Surface CurrentSurface { get; set; }
+
 		protected float originalRelativeSound = 1f;
 		protected int lastIndex;
 		protected AudioSource audioSource;
@@ -63,6 +70,15 @@ namespace AC
 
 
 		#region UnityStandards
+
+		protected void OnValidate ()
+		{
+			if (character == null)
+			{
+				character = GetComponent<AC.Char> ();
+			}
+		}
+
 		
 		protected void Awake ()
 		{
@@ -80,6 +96,11 @@ namespace AC
 				character = GetComponent <Char>();
 			}
 			delayTime = walkSeparationTime / 2f;
+
+			if (CurrentSurface == null && KickStarter.settingsManager != null && KickStarter.settingsManager.surfaces != null && KickStarter.settingsManager.surfaces.Count > 0)
+			{
+				CurrentSurface = KickStarter.settingsManager.surfaces[0];
+			}
 
 			RecordOriginalRelativeSound ();
 		}
@@ -113,7 +134,7 @@ namespace AC
 		/** Plays one of the footstepSounds at random on the assigned Sound object. */
 		public void PlayFootstep ()
 		{
-			if (audioSource && footstepSounds.Length > 0 &&
+			if (enabled && audioSource &&
 			    (!doMovementCheck || character == null || character.charState == CharState.Move))
 			{
 				if (doGroundedCheck && character && !character.IsGrounded (true))
@@ -121,17 +142,25 @@ namespace AC
 					return;
 				}
 
-				bool doRun = (character.isRunning && runSounds.Length > 0) ? true : false;
+				RequestSurface ();
+
+				if (CurrentSurface == null)
+				{
+					return;
+				}
+
+				bool doRun = (character.isRunning && CurrentSurface.runSounds.Length > 0) ? true : false;
 				if (doRun)
 				{
-					PlaySound (runSounds, doRun);
+					PlaySound (CurrentSurface.runSounds, doRun);
 				}
 				else
 				{
-					PlaySound (footstepSounds, doRun);
+					PlaySound (CurrentSurface.walkSounds, doRun);
 				}
 			}
 		}
+		
 
 		/** Records the associated Sound component's relative volume. */
 		public void RecordOriginalRelativeSound ()
@@ -147,9 +176,70 @@ namespace AC
 
 		#region ProtectedFunctions
 
+		protected void RequestSurface ()
+		{
+			if (autoDetectSurface)
+			{
+				Vector3 origin = character ? character.transform.position : transform.position;
+
+				if (SceneSettings.IsUnity2D ())
+				{
+					RaycastHit2D hit = UnityVersionHandler.Perform2DRaycast (origin + (raycastLength * 0.5f * Vector3.up), Vector3.down, raycastLength * 1.5f, layerMask);
+					if (hit.collider)
+					{
+						ProcessCollider (hit.collider);
+					}
+				}
+				else
+				{
+					Vector3 up = character ? character.UpDirection : Vector3.up;
+					RaycastHit hit;
+					if (Physics.Raycast (origin + (raycastLength * 0.5f * up), -up, out hit, raycastLength * 1.5f, layerMask))
+					{
+						ProcessCollider (hit.collider);
+					}
+				}
+			}
+
+			if (KickStarter.eventManager)
+			{
+				KickStarter.eventManager.Call_OnRequestFootstepSounds (this);
+			}
+		}
+
+
+		protected void ProcessCollider (Collider collider)
+		{
+			if (collider.sharedMaterial == null) return;
+			ProcessName (collider.sharedMaterial.name);
+		}
+
+
+		protected void ProcessCollider (Collider2D collider)
+		{
+			if (collider.sharedMaterial == null) return;
+			ProcessName (collider.sharedMaterial.name);
+		}
+
+
+		protected void ProcessName (string name)
+		{
+			string[] nameArray = name.Split ("_"[0]);
+			if (nameArray.Length > 0)
+			{
+				string label = nameArray[nameArray.Length - 1];
+				Surface surface = KickStarter.settingsManager.GetSurface (label);
+				if (surface != null)
+				{
+					CurrentSurface = surface;
+				}
+			}
+		}
+
+
 		protected void PlaySound (AudioClip[] clips, bool isRunSound)
 		{
-			if (clips == null) return;
+			if (clips == null || clips.Length == 0) return;
 
 			if (clips.Length == 1)
 			{

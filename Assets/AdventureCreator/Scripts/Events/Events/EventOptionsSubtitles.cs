@@ -10,6 +10,18 @@
 		protected override string ConditionHelp { get { return "Whenever Subtitles are toggled."; } }
 
 
+		public EventOptionsSubtitles (int _id, string _label, ActionListAsset _actionListAsset, int[] _parameterIDs)
+		{
+			id = _id;
+			label = _label;
+			actionListAsset = _actionListAsset;
+			parameterIDs = _parameterIDs;
+		}
+
+
+		public EventOptionsSubtitles () {}
+
+
 		public override void Register ()
 		{
 			EventManager.OnChangeSubtitles += OnChangeSubtitles;

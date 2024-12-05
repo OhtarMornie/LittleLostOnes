@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"BackgroundCamera.cs"
  * 
@@ -112,7 +112,7 @@ namespace AC
 			{
 				if (instance == null)
 				{ 
-					instance = (BackgroundCamera) Object.FindObjectOfType <BackgroundCamera>();
+					instance = (BackgroundCamera) UnityVersionHandler.FindObjectOfType <BackgroundCamera>();
 				}
 				#if UNITY_EDITOR
 				if (instance == null)

@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"MenuTimer.cs"
  * 
@@ -123,7 +123,7 @@ namespace AC
 
 		#if UNITY_EDITOR
 		
-		public override void ShowGUI (Menu menu)
+		public override void ShowGUI (Menu menu, System.Action<ActionListAsset> showALAEditor)
 		{
 			string apiPrefix = "(AC.PlayerMenus.GetElementWithName (\"" + menu.title + "\", \"" + title + "\") as AC.MenuTimer)";
 
@@ -131,7 +131,7 @@ namespace AC
 			CustomGUILayout.BeginVertical ();
 
 			timerType = (AC_TimerType) CustomGUILayout.EnumPopup ("Timer type:", timerType, apiPrefix + ".timerType", "What the value of the timer represents");
-			if (timerType == AC_TimerType.LoadingProgress && AdvGame.GetReferences ().settingsManager && !AdvGame.GetReferences ().settingsManager.useAsyncLoading)
+			if (timerType == AC_TimerType.LoadingProgress && KickStarter.settingsManager && !KickStarter.settingsManager.useAsyncLoading)
 			{
 				EditorGUILayout.HelpBox ("Loading progress cannot be displayed unless asynchonised loading is enabled within the Settings Manager.", MessageType.Warning);
 			}
@@ -188,7 +188,7 @@ namespace AC
 			}
 			else
 			{
-				uiSlider = LinkedUiGUI <Slider> (uiSlider, "Linked Slider:", source, "The Unity UI Slider this is linked to");
+				uiSlider = LinkedUiGUI <Slider> (uiSlider, "Linked Slider:", menu, "The Unity UI Slider this is linked to");
 				uiSelectableHideStyle = (UISelectableHideStyle) CustomGUILayout.EnumPopup ("When invisible:", uiSelectableHideStyle, apiPrefix + ".uiSelectableHideStyle", "The method by which this element is hidden from view when made invisible");
 			}
 			CustomGUILayout.EndVertical ();

@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"Moveable.cs"
  * 
@@ -334,7 +334,7 @@ namespace AC
 
 			if (_rigidbody && !_rigidbody.isKinematic)
 			{
-				_rigidbody.velocity = _rigidbody.angularVelocity = Vector3.zero;
+				UnityVersionHandler.SetRigidbodyVelocity (_rigidbody, _rigidbody.angularVelocity = Vector3.zero);
 			}
 
 			inWorldSpace = _inWorldSpace;
@@ -541,7 +541,7 @@ namespace AC
 
 			if (_rigidbody && !_rigidbody.isKinematic)
 			{
-				_rigidbody.velocity = _rigidbody.angularVelocity = Vector3.zero;
+				UnityVersionHandler.SetRigidbodyVelocity (_rigidbody, _rigidbody.angularVelocity = Vector3.zero);
 			}
 
 			inWorldSpace = _inWorldSpace;

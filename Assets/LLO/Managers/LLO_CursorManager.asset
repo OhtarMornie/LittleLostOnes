@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2cd11e06e7fc41a595e0cccca50dae3, type: 3}
   m_Name: LLO_CursorManager
   m_EditorClassIdentifier: 
-  cursorRendering: 0
+  cursorRendering: 2
   cursorMode: 0
-  uiCursorPrefab: {fileID: 1233823316936846, guid: 0ba6dc9bd86a02743831f7c3312af0eb, type: 3}
+  uiCursorPrefab: {fileID: 1010892272971207586, guid: 8c0b1a20cd68bc8419e1674f1327324e, type: 3}
   cursorDisplay: 0
   allowMainCursor: 1
   lockSystemCursor: 1
@@ -178,5 +178,5 @@ MonoBehaviour:
   allowCursorCyclingWhenPaused: 0
   lookUseCursorAction: 0
   lookCursor_ID: 2
-  hideCursorWhenDraggingMoveables: 1
+  hideCursorWhenDraggingMoveables: 0
   forceCursorInEditor: 1

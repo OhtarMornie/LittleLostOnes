@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionDialogOptionRename.cs"
  * 
@@ -58,10 +58,7 @@ namespace AC
 		
 		public override void ShowGUI ()
 		{
-			linkedConversation = (Conversation) EditorGUILayout.ObjectField ("Conversation:", linkedConversation, typeof (Conversation), true);
-
-			constantID = FieldToID <Conversation> (linkedConversation, constantID);
-			linkedConversation = IDToField <Conversation> (linkedConversation, constantID, true);
+			ComponentField ("Conversation:", ref linkedConversation, ref constantID);
 
 			if (linkedConversation)
 			{

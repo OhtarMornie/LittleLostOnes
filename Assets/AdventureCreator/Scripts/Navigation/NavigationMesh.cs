@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"NavigationMesh.cs"
  * 
@@ -38,8 +38,11 @@ namespace AC
 		/** The colour of its Gizmo when used for 2D polygons */
 		public Color gizmoColour = Color.white;
 
+		public CharacterEvasionMethod characterEvasionMethod = CharacterEvasionMethod.Carve;
+
 		protected Vector3 upDirection = new Vector3 (0f, 1f, 0f);
 		protected PolygonCollider2D[] polygonCollider2Ds;
+		protected Collider2D[] collider2Ds;
 
 		protected int originalPathCount = -1;
 		
@@ -184,6 +187,21 @@ namespace AC
 				return polygonCollider2Ds;
 			}
 		}
+
+
+		/** All Collider2D components attached to the GameObject */
+		public Collider2D[] Collider2Ds
+		{
+			get
+			{
+				if (collider2Ds == null)
+				{
+					collider2Ds = GetComponents <Collider2D>();
+				}
+				return collider2Ds;
+			}
+		}
+
 
 		/** The direction that is considered 'up'. This is only used by the MeshCollider navigation engine. */
 		public Vector3 UpDirection

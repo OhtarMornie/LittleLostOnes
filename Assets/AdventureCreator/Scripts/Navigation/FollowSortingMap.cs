@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"FollowSortingMap.cs"
  * 
@@ -60,6 +60,7 @@ namespace AC
 		protected bool depthSet = false;
 
 		private Transform _transform;
+		private bool isOnRoot;
 
 		#endregion
 
@@ -88,8 +89,7 @@ namespace AC
 
 			if (GetComponent <Char>() && Application.isPlaying)
 			{
-				ACDebug.LogWarning ("The 'Follow Sorting Map' component attached to the character '" + gameObject.name + " is on the character's root - it should instead be placed on their sprite child.  To prevent movement locking, the Follow Sorting Map has been disabled.", this);
-				enabled = false;
+				isOnRoot = true;
 			}
 
 			SetOriginalDepth ();
@@ -148,6 +148,15 @@ namespace AC
 		 */
 		public void SetDepth (int depth)
 		{
+			if (isOnRoot)
+			{
+				if (depth != 0f)
+				{
+					ACDebug.LogWarning ("The 'Follow Sorting Map' component attached to the character '" + gameObject.name + " is on the character's root - depth-shifting is disabled.", this);
+				}
+				return;
+			}
+
 			sharedDepth = depth;
 			float trueDepth = (float) depth * KickStarter.sceneSettings.sharedLayerSeparationDistance;
 			
@@ -239,7 +248,7 @@ namespace AC
 		{
 			if (_sortingMap == null)
 			{
-				followSortingMap = false;
+				followSortingMap = true;
 				customSortingMap = null;
 			}
 			else if (KickStarter.sceneSettings.sortingMap == _sortingMap)
@@ -531,6 +540,8 @@ namespace AC
 			
 			for (int i=0; i<renderers.Length; i++)
 			{
+				if (renderers[i] == null) continue;
+
 				switch (sortingMap.mapType)
 				{
 					case SortingMapType.OrderInLayer:

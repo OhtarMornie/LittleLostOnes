@@ -13,6 +13,20 @@ namespace AC
 		protected override string EventName { get { return "OnClickConversation"; } }
 		protected override string ConditionHelp { get { return "Whenever " + (conversation ? "Conversation '" + conversation.name + "' " : "a Converation ") + "is clicked."; } }
 
+
+		public EventConversationClick (int _id, string _label, ActionListAsset _actionListAsset, int[] _parameterIDs, Conversation _conversation)
+		{
+			id = _id;
+			label = _label;
+			actionListAsset = _actionListAsset;
+			parameterIDs = _parameterIDs;
+			conversation = _conversation;
+		}
+
+
+		public EventConversationClick () {}
+
+
 		public override void Register ()
 		{
 			EventManager.OnClickConversation += OnClickConversation;

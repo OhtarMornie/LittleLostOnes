@@ -34,8 +34,8 @@ namespace AC
 				}
 			}
 
+			CustomGUILayout.Header ("Properties");
 			CustomGUILayout.BeginVertical ();
-			EditorGUILayout.LabelField ("Trigger properties", EditorStyles.boldLabel);
 			_target.source = (ActionListSource) CustomGUILayout.EnumPopup ("Actions source:", _target.source, string.Empty, "Where the Actions are stored");
 			if (_target.source == ActionListSource.AssetFile)
 			{
@@ -73,6 +73,11 @@ namespace AC
 					_target.assetFile.NumParameters > 0)
 			{
 				_target.gameObjectParameterID = Action.ChooseParameterGUI ("Collider parameter:", _target.assetFile.DefaultParameters, _target.gameObjectParameterID, ParameterType.GameObject, -1, "The GameObject parameter to automatically set as the colliding object when run.");
+
+			if (_target.source == ActionListSource.AssetFile && _target.assetFile != null && !_target.syncParamValues && _target.assetFile.useParameters)
+			{
+				_target.useParameters = CustomGUILayout.Toggle ("Set local parameter values?", _target.useParameters, "", "If True, parameter values set here will be assigned locally, and not on the ActionList asset");
+			}
 			}
 
 			_target.detectionMethod = (TriggerDetectionMethod) CustomGUILayout.EnumPopup ("Detection method:", _target.detectionMethod, string.Empty, "How this Trigger detects objects. If 'Rigidbody Collider', then it requires that incoming objects have a Rigidbody and a Collider - and it will rely on collisions.  If 'Point Based', it will check an incoming object's root position for whether it is within the Trigger's collider boundary.");
@@ -149,6 +154,17 @@ namespace AC
 					_target.parameters.Clear ();
 					_target.parameters.Add (newParameter);
 				}
+			}
+			else if (_target.useParameters && !_target.syncParamValues && _target.source == ActionListSource.AssetFile && _target.assetFile != null && _target.assetFile.useParameters)
+			{
+				bool isAsset = UnityVersionHandler.IsPrefabFile (_target.gameObject);
+
+				CustomGUILayout.Header ("Local parameter values");
+				CustomGUILayout.BeginVertical ();
+
+				ActionListEditor.ShowLocalParametersGUI (_target.parameters, _target.assetFile.GetParameters (), isAsset);
+
+				CustomGUILayout.EndVertical ();
 			}
 	    }
 

@@ -18,13 +18,10 @@ namespace AC
 
 		private void OnEnable ()
 		{
-			if (AdvGame.GetReferences ())
+			if (KickStarter.actionsManager)
 			{
-				if (AdvGame.GetReferences ().actionsManager)
-				{
-					actionsManager = AdvGame.GetReferences ().actionsManager;
-					AdventureCreator.RefreshActions ();
-				}
+				actionsManager = KickStarter.actionsManager;
+				AdventureCreator.RefreshActions ();
 			}
 		}
 		
@@ -32,6 +29,9 @@ namespace AC
 		public override void OnInspectorGUI ()
 		{
 			ActionList _target = (ActionList) target;
+
+			ActionListAssetMenu._showALAEditor = ActionListEditorWindow.Init;
+			ActionListAssetMenu.showALEditor = ActionListEditorWindow.Init;
 
 			ShowPropertiesGUI (_target);
 			DrawSharedElements (_target);
@@ -42,8 +42,8 @@ namespace AC
 
 		private void ShowPropertiesGUI (ActionList _target)
 		{
+			CustomGUILayout.Header ("Properties");
 			CustomGUILayout.BeginVertical ();
-			EditorGUILayout.LabelField ("ActionList properties", EditorStyles.boldLabel);
 			_target.source = (ActionListSource) CustomGUILayout.EnumPopup ("Actions source:", _target.source, "", "Where the Actions are stored");
 			if (_target.source == ActionListSource.AssetFile)
 			{
@@ -69,12 +69,12 @@ namespace AC
 			}
 			CustomGUILayout.EndVertical ();
 
-			if (_target.source == ActionListSource.InScene)
+			if (_target.source == ActionListSource.InScene && _target.useParameters)
 			{
 				EditorGUILayout.Space ();
-				CustomGUILayout.BeginVertical ();
+				CustomGUILayout.Header ("Parameters");
 
-				EditorGUILayout.LabelField ("Parameters", EditorStyles.boldLabel);
+				CustomGUILayout.BeginVertical ();
 				ShowParametersGUI (_target, null, _target.parameters);
 
 				CustomGUILayout.EndVertical ();
@@ -145,6 +145,18 @@ namespace AC
 			}
 #endif
 
+			if (_target.source == ActionListSource.AssetFile)
+			{
+				if ((KickStarter.settingsManager && Resource.References.settingsManager && KickStarter.settingsManager != Resource.References.settingsManager) ||
+					(KickStarter.actionsManager && Resource.References.actionsManager && KickStarter.actionsManager != Resource.References.actionsManager) ||
+					(KickStarter.variablesManager && Resource.References.variablesManager && KickStarter.variablesManager != Resource.References.variablesManager) ||
+					(KickStarter.inventoryManager && Resource.References.inventoryManager && KickStarter.inventoryManager != Resource.References.inventoryManager) ||
+					(KickStarter.cursorManager && Resource.References.cursorManager && KickStarter.cursorManager != Resource.References.cursorManager))
+				{
+					EditorGUILayout.HelpBox ("Manager mismatch - your game's Managers are currently overridden by the scene.  Some Actions which depend on your own settings may not appear correctly.", MessageType.Warning);
+				}
+			}
+
 			int numActions = 0;
 			if (_target.source != ActionListSource.AssetFile)
 			{
@@ -163,13 +175,15 @@ namespace AC
 				ResetList (_target);
 			}
 
-			actionsManager = AdvGame.GetReferences ().actionsManager;
+			actionsManager = KickStarter.actionsManager;
 			if (actionsManager == null)
 			{
 				EditorGUILayout.HelpBox ("An Actions Manager asset file must be assigned in the Game Editor Window", MessageType.Warning);
 				OnEnable ();
 				return;
 			}
+
+			CustomGUILayout.Header ("Actions");
 
 			if (!actionsManager.displayActionsInInspector || _target.source == ActionListSource.AssetFile)
 			{
@@ -267,7 +281,7 @@ namespace AC
 				_target.actions[i].Upgrade ();
 				_target.actions[i].AssignParentList (_target);
 
-				CustomGUILayout.BeginVertical ();
+				EditorGUILayout.BeginVertical (EditorGUIUtility.isProSkin ? CustomStyles.Toolbar : CustomStyles.thinBox);
 				EditorGUILayout.BeginHorizontal ();
 				int typeIndex = actionsManager.GetActionTypeIndex (_target.actions[i]);
 
@@ -363,7 +377,7 @@ namespace AC
 				}
 			}
 
-			SpeechManager speechManager = AdvGame.GetReferences ().speechManager;
+			SpeechManager speechManager = KickStarter.speechManager;
 			if (speechManager == null || !speechManager.useSpeechTags || !hasSpeechAction) return tagID;
 
 			// Create a string List of the field's names (for the PopUp box)
@@ -403,6 +417,8 @@ namespace AC
 
 		public static int ShowTypePopup (AC.Action action, int typeIndex)
 		{
+			if (KickStarter.actionsManager == null) return -1;
+
 			if (!KickStarter.actionsManager.IsActionTypeEnabled (typeIndex))
 			{
 				EditorGUILayout.LabelField ("<b>This Action type has been disabled.</b>", CustomStyles.disabledActionType);
@@ -454,24 +470,25 @@ namespace AC
 
 		public static AC.Action RebuildAction (AC.Action existingAction, int typeIndex, ActionList _target, int insertIndex = -1, ActionEnd _end = null)
 		{
-			ActionsManager actionsManager = AdvGame.GetReferences ().actionsManager;
+			ActionsManager actionsManager = KickStarter.actionsManager;
 			int existingIndex = _target.actions.IndexOf (existingAction);
 			if (actionsManager)
 			{
 				string className = actionsManager.AllActions [typeIndex].fileName;
 				
-				if (existingAction.GetType ().ToString () != className && existingAction.GetType ().ToString () != ("AC." + className))
+				if (existingAction.GetType ().ToString () != className && existingAction.GetType ().FullName != className)
 				{
 					bool _showComment = existingAction.showComment;
 					bool _showOutputSockets = existingAction.showOutputSockets;
 					string _comment = existingAction.comment;
+					int _groupID = existingAction.groupID;
 					ActionList _parentActionListInEditor = existingAction.parentActionListInEditor;
 
 					Action newAction = Action.CreateNew (className);;
 
-					if (newAction == null && !className.StartsWith ("AC."))
+					if (newAction == null)
 					{
-						newAction = Action.CreateNew ("AC." + className);
+						newAction = Action.CreateNew (className);
 					}
 					if (newAction == null)
 					{
@@ -486,6 +503,7 @@ namespace AC
 					newAction.showComment = _showComment;
 					newAction.showOutputSockets = _showOutputSockets;
 					newAction.comment = _comment;
+					newAction.groupID = _groupID;
 					newAction.parentActionListInEditor = _parentActionListInEditor;
 
 					if (insertIndex >= 0)
@@ -657,6 +675,16 @@ namespace AC
 			menu.AddSeparator (string.Empty);
 			menu.AddItem (new GUIContent ("Edit Script"), false, Callback, "EditSource");
 			
+			ActionMenuItem[] menuItems = actionToAffect.GetMenuItems ();
+			if (menuItems != null && menuItems.Length > 0)
+			{
+				menu.AddSeparator (string.Empty);
+				for (int c = 0; c < menuItems.Length; c++)
+				{
+					menu.AddItem (new GUIContent (menuItems[c].Label), false, Callback, "Custom" + c.ToString ());
+				}
+			}
+
 			menu.ShowAsContext ();
 		}
 		
@@ -713,6 +741,10 @@ namespace AC
 
 				case "Paste after":
 					List<Action> pasteList = JsonAction.CreatePasteBuffer (false);
+					foreach (var action in pasteList)
+					{
+						if (action != null) action.groupID = 0;
+					}
 					_target.actions.InsertRange (i + 1, pasteList);
 					break;
 
@@ -775,6 +807,26 @@ namespace AC
 					break;
 
 				default:
+					if (callback.StartsWith ("Custom"))
+					{
+						string postCustom = callback.Substring ("Custom".Length);
+						int customIndex = 0;
+						if (int.TryParse (postCustom, out customIndex))
+						{
+							foreach (Action action in _target.actions)
+							{
+								if (action != null && action.isMarked)
+								{
+									if (action.GetMenuItems ().Length > customIndex &&
+										action.GetMenuItems ()[customIndex].Callback != null)
+									{
+										action.GetMenuItems ()[customIndex].Callback.Invoke (_target.actions);
+										break;
+									}
+								}
+							}
+						}
+					}
 					break;
 			}
 
@@ -1175,7 +1227,7 @@ namespace AC
 				localParameters[i].label = assetParameters[i].label;
 				localParameters[i].parameterType = assetParameters[i].parameterType;
 
-				EditorGUILayout.LabelField ("Label " + assetParameters[i].ID + ":", assetParameters[i].label);
+				//EditorGUILayout.LabelField ("Label " + assetParameters[i].ID + ":", assetParameters[i].label);
 				localParameters[i].ShowGUI (isAssetFile, true);
 
 				if (i < (numParameters-1))

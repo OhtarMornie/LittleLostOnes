@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionCharRename.cs"
  * 
@@ -91,10 +91,7 @@ namespace AC
 			}
 			else
 			{
-				_char = (Char) EditorGUILayout.ObjectField ("Character:", _char, typeof (Char), true);
-				
-				_charID = FieldToID <Char> (_char, _charID);
-				_char = IDToField <Char> (_char, _charID, true);
+				ComponentField ("Character:", ref _char, ref _charID);
 			}
 			
 			newName = TextField ("New name:", newName);

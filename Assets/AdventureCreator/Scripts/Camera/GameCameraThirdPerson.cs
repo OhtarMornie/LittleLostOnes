@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"GameCameraThirdPerson.cs"
  * 
@@ -850,8 +850,9 @@ namespace AC
 				{
 					Vector3 trialRelativePosition = rotation * Vector3.forward * maxRaycastDistance;
 
-					float collisionDistance = CalculateCollisionInfluence (-trialRelativePosition);
-					if (actualDistance > collisionDistance)
+					float collisionDistance = 0f;
+					bool hitCollision = CalculateCollisionInfluence (-trialRelativePosition, out collisionDistance);
+					if (hitCollision && actualDistance > collisionDistance)
 					{
 						actualDistance = collisionDistance;
 					}
@@ -1043,14 +1044,14 @@ namespace AC
 		}
 
 
-		private float CalculateCollisionInfluence (Vector3 relativePosition)
+		private bool CalculateCollisionInfluence (Vector3 relativePosition, out float collisionDistance)
 		{
 			if (Physics.SphereCast (FocalPosition, 0.2f, relativePosition, out collisionHit, relativePosition.magnitude, collisionLayerMask, QueryTriggerInteraction.Ignore))
 			{
-				float collisionDistance = collisionHit.distance - wallSeparator;
+				collisionDistance = collisionHit.distance - wallSeparator;
 				collisionDistance = Mathf.Max (collisionDistance, minimumDistance);
 
-				return collisionDistance;
+				return true;
 			}
 
 			if (targetIsPlayer && player != null)
@@ -1058,7 +1059,8 @@ namespace AC
 				player.Show ();
 			}
 
-			return relativePosition.magnitude;
+			collisionDistance = relativePosition.magnitude;
+			return false;
 		}
 
 
@@ -1222,7 +1224,17 @@ namespace AC
 						return new Vector2 (inputX * inputInfluence.x, inputY * inputInfluence.y);
 					}
 				}
+				lastFrameInput = Vector2.zero;
 				return Vector2.zero;
+			}
+		}
+
+
+		public Vector2 LastFrameInput
+		{
+			get
+			{
+				return lastFrameInput;
 			}
 		}
 
@@ -1354,18 +1366,18 @@ namespace AC
 
 		public void ShowGUI ()
 		{
-			EditorGUILayout.BeginVertical ("Button");
-			EditorGUILayout.LabelField ("Target", EditorStyles.largeLabel);
+			CustomGUILayout.Header ("Target");
+			CustomGUILayout.BeginVertical ();
 			targetIsPlayer = EditorGUILayout.Toggle ("Is player?", targetIsPlayer);
 			if (!targetIsPlayer)
 			{
 				target = (Transform) EditorGUILayout.ObjectField ("Target transform:", target, typeof (Transform), true);
 			}
 
-			EditorGUILayout.EndVertical ();
+			CustomGUILayout.EndVertical ();
 
-			EditorGUILayout.BeginVertical ("Button");
-			EditorGUILayout.LabelField ("Spin", EditorStyles.largeLabel);
+			CustomGUILayout.Header ("Spin");
+			CustomGUILayout.BeginVertical ();
 			if (!isDragControlled)
 			{
 				spinAxis = EditorGUILayout.TextField ("Spin input axis:", spinAxis);
@@ -1396,10 +1408,10 @@ namespace AC
 			{
 				EditorGUILayout.LabelField ("Current spin:", actualSpinAngle.ToString ());
 			}
-			EditorGUILayout.EndVertical ();
+			CustomGUILayout.EndVertical ();
 
-			EditorGUILayout.BeginVertical ("Button");
-			EditorGUILayout.LabelField ("Pitch", EditorStyles.largeLabel);
+			CustomGUILayout.Header ("Pitch");
+			CustomGUILayout.BeginVertical ();
 			if (!isDragControlled)
 			{
 				pitchAxis = EditorGUILayout.TextField ("Pitch input axis:", pitchAxis);
@@ -1422,10 +1434,10 @@ namespace AC
 			{
 				EditorGUILayout.LabelField ("Current pitch:", actualPitchAngle.ToString ());
 			}
-			EditorGUILayout.EndVertical ();
+			CustomGUILayout.EndVertical ();
 
-			EditorGUILayout.BeginVertical ("Button");
-			EditorGUILayout.LabelField ("Regions", EditorStyles.largeLabel);
+			CustomGUILayout.Header ("Regions");
+			CustomGUILayout.BeginVertical ();
 
 			if (Mathf.Approximately (minPitch, maxPitch))
 			{
@@ -1438,10 +1450,10 @@ namespace AC
 				bottomRegion.ShowGUI ("Bottom");
 			}
 
-			EditorGUILayout.EndVertical ();
+			CustomGUILayout.EndVertical ();
 
-			EditorGUILayout.BeginVertical ("Button");
-			EditorGUILayout.LabelField ("Distance", EditorStyles.largeLabel);
+			CustomGUILayout.Header ("Distance");
+			CustomGUILayout.BeginVertical ();
 			distanceAcceleration = EditorGUILayout.FloatField ("Distance acceleration:", distanceAcceleration);
 			fastDistanceFactor = EditorGUILayout.FloatField ("Target speed influence on distance:", fastDistanceFactor);
 			if (fastDistanceFactor > 0f)
@@ -1450,14 +1462,14 @@ namespace AC
 			}
 			EditorGUILayout.EndVertical ();
 
-			EditorGUILayout.BeginVertical ("Button");
-			EditorGUILayout.LabelField ("Height", EditorStyles.largeLabel);
+			CustomGUILayout.Header ("Height");
+			CustomGUILayout.BeginVertical ();
 			heightOffset = EditorGUILayout.FloatField ("Target height offset:", heightOffset);
 			heightChangeInfluenceLimit = EditorGUILayout.FloatField ("Height change influence limit:", heightChangeInfluenceLimit);
 			EditorGUILayout.EndVertical ();
 
-			EditorGUILayout.BeginVertical ("Button");
-			EditorGUILayout.LabelField ("Collision", EditorStyles.largeLabel);
+			CustomGUILayout.Header ("Collision");
+			CustomGUILayout.BeginVertical ();
 			detectCollisions = EditorGUILayout.Toggle ("Do collisions?", detectCollisions);
 			if (detectCollisions)
 			{
@@ -1466,10 +1478,10 @@ namespace AC
 				maxRaycastDistance = EditorGUILayout.FloatField ("Raycast distance:", maxRaycastDistance);
 				minimumDistance = EditorGUILayout.FloatField ("Minimum distance:", minimumDistance);
 			}
-			EditorGUILayout.EndVertical ();
+			CustomGUILayout.EndVertical ();
 
-			EditorGUILayout.BeginVertical ("Button");
-			EditorGUILayout.LabelField ("Zooming", EditorStyles.largeLabel);
+			CustomGUILayout.Header ("Zooming");
+			CustomGUILayout.BeginVertical ();
 			zoomMethod = (ZoomMethod) EditorGUILayout.EnumPopup ("Zoom method:", zoomMethod);
 			switch (zoomMethod)
 			{
@@ -1494,8 +1506,8 @@ namespace AC
 			}
 			EditorGUILayout.EndVertical ();
 
-			EditorGUILayout.BeginVertical ("Button");
-			EditorGUILayout.LabelField ("Misc", EditorStyles.largeLabel);
+			CustomGUILayout.Header ("Misc");
+			CustomGUILayout.BeginVertical ();
 			updateMethod = (UpdateMethod) EditorGUILayout.EnumPopup ("Update method:", updateMethod);
 			initialDirection = (InitialDirection) EditorGUILayout.EnumPopup ("Initial direction:", initialDirection);
 			if (initialDirection == InitialDirection.SetAngles)
@@ -1514,7 +1526,7 @@ namespace AC
 				focalDistance = EditorGUILayout.FloatField ("Focal distance:", focalDistance);
 			}
 			gizmoColor = EditorGUILayout.ColorField ("Gizmo colour:", gizmoColor);
-			EditorGUILayout.EndVertical ();
+			CustomGUILayout.EndVertical ();
 		}
 
 		#endif

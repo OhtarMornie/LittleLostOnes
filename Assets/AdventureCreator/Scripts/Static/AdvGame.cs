@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"AdvGame.cs"
  * 
@@ -645,6 +645,120 @@ namespace AC
 			
 			return _text;
 		}
+
+
+		public static string ConvertParameterTokens (string _text, List<ActionParameter> parameters, int languageNumber)
+		{
+			if (!Application.isPlaying)
+			{
+				return _text;
+			}
+
+			if (!string.IsNullOrEmpty (_text))
+			{
+				int numIterations = 1;
+				while (numIterations > 0)
+				{
+					// Parameters
+					if (parameters != null)
+					{
+						tokenStart = "[param:";
+						tokenIndex = _text.IndexOf (tokenStart);
+						if (tokenIndex >= 0)
+						{
+							tokenValueStartIndex = tokenIndex + tokenStart.Length;
+							tokenValueEndIndex = _text.Substring (tokenValueStartIndex).IndexOf ("]");
+
+							if (tokenValueEndIndex > 0)
+							{
+								string stringValue = _text.Substring (tokenValueStartIndex, tokenValueEndIndex);
+								int _paramID = -1;
+								if (int.TryParse (stringValue, out _paramID))
+								{
+									foreach (ActionParameter parameter in parameters)
+									{
+										if (parameter.ID == _paramID)
+										{
+											string fullToken = tokenStart + stringValue + "]";
+											_text = _text.Replace (fullToken, parameter.GetValueAsString ());
+											numIterations = 2;
+										}
+									}
+								}
+							}
+						}
+
+						// Parameter values
+						tokenStart = "[paramval:";
+						tokenIndex = _text.IndexOf (tokenStart);
+						if (tokenIndex >= 0)
+						{
+							tokenValueStartIndex = tokenIndex + tokenStart.Length;
+							tokenValueEndIndex = _text.Substring (tokenValueStartIndex).IndexOf ("]");
+
+							if (tokenValueEndIndex > 0)
+							{
+								string stringValue = _text.Substring (tokenValueStartIndex, tokenValueEndIndex);
+								int _paramID = -1;
+								if (int.TryParse (stringValue, out _paramID))
+								{
+									foreach (ActionParameter parameter in parameters)
+									{
+										if (parameter.ID == _paramID)
+										{
+											string fullToken = tokenStart + stringValue + "]";
+											string paramValue = string.Empty;
+											GVar paramVariable = parameter.GetVariable ();
+											if (paramVariable != null)
+											{
+												paramValue = paramVariable.GetValue (languageNumber);
+											}
+											else
+											{
+												paramValue = parameter.GetValueAsString ();
+											}
+											_text = _text.Replace (fullToken, paramValue);
+											numIterations = 2;
+										}
+									}
+								}
+							}
+						}
+
+						// Parameter labels
+						tokenStart = "[paramlabel:";
+						tokenIndex = _text.IndexOf (tokenStart);
+						if (tokenIndex >= 0)
+						{
+							tokenValueStartIndex = tokenIndex + tokenStart.Length;
+							tokenValueEndIndex = _text.Substring (tokenValueStartIndex).IndexOf ("]");
+
+							if (tokenValueEndIndex > 0)
+							{
+								string stringValue = _text.Substring (tokenValueStartIndex, tokenValueEndIndex);
+								int _paramID = -1;
+								if (int.TryParse (stringValue, out _paramID))
+								{
+									foreach (ActionParameter parameter in parameters)
+									{
+										if (parameter.ID == _paramID)
+										{
+											string fullToken = tokenStart + stringValue + "]";
+											_text = _text.Replace (fullToken, parameter.GetLabel ());
+											numIterations = 2;
+										}
+									}
+								}
+							}
+						}
+					}
+
+					numIterations --;
+				}
+			}
+			
+			return _text;
+		}
 		
 		
 		#if UNITY_EDITOR
@@ -883,7 +997,7 @@ namespace AC
 				{
 					UnityVersionHandler.OpenScene (sceneFile);
 
-					ConstantID[] idObjects = FindObjectsOfType (typeof (ConstantID)) as ConstantID[];
+					ConstantID[] idObjects = UnityVersionHandler.FindObjectsOfType<ConstantID> ();
 					if (idObjects != null && idObjects.Length > 0)
 					{
 						foreach (ConstantID idObject in idObjects)
@@ -936,9 +1050,9 @@ namespace AC
 		 */
 		public static int GlobalVariableGUI (string label, int variableID, string tooltip = "")
 		{
-			if (AdvGame.GetReferences () && AdvGame.GetReferences ().variablesManager)
+			if (KickStarter.variablesManager)
 			{
-				VariablesManager variablesManager = AdvGame.GetReferences ().variablesManager;
+				VariablesManager variablesManager = KickStarter.variablesManager;
 
 				// Create a string List of the field's names (for the PopUp box)
 				List<string> labelList = new List<string>();
@@ -997,9 +1111,9 @@ namespace AC
 		 */
 		public static int GlobalVariableGUI (string label, int variableID, VariableType variableType, string tooltip = "")
 		{
-			if (AdvGame.GetReferences () != null && AdvGame.GetReferences ().variablesManager)
+			if (KickStarter.variablesManager)
 			{
-				return VariableGUI (label, variableID, variableType, VariableLocation.Global, AdvGame.GetReferences ().variablesManager.vars, tooltip);
+				return VariableGUI (label, variableID, variableType, VariableLocation.Global, KickStarter.variablesManager.vars, tooltip);
 			}
 			return variableID;
 		}
@@ -1014,9 +1128,9 @@ namespace AC
 		 */
 		public static int GlobalVariableGUI (string label, int variableID, VariableType[] variableTypes, string tooltip = "")
 		{
-			if (AdvGame.GetReferences () != null && AdvGame.GetReferences ().variablesManager)
+			if (KickStarter.variablesManager)
 			{
-				return VariableGUI (label, variableID, variableTypes, VariableLocation.Global, AdvGame.GetReferences ().variablesManager.vars, tooltip);
+				return VariableGUI (label, variableID, variableTypes, VariableLocation.Global, KickStarter.variablesManager.vars, tooltip);
 			}
 			return variableID;
 		}
@@ -1112,18 +1226,31 @@ namespace AC
 				{
 					bool foundVarType = false;
 
-					foreach (VariableType variableType in variableTypes)
+					if (variableTypes == null)
 					{
-						if (!foundVarType && vars[i].type == variableType)
+						PopupSelectData popupSelectData = new PopupSelectData (vars[i].id, vars[i].label, i);
+						popupSelectDataList.Add (popupSelectData);
+
+						if (popupSelectData.ID == variableID)
 						{
-							foundVarType = true;
-
-							PopupSelectData popupSelectData = new PopupSelectData (vars[i].id, vars[i].label, i);
-							popupSelectDataList.Add (popupSelectData);
-
-							if (popupSelectData.ID == variableID)
+							variableNumber = popupSelectDataList.Count-1;
+						}
+					}
+					else
+					{
+						foreach (VariableType variableType in variableTypes)
+						{
+							if (!foundVarType && vars[i].type == variableType)
 							{
-								variableNumber = popupSelectDataList.Count-1;
+								foundVarType = true;
+
+								PopupSelectData popupSelectData = new PopupSelectData (vars[i].id, vars[i].label, i);
+								popupSelectDataList.Add (popupSelectData);
+
+								if (popupSelectData.ID == variableID)
+								{
+									variableNumber = popupSelectDataList.Count-1;
+								}
 							}
 						}
 					}
@@ -1182,7 +1309,7 @@ namespace AC
 		public static void DrawNodeCurve (Rect start, Rect end, Color color, int offset, bool onSide, bool isDisplayed)
 		{
 			bool arrangeVertically = true;
-			if (AdvGame.GetReferences ().actionsManager && AdvGame.GetReferences ().actionsManager.displayActionsInEditor == DisplayActionsInEditor.ArrangedHorizontally)
+			if (KickStarter.actionsManager && KickStarter.actionsManager.displayActionsInEditor == DisplayActionsInEditor.ArrangedHorizontally)
 			{
 				arrangeVertically = false;
 			}
@@ -1360,7 +1487,7 @@ namespace AC
 		 */
 		public static Vector3 GetScreenNavMesh (Vector3 targetWorldPosition)
 		{
-			SettingsManager settingsManager = AdvGame.GetReferences ().settingsManager;
+			SettingsManager settingsManager = KickStarter.settingsManager;
 
 			Vector3 targetScreenPosition = KickStarter.CameraMain.WorldToScreenPoint (targetWorldPosition);
 			Ray ray = KickStarter.CameraMain.ScreenPointToRay (targetScreenPosition);
@@ -1769,7 +1896,7 @@ namespace AC
 		 */
 		public static void DrawTextEffect (Rect rect, string text, GUIStyle style, Color outColor, Color inColor, float size, TextEffects textEffects)
 		{
-			if (AdvGame.GetReferences ().menuManager && AdvGame.GetReferences ().menuManager.scaleTextEffects)
+			if (KickStarter.menuManager && KickStarter.menuManager.scaleTextEffects)
 			{
 				size = ACScreen.safeArea.width / 200f / size;
 			}

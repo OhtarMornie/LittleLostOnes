@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionEndGame.cs"
  * 
@@ -103,19 +103,11 @@ namespace AC
 				chooseSceneBy = (ChooseSceneBy) EditorGUILayout.EnumPopup ("Choose scene by:", chooseSceneBy);
 				if (chooseSceneBy == ChooseSceneBy.Name)
 				{
-					sceneNameParameterID = Action.ChooseParameterGUI ("Scene to restart to:", parameters, sceneNameParameterID, ParameterType.String);
-					if (sceneNameParameterID < 0)
-					{
-						sceneName = TextField ("Scene to restart to:", sceneName);
-					}
+					TextField ("Scene to restart to:", ref sceneName, parameters, ref sceneNameParameterID);
 				}
 				else
 				{
-					sceneNumberParameterID = Action.ChooseParameterGUI ("Scene to restart to:", parameters, sceneNumberParameterID, ParameterType.Integer);
-					if (sceneNumberParameterID < 0)
-					{
-						sceneNumber = EditorGUILayout.IntField ("Scene to restart to:", sceneNumber);
-					}
+					IntField ("Scene to restart to:", ref sceneNumber, parameters, ref sceneNumberParameterID);
 				}
 
 				resetMenus = EditorGUILayout.Toggle ("Reset all Menus?", resetMenus);

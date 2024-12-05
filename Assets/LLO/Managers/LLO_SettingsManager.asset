@@ -17,6 +17,7 @@ MonoBehaviour:
   saveTimeDisplay: 0
   customSaveFormat: MMMM dd, yyyy
   takeSaveScreenshots: 0
+  screenshotRenderTexture: {fileID: 0}
   saveScreenshots: 0
   screenshotResolutionFactor: 1
   useProfiles: 0
@@ -24,6 +25,7 @@ MonoBehaviour:
   orderSavesByUpdateTime: 0
   reloadSceneWhenLoading: 0
   saveWithThreading: 0
+  saveCompression: 0
   saveAssetReferencesWithAddressables: 0
   saveLabels:
     defaultSaveLabel: Save
@@ -33,10 +35,12 @@ MonoBehaviour:
     defaultAutosaveLabel: Autosave
     autosaveLabelID: -1
   referenceScenesInSave: 0
+  useInvariantCulture: 1
   sceneAttributes: []
   actionListOnStart: {fileID: 0}
   blackOutWhenSkipping: 0
-  events: []
+  events:
+  - rid: 6358307628637749341
   savePlayerReferencesWithAddressables: 0
   playerSwitching: 1
   legacyPlayer: {fileID: 0}
@@ -73,10 +77,12 @@ MonoBehaviour:
   disableFreeAimWhenDraggingPickUp: 0
   runConversationsWithKeys: 0
   clickUpInteractions: 0
+  clickUpHotspots: 0
   defaultMouseClicks: 1
   allowGameplayDuringConversations: 0
   walkToHotspotMarkers: 1
   dragThreshold: 0
+  maxInventorySlots: 0
   shareInventory: 0
   inventoryDragDrop: 1
   dragDropThreshold: 0
@@ -104,6 +110,7 @@ MonoBehaviour:
   giveInvWithIconID: 0
   autoDisableUnhandledHotspots: 1
   clickPrefab: {fileID: 0}
+  showClickPrefabWithStraightToCursorHeld: 0
   clickMarkerPosition: 0
   walkableClickRange: 0.5
   navMeshSearchDirection: 1
@@ -111,6 +118,7 @@ MonoBehaviour:
   doubleClickMovement: 0
   magnitudeAffectsDirect: 0
   directTurnsInstantly: 0
+  directTurnMode: 0
   stopTurningWhenReleaseInput: 0
   disableMovementWhenInterationMenusAreOpen: 0
   directMovementType: 0
@@ -124,7 +132,6 @@ MonoBehaviour:
   verticalReductionFactor: 0.7
   rotationsAffectedByVerticalReduction: 1
   alwaysPathfindInSpriteDirection: 0
-  jumpSpeed: 4
   singleTapStraight: 0
   singleTapStraightPathfind: 0
   clickHoldSeparationStraight: 0.3
@@ -134,6 +141,7 @@ MonoBehaviour:
   firstPersonMovementSmoothing: 1
   assumeInputsDefined: 0
   activeInputs: []
+  surfaces: []
   freeAimTouchSpeed: 0.01
   dragWalkThreshold: 5
   dragRunThreshold: 20
@@ -153,12 +161,13 @@ MonoBehaviour:
   renderBorderCamera: 1
   landscapeModeOnly: 1
   cameraPerspective: 0
-  cacheCameraMain: 0
+  cacheCameraMain: 1
   linearColorTextures: 0
   movingTurning: 3
   hotspotDetection: 0
   closeInteractionMenusIfPlayerLeavesVicinity: 0
   placeDistantHotspotsOnSeparateLayer: 1
+  cursorMustBeOverNearestHotspot: 0
   hotspotsInVicinity: 0
   highlightAllHotspotsInVicinity: 1
   hotspotIconDisplay: 0
@@ -264,7 +273,7 @@ MonoBehaviour:
   speechAttentuationParameter: speechVolume
   defaultLanguage: 0
   defaultVoiceLanguage: 0
-  defaultShowSubtitles: 0
+  defaultShowSubtitles: 1
   defaultSfxVolume: 0.9
   defaultMusicVolume: 0.6
   defaultSpeechVolume: 1
@@ -274,4 +283,11 @@ MonoBehaviour:
   showActiveActionLists: 0
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 6358307628637749341
+      type: {class: EventBeginGame, ns: AC, asm: AC}
+      data:
+        label: Apply graphic options
+        id: 0
+        actionListAsset: {fileID: 11400000, guid: c534691f8e5717f4084c261ae0b2b64c, type: 2}
+        parameterIDs: 

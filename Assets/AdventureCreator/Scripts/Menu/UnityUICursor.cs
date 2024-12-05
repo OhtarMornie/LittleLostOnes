@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"UnityUICursor.cs"
  * 
@@ -30,14 +30,15 @@ namespace AC
 
 		[Header ("UI components")]
 		[SerializeField] private RawImage rawImageToControl = null;
+		[SerializeField] private RawImage rawImageForInventory = null;
 		[SerializeField] private bool updateImageNativeSize = true;
 		[SerializeField] private RectTransform rectTransformToPosition = null;
 		private CanvasScaler rootCanvasScaler;
 		#if TextMeshProIsPresent
-		public TMPro.TextMeshProUGUI itemCountText;
-		#else
-		public Text itemCountText;
+		[SerializeField] private bool useTextMeshPro;
+		public TMPro.TextMeshProUGUI itemCountTextTMP;
 		#endif
+		public Text itemCountText;
 		
 		[Header ("Animation (Optional)")]
 		[SerializeField] private Animator _animator = null;
@@ -45,6 +46,7 @@ namespace AC
 		[SerializeField] private string inventoryIDIntParameter = "InventoryID";
 		[SerializeField] private string cursorVisibleBoolParameter = "CursorIsVisible";
 		[SerializeField] private string clickTriggerParameter = "Click";
+		[SerializeField] private string isOverHotspotBoolParameter = "IsOverHotspot";
 
 		#endregion
 
@@ -54,16 +56,17 @@ namespace AC
 		private void OnEnable ()
 		{
 			EventManager.OnSetHardwareCursor += OnSetHardwareCursor;
-			EventManager.OnInventoryDeselect += OnInventoryDeselect;
-			GetComponent<Canvas> ().sortingOrder = 100;
+			EventManager.OnInventorySelect_Alt += OnInventorySelect;
+			EventManager.OnInventoryDeselect_Alt += OnInventoryDeselect;
 			rootCanvasScaler = GetComponent<CanvasScaler> ();
 		}
 
 
 		private void OnDisable ()
 		{
-			EventManager.OnInventoryDeselect -= OnInventoryDeselect;
 			EventManager.OnSetHardwareCursor -= OnSetHardwareCursor;
+			EventManager.OnInventorySelect_Alt -= OnInventorySelect;
+			EventManager.OnInventoryDeselect_Alt -= OnInventoryDeselect;
 		}
 
 
@@ -79,10 +82,12 @@ namespace AC
 				}
 				if (!string.IsNullOrEmpty (inventoryIDIntParameter)) _animator.SetInteger (inventoryIDIntParameter, (KickStarter.runtimeInventory.SelectedItem != null) ? KickStarter.runtimeInventory.SelectedItem.id : -1);
 
-				if (Input.GetMouseButtonDown (0))
+				if (KickStarter.playerInput.GetMouseState () == MouseState.SingleClick)
 				{
 					if (!string.IsNullOrEmpty (clickTriggerParameter)) _animator.SetTrigger (clickTriggerParameter);
 				}
+
+				if (!string.IsNullOrEmpty (isOverHotspotBoolParameter)) _animator.SetBool (isOverHotspotBoolParameter, KickStarter.playerInteraction.GetActiveHotspot ());
 			}
 
 			if (rectTransformToPosition)
@@ -112,9 +117,19 @@ namespace AC
 				rectTransformToPosition.localPosition = new Vector3 ((_position.x - (Screen.width / 2f)) / scalerOffset, (_position.y - (Screen.height / 2f)) / scalerOffset, rectTransformToPosition.localPosition.z);
 			}
 
-			if (itemCountText && InvInstance.IsValid (KickStarter.runtimeInventory.SelectedInstance))
+			if (InvInstance.IsValid (KickStarter.runtimeInventory.SelectedInstance))
 			{
-				itemCountText.text = KickStarter.runtimeInventory.SelectedInstance.GetInventoryDisplayCount ().ToString ();
+				#if TextMeshProIsPresent
+				if (itemCountTextTMP && useTextMeshPro)
+				{
+					itemCountTextTMP.text = KickStarter.runtimeInventory.SelectedInstance.GetInventoryDisplayCount ().ToString ();
+				}
+				else
+				#endif
+				if (itemCountText)
+				{
+					itemCountText.text = KickStarter.runtimeInventory.SelectedInstance.GetInventoryDisplayCount ().ToString ();
+				}
 			}
 		}
 
@@ -123,7 +138,21 @@ namespace AC
 
 		#region CustomEvents
 
-		private void OnInventoryDeselect (InvItem invItem)
+		private void OnInventorySelect (InvCollection invCollection, InvInstance invInstance)
+		{
+			if (rawImageForInventory)
+			{
+				rawImageForInventory.texture = invInstance.CursorIcon.texture ? invInstance.CursorIcon.texture : invInstance.Tex;
+
+				if (updateImageNativeSize)
+				{
+					rawImageForInventory.SetNativeSize ();
+				}
+			}
+		}
+
+
+		private void OnInventoryDeselect (InvCollection invCollection, InvInstance invInstance)
 		{
 			if (KickStarter.cursorManager.inventoryHandling == InventoryHandling.ChangeCursor || KickStarter.cursorManager.inventoryHandling == InventoryHandling.ChangeCursorAndHotspotLabel)
 			{
@@ -175,13 +204,14 @@ namespace AC
 
 		public void ShowGUI ()
 		{
+			CustomGUILayout.Header ("UI components");
 			CustomGUILayout.BeginVertical ();
-			CustomGUILayout.LabelField ("UI components");
 
-			rawImageToControl = (RawImage) CustomGUILayout.ObjectField <RawImage> ("RawImage to control:", rawImageToControl, true, string.Empty, "The RawImage to update with the correct cursor graphic");
-			if (rawImageToControl)
+			rawImageToControl = (RawImage) CustomGUILayout.ObjectField <RawImage> ("Cursor RawImage:", rawImageToControl, true, string.Empty, "The RawImage to update with the correct cursor graphic");
+			rawImageForInventory = (RawImage) CustomGUILayout.ObjectField <RawImage> ("Inventory RawImage:", rawImageForInventory, true, string.Empty, "The RawImage to update with the currently-selected Inventory item");
+			if (rawImageToControl || rawImageForInventory)
 			{
-				updateImageNativeSize = CustomGUILayout.Toggle ("Update Image Native Size?", updateImageNativeSize, string.Empty, "If True, the Raw Image's size will be adjusted to make it pixel-perfect.");
+				updateImageNativeSize = CustomGUILayout.Toggle ("Update Images Native Size?", updateImageNativeSize, string.Empty, "If True, the Raw Image's size will be adjusted to make it pixel-perfect.");
 			}
 
 			rectTransformToPosition = (RectTransform) CustomGUILayout.ObjectField <RectTransform> ("RectTransform to position:", rectTransformToPosition, true, string.Empty, "The RectTransform component to control as the cursor's intended position");
@@ -189,10 +219,14 @@ namespace AC
 			_animator = (Animator) CustomGUILayout.ObjectField<Animator> ("Animator:", _animator, true, string.Empty, "An Animator that can optionally be updated");
 
 			#if TextMeshProIsPresent
-			itemCountText = (TMPro.TextMeshProUGUI) CustomGUILayout.ObjectField<TMPro.TextMeshProUGUI> ("Item count Text:", itemCountText, false, string.Empty, "A Text component to display the selected inventory item's Count text");
-			#else
-			itemCountText = (Text) CustomGUILayout.ObjectField<Text> ("Item count Text:", itemCountText, false, string.Empty, "A Text component to display the selected inventory item's Count text");
+			useTextMeshPro = CustomGUILayout.Toggle ("Use TextMeshPro?", useTextMeshPro, string.Empty, "If True, a TextMeshPro Text field is referenced instead");
+			if (useTextMeshPro)
+			{
+				itemCountTextTMP = (TMPro.TextMeshProUGUI) CustomGUILayout.ObjectField<TMPro.TextMeshProUGUI> ("Item count Text:", itemCountTextTMP, false, string.Empty, "A Text component to display the selected inventory item's Count text");
+			}
+			else
 			#endif
+				itemCountText = (Text) CustomGUILayout.ObjectField<Text> ("Item count Text:", itemCountText, false, string.Empty, "A Text component to display the selected inventory item's Count text");
 
 			CustomGUILayout.EndVertical ();
 
@@ -200,13 +234,14 @@ namespace AC
 			{
 				EditorGUILayout.Space ();
 
+				CustomGUILayout.Header ("Animator parameters");
 				CustomGUILayout.BeginVertical ();
-				CustomGUILayout.LabelField ("Animator parameters");
 
 				cursorIDIntParameter = CustomGUILayout.TextField ("Cursor ID int:", cursorIDIntParameter, string.Empty, "An integer parameter that represents the current cursor ID (= -1 if the main cursor is active)");
 				inventoryIDIntParameter = CustomGUILayout.TextField ("Inventory ID int:", inventoryIDIntParameter, string.Empty, "An integer parameter that represents the currently-selected inventory item's ID (= -1 if no item is selected)");
 				cursorVisibleBoolParameter = CustomGUILayout.TextField ("Cursor visible bool:", cursorVisibleBoolParameter, string.Empty, "A bool parameter that represents the cursor's visibility state");
 				clickTriggerParameter = CustomGUILayout.TextField ("Click trigger:", clickTriggerParameter, string.Empty, "A trigger parameter invokes whenever the cursor is clicked.");
+				isOverHotspotBoolParameter = CustomGUILayout.TextField ("Is over Hotspot bool:", isOverHotspotBoolParameter, string.Empty, "A bool parameter that's True when hovering over a Hotspot");
 
 				CustomGUILayout.EndVertical ();
 			}
@@ -214,6 +249,19 @@ namespace AC
 		}
 
 		#endif
+
+
+		#region GetSet
+
+		public bool SetsCursorAutomatically
+		{
+			get
+			{
+				return rawImageToControl != null;
+			}
+		}
+
+		#endregion
 
 	}
 

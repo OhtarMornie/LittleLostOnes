@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionSpriteFade.cs"
  * 
@@ -83,19 +83,7 @@ namespace AC
 		
 		public override void ShowGUI (List<ActionParameter> parameters)
 		{
-			parameterID = Action.ChooseParameterGUI ("Sprite to fade:", parameters, parameterID, ParameterType.GameObject);
-			if (parameterID >= 0)
-			{
-				constantID = 0;
-				spriteFader = null;
-			}
-			else
-			{
-				spriteFader = (SpriteFader) EditorGUILayout.ObjectField ("Sprite to fade:", spriteFader, typeof (SpriteFader), true);
-				
-				constantID = FieldToID <SpriteFader> (spriteFader, constantID);
-				spriteFader = IDToField <SpriteFader> (spriteFader, constantID, false);
-			}
+			ComponentField ("Sprite to fade:", ref spriteFader, ref constantID, parameters, ref parameterID);
 
 			fadeType = (FadeType) EditorGUILayout.EnumPopup ("Type:", fadeType);
 			

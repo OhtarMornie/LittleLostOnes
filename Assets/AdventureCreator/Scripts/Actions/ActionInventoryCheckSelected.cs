@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionInventoryCheckSelected.cs"
  * 
@@ -55,6 +55,10 @@ namespace AC
 				if (InvInstance.IsValid (KickStarter.runtimeInventory.SelectedInstance))
 				{ 
 					runtimeSelectedItemParameter.SetValue (KickStarter.runtimeInventory.SelectedInstance.InvItem.id);
+				}
+				else if (includeLast && InvInstance.IsValid (KickStarter.runtimeInventory.LastSelectedInstance))
+				{
+					runtimeSelectedItemParameter.SetValue (KickStarter.runtimeInventory.LastSelectedInstance.InvItem.id);
 				}
 				else
 				{
@@ -151,56 +155,8 @@ namespace AC
 				}
 				else if (selectedCheckMethod == SelectedCheckMethod.SpecificItem)
 				{
-					// Create a string List of the field's names (for the PopUp box)
-					List<string> labelList = new List<string>();
-					
-					int i = 0;
-					int invNumber = 0;
-					if (parameterID == -1)
-					{
-						invNumber = -1;
-					}
-					
-					if (inventoryManager.items.Count > 0)
-					{
-						foreach (InvItem _item in inventoryManager.items)
-						{
-							labelList.Add (_item.label);
-							
-							// If an item has been removed, make sure selected variable is still valid
-							if (_item.id == invID)
-							{
-								invNumber = i;
-							}
-							
-							i++;
-						}
-						
-						if (invNumber == -1)
-						{
-							if (invID > 0) LogWarning ("Previously chosen item no longer exists!");
-							invID = 0;
-						}
-						
-						parameterID = Action.ChooseParameterGUI ("Inventory item:", parameters, parameterID, ParameterType.InventoryItem);
-						if (parameterID >= 0)
-						{
-							invNumber = Mathf.Min (invNumber, inventoryManager.items.Count-1);
-							invID = -1;
-						}
-						else
-						{
-							invNumber = EditorGUILayout.Popup ("Inventory item:", invNumber, labelList.ToArray());
-							invID = inventoryManager.items[invNumber].id;
-						}
-
-						includeLast = EditorGUILayout.Toggle ("Include last-selected?", includeLast);
-					}
-					else
-					{
-						EditorGUILayout.HelpBox ("No inventory items exist!", MessageType.Info);
-						invID = -1;
-					}
+					ItemField (ref invID, parameters, ref parameterID);
+					includeLast = EditorGUILayout.Toggle ("Include last-selected?", includeLast);
 				}
 			}
 

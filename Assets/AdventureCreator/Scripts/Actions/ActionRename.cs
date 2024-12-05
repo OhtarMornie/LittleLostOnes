@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionRename.cs"
  * 
@@ -61,25 +61,8 @@ namespace AC
 		
 		public override void ShowGUI (List<ActionParameter> parameters)
 		{
-			parameterID = Action.ChooseParameterGUI ("Hotspot to rename:", parameters, parameterID, ParameterType.GameObject);
-			if (parameterID >= 0)
-			{
-				constantID = 0;
-				hotspot = null;
-			}
-			else
-			{
-				hotspot = (Hotspot) EditorGUILayout.ObjectField ("Hotspot to rename:", hotspot, typeof (Hotspot), true);
-				
-				constantID = FieldToID <Hotspot> (hotspot, constantID);
-				hotspot = IDToField <Hotspot> (hotspot, constantID, false);
-			}
-			
-			newNameParameterID = Action.ChooseParameterGUI ("New label:", parameters, newNameParameterID, new ParameterType[2] { ParameterType.String, ParameterType.PopUp });
-			if (newNameParameterID < 0)
-			{
-				newName = EditorGUILayout.TextField ("New label:", newName);
-			}
+			ComponentField ("Hotspot to rename:", ref hotspot, ref constantID, parameters, ref parameterID);
+			TextField ("New label:", ref newName, parameters, ref newNameParameterID);
 		}
 
 

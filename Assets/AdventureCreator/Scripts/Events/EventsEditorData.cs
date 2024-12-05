@@ -41,16 +41,16 @@ namespace AC
 				GenerateTypeReferencesArray ();
 			}
 
-			EditorGUILayout.BeginVertical (CustomStyles.thinBox);
 			showEventsList = CustomGUILayout.ToggleHeader (showEventsList, "Events");
+			CustomGUILayout.BeginVertical ();
 			if (showEventsList)
 			{
 				scrollPos = EditorGUILayout.BeginScrollView (scrollPos);
 				for (int i = 0; i < events.Count; i++)
 				{
-					EditorGUILayout.BeginHorizontal ();
-
 					if (events[i] == null) continue;
+
+					EditorGUILayout.BeginHorizontal ();
 
 					if (GUILayout.Toggle (selectedIndex == i, events[i].ID + ": " + events[i].Label, "Button"))
 					{
@@ -109,15 +109,16 @@ namespace AC
 
 			if (selectedIndex >= 0 && selectedIndex < events.Count)
 			{
-				EditorGUILayout.BeginVertical (CustomStyles.thinBox);
+				if (events[selectedIndex] == null) return;
 
 				showSelectedEvent = CustomGUILayout.ToggleHeader (showSelectedEvent, "Event #" + events[selectedIndex].ID + ": " + events[selectedIndex].Label);
 				if (showSelectedEvent)
 				{
+					CustomGUILayout.BeginVertical ();
 					bool isAssetFile = source is ScriptableObject;
 					events[selectedIndex].ShowGUI (isAssetFile);
+					CustomGUILayout.EndVertical ();
 				}
-				CustomGUILayout.EndVertical ();
 			}
 		}
 
@@ -287,6 +288,7 @@ namespace AC
 			List<int> idArray = new List<int> ();
 			foreach (EventBase _event in events)
 			{
+				if (_event == null) continue;
 				idArray.Add (_event.ID);
 			}
 			idArray.Sort ();

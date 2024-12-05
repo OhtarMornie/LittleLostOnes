@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionSceneCheckAttribute.cs"
  * 
@@ -254,9 +254,9 @@ namespace AC
 
 		public override void ShowGUI (List<ActionParameter> parameters)
 		{
-			if (AdvGame.GetReferences ().settingsManager)
+			if (KickStarter.settingsManager)
 			{
-				SettingsManager settingsManager = AdvGame.GetReferences ().settingsManager;
+				SettingsManager settingsManager = KickStarter.settingsManager;
 
 				attributeID = ShowVarGUI (settingsManager.sceneAttributes, attributeID, true, parameters);
 			}
@@ -309,87 +309,49 @@ namespace AC
 				{
 					case VariableType.Boolean:
 						boolCondition = (BoolCondition) EditorGUILayout.EnumPopup ("Condition:", boolCondition);
-						checkParameterID = Action.ChooseParameterGUI ("Value:", parameters, checkParameterID, ParameterType.Boolean);
-						if (checkParameterID < 0)
-						{
-							boolValue = (BoolValue) EditorGUILayout.EnumPopup ("Value:", boolValue);
-						}
+						EnumBoolField ("Value:", ref boolValue, parameters, ref checkParameterID);
 						break;
 
 					case VariableType.Integer:
 						intCondition = (IntCondition) EditorGUILayout.EnumPopup ("Condition:", intCondition);
-						checkParameterID = Action.ChooseParameterGUI ("Value:", parameters, checkParameterID, ParameterType.Integer);
-						if (checkParameterID < 0)
-						{
-							intValue = EditorGUILayout.IntField ("Value:", intValue);
-						}
+						IntField ("Value:", ref intValue, parameters, ref checkParameterID);
 						break;
 
 					case VariableType.PopUp:
 						intCondition = (IntCondition) EditorGUILayout.EnumPopup ("Condition:", intCondition);
-						checkParameterID = Action.ChooseParameterGUI ("Value:", parameters, checkParameterID, ParameterType.Integer);
-						if (checkParameterID < 0)
-						{
-							intValue = EditorGUILayout.Popup ("Value:", intValue, attributes[attributeNumber].popUps);
-						}
+						PopupField ("Value:", ref intValue, attributes[attributeNumber].popUps, parameters, ref checkParameterID);
 						break;
 
 					case VariableType.Float:
 						intCondition = (IntCondition) EditorGUILayout.EnumPopup ("Condition:", intCondition);
-						checkParameterID = Action.ChooseParameterGUI ("Value:", parameters, checkParameterID, ParameterType.Float);
-						if (checkParameterID < 0)
-						{
-							floatValue = EditorGUILayout.FloatField ("Value:", floatValue);
-						}
+						FloatField ("Value:", ref floatValue, parameters, ref checkParameterID);
 						break;
 
 					case VariableType.String:
 						boolCondition = (BoolCondition) EditorGUILayout.EnumPopup ("Condition:", boolCondition);
-						checkParameterID = Action.ChooseParameterGUI ("Value:", parameters, checkParameterID, ParameterType.String);
-						if (checkParameterID < 0)
-						{
-							stringValue = EditorGUILayout.TextField ("Value:", stringValue);
-						}
+						TextField ("Value:", ref stringValue, parameters, ref checkParameterID);
 						break;
 
 					case VariableType.Vector3:
 						vectorCondition = (VectorCondition) EditorGUILayout.EnumPopup ("Condition:", vectorCondition);
 						if (vectorCondition == VectorCondition.EqualTo)
 						{
-							checkParameterID = Action.ChooseParameterGUI ("Value:", parameters, checkParameterID, ParameterType.Vector3);
-							if (checkParameterID < 0)
-							{
-								vector3Value = EditorGUILayout.Vector3Field ("Value:", vector3Value);
-							}
+							Vector3Field ("Value:", ref vector3Value, parameters, ref checkParameterID);
 						}
-						else
+						else if (vectorCondition == VectorCondition.MagnitudeGreaterThan)
 						{
-							checkParameterID = Action.ChooseParameterGUI ("Value:", parameters, checkParameterID, ParameterType.Float);
-							if (checkParameterID < 0)
-							{
-								floatValue = EditorGUILayout.FloatField ("Value:", floatValue);
-							}
+							FloatField ("Value:", ref floatValue, parameters, ref checkParameterID);
 						}
 						break;
 
 					case VariableType.GameObject:
 						boolCondition = (BoolCondition) EditorGUILayout.EnumPopup ("Condition:", boolCondition);
-						checkParameterID = Action.ChooseParameterGUI ("Value:", parameters, checkParameterID, ParameterType.GameObject);
-						if (checkParameterID < 0)
-						{
-							gameObjectValue = (GameObject) EditorGUILayout.ObjectField ("Value:", gameObjectValue, typeof (GameObject), true);
-							intValue = FieldToID (gameObjectValue, intValue);
-							gameObjectValue = IDToField (gameObjectValue, intValue, false);
-						}
+						GameObjectField ("Value:", ref gameObjectValue, ref intValue, parameters, ref checkParameterID);
 						break;
 
 					case VariableType.UnityObject:
 						boolCondition = (BoolCondition) EditorGUILayout.EnumPopup ("Condition:", boolCondition);
-						checkParameterID = Action.ChooseParameterGUI ("Value:", parameters, checkParameterID, ParameterType.UnityObject);
-						if (checkParameterID < 0)
-						{
-							unityObjectValue = (Object) EditorGUILayout.ObjectField ("Value:", unityObjectValue, typeof (Object), false);
-						}
+						AssetField ("Value:", ref unityObjectValue, parameters, ref checkParameterID);
 						break;
 				}
 

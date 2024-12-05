@@ -13,11 +13,16 @@ namespace AC
 		public ActionListEditorWindowData windowData = new ActionListEditorWindowData ();
 
 		private DragMode dragMode = DragMode.None;
-		private enum DragMode { None, Node, Wire, Marquee, ScrollbarHorizontal, ScrollbarVertical };
+		private enum DragMode { None, Node, Wire, Marquee, Group, ScrollbarHorizontal, ScrollbarVertical };
 
 		private bool canMarquee = true;
 		private Rect marqueeRect = new Rect (0f, 0f, 0f, 0f);
 		private bool marqueeShift = false;
+		private Vector2 marqueeStartPosition;
+
+		private bool canDragGroup = true;
+		private ActionGroup groupDrag, groupContext;
+
 		private bool isAutoArranging = false;
 		private bool showProperties = false;
 		private int focusActionIndex;
@@ -43,7 +48,6 @@ namespace AC
 		private Vector2 startNodeRect = new Vector2 (14, 14);
 		private Vector2 socketSize = new Vector2 (16, 16);
 		private int actionDragging = -1;
-		private Vector2 marqueeStartPosition;
 		private Vector2 scrollLimits;
 		private Rect dragRectRelative;
 
@@ -93,7 +97,7 @@ namespace AC
 
 		private static ActionListEditorWindow CreateWindow ()
 		{
-			if (AdvGame.GetReferences () != null && AdvGame.GetReferences ().actionsManager && AdvGame.GetReferences ().actionsManager.allowMultipleActionListWindows == false)
+			if (KickStarter.actionsManager && KickStarter.actionsManager.allowMultipleActionListWindows == false)
 			{
 				return (ActionListEditorWindow) EditorWindow.GetWindow (typeof (ActionListEditorWindow));
 			}
@@ -122,6 +126,9 @@ namespace AC
 				ActionListEditorWindow window = CreateWindow ();
 				window.AssignNewSource (new ActionListEditorWindowData (actionList));
 			}
+
+			ActionListAssetMenu._showALAEditor = ActionListEditorWindow.Init;
+			ActionListAssetMenu.showALEditor = ActionListEditorWindow.Init;
 		}
 
 
@@ -142,19 +149,14 @@ namespace AC
 			windowData = _data;
 			Repaint ();
 			Show ();
+			UpdateScrollLimits ();
 		}
 
 
 		private void OnEnable ()
 		{
-			if (AdvGame.GetReferences ())
-			{
-				if (AdvGame.GetReferences ().actionsManager)
-				{
-					actionsManager = AdvGame.GetReferences ().actionsManager;
-					AdventureCreator.RefreshActions ();
-				}
-			}
+			actionsManager = KickStarter.actionsManager;
+			AdventureCreator.RefreshActions ();
 
 			UnmarkAll ();
 
@@ -183,8 +185,15 @@ namespace AC
 		}
 
 
+		private bool hasManagerMismatch;
 		private void OnGUI ()
 		{
+			if (KickStarter.actionsManager != actionsManager && Event.current.type == EventType.Layout)
+			{
+				actionsManager = KickStarter.actionsManager;
+				AdventureCreator.RefreshActions ();
+			}
+			
 			if (isAutoArranging)
 			{
 				return;
@@ -204,9 +213,37 @@ namespace AC
 				}
 			}
 
-			if (windowData.targetAsset != null)
+			if (Event.current.type == EventType.Layout)
+			{
+				hasManagerMismatch = false;
+				if (windowData.targetAsset || (windowData.target && windowData.target.source == ActionListSource.AssetFile))
+				{
+					if ((KickStarter.settingsManager && Resource.References.settingsManager && KickStarter.settingsManager != Resource.References.settingsManager) ||
+						(KickStarter.actionsManager && Resource.References.actionsManager && KickStarter.actionsManager != Resource.References.actionsManager) ||
+						(KickStarter.variablesManager && Resource.References.variablesManager && KickStarter.variablesManager != Resource.References.variablesManager) ||
+						(KickStarter.inventoryManager && Resource.References.inventoryManager && KickStarter.inventoryManager != Resource.References.inventoryManager) ||
+						(KickStarter.cursorManager && Resource.References.cursorManager && KickStarter.cursorManager != Resource.References.cursorManager))
+					{
+						hasManagerMismatch = true;
+					}
+				}
+			}
+
+			if (hasManagerMismatch)
+			{
+				GUILayout.BeginArea (new Rect (position.width * 0.5f - 300, 50, 600, 40), CustomStyles.Toolbar);
+				GUILayout.Label ("Manager mismatch - your game's Managers are currently overridden by the scene.  Some Actions which\ndepend on your own settings may not appear correctly.");
+				GUILayout.EndArea ();
+			}
+
+			if (dragMode != DragMode.None)
 			{
 				UpdateScrollLimits ();
+			}
+
+			if (windowData.targetAsset != null)
+			{
+				//UpdateScrollLimits ();
 				ActionListAssetEditor.ResetList (windowData.targetAsset);
 
 				if (showProperties)
@@ -221,20 +258,20 @@ namespace AC
 				{
 					DrawGrid ();
 					PanAndZoomWindow (Event.current);
+					DrawGroups (Event.current);
 					NodesGUI (true, Event.current);
 					DrawMarquee (true, Event.current);
 					SearchGUI ();
 				}
 
-				if (GUI.changed)
+				if (GUI.changed && windowData.targetAsset)
 				{
 					EditorUtility.SetDirty (windowData.targetAsset);
 				}
 			}
 			else if (windowData.target != null)
 			{
-
-				UpdateScrollLimits ();
+				//UpdateScrollLimits ();
 				ActionListEditor.ResetList (windowData.target);
 
 				if (showProperties)
@@ -251,13 +288,14 @@ namespace AC
 					{
 						DrawGrid ();
 						PanAndZoomWindow (Event.current);
+						DrawGroups (Event.current);
 						NodesGUI (false, Event.current);
 						DrawMarquee (false, Event.current);
 						SearchGUI ();
 					}
 				}
 
-				if (GUI.changed)
+				if (GUI.changed && windowData.target)
 				{
 					UnityVersionHandler.CustomSetDirty (windowData.target);
 				}
@@ -275,12 +313,12 @@ namespace AC
 		}
 
 
-
+		private bool isPanning;
 		private void PanAndZoomWindow (Event e)
 		{
-			ActionListEditorScrollWheel scrollWheel = (AdvGame.GetReferences () && AdvGame.GetReferences ().actionsManager) ? AdvGame.GetReferences ().actionsManager.actionListEditorScrollWheel : ActionListEditorScrollWheel.PansWindow;
-			bool invertPanning = (AdvGame.GetReferences () && AdvGame.GetReferences ().actionsManager) ? AdvGame.GetReferences ().actionsManager.invertPanning : false;
-			float speedFactor = (AdvGame.GetReferences () && AdvGame.GetReferences ().actionsManager) ? AdvGame.GetReferences ().actionsManager.panSpeed : 1f;
+			ActionListEditorScrollWheel scrollWheel = actionsManager ? actionsManager.actionListEditorScrollWheel : ActionListEditorScrollWheel.PansWindow;
+			bool invertPanning = actionsManager ? actionsManager.invertPanning : false;
+			float speedFactor = actionsManager ? actionsManager.panSpeed : 1f;
 
 			invertPanning = !invertPanning;
 
@@ -299,6 +337,11 @@ namespace AC
 				return;
 			}
 
+			if (e.rawType == EventType.MouseUp)
+			{
+				isPanning = false;
+			}
+				
 			if (e.alt)
 			{
 				scrollWheel = (scrollWheel == ActionListEditorScrollWheel.PansWindow)
@@ -313,11 +356,9 @@ namespace AC
 				Zoom += zoomDelta;
 
 				ScrollPosition = originalMousePos * Zoom - e.mousePosition;
-
 				UseEvent (e);
 			}
-
-			if (scrollWheel == ActionListEditorScrollWheel.PansWindow && e.type == EventType.ScrollWheel)
+			else if (scrollWheel == ActionListEditorScrollWheel.PansWindow && e.type == EventType.ScrollWheel)
 			{
 				Vector2 delta = e.delta * speedFactor * 8f;
 				if (invertPanning)
@@ -328,7 +369,6 @@ namespace AC
 				{
 					ScrollPosition -= delta;
 				}
-
 				UseEvent (e);
 			}
 			else if (e.type == EventType.MouseDrag && e.button == 2)
@@ -342,47 +382,56 @@ namespace AC
 				{
 					ScrollPosition -= delta;
 				}
-
+				isPanning = true;
 				UseEvent (e);
 			}
-			else if (e.type == EventType.KeyDown && !EditorGUIUtility.editingTextField)
+			else
 			{
-				if (e.keyCode == KeyCode.Home)
+				if (e.type == EventType.KeyDown && !EditorGUIUtility.editingTextField)
 				{
-					if (e.alt)
+					if (e.keyCode == KeyCode.Home)
 					{
-						zoom = 1f;
+						if (e.alt)
+						{
+							zoom = 1f;
+						}
+						else
+						{
+							ScrollPosition = Vector2.zero;
+						}
+						UseEvent (e);
 					}
-					else
+					else if (e.keyCode == KeyCode.PageUp)
 					{
-						ScrollPosition = Vector2.zero;
+						if (e.alt)
+						{
+							Zoom += 0.2f;
+						}
+						else
+						{
+							ScrollPosition -= new Vector2 (0f, CanvasHeight);
+						}
+						UseEvent (e);
 					}
-					UseEvent (e);
+					else if (e.keyCode == KeyCode.PageDown)
+					{
+						if (e.alt)
+						{
+							Zoom -= 0.2f;
+						}
+						else
+						{
+							ScrollPosition += new Vector2 (0f, CanvasHeight);
+						}
+						UseEvent (e);
+					}
 				}
-				else if (e.keyCode == KeyCode.PageUp)
-				{
-					if (e.alt)
-					{
-						Zoom += 0.2f;
-					}
-					else
-					{
-						ScrollPosition -= new Vector2 (0f, CanvasHeight);
-					}
-					UseEvent (e);
-				}
-				else if (e.keyCode == KeyCode.PageDown)
-				{
-					if (e.alt)
-					{
-						Zoom -= 0.2f;
-					}
-					else
-					{
-						ScrollPosition += new Vector2 (0f, CanvasHeight);
-					}
-					UseEvent (e);
-				}
+			}
+
+			if (e.type == EventType.Repaint && isPanning)
+			{
+				UpdateGroupRects ();
+				ChangeCursor (MouseCursor.Pan);
 			}
 		}
 
@@ -393,7 +442,7 @@ namespace AC
 			{
 				return;
 			}
-			//if (actionDragging >= 1) GUI.Box (new Rect (dragRectRelative.position + Actions[actionDragging].NodeRect.position - ScrollPosition, dragRectRelative.size), "", CustomStyles.IconMarquee);
+			
 			if (e.type == EventType.MouseDown)
 			{
 				if (e.button == 0 && dragMode == DragMode.None)
@@ -437,6 +486,11 @@ namespace AC
 					UseEvent (e);
 					return;
 				}
+			}
+
+			if (dragMode == DragMode.Node && e.type == EventType.Repaint)
+			{
+				ChangeCursor (MouseCursor.Pan);
 			}
 		}
 
@@ -588,7 +642,7 @@ namespace AC
 
 		private void ApplyEdgePanning (Event e)
 		{
-			bool autoPanNearWindowEdge = (AdvGame.GetReferences () && AdvGame.GetReferences ().actionsManager) ? AdvGame.GetReferences ().actionsManager.autoPanNearWindowEdge : false;
+			bool autoPanNearWindowEdge = actionsManager ? actionsManager.autoPanNearWindowEdge : false;
 			if (!autoPanNearWindowEdge)
 			{
 				return;
@@ -596,7 +650,7 @@ namespace AC
 
 			if (e.type == EventType.MouseDown || e.type == EventType.MouseDrag)
 			{
-				float panningSpeed = (AdvGame.GetReferences () && AdvGame.GetReferences ().actionsManager) ? AdvGame.GetReferences ().actionsManager.panSpeed : 1f;
+				float panningSpeed = actionsManager ? actionsManager.panSpeed : 1f;
 				float maxSpeed = 10f * panningSpeed;
 
 				Vector2 edgeScroll = Vector2.zero;
@@ -823,11 +877,21 @@ namespace AC
 					}
 				}
 			}
+
+			if (e.type == EventType.Repaint && (dragMode == DragMode.ScrollbarHorizontal || dragMode == DragMode.ScrollbarVertical))
+			{
+				ChangeCursor (MouseCursor.Pan);
+			}
 		}
 
 
 		private void DrawMarquee (bool isAsset, Event e)
 		{
+			if (dragMode == DragMode.Group)
+			{
+				return;
+			}
+
 			if (dragMode != DragMode.None && dragMode != DragMode.Marquee)
 			{
 				return;
@@ -883,6 +947,11 @@ namespace AC
 
 			if (dragMode == DragMode.Marquee)
 			{
+				if (e.type == EventType.Repaint)
+				{
+					ChangeCursor (MouseCursor.MoveArrow);
+				}
+
 				if (e.shift)
 				{
 					marqueeShift = true;
@@ -1013,6 +1082,8 @@ namespace AC
 
 		private void UpdateScrollLimits ()
 		{
+			UpdateGroupRects ();
+
 			scrollLimits = Vector2.zero;
 			foreach (Action action in Actions)
 			{
@@ -1076,7 +1147,7 @@ namespace AC
 				{
 					labelText = "Editing " + windowData.target.GetType ().ToString ().Replace ("AC.", "") + ": " + windowData.target.gameObject.name;
 				}
-				labelText += " - " + numActions + " actions";
+				labelText += " - " + numActions + ((numActions == 1) ? " action" : " actions");
 			}
 
 			if (GUI.Button (new Rect (10, 0, 18, 18), "", (windowData.isLocked) ? CustomStyles.IconLock : CustomStyles.IconUnlock))
@@ -1463,7 +1534,7 @@ namespace AC
 			{
 				GUI.enabled = _action.isEnabled;
 
-				int typeIndex = KickStarter.actionsManager.GetActionTypeIndex (_action);
+				int typeIndex = actionsManager.GetActionTypeIndex (_action);
 				int newTypeIndex = ActionListEditor.ShowTypePopup (_action, typeIndex);
 
 				if (newTypeIndex >= 0)
@@ -1599,12 +1670,164 @@ namespace AC
 		}
 
 
+		private void UpdateGroupRects ()
+		{
+			foreach (var group in Groups)
+			{
+				int groupID = group.ID;
+				float minX = Mathf.Infinity, minY = Mathf.Infinity, maxX = 0f, maxY = 0f;
+				foreach (Action action in Actions)
+				{
+					if (action != null && action.groupID == groupID)
+					{
+						minX = Mathf.Min (action.NodeRect.x, minX);
+						minY = Mathf.Min (action.NodeRect.y, minY);
+						maxX = Mathf.Max (action.NodeRect.x + action.NodeRect.width, maxX);
+						maxY = Mathf.Max (action.NodeRect.y + action.NodeRect.height, maxY);
+					}
+				}
+
+				int GroupPadding = 20;
+				minX -= GroupPadding;
+				minY -= GroupPadding;
+				maxX += GroupPadding;
+				maxY += GroupPadding * 3;
+
+				Rect groupRect = new Rect ((minX - ScrollPosition.x) * zoom, (minY - ScrollPosition.y) * zoom, (maxX - minX) * zoom, (maxY - minY) * zoom);
+				group.rect = groupRect;
+			}
+		}
+
+
+		private void DrawGroups (Event e)
+		{
+			if (e.type == EventType.Repaint)
+			{
+				//UpdateGroupRects ();
+
+				foreach (var group in Groups)
+				{
+					GUI.Label (new Rect (group.rect.x, group.rect.y, group.rect.width, 20), group.label, NewGameWizardWindow.ButtonStyle);
+					GUI.color = group.color;
+					GUI.Box (group.rect, string.Empty, CustomStyles.IconMarquee);
+					GUI.color = Color.white;
+				}
+			}
+
+			if (dragMode != DragMode.None && dragMode != DragMode.Group)
+			{
+				return;
+			}
+
+			if (!canDragGroup)
+			{
+				dragMode = DragMode.None;
+				return;
+			}
+
+			if (e.type == EventType.Repaint && dragMode == DragMode.None)
+			{
+				groupDrag = null;
+
+				if (dragMode == DragMode.None && !SearchRect.Contains (e.mousePosition) && e.mousePosition.y > 24 && e.mousePosition.y < CanvasHeight - 22 && e.mousePosition.x < CanvasWidth)
+				{
+					foreach (var group in Groups)
+					{
+						if (IsMouseOverGroupEdge (e.mousePosition, group.rect))
+						{
+							groupDrag = group;
+						}
+					}
+				}
+			}
+
+			if (e.type == EventType.MouseDown && e.button == 0 && dragMode == DragMode.None && groupDrag != null)
+			{
+				dragMode = DragMode.Group;
+				e.Use ();
+				GUI.changed = true;
+			}
+			else if (e.rawType == EventType.MouseUp)
+			{
+				if (dragMode == DragMode.Group)
+				{
+					e.Use ();
+					GUI.changed = true;
+					dragMode = DragMode.None;
+				}
+			}
+			else if (e.type == EventType.MouseDrag && dragMode == DragMode.Group && groupDrag != null)
+			{
+				var groupDragDeltaPosition = e.delta / zoom;
+				if (e.delta.x != 0 || e.delta.y != 0)
+				{
+					foreach (var action in Actions)
+					{
+						if (action.groupID == groupDrag.ID)
+						{
+							Rect nodeRect = action.NodeRect;
+							nodeRect.position += groupDragDeltaPosition;
+							action.NodeRect = nodeRect;
+							GUI.changed = true;
+						}
+					}
+
+					Vector2 overspill = Vector2.zero;
+
+					if (groupDragDeltaPosition.x > 0f)
+					{
+						float rightNodeEdge = groupDrag.rect.xMax;
+						float rightSpill = (rightNodeEdge - CanvasWidth) * Zoom;
+						if (rightSpill > 0f) overspill.x = rightSpill;
+					}
+					else if (groupDragDeltaPosition.x < 0f)
+					{
+						float leftNodeEdge = groupDrag.rect.x;
+						float leftSpill = (leftNodeEdge) * Zoom;
+						if (leftSpill < 0f) overspill.x = leftSpill;
+					}
+					if (groupDragDeltaPosition.y > 0f)
+					{
+						float bottomNodeEdge = groupDrag.rect.yMax + 20;
+						float topSpill = (bottomNodeEdge - CanvasHeight) * Zoom;
+						if (topSpill > 0f) overspill.y = topSpill;
+					}
+					else if (groupDragDeltaPosition.y < 0f)
+					{
+						float topNodeEdge = groupDrag.rect.y;
+						float bottomSpill = (topNodeEdge) * Zoom;
+						if (bottomSpill < 0f) overspill.y = bottomSpill;
+					}
+
+					ScrollPosition += overspill / Zoom;
+				}	
+			}
+
+			if (e.type == EventType.Repaint && groupDrag != null)
+			{
+				ChangeCursor (MouseCursor.MoveArrow);
+			}
+		}
+
+
+		private void ChangeCursor (MouseCursor mouseCursor)
+		{
+			EditorGUIUtility.AddCursorRect (new Rect(0, 0, position.width, position.height), mouseCursor);
+		}
+
+
+		private bool IsMouseOverGroupEdge (Vector2 mousePosition, Rect groupRect)
+		{
+			int padding = 10;
+			Rect expandedRect = new Rect (groupRect.x - padding, groupRect.y - padding, groupRect.width + padding + padding, groupRect.height + padding + padding + padding);
+			Rect shrunkRect = new Rect (groupRect.x + padding, groupRect.y + padding + padding, groupRect.width - padding - padding, groupRect.height - padding - padding - padding);
+
+			return expandedRect.Contains (mousePosition) && !shrunkRect.Contains (mousePosition);
+		}
+
+
 		private void NodesGUI (bool isAsset, Event e)
 		{
-			if (AdvGame.GetReferences () && AdvGame.GetReferences ().actionsManager)
-			{
-				actionsManager = AdvGame.GetReferences ().actionsManager;
-			}
 			if (actionsManager == null)
 			{
 				GUILayout.Space (30f);
@@ -1654,6 +1877,8 @@ namespace AC
 				}
 			}
 			numActions = Actions.Count;
+			ActionListAsset originalAsset = windowData.targetAsset;
+			ActionList originalList = windowData.target;
 
 			DrawScrollbars (e);
 			EditorZoomArea.Begin (zoom, new Rect (0, 24, CanvasWidth, CanvasHeight - 44));
@@ -1663,14 +1888,15 @@ namespace AC
 				BeginWindows ();
 			}
 			catch { return; }
-
 			canMarquee = true;
 
 			DragNodes (e);
+			bool isOverAnyAction = false;
 
 			for (int i = 0; i < numActions; i++)
 			{
 				FixConnections (i, isAsset);
+				if (i >= Actions.Count) continue;
 
 				Action _action = Actions[i];
 
@@ -1706,6 +1932,7 @@ namespace AC
 							(dragMode == DragMode.Wire && _action.NodeRect.Contains (e.mousePosition + ScrollPosition)) ||
 							(dragMode == DragMode.Marquee && (_action.NodeRect.Overlaps (ConvertMarqueeRect ()) || ConvertMarqueeRect ().Overlaps (_action.NodeRect))))
 					{
+						isOverAnyAction = true;
 						nodeStyle = CustomStyles.NodeSelected;
 					}
 					else if (_action.isBreakPoint)
@@ -1805,11 +2032,11 @@ namespace AC
 				LimitWindow (_action);
 				DrawSockets (_action, isAsset, e);
 
-				if (isAsset)
+				if (isAsset && windowData.targetAsset && windowData.targetAsset == originalAsset)
 				{
 					windowData.targetAsset = ActionListAssetEditor.ResizeList (windowData.targetAsset, numActions);
 				}
-				else
+				else if (!isAsset && windowData.target && windowData.target == originalList)
 				{
 					windowData.target = ActionListEditor.ResizeList (windowData.target, numActions);
 				}
@@ -1840,22 +2067,56 @@ namespace AC
 			{
 				bool onSide = (actionChanging.NumSockets > 1);
 				AdvGame.DrawNodeCurve (new Rect (actionChanging.NodeRect.position - ScrollPosition, actionChanging.NodeRect.size), e.mousePosition, Color.black, offsetChanging, onSide, false, actionChanging.isDisplayed);
+
+				if (e.type == EventType.Repaint)
+				{
+					if (isOverAnyAction)
+					{
+						ChangeCursor (MouseCursor.Link);
+					}
+					else
+					{
+						ActionEnd ending = actionChanging.endings[multipleResultType];
+
+						if (ending.resultAction == ResultAction.Stop ||
+							(Actions.IndexOf (actionChanging) == Actions.Count - 1 && ending.resultAction != ResultAction.Skip))
+						{
+							ChangeCursor (MouseCursor.ArrowPlus);
+						}
+						else
+						{
+							ChangeCursor (MouseCursor.ArrowMinus);
+						}
+					}
+				}
 			}
 
 			if (e.type == EventType.ContextClick && dragMode == DragMode.None)
 			{
 				menuPosition = e.mousePosition + ScrollPosition;
 
-				bool clickedInsideAction = false;
+				/*bool clickedInsideAction = false;
 				for (int i = 0; i < Actions.Count; i++)
 				{
 					if (Actions[i] != null && Actions[i].NodeRect.Contains (menuPosition))
 					{
 						clickedInsideAction = true;
 					}
+				}*/
+				
+				bool clickedGroup = false;
+				foreach (var group in Groups)
+				{
+					if (IsMouseOverGroupEdge (e.mousePosition + new Vector2 (0f, 24), group.rect))
+					{
+						CreateGroupMenu (group);
+						clickedGroup = true;
+						break;
+					}
 				}
 
-				if (!clickedInsideAction)
+				//if (!clickedInsideAction)
+				if (!clickedGroup)
 				{
 					CreateEmptyMenu (isAsset);
 				}
@@ -1935,14 +2196,16 @@ namespace AC
 			List<Action> actionList = new List<Action> ();
 			if (isAsset)
 			{
-				actionList = windowData.targetAsset.actions;
+				if (windowData.targetAsset)
+					actionList = windowData.targetAsset.actions;
 			}
 			else
 			{
-				actionList = windowData.target.actions;
+				if (windowData.target)
+					actionList = windowData.target.actions;
 			}
 
-			if (actionList[i] == null) return;
+			if (i < 0 || i >= actionList.Count || actionList[i] == null) return;
 
 			actionList[i].Upgrade ();
 			foreach (ActionEnd ending in actionList[i].endings)
@@ -2038,11 +2301,13 @@ namespace AC
 			List<Action> actionList = new List<Action> ();
 			if (isAsset)
 			{
-				actionList = windowData.targetAsset.actions;
+				if (windowData.targetAsset)
+					actionList = windowData.targetAsset.actions;
 			}
 			else
 			{
-				actionList = windowData.target.actions;
+				if (windowData.target)
+					actionList = windowData.target.actions;
 			}
 
 			int i = actionList.IndexOf (action);
@@ -2207,6 +2472,170 @@ namespace AC
 		}
 
 
+		private void CreateGroupMenu (ActionGroup group)
+		{
+			groupContext = group;
+			EditorGUIUtility.editingTextField = false;
+			GenericMenu menu = new GenericMenu ();
+			menu.AddItem (new GUIContent ("Ungroup all"), false, GroupCallback, "Ungroup all");
+			menu.AddItem (new GUIContent ("Delete group"), false, GroupCallback, "Delete group");
+
+			menu.AddSeparator (string.Empty);
+			menu.AddItem (new GUIContent ("Colour/Default"), false, GroupCallback, "ColorDefault");
+			menu.AddItem (new GUIContent ("Colour/Blue"), false, GroupCallback, "ColorBlue");
+			menu.AddItem (new GUIContent ("Colour/Red"), false, GroupCallback, "ColorRed");
+			menu.AddItem (new GUIContent ("Colour/Green"), false, GroupCallback, "ColorGreen");
+			menu.AddItem (new GUIContent ("Colour/Yellow"), false, GroupCallback, "ColorYellow");
+			menu.AddItem (new GUIContent ("Colour/Cyan"), false, GroupCallback, "ColorCyan");
+			menu.AddItem (new GUIContent ("Colour/Purple"), false, EmptyCallback, "ColorMagenta");
+
+			menu.AddSeparator (string.Empty);
+			menu.AddItem (new GUIContent ("Rename group"), false, GroupCallback, "Rename group");
+
+			Matrix4x4 originalMatrix = GUI.matrix;
+			GUI.matrix = GetMenuScaleMatrix ();
+
+			menu.ShowAsContext ();
+
+			GUI.matrix = originalMatrix;
+		}
+
+
+		private void GroupCallback (object obj)
+		{
+			bool isAsset = windowData.targetAsset != null;
+			string objString = (string) obj;
+			if (groupContext == null) return;
+
+			bool doUndo = objString != "Rename group";
+
+			if (doUndo)
+			{
+				Action[] actionsArray = new Action[0];
+				if (isAsset)
+				{
+					if (windowData.targetAsset.actions != null)
+					{
+						List<Action> actionsAsList = new List<Action> ();
+						foreach (Action action in windowData.targetAsset.actions)
+						{
+							if (action != null) actionsAsList.Add (action);
+						}
+						actionsArray = actionsAsList.ToArray ();
+					}
+				}
+				else
+				{
+					if (windowData.target.actions != null)
+					{
+						List<Action> actionsAsList = new List<Action> ();
+						foreach (Action action in windowData.target.actions)
+						{
+							if (action != null) actionsAsList.Add (action);
+						}
+						actionsArray = actionsAsList.ToArray ();
+					}
+				}
+
+				if (isAsset)
+				{
+					Undo.SetCurrentGroupName (objString);
+					Undo.RecordObjects (new Object[] { windowData.targetAsset }, objString);
+#if !AC_ActionListPrefabs
+					if (actionsArray.Length > 0) Undo.RecordObjects (actionsArray, objString);
+#endif
+				}
+				else
+				{
+					Undo.SetCurrentGroupName (objString);
+					Undo.RecordObjects (new Object[] { windowData.target }, objString);
+#if !AC_ActionListPrefabs
+					if (actionsArray.Length > 0) Undo.RecordObjects (actionsArray, objString);
+#endif
+				}
+			}
+
+			if (objString == "Ungroup all")
+			{
+				foreach (var action in Actions)
+				{
+					if (action.groupID == groupContext.ID)
+					{
+						action.groupID = 0;
+					}
+				}
+				CleanGroups ();
+			}
+			else if (objString == "Delete group")
+			{
+				foreach (var action in Actions)
+				{
+					action.isMarked = action.groupID == groupContext.ID;
+				}
+				PerformEmptyCallBack ("Delete selected");
+				CleanGroups ();
+			}
+			else if (objString == "ColorDefault")
+			{
+				groupContext.color = Color.white;
+			}
+			else if (objString == "ColorBlue")
+			{
+				groupContext.color = Color.blue;
+			}
+			else if (objString == "ColorRed")
+			{
+				groupContext.color = Color.red;
+			}
+			else if (objString == "ColorGreen")
+			{
+				groupContext.color = Color.green;
+			}
+			else if (objString == "ColorYellow")
+			{
+				groupContext.color = Color.yellow;
+			}
+			else if (objString == "ColorCyan")
+			{
+				groupContext.color = Color.cyan;
+			}
+			else if (objString == "ColorMagenta")
+			{
+				groupContext.color = Color.magenta;
+			}
+			else if (objString == "Rename group")
+			{
+				Rect rect = new Rect (groupContext.rect.x, groupContext.rect.y, groupContext.rect.width, 20);
+				rect.position += new Vector2 (position.x, position.y + 20);
+				PopupWindow.Show (rect, new InputTextPopUp (groupContext.label, rect, OnSetGroupLabel));
+			}
+
+			if (doUndo)
+			{
+				Undo.CollapseUndoOperations (Undo.GetCurrentGroup ());
+			}
+
+			if (isAsset)
+			{
+				EditorUtility.SetDirty (windowData.targetAsset);
+			}
+			else
+			{
+				EditorUtility.SetDirty (windowData.target);
+			}
+
+			UpdateScrollLimits ();
+			ScrollPosition = ScrollPosition;
+			Repaint ();
+		}
+
+
+		private void OnSetGroupLabel (string label)
+		{
+			groupContext.label = label;
+		}
+
+
 		private void CreateEmptyMenu (bool isAsset)
 		{
 			EditorGUIUtility.editingTextField = false;
@@ -2217,36 +2646,40 @@ namespace AC
 				menu.AddItem (new GUIContent ("Paste copied Action(s)"), false, EmptyCallback, "Paste copied Action(s)");
 			}
 
-			if (KickStarter.actionsManager.GetNumFavouriteActions () > 0)
+			if (actionsManager.GetNumFavouriteActions () > 0)
 			{
 				for (int j = 1; j < maxFavourites; j++)
 				{
-					string label = KickStarter.actionsManager.GetFavouriteActionLabel (j);
+					string label = actionsManager.GetFavouriteActionLabel (j);
 					if (string.IsNullOrEmpty (label)) continue;
 					menu.AddItem (new GUIContent ("Paste favourite/Slot " + j.ToString () + " (" + label + ")"), false, EmptyCallback, "Paste Favourite " + j.ToString ());
 				}
 			}
 
 			menu.AddSeparator (string.Empty);
-			menu.AddItem (new GUIContent ("Select all"), false, EmptyCallback, "Select all");
+			menu.AddItem (new GUIContent ("Selection/Select all"), false, EmptyCallback, "Select all");
 
 			if (NumActionsMarked > 0)
 			{
-				menu.AddItem (new GUIContent ("Deselect all"), false, EmptyCallback, "Deselect all");
+				menu.AddItem (new GUIContent ("Selection/Deselect all"), false, EmptyCallback, "Deselect all");
 				menu.AddSeparator (string.Empty);
 				if (!Application.isPlaying)
 				{
 					menu.AddItem (new GUIContent ("Cut selected"), false, EmptyCallback, "Cut selected");
 					menu.AddItem (new GUIContent ("Copy selected"), false, EmptyCallback, "Copy selected");
+					menu.AddItem (new GUIContent ("Duplicate selected"), false, EmptyCallback, "Duplicate selected");
 				}
 				menu.AddItem (new GUIContent ("Delete selected"), false, EmptyCallback, "Delete selected");
 				menu.AddSeparator (string.Empty);
-				menu.AddItem (new GUIContent ("Collapse selected"), false, EmptyCallback, "Collapse selected");
-				menu.AddItem (new GUIContent ("Expand selected"), false, EmptyCallback, "Expand selected");
-				menu.AddSeparator (string.Empty);
-				menu.AddItem (new GUIContent ("Comment selected"), false, EmptyCallback, "Comment selected");
-				menu.AddItem (new GUIContent ("Uncomment selected"), false, EmptyCallback, "Uncomment selected");
-				menu.AddSeparator (string.Empty);
+				menu.AddItem (new GUIContent ("Size/Collapse selected"), false, EmptyCallback, "Collapse selected");
+				menu.AddItem (new GUIContent ("Size/Expand selected"), false, EmptyCallback, "Expand selected");
+				//menu.AddSeparator (string.Empty);
+				menu.AddItem (new GUIContent ("Comment/Comment selected"), false, EmptyCallback, "Comment selected");
+				menu.AddItem (new GUIContent ("Comment/Uncomment selected"), false, EmptyCallback, "Uncomment selected");
+				//menu.AddSeparator (string.Empty);
+				menu.AddItem (new GUIContent ("Group/Group selected"), false, EmptyCallback, "Group selected");
+				menu.AddItem (new GUIContent ("Group/Ungroup selected"), false, EmptyCallback, "Ungroup selected");
+				//menu.AddSeparator (string.Empty);
 				menu.AddItem (new GUIContent ("Output sockets/Show"), false, EmptyCallback, "Show output socket(s)");
 				menu.AddItem (new GUIContent ("Output sockets/Hide"), false, EmptyCallback, "Hide output socket(s)");
 
@@ -2260,7 +2693,7 @@ namespace AC
 
 				if (NumActionsMarked == 1)
 				{
-					menu.AddSeparator ("");
+					menu.AddSeparator (string.Empty);
 					menu.AddItem (new GUIContent ("Move to front"), false, EmptyCallback, "Move to front");
 				}
 			}
@@ -2324,13 +2757,16 @@ namespace AC
 			{
 				menu.AddItem (new GUIContent ("Cut"), false, EmptyCallback, "Cut selected");
 				menu.AddItem (new GUIContent ("Copy"), false, EmptyCallback, "Copy selected");
-				if (JsonAction.HasCopyBuffer ())
-				{
-					menu.AddItem (new GUIContent ("Paste after"), false, EmptyCallback, "Paste after");
-				}
+				menu.AddItem (new GUIContent ("Duplicate"), false, EmptyCallback, "Duplicate selected");
+				
 				menu.AddSeparator (string.Empty);
 			}
 			menu.AddItem (new GUIContent ("Insert after"), false, EmptyCallback, "Insert after");
+			menu.AddItem (new GUIContent ("Duplicate after"), false, EmptyCallback, "Duplicate after");
+			if (JsonAction.HasCopyBuffer ())
+			{
+				menu.AddItem (new GUIContent ("Paste after"), false, EmptyCallback, "Paste after");
+			}
 			menu.AddItem (new GUIContent ("Delete"), false, EmptyCallback, "Delete selected");
 
 			if (i > 0)
@@ -2354,13 +2790,23 @@ namespace AC
 
 			for (int j = 1; j <= maxFavourites; j++)
 			{
-				string label = KickStarter.actionsManager.GetFavouriteActionLabel (j);
+				string label = actionsManager.GetFavouriteActionLabel (j);
 				if (!string.IsNullOrEmpty (label)) label = " (" + label + ")";
 				menu.AddItem (new GUIContent ("Favourite/Slot " + j.ToString () + label), false, EmptyCallback, "Set favourite" + j.ToString ());
 			}
 
 			menu.AddSeparator (string.Empty);
 			menu.AddItem (new GUIContent ("Edit Script"), false, EmptyCallback, "EditSource");
+
+			ActionMenuItem[] menuItems = _action.GetMenuItems ();
+			if (menuItems != null && menuItems.Length > 0)
+			{
+				menu.AddSeparator (string.Empty);
+				for (int c = 0; c < menuItems.Length; c++)
+				{
+					menu.AddItem (new GUIContent (menuItems[c].Label), false, EmptyCallback, "Custom" + c.ToString ());
+				}
+			}
 
 			Matrix4x4 originalMatrix = GUI.matrix;
 			GUI.matrix = GetMenuScaleMatrix ();
@@ -2515,6 +2961,33 @@ namespace AC
 
 				List<Action> newActions = JsonAction.CreatePasteBuffer (false);
 				Vector2 firstPosition = new Vector2 (newActions[0].NodeRect.x, newActions[0].NodeRect.y);
+				
+				int sharedGroupID = 0;
+				foreach (Action newAction in newActions)
+				{
+					if (newAction.groupID > 0)
+					{
+						if (sharedGroupID > 0)
+						{
+							if (newAction.groupID != sharedGroupID)
+							{
+								sharedGroupID = -1;
+							}
+						}
+						else if (sharedGroupID == 0)
+						{
+							sharedGroupID = newAction.groupID;
+						}
+					}
+				}
+
+				if (sharedGroupID > 0)
+				{
+					ActionGroup group = new ActionGroup (GetGroupIDArray ());
+					Groups.Add (group);
+					sharedGroupID = group.ID;
+				}
+
 				foreach (Action newAction in newActions)
 				{
 					if (newActions.IndexOf (newAction) == 0)
@@ -2539,6 +3012,8 @@ namespace AC
 						addedAction = ActionListEditor.AddAction (newAction, -1, windowData.target);
 					}
 
+					addedAction.groupID = (sharedGroupID > 0) ? sharedGroupID : 0;
+
 					if (newActions.IndexOf (newAction) == newActions.Count - 1)
 					{
 						if (addedAction.endings != null && addedAction.endings.Count > 0 && addedAction.endings[0].resultAction == ResultAction.Continue)
@@ -2548,10 +3023,11 @@ namespace AC
 					}
 				}
 
-				if (KickStarter.actionsManager.focusOnPastedActions)
+				if (actionsManager.focusOnPastedActions)
 				{
 					FocusOnActions (true, true);
 				}
+				CleanGroups ();
 			}
 			else if (objString == "Select all")
 			{
@@ -2607,6 +3083,55 @@ namespace AC
 					}
 				}
 			}
+			else if (objString == "Group selected")
+			{
+				int firstFoundGroup = 0;
+				foreach (Action action in actionList)
+				{
+					if (action != null && action.isMarked && actionList.IndexOf (action) != 0)
+					{
+						if (firstFoundGroup <= 0 && action.groupID > 0)
+						{
+							firstFoundGroup = action.groupID;
+						}
+					}
+				}
+
+				if (firstFoundGroup > 0)
+				{
+					foreach (Action action in actionList)
+					{
+						if (action != null && action.isMarked && actionList.IndexOf (action) != 0)
+						{
+							action.groupID = firstFoundGroup;
+						}
+					}
+				}
+				else
+				{
+					ActionGroup group = new ActionGroup (GetGroupIDArray ());
+					Groups.Add (group);
+					foreach (Action action in actionList)
+					{
+						if (action != null && action.isMarked && actionList.IndexOf (action) != 0)
+						{
+							action.groupID = group.ID;
+						}
+					}
+				}
+				CleanGroups ();
+			}
+			else if (objString == "Ungroup selected")
+			{
+				foreach (Action action in actionList)
+				{
+					if (action != null && action.isMarked)
+					{
+						action.groupID = 0;
+					}
+				}
+				CleanGroups ();
+			}
 			else if (objString == "Show output socket(s)")
 			{
 				foreach (Action action in actionList)
@@ -2654,6 +3179,12 @@ namespace AC
 				}
 
 				JsonAction.ToCopyBuffer (copyList);
+			}
+			else if (objString == "Duplicate selected")
+			{
+				PerformEmptyCallBack ("Copy selected");
+				PerformEmptyCallBack ("Paste copied Action(s)");
+				JsonAction.ClearCopyBuffer ();
 			}
 			else if (objString == "Delete selected")
 			{
@@ -2839,6 +3370,21 @@ namespace AC
 					}
 				}
 			}
+			else if (objString == "Duplicate after")
+			{
+				foreach (Action action in actionList)
+				{
+					if (action != null && action.isMarked)
+					{
+						Action actionToDuplicate = action;
+						PerformEmptyCallBack ("Copy selected");
+						actionToDuplicate.isMarked = true;
+						PerformEmptyCallBack ("Paste after");
+						JsonAction.ClearCopyBuffer ();
+						break;
+					}
+				}
+			}
 			else if (objString == "Paste after")
 			{
 				foreach (Action action in actionList)
@@ -3016,7 +3562,7 @@ namespace AC
 			else if (objString.StartsWith ("Set favourite"))
 			{
 				int _favouriteID = -1;
-				string favouriteIDText = objString.Substring (12);
+				string favouriteIDText = objString.Substring (13);
 
 				if (int.TryParse (favouriteIDText, out _favouriteID))
 				{
@@ -3024,7 +3570,7 @@ namespace AC
 					{
 						if (action != null && action.isMarked)
 						{
-							KickStarter.actionsManager.SetFavourite (action, _favouriteID);
+							actionsManager.SetFavourite (action, _favouriteID);
 							action.isMarked = false;
 							break;
 						}
@@ -3038,7 +3584,7 @@ namespace AC
 
 				if (int.TryParse (favouriteIDText, out _favouriteID))
 				{
-					Action newAction = KickStarter.actionsManager.GenerateFavouriteAction (_favouriteID);
+					Action newAction = actionsManager.GenerateFavouriteAction (_favouriteID);
 					{
 						Action currentAction = actionList[actionList.Count - 1];
 						if (currentAction != null && currentAction.endings.Count > 0 && currentAction.endings[0].resultAction == ResultAction.Continue)
@@ -3068,6 +3614,26 @@ namespace AC
 					{
 						Action.EditSource (action);
 						action.isMarked = false;
+					}
+				}
+			}
+			else if (objString.StartsWith ("Custom"))
+			{
+				string postCustom = objString.Substring ("Custom".Length);
+				int customIndex = 0;
+				if (int.TryParse (postCustom, out customIndex))
+				{
+					foreach (Action action in actionList)
+					{
+						if (action != null && action.isMarked)
+						{
+							if (action.GetMenuItems ().Length > customIndex &&
+								action.GetMenuItems ()[customIndex].Callback != null)
+							{
+								action.GetMenuItems ()[customIndex].Callback.Invoke (Actions);
+								break;
+							}
+						}
 					}
 				}
 			}
@@ -3170,6 +3736,43 @@ namespace AC
 		}
 
 
+		private int[] GetGroupIDArray ()
+		{
+			List<int> idArray = new List<int>();
+			foreach (ActionGroup group in Groups)
+			{
+				idArray.Add (group.ID);
+			}
+			idArray.Sort ();
+			return idArray.ToArray ();
+		}
+
+
+		private void CleanGroups ()
+		{
+			for (int i = 0; i < Groups.Count; i++)
+			{
+				int groupID = Groups[i].ID;
+				bool foundUsage = false;
+				foreach (Action action in Actions)
+				{
+					if (action == null) continue;
+					if (action.groupID == groupID)
+					{
+						foundUsage = true;
+						break;
+					}
+				}
+				if (!foundUsage)
+				{
+					if (groupDrag == Groups[i]) groupDrag = null;
+					Groups.RemoveAt (i);
+					i--;
+				}
+			}
+		}
+
+
 		private void AutoArrange (bool onlyMarked = false)
 		{
 			List<Action> actionList = new List<Action> ();
@@ -3223,7 +3826,7 @@ namespace AC
 			Vector2 startPosition = actionList[0].NodeRect.position;
 
 			DisplayActionsInEditor _display = DisplayActionsInEditor.ArrangedVertically;
-			if (AdvGame.GetReferences ().actionsManager && AdvGame.GetReferences ().actionsManager.displayActionsInEditor == DisplayActionsInEditor.ArrangedHorizontally)
+			if (actionsManager && actionsManager.displayActionsInEditor == DisplayActionsInEditor.ArrangedHorizontally)
 			{
 				_display = DisplayActionsInEditor.ArrangedHorizontally;
 			}
@@ -3452,7 +4055,7 @@ namespace AC
 
 			// Got multiple, choose by position
 			DisplayActionsInEditor _display = DisplayActionsInEditor.ArrangedVertically;
-			if (AdvGame.GetReferences ().actionsManager && AdvGame.GetReferences ().actionsManager.displayActionsInEditor == DisplayActionsInEditor.ArrangedHorizontally)
+			if (actionsManager && actionsManager.displayActionsInEditor == DisplayActionsInEditor.ArrangedHorizontally)
 			{
 				_display = DisplayActionsInEditor.ArrangedHorizontally;
 			}
@@ -3657,6 +4260,23 @@ namespace AC
 				if (windowData.target != null)
 				{
 					return windowData.target.actions;
+				}
+				return null;
+			}
+		}
+
+
+		private List<ActionGroup> Groups
+		{
+			get
+			{
+				if (windowData.targetAsset != null)
+				{
+					return windowData.targetAsset.groups;
+				}
+				if (windowData.target != null)
+				{
+					return windowData.target.groups;
 				}
 				return null;
 			}

@@ -72,7 +72,6 @@ MonoBehaviour:
     carryOnStartID: -1
     useSeparateSlots: 0
     selectSingle: 0
-    showInFilter: 1
   - label: Cookie
     id: 1
     altLabel: "\u041F\u0435\u0447\u0435\u043D\u044C\u043A\u0438"
@@ -128,7 +127,6 @@ MonoBehaviour:
     carryOnStartID: -1
     useSeparateSlots: 0
     selectSingle: 0
-    showInFilter: 1
   - label: HamsterTrap
     id: 2
     altLabel: "\u041B\u043E\u0432\u0443\u0448\u043A\u0430 \u0434\u043B\u044F \u0445\u043E\u043C\u044F\u043A\u0430"
@@ -184,7 +182,6 @@ MonoBehaviour:
     carryOnStartID: -1
     useSeparateSlots: 0
     selectSingle: 0
-    showInFilter: 1
   bins: []
   invVars: []
   unhandledCombine: {fileID: 0}
@@ -193,7 +190,197 @@ MonoBehaviour:
   unhandledGive: {fileID: 0}
   recipes: []
   documents: []
-  objectives: []
+  objectives:
+  - ID: 0
+    title: Prologue1
+    titleLineID: -1
+    description: Complition of prologue
+    descriptionLineID: -1
+    perPlayer: 0
+    texture: {fileID: 0}
+    states:
+    - ID: 0
+      label: Started
+      labelLineID: -1
+      description: 
+      descriptionLineID: -1
+      stateType: 1
+      actionListOnEnter: {fileID: 0}
+      autoStartSubObjectives: 0
+      autoStateIDOnAllSubObsCompletePlusOne: 0
+      autoStateIDOnAnySubObsCompletePlusOne: 0
+      autoStateIDOnAllSubObsFailPlusOne: 0
+      autoStateIDOnAnySubObsFailPlusOne: 0
+      linkedCategoryIDPlusOne: 0
+    - ID: 1
+      label: Completed
+      labelLineID: -1
+      description: 
+      descriptionLineID: -1
+      stateType: 2
+      actionListOnEnter: {fileID: 0}
+      autoStartSubObjectives: 0
+      autoStateIDOnAllSubObsCompletePlusOne: 0
+      autoStateIDOnAnySubObsCompletePlusOne: 0
+      autoStateIDOnAllSubObsFailPlusOne: 0
+      autoStateIDOnAnySubObsFailPlusOne: 0
+      linkedCategoryIDPlusOne: 0
+    lockStateWhenComplete: 0
+    lockStateWhenFail: 1
+    binID: -1
+    vars: []
+  - ID: 1
+    title: Prologue2A
+    titleLineID: -1
+    description: 
+    descriptionLineID: -1
+    perPlayer: 0
+    texture: {fileID: 0}
+    states:
+    - ID: 0
+      label: Started
+      labelLineID: -1
+      description: 
+      descriptionLineID: -1
+      stateType: 1
+      actionListOnEnter: {fileID: 0}
+      autoStartSubObjectives: 0
+      autoStateIDOnAllSubObsCompletePlusOne: 0
+      autoStateIDOnAnySubObsCompletePlusOne: 0
+      autoStateIDOnAllSubObsFailPlusOne: 0
+      autoStateIDOnAnySubObsFailPlusOne: 0
+      linkedCategoryIDPlusOne: 0
+    - ID: 1
+      label: Completed
+      labelLineID: -1
+      description: 
+      descriptionLineID: -1
+      stateType: 2
+      actionListOnEnter: {fileID: 0}
+      autoStartSubObjectives: 0
+      autoStateIDOnAllSubObsCompletePlusOne: 0
+      autoStateIDOnAnySubObsCompletePlusOne: 0
+      autoStateIDOnAllSubObsFailPlusOne: 0
+      autoStateIDOnAnySubObsFailPlusOne: 0
+      linkedCategoryIDPlusOne: 0
+    lockStateWhenComplete: 0
+    lockStateWhenFail: 1
+    binID: -1
+    vars: []
+  - ID: 2
+    title: Prologue2B
+    titleLineID: -1
+    description: 
+    descriptionLineID: -1
+    perPlayer: 0
+    texture: {fileID: 0}
+    states:
+    - ID: 0
+      label: Started
+      labelLineID: -1
+      description: 
+      descriptionLineID: -1
+      stateType: 1
+      actionListOnEnter: {fileID: 0}
+      autoStartSubObjectives: 0
+      autoStateIDOnAllSubObsCompletePlusOne: 0
+      autoStateIDOnAnySubObsCompletePlusOne: 0
+      autoStateIDOnAllSubObsFailPlusOne: 0
+      autoStateIDOnAnySubObsFailPlusOne: 0
+      linkedCategoryIDPlusOne: 0
+    - ID: 1
+      label: Completed
+      labelLineID: -1
+      description: 
+      descriptionLineID: -1
+      stateType: 2
+      actionListOnEnter: {fileID: 0}
+      autoStartSubObjectives: 0
+      autoStateIDOnAllSubObsCompletePlusOne: 0
+      autoStateIDOnAnySubObsCompletePlusOne: 0
+      autoStateIDOnAllSubObsFailPlusOne: 0
+      autoStateIDOnAnySubObsFailPlusOne: 0
+      linkedCategoryIDPlusOne: 0
+    lockStateWhenComplete: 0
+    lockStateWhenFail: 1
+    binID: -1
+    vars: []
+  - ID: 3
+    title: Prologue3A
+    titleLineID: -1
+    description: 
+    descriptionLineID: -1
+    perPlayer: 0
+    texture: {fileID: 0}
+    states:
+    - ID: 0
+      label: Started
+      labelLineID: -1
+      description: 
+      descriptionLineID: -1
+      stateType: 1
+      actionListOnEnter: {fileID: 0}
+      autoStartSubObjectives: 0
+      autoStateIDOnAllSubObsCompletePlusOne: 0
+      autoStateIDOnAnySubObsCompletePlusOne: 0
+      autoStateIDOnAllSubObsFailPlusOne: 0
+      autoStateIDOnAnySubObsFailPlusOne: 0
+      linkedCategoryIDPlusOne: 0
+    - ID: 1
+      label: Completed
+      labelLineID: -1
+      description: 
+      descriptionLineID: -1
+      stateType: 2
+      actionListOnEnter: {fileID: 0}
+      autoStartSubObjectives: 0
+      autoStateIDOnAllSubObsCompletePlusOne: 0
+      autoStateIDOnAnySubObsCompletePlusOne: 0
+      autoStateIDOnAllSubObsFailPlusOne: 0
+      autoStateIDOnAnySubObsFailPlusOne: 0
+      linkedCategoryIDPlusOne: 0
+    lockStateWhenComplete: 0
+    lockStateWhenFail: 1
+    binID: -1
+    vars: []
+  - ID: 4
+    title: Prologue3B
+    titleLineID: -1
+    description: 
+    descriptionLineID: -1
+    perPlayer: 0
+    texture: {fileID: 0}
+    states:
+    - ID: 0
+      label: Started
+      labelLineID: -1
+      description: 
+      descriptionLineID: -1
+      stateType: 1
+      actionListOnEnter: {fileID: 0}
+      autoStartSubObjectives: 0
+      autoStateIDOnAllSubObsCompletePlusOne: 0
+      autoStateIDOnAnySubObsCompletePlusOne: 0
+      autoStateIDOnAllSubObsFailPlusOne: 0
+      autoStateIDOnAnySubObsFailPlusOne: 0
+      linkedCategoryIDPlusOne: 0
+    - ID: 1
+      label: Completed
+      labelLineID: -1
+      description: 
+      descriptionLineID: -1
+      stateType: 2
+      actionListOnEnter: {fileID: 0}
+      autoStartSubObjectives: 0
+      autoStateIDOnAllSubObsCompletePlusOne: 0
+      autoStateIDOnAnySubObsCompletePlusOne: 0
+      autoStateIDOnAllSubObsFailPlusOne: 0
+      autoStateIDOnAnySubObsFailPlusOne: 0
+      linkedCategoryIDPlusOne: 0
+    lockStateWhenComplete: 0
+    lockStateWhenFail: 1
+    binID: -1
+    vars: []
   objectiveStateActiveLabel:
     label: Active
     lineID: -1

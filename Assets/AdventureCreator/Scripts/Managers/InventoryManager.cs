@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"InventoryManager.cs"
  * 
@@ -110,11 +110,11 @@ namespace AC
 
 
 		/** Shows the GUI. */
-		public void ShowGUI (Rect windowRect)
+		public void ShowGUI (Rect windowRect, System.Action<ActionListAsset> showALAEditor)
 		{
 			EditorGUILayout.Space ();
-			GUILayout.BeginHorizontal ();
 
+			GUILayout.BeginHorizontal ();
 			GUILayoutOption tabWidth = GUILayout.Width (windowRect.width / 3f - 5f); //GUILayout.MinWidth (60f);
 
 			string label = (items.Count > 0) ? ("Items (" + items.Count + ")") : "Items";
@@ -165,11 +165,11 @@ namespace AC
 			}
 			else if (showCraftingTab)
 			{
-				CraftingGUI ();
+				CraftingGUI (showALAEditor);
 			}
 			else if (showItemsTab)
 			{
-				ItemsGUI ();
+				ItemsGUI (showALAEditor);
 			}
 			else if (showPropertiesTab)
 			{
@@ -181,7 +181,7 @@ namespace AC
 			}
 			else if (showObjectivesTab)
 			{
-				ObjectivesGUI ();
+				ObjectivesGUI (showALAEditor);
 			}
 			
 			if (GUI.changed)
@@ -191,26 +191,26 @@ namespace AC
 		}
 		
 		
-		private void ItemsGUI ()
+		private void ItemsGUI (System.Action<ActionListAsset> showALAEditor)
 		{
-			EditorGUILayout.BeginVertical (CustomStyles.thinBox);
 			showUnhandledEvents = CustomGUILayout.ToggleHeader (showUnhandledEvents, "Global unhandled events");
 			if (showUnhandledEvents)
 			{
+				CustomGUILayout.BeginVertical ();
 				unhandledCombine = ActionListAssetMenu.AssetGUI ("Combine:", unhandledCombine, "Inventory_Unhandled_Combine", "AC.KickStarter.runtimeInventory.unhandledCombine", "The default ActionList asset to run if an inventory combination is unhandled");
 				unhandledHotspot = ActionListAssetMenu.AssetGUI ("Use on hotspot:", unhandledHotspot, "Inventory_Unhandled_Hotspot", "AC.KickStarter.runtimeInventory.unhandledHotspot", "The default ActionList asset to run if using an inventory item on a Hotspot is unhandled");
-				if (KickStarter.settingsManager != null && KickStarter.settingsManager.CanGiveItems ())
+				if (KickStarter.settingsManager && KickStarter.settingsManager.CanGiveItems ())
 				{
 					unhandledGive = ActionListAssetMenu.AssetGUI ("Give:", unhandledGive, "Inventory_Unhandled_Give", "AC.KickStarter.runtimeInventory.unhandledGive", "The default ActionList asset to run if giving an inventory item to an NPC is unhandled ");
 				}
 
-				passUnhandledHotspotAsParameter = CustomGUILayout.ToggleLeft ("Pass Hotspot as GameObject parameter to unhandled interactions?", passUnhandledHotspotAsParameter, "AC.KickStarter.inventoryManager.passUnhandledHotspotAsParameter", "If True, the Hotspot clicked on to initiate unhandledHotspot will be sent as a parameter to the ActionList asset");
+				passUnhandledHotspotAsParameter = CustomGUILayout.ToggleLeft ("Pass Hotspot as GO parameter to unhandled interactions?", passUnhandledHotspotAsParameter, "AC.KickStarter.inventoryManager.passUnhandledHotspotAsParameter", "If True, the Hotspot clicked on to initiate unhandledHotspot will be sent as a parameter to the ActionList asset");
 				if (passUnhandledHotspotAsParameter && unhandledHotspot != null)
 				{
 					EditorGUILayout.HelpBox ("The Hotspot will be set as " + unhandledHotspot.name + "'s first parameter, which must be set to type 'GameObject'.", MessageType.Info);
 				}
+				CustomGUILayout.EndVertical ();
 			}
-			CustomGUILayout.EndVertical ();
 
 			List<string> binList = new List<string>();
 			foreach (InvBin bin in bins)
@@ -226,13 +226,13 @@ namespace AC
 			{
 				string apiPrefix = "AC.KickStarter.runtimeInventory.GetItem (" + selectedItem.id + ")";
 
-				EditorGUILayout.BeginVertical (CustomStyles.thinBox);
 				showItemProperties = CustomGUILayout.ToggleHeader (showItemProperties, "Inventory item '" + selectedItem.label + "' settings");
 				if (showItemProperties)
 				{
-					selectedItem.ShowGUI (apiPrefix);
+					CustomGUILayout.BeginVertical ();
+					selectedItem.ShowGUI (apiPrefix, showALAEditor);
+					CustomGUILayout.EndVertical ();
 				}
-				CustomGUILayout.EndVertical ();
 			}
 		}
 
@@ -247,10 +247,10 @@ namespace AC
 
 		private void BinsGUI ()
 		{
-			EditorGUILayout.BeginVertical (CustomStyles.thinBox);
 			showCategoriesList = CustomGUILayout.ToggleHeader (showCategoriesList, "Categories");
 			if (showCategoriesList)
 			{
+				CustomGUILayout.BeginVertical ();
 				CustomGUILayout.UpdateDrag (DragBinKey, lastDragBinOver, lastDragBinOver != null ? lastDragBinOver.label : string.Empty, ref ignoreDrag, OnCompleteDragBin);
 				if (Event.current.type == EventType.Repaint)
 				{
@@ -258,7 +258,7 @@ namespace AC
 					lastSwapIndex = -1;
 				}
 
-				scrollPos = EditorGUILayout.BeginScrollView (scrollPos, GUILayout.Height (Mathf.Min (bins.Count * 22, ACEditorPrefs.MenuItemsBeforeScroll * 22) + 9));
+				CustomGUILayout.BeginScrollView (ref scrollPos, bins.Count);
 				for (int i = 0; i < bins.Count; i++)
 				{
 					InvBin bin = bins[i];
@@ -291,21 +291,13 @@ namespace AC
 						CustomGUILayout.DrawDragLine (i, ref lastSwapIndex);
 					}
 				}
-				EditorGUILayout.EndScrollView ();
+				CustomGUILayout.EndScrollView ();
 
 				EditorGUILayout.Space ();
 				if (GUILayout.Button ("Create new category"))
 				{
 					Undo.RecordObject (this, "Create new category");
-					List<int> idArray = new List<int>();
-					foreach (InvBin bin in bins)
-					{
-						idArray.Add (bin.id);
-					}
-					idArray.Sort ();
-
-					InvBin newBin = new InvBin (idArray.ToArray ());
-					bins.Add (newBin);
+					InvBin newBin = CreateNewCategory ();
 
 					DeactivateAllCategories ();
 					ActivateCategory (newBin);
@@ -321,24 +313,23 @@ namespace AC
 						}
 					}
 				}
+				CustomGUILayout.EndVertical ();
 			}
-			CustomGUILayout.EndVertical ();
 
 			EditorGUILayout.Space ();
 
 			if (selectedCategory != null && bins.Contains (selectedCategory))
 			{
-				EditorGUILayout.BeginVertical (CustomStyles.thinBox);
-
 				showSelectedCategory = CustomGUILayout.ToggleHeader (showSelectedCategory, "Category #" + selectedCategory.EditorLabel);
 				if (showSelectedCategory)
 				{
+					CustomGUILayout.BeginVertical ();
 					selectedCategory.label = CustomGUILayout.TextField ("Category name:", selectedCategory.label, "AC.KickStarter.inventoryManager.GetCategory (" + selectedCategory.id + ").label", "The category's editor name");
 					selectedCategory.forItems = CustomGUILayout.Toggle ("Available to Items?", selectedCategory.forItems, "AC.KickStarter.inventoryManager.GetCategory (" + selectedCategory.id + ").forItems", "If True, the category is avaiable for Inventory items to use");
-					selectedCategory.forDocuments = CustomGUILayout.Toggle ("Avaiable to Documents?", selectedCategory.forDocuments, "AC.KickStarter.inventoryManager.GetCategory (" + selectedCategory.id + ").forDocuments", "If True, the category is avaiable for Documents to use");
-					selectedCategory.forObjectives = CustomGUILayout.Toggle ("Avaiable to Objectives?", selectedCategory.forObjectives, "AC.KickStarter.inventoryManager.GetCategory (" + selectedCategory.id + ").forObjectives", "If True, the category is avaiable for Objectives to use");
+					selectedCategory.forDocuments = CustomGUILayout.Toggle ("Available to Documents?", selectedCategory.forDocuments, "AC.KickStarter.inventoryManager.GetCategory (" + selectedCategory.id + ").forDocuments", "If True, the category is avaiable for Documents to use");
+					selectedCategory.forObjectives = CustomGUILayout.Toggle ("Available to Objectives?", selectedCategory.forObjectives, "AC.KickStarter.inventoryManager.GetCategory (" + selectedCategory.id + ").forObjectives", "If True, the category is avaiable for Objectives to use");
+					CustomGUILayout.EndVertical ();
 				}
-				CustomGUILayout.EndVertical ();
 			}
 		}
 
@@ -411,11 +402,11 @@ namespace AC
 			if (selectedInvVar != null && invVars.Contains (selectedInvVar))
 			{
 				string apiPrefix = "AC.KickStarter.variablesManager.GetProperty (" + selectedInvVar.id + ")";
-				EditorGUILayout.BeginVertical (CustomStyles.thinBox);
 
 				showPropertiesProperties = CustomGUILayout.ToggleHeader (showPropertiesProperties, "Inventory property '" + selectedInvVar.label + "' properties");
 				if (showPropertiesProperties)
 				{
+					CustomGUILayout.BeginVertical ();
 					selectedInvVar.label = CustomGUILayout.TextField ("Name:", selectedInvVar.label, apiPrefix + ".label", "Its editor name");
 					selectedInvVar.type = (VariableType) CustomGUILayout.EnumPopup ("Type:", selectedInvVar.type, apiPrefix + ".type", "Its variable type");
 
@@ -430,36 +421,32 @@ namespace AC
 						VariablesManager.ShowPopUpLabelsGUI (selectedInvVar, true);
 					}
 					
-					selectedInvVar.limitToCategories = EditorGUILayout.BeginToggleGroup (new GUIContent ("Limit to set categories?", "If True, then the property will be limited to inventory items within certain categories"), selectedInvVar.limitToCategories);
+					EditorGUILayout.Space ();
+					selectedInvVar.limitToCategories = EditorGUILayout.Toggle (new GUIContent ("Limit to set categories?", "If True, then the property will be limited to inventory items within certain categories"), selectedInvVar.limitToCategories);
 
-					if (bins.Count > 0)
+					if (selectedInvVar.limitToCategories)
 					{
-						List<int> newCategoryIDs = new List<int>();
-						foreach (InvBin bin in bins)
+						if (bins.Count > 0)
 						{
-							if (!bin.forItems) continue;
-
-							bool usesCategory = false;
-							if (selectedInvVar.categoryIDs.Contains (bin.id))
+							List<int> newCategoryIDs = new List<int>();
+							foreach (InvBin bin in bins)
 							{
-								usesCategory = true;
+								bool usesCategory = selectedInvVar.categoryIDs.Contains (bin.id);
+								usesCategory = CustomGUILayout.ToggleLeft ("Use in '" + bin.label + "'?", usesCategory, apiPrefix + ".categoryIDs");
+								if (usesCategory)
+								{
+									newCategoryIDs.Add (bin.id);
+								}
 							}
-							usesCategory = CustomGUILayout.Toggle ("Use in '" + bin.label + "'?", usesCategory, apiPrefix + ".categoryIDs");
-							
-							if (usesCategory)
-							{
-								newCategoryIDs.Add (bin.id);
-							}
+							selectedInvVar.categoryIDs = newCategoryIDs;
 						}
-						selectedInvVar.categoryIDs = newCategoryIDs;
+						else
+						{
+							EditorGUILayout.HelpBox ("No categories are defined!", MessageType.Warning);
+						}
 					}
-					else if (selectedInvVar.limitToCategories)
-					{
-						EditorGUILayout.HelpBox ("No categories are defined!", MessageType.Warning);
-					}
-					EditorGUILayout.EndToggleGroup ();
+					CustomGUILayout.EndVertical ();
 				}
-				CustomGUILayout.EndVertical ();
 			}
 			
 			if (GUI.changed)
@@ -467,6 +454,14 @@ namespace AC
 				foreach (InvItem item in items)
 				{
 					item.RebuildProperties ();
+				}
+				foreach (Document document in documents)
+				{
+					document.RebuildProperties ();
+				}
+				foreach (Objective objective in objectives)
+				{
+					objective.RebuildProperties ();
 				}
 			}
 		}
@@ -490,10 +485,10 @@ namespace AC
 
 		private void DocumentsGUI (float windowWidth)
 		{
-			EditorGUILayout.BeginVertical (CustomStyles.thinBox);
 			showDocumentsList = CustomGUILayout.ToggleHeader (showDocumentsList, "Documents");
 			if (showDocumentsList)
 			{
+				CustomGUILayout.BeginVertical ();
 				CustomGUILayout.UpdateDrag (DragDocumentKey, lastDragDocumentOver, lastDragDocumentOver != null ? lastDragDocumentOver.title : string.Empty, ref ignoreDrag, OnCompleteDragDocument);
 				if (Event.current.type == EventType.Repaint)
 				{
@@ -501,7 +496,7 @@ namespace AC
 					lastSwapIndex = -1;
 				}
 
-				scrollPos = EditorGUILayout.BeginScrollView (scrollPos, GUILayout.Height (Mathf.Min (documents.Count * 22, ACEditorPrefs.MenuItemsBeforeScroll * 22) + 9));
+				CustomGUILayout.BeginScrollView (ref scrollPos, documents.Count);
 				for (int i = 0; i < documents.Count; i++)
 				{
 					Document document = documents[i];
@@ -535,7 +530,7 @@ namespace AC
 						CustomGUILayout.DrawDragLine (i, ref lastSwapIndex);
 					}
 				}
-				EditorGUILayout.EndScrollView ();
+				CustomGUILayout.EndScrollView ();
 
 				EditorGUILayout.Space ();
 				if (GUILayout.Button ("Create new Document"))
@@ -564,24 +559,18 @@ namespace AC
 						ActivateDocument (newDocument);
 					}
 				}
+				CustomGUILayout.EndVertical ();
 			}
-			CustomGUILayout.EndVertical ();
 
 			EditorGUILayout.Space ();
 
 			if (selectedDocument != null && documents.Contains (selectedDocument))
 			{
-				EditorGUILayout.BeginVertical (CustomStyles.thinBox);
-
 				showSelectedDocument = CustomGUILayout.ToggleHeader (showSelectedDocument, "Document #" + selectedDocument.ID + ": " + selectedDocument.Title);
 				if (showSelectedDocument)
 				{
 					string apiPrefix = "AC.KickStarter.inventoryManager.GetDocument (" + selectedDocument.ID + ")";
 					selectedDocument.ShowGUI (apiPrefix, bins, windowWidth);
-				}
-				else
-				{
-					CustomGUILayout.EndVertical ();
 				}
 			}
 		}
@@ -706,7 +695,7 @@ namespace AC
 
 		public static int DocumentSelectorList (int ID, string label = "Document:")
 		{
-			if (KickStarter.inventoryManager != null && KickStarter.inventoryManager.documents != null && KickStarter.inventoryManager.documents.Count > 0)
+			if (KickStarter.inventoryManager && KickStarter.inventoryManager.documents != null && KickStarter.inventoryManager.documents.Count > 0)
 			{
 				int tempNumber = -1;
 
@@ -777,12 +766,12 @@ namespace AC
 		private Objective selectedObjective;
 		private int sideObjective = -1;
 
-		private void ObjectivesGUI ()
+		private void ObjectivesGUI (System.Action<ActionListAsset> showALAEditor)
 		{
-			EditorGUILayout.BeginVertical (CustomStyles.thinBox);
 			showObjectivesList = CustomGUILayout.ToggleHeader (showObjectivesList, "Objectives");
 			if (showObjectivesList)
 			{
+				CustomGUILayout.BeginVertical ();
 				CustomGUILayout.UpdateDrag (DragObjectiveKey, lastDragObjectiveOver, lastDragObjectiveOver != null ? lastDragObjectiveOver.Title : string.Empty, ref ignoreDrag, OnCompleteDragObjective);
 				if (Event.current.type == EventType.Repaint)
 				{
@@ -826,7 +815,7 @@ namespace AC
 
 				if (numObjectivesInFilter > 0)
 				{
-					scrollPos = EditorGUILayout.BeginScrollView (scrollPos, GUILayout.Height (Mathf.Min (numObjectivesInFilter * 22, ACEditorPrefs.MenuItemsBeforeScroll * 22) + 9));
+					CustomGUILayout.BeginScrollView (ref scrollPos, numObjectivesInFilter);
 					for (int i = 0; i < objectives.Count; i++)
 					{
 						Objective objective = objectives[i];
@@ -875,7 +864,7 @@ namespace AC
 							CustomGUILayout.DrawDragLine (i, ref lastSwapIndex);
 						}
 					}
-					EditorGUILayout.EndScrollView ();
+					CustomGUILayout.EndScrollView ();
 				}
 
 				EditorGUILayout.Space ();
@@ -897,24 +886,18 @@ namespace AC
 					DeactivateAllObjectives ();
 					ActivateObjective (newObjective);
 				}
+				CustomGUILayout.EndVertical ();
 			}
-			CustomGUILayout.EndVertical ();
 
 			EditorGUILayout.Space ();
 
 			if (selectedObjective != null && objectives.Contains (selectedObjective))
 			{
-				EditorGUILayout.BeginVertical (CustomStyles.thinBox);
-
 				showSelectedObjective = CustomGUILayout.ToggleHeader (showSelectedObjective, "Objective #" + selectedObjective.ID + ": " + selectedObjective.Title);
 				if (showSelectedObjective)
 				{
 					string apiPrefix = "AC.KickStarter.inventoryManager.GetObjective (" + selectedObjective.ID + ")";
-					selectedObjective.ShowGUI (apiPrefix);
-				}
-				else
-				{
-					CustomGUILayout.EndVertical ();
+					selectedObjective.ShowGUI (apiPrefix, showALAEditor);
 				}
 			}
 		}
@@ -1028,7 +1011,7 @@ namespace AC
 
 		public static int ObjectiveSelectorList (int ID, string label = "Objective:")
 		{
-			if (KickStarter.inventoryManager != null && KickStarter.inventoryManager.objectives != null && KickStarter.inventoryManager.objectives.Count > 0)
+			if (KickStarter.inventoryManager && KickStarter.inventoryManager.objectives != null && KickStarter.inventoryManager.objectives.Count > 0)
 			{
 				int tempNumber = -1;
 
@@ -1082,10 +1065,10 @@ namespace AC
 		
 		private void CreateItemsGUI (List<string> binList)
 		{
-			EditorGUILayout.BeginVertical (CustomStyles.thinBox);
 			showItemList = CustomGUILayout.ToggleHeader (showItemList, "Inventory items");
 			if (showItemList)
 			{
+				CustomGUILayout.BeginVertical ();
 				CustomGUILayout.UpdateDrag (DragItemKey, lastDragItemOver, lastDragItemOver != null ? lastDragItemOver.label : string.Empty, ref ignoreDrag, OnCompleteDragItem);
 				if (Event.current.type == EventType.Repaint)
 				{
@@ -1135,7 +1118,7 @@ namespace AC
 
 				if (numInFilter > 0)
 				{
-					scrollPos = EditorGUILayout.BeginScrollView (scrollPos, GUILayout.Height (Mathf.Min (numInFilter * 22, ACEditorPrefs.MenuItemsBeforeScroll * 22) + 9));
+					CustomGUILayout.BeginScrollView (ref scrollPos, numInFilter);
 					for (int i = 0; i < items.Count; i++)
 					{
 						InvItem item = items[i];
@@ -1177,7 +1160,7 @@ namespace AC
 						}
 					}
 
-					EditorGUILayout.EndScrollView ();
+					CustomGUILayout.EndScrollView ();
 					if (numInFilter != items.Count)
 					{
 						EditorGUILayout.HelpBox ("Filtering " + numInFilter + " out of " + items.Count + " items.", MessageType.Info);
@@ -1205,8 +1188,8 @@ namespace AC
 					ItemsSideMenu ();
 				}
 				EditorGUILayout.EndHorizontal ();
+				CustomGUILayout.EndVertical ();
 			}
-			CustomGUILayout.EndVertical ();
 		}
 
 
@@ -1257,23 +1240,57 @@ namespace AC
 				}
 				InvItem newItem = new InvItem (newID);
 				items.Add (newItem);
+				EditorUtility.SetDirty (this);
 				return newItem;
 			}
 			else
 			{
 				InvItem newItem = new InvItem (idList.ToArray ());
 				items.Add (newItem);
+				EditorUtility.SetDirty (this);
 				return newItem;
 			}
 		}
 		
+
+		/**
+		 * <summary>Creates a new inventory item property</summary>
+		 * <returns>The newly-created item property</returns>
+		 */
+		public InvVar CreateNewProperty ()
+		{
+			InvVar newInvVar = new InvVar (GetIDArrayProperty ());
+			invVars.Add (newInvVar);
+			EditorUtility.SetDirty (this);
+			return newInvVar;
+		}
+
+
+		/**
+		 * <summary>Creates a new inventory item category</summary>
+		 * <returns>The newly-created item category</returns>
+		 */
+		public InvBin CreateNewCategory ()
+		{
+			List<int> idArray = new List<int>();
+			foreach (InvBin bin in bins)
+			{
+				idArray.Add (bin.id);
+			}
+			idArray.Sort ();
+
+			InvBin newBin = new InvBin (idArray.ToArray ());
+			bins.Add (newBin);
+			return newBin;
+		}
+
 		
 		private void CreatePropertiesGUI ()
 		{
-			EditorGUILayout.BeginVertical (CustomStyles.thinBox);
 			showPropertiesList = CustomGUILayout.ToggleHeader (showPropertiesList, "Inventory properties");
 			if (showPropertiesList)
 			{
+				CustomGUILayout.BeginVertical ();
 				CustomGUILayout.UpdateDrag (DragVarKey, lastDragVarOver, lastDragVarOver != null ? lastDragVarOver.label : string.Empty, ref ignoreDrag, OnCompleteDragVar);
 				if (Event.current.type == EventType.Repaint)
 				{
@@ -1281,7 +1298,7 @@ namespace AC
 					lastSwapIndex = -1;
 				}
 
-				scrollPos = EditorGUILayout.BeginScrollView (scrollPos, GUILayout.Height (Mathf.Min (invVars.Count * 22, ACEditorPrefs.MenuItemsBeforeScroll * 22) + 9));
+				CustomGUILayout.BeginScrollView (ref scrollPos, invVars.Count);
 				for (int i = 0; i < invVars.Count; i++)
 				{
 					InvVar invVar = invVars[i];
@@ -1320,19 +1337,18 @@ namespace AC
 						CustomGUILayout.DrawDragLine (i, ref lastSwapIndex);
 					}
 				}
-				EditorGUILayout.EndScrollView ();
+				CustomGUILayout.EndScrollView ();
 				
 				if (GUILayout.Button ("Create new property"))
 				{
 					Undo.RecordObject (this, "Create inventory property");
 					
-					InvVar newInvVar = new InvVar (GetIDArrayProperty ());
-					invVars.Add (newInvVar);
+					InvVar newInvVar = CreateNewProperty ();
 					DeactivateAllInvVars ();
 					ActivateItem (newInvVar);
 				}
+				CustomGUILayout.EndVertical ();
 			}
-			CustomGUILayout.EndVertical ();
 		}
 		
 		
@@ -1789,12 +1805,12 @@ namespace AC
 		}
 		
 		
-		private void CraftingGUI ()
+		private void CraftingGUI (System.Action<ActionListAsset> showALAEditor)
 		{
-			EditorGUILayout.BeginVertical (CustomStyles.thinBox);
 			showCraftingList = CustomGUILayout.ToggleHeader (showCraftingList, "Crafting recipes");
 			if (showCraftingList)
 			{
+				CustomGUILayout.BeginVertical ();
 				CustomGUILayout.UpdateDrag (DragRecipeKey, lastDragRecipeOver, lastDragRecipeOver != null ? lastDragRecipeOver.label : string.Empty, ref ignoreDrag, OnCompleteDragRecipe);
 				if (Event.current.type == EventType.Repaint)
 				{
@@ -1809,7 +1825,7 @@ namespace AC
 					return;
 				}
 
-				scrollPos = EditorGUILayout.BeginScrollView (scrollPos, GUILayout.Height (Mathf.Min (recipes.Count * 22, ACEditorPrefs.MenuItemsBeforeScroll * 22) + 9));
+				CustomGUILayout.BeginScrollView (ref scrollPos, recipes.Count);
 				for (int i = 0; i < recipes.Count; i++)
 				{
 					Recipe recipe = recipes[i];
@@ -1848,7 +1864,7 @@ namespace AC
 						CustomGUILayout.DrawDragLine (i, ref lastSwapIndex);
 					}
 				}
-				EditorGUILayout.EndScrollView ();
+				CustomGUILayout.EndScrollView ();
 
 				EditorGUILayout.Space ();
 				if (GUILayout.Button ("Create new recipe"))
@@ -1860,18 +1876,18 @@ namespace AC
 					DeactivateAllRecipes ();
 					ActivateRecipe (newRecipe);
 				}
+				CustomGUILayout.EndVertical ();
 			}
-			CustomGUILayout.EndVertical ();
 
 			if (selectedRecipe != null && recipes.Contains (selectedRecipe))
 			{
 				string apiPrefix = "AC.KickStarter.inventoryManager.GetRecipe (" + selectedRecipe.id + ")";
 
 				EditorGUILayout.Space ();
-				EditorGUILayout.BeginVertical (CustomStyles.thinBox);
 				showCraftingProperties = CustomGUILayout.ToggleHeader (showCraftingProperties, "Recipe '" + selectedRecipe.label + "' properties");
 				if (showCraftingProperties)
 				{
+					CustomGUILayout.BeginVertical ();
 					selectedRecipe.label = CustomGUILayout.TextField ("Name:", selectedRecipe.label, apiPrefix + ".label", "The recipe's editor name");
 					
 					EditorGUILayout.BeginHorizontal ();
@@ -1882,24 +1898,24 @@ namespace AC
 					EditorGUILayout.EndHorizontal ();
 					
 					selectedRecipe.useSpecificSlots = CustomGUILayout.Toggle ("Uses specific pattern?", selectedRecipe.useSpecificSlots, apiPrefix + ".useSpecificSlots", "If True, then the ingredients must be placed in specific slots within a Crafting menu element");
-					selectedRecipe.actionListOnCreate = ActionListAssetMenu.AssetGUI ("ActionList when create:", selectedRecipe.actionListOnCreate, "Recipe_" + selectedRecipe.label + "_OnCreate", apiPrefix + ".actionListOnCreate", "The ActionList asset to run when the recipe is created ");
+					selectedRecipe.actionListOnCreate = ActionListAssetMenu.AssetGUI ("ActionList when create:", selectedRecipe.actionListOnCreate, "Recipe_" + selectedRecipe.label + "_OnCreate", apiPrefix + ".actionListOnCreate", "The ActionList asset to run when the recipe is created", null, showALAEditor);
 
 					selectedRecipe.onCreateRecipe = (OnCreateRecipe) CustomGUILayout.EnumPopup ("When click on result:", selectedRecipe.onCreateRecipe, apiPrefix + ".onCreateRecipe", "What happens when the recipe is created");
 					if (selectedRecipe.onCreateRecipe == OnCreateRecipe.RunActionList)
 					{
-						selectedRecipe.invActionList = ActionListAssetMenu.AssetGUI ("ActionList when click:", selectedRecipe.invActionList, "Recipe_" + selectedRecipe.label + "_OnClick", apiPrefix + ".invActionList", "The ActionListAsset to run when clicking on the resulting item");
+						selectedRecipe.invActionList = ActionListAssetMenu.AssetGUI ("ActionList when click:", selectedRecipe.invActionList, "Recipe_" + selectedRecipe.label + "_OnClick", apiPrefix + ".invActionList", "The ActionListAsset to run when clicking on the resulting item", null, showALAEditor);
 					}
+					CustomGUILayout.EndVertical ();
 				}
-				CustomGUILayout.EndVertical ();
 
 				EditorGUILayout.Space ();
 
 				if (selectedRecipe != null)
 				{
-					EditorGUILayout.BeginVertical (CustomStyles.thinBox);
 					showCraftingIntegredients = CustomGUILayout.ToggleHeader (showCraftingIntegredients, "Recipe '" + selectedRecipe.label + "' ingredients");
 					if (showCraftingIntegredients)
 					{
+						CustomGUILayout.BeginVertical ();
 						foreach (Ingredient ingredient in selectedRecipe.ingredients)
 						{
 							EditorGUILayout.BeginHorizontal ();
@@ -1931,27 +1947,24 @@ namespace AC
 							selectedIngredient = newIngredient;
 						}
 
+						CustomGUILayout.EndVertical ();
 					}
-					CustomGUILayout.EndVertical ();
-
 				}
 
 				if (selectedRecipe != null && selectedIngredient != null)
 				{
 					EditorGUILayout.Space ();
 
-					EditorGUILayout.BeginVertical (CustomStyles.thinBox);
 					showCraftingIntegredientProperties = CustomGUILayout.ToggleHeader (showCraftingIntegredientProperties, "Recipe '" + selectedRecipe.label + "' ingredient " + selectedRecipe.ingredients.IndexOf (selectedIngredient));
 					if (showCraftingIntegredientProperties)
 					{
 						selectedIngredient.ShowGUI (GetArraySlot (selectedIngredient.ItemID), GetLabelList (), apiPrefix, selectedRecipe);
 					}
-					CustomGUILayout.EndVertical ();
 				}
 			}
 		}
-		
-		
+
+
 		private List<int> GetIDList ()
 		{
 			List<int> idList = new List<int>();
@@ -2113,7 +2126,7 @@ namespace AC
 					{
 						UnityVersionHandler.OpenScene (sceneFile);
 
-						MonoBehaviour[] sceneObjects = FindObjectsOfType<MonoBehaviour> ();
+						MonoBehaviour[] sceneObjects = UnityVersionHandler.FindObjectsOfType<MonoBehaviour> ();
 						for (int i = 0; i < sceneObjects.Length; i++)
 						{
 							MonoBehaviour currentObj = sceneObjects[i];
@@ -2134,9 +2147,9 @@ namespace AC
 					UnityVersionHandler.OpenScene (originalScene);
 
 					// Search assets
-					if (AdvGame.GetReferences ().speechManager != null)
+					if (KickStarter.speechManager)
 					{
-						ActionListAsset[] allActionListAssets = AdvGame.GetReferences ().speechManager.GetAllActionListAssets ();
+						ActionListAsset[] allActionListAssets = KickStarter.speechManager.GetAllActionListAssets ();
 						foreach (ActionListAsset actionListAsset in allActionListAssets)
 						{
 							ActionList.logSuffix = string.Empty;
@@ -2231,7 +2244,7 @@ namespace AC
 						UnityVersionHandler.OpenScene (sceneFile);
 
 						bool modifiedScene = false;
-						MonoBehaviour[] sceneObjects = FindObjectsOfType<MonoBehaviour> ();
+						MonoBehaviour[] sceneObjects = UnityVersionHandler.FindObjectsOfType<MonoBehaviour> ();
 						for (int i = 0; i < sceneObjects.Length; i++)
 						{
 							MonoBehaviour currentObj = sceneObjects[i];
@@ -2259,9 +2272,9 @@ namespace AC
 					UnityVersionHandler.OpenScene (originalScene);
 
 					// Search assets
-					if (AdvGame.GetReferences ().speechManager != null)
+					if (KickStarter.speechManager)
 					{
-						ActionListAsset[] allActionListAssets = AdvGame.GetReferences ().speechManager.GetAllActionListAssets ();
+						ActionListAsset[] allActionListAssets = KickStarter.speechManager.GetAllActionListAssets ();
 						foreach (ActionListAsset actionListAsset in allActionListAssets)
 						{
 							ActionList.logSuffix = string.Empty;
@@ -2302,7 +2315,7 @@ namespace AC
 					{
 						UnityVersionHandler.OpenScene (sceneFile);
 
-						MonoBehaviour[] sceneObjects = FindObjectsOfType<MonoBehaviour> ();
+						MonoBehaviour[] sceneObjects = UnityVersionHandler.FindObjectsOfType<MonoBehaviour> ();
 						for (int i = 0; i < sceneObjects.Length; i++)
 						{
 							MonoBehaviour currentObj = sceneObjects[i];
@@ -2323,9 +2336,9 @@ namespace AC
 					UnityVersionHandler.OpenScene (originalScene);
 
 					// Search assets
-					if (AdvGame.GetReferences ().speechManager != null)
+					if (KickStarter.speechManager)
 					{
-						ActionListAsset[] allActionListAssets = AdvGame.GetReferences ().speechManager.GetAllActionListAssets ();
+						ActionListAsset[] allActionListAssets = KickStarter.speechManager.GetAllActionListAssets ();
 						foreach (ActionListAsset actionListAsset in allActionListAssets)
 						{
 							ActionList.logSuffix = string.Empty;
@@ -2371,7 +2384,7 @@ namespace AC
 
 						bool modifiedScene = false;
 
-						MonoBehaviour[] sceneObjects = FindObjectsOfType<MonoBehaviour> ();
+						MonoBehaviour[] sceneObjects = UnityVersionHandler.FindObjectsOfType<MonoBehaviour> ();
 						for (int i = 0; i < sceneObjects.Length; i++)
 						{
 							MonoBehaviour currentObj = sceneObjects[i];
@@ -2399,9 +2412,9 @@ namespace AC
 					UnityVersionHandler.OpenScene (originalScene);
 
 					// Search assets
-					if (AdvGame.GetReferences ().speechManager != null)
+					if (KickStarter.speechManager)
 					{
-						ActionListAsset[] allActionListAssets = AdvGame.GetReferences ().speechManager.GetAllActionListAssets ();
+						ActionListAsset[] allActionListAssets = KickStarter.speechManager.GetAllActionListAssets ();
 						foreach (ActionListAsset actionListAsset in allActionListAssets)
 						{
 							ActionList.logSuffix = string.Empty;
@@ -2440,7 +2453,7 @@ namespace AC
 					{
 						UnityVersionHandler.OpenScene (sceneFile);
 
-						MonoBehaviour[] sceneObjects = FindObjectsOfType<MonoBehaviour> ();
+						MonoBehaviour[] sceneObjects = UnityVersionHandler.FindObjectsOfType<MonoBehaviour> ();
 						for (int i = 0; i < sceneObjects.Length; i++)
 						{
 							MonoBehaviour currentObj = sceneObjects[i];
@@ -2461,9 +2474,9 @@ namespace AC
 					UnityVersionHandler.OpenScene (originalScene);
 
 					// Search assets
-					if (AdvGame.GetReferences ().speechManager != null)
+					if (KickStarter.speechManager)
 					{
-						ActionListAsset[] allActionListAssets = AdvGame.GetReferences ().speechManager.GetAllActionListAssets ();
+						ActionListAsset[] allActionListAssets = KickStarter.speechManager.GetAllActionListAssets ();
 						foreach (ActionListAsset actionListAsset in allActionListAssets)
 						{
 							ActionList.logSuffix = string.Empty;
@@ -2509,7 +2522,7 @@ namespace AC
 
 						bool modifiedScene = false;
 
-						MonoBehaviour[] sceneObjects = FindObjectsOfType<MonoBehaviour> ();
+						MonoBehaviour[] sceneObjects = UnityVersionHandler.FindObjectsOfType<MonoBehaviour> ();
 						for (int i = 0; i < sceneObjects.Length; i++)
 						{
 							MonoBehaviour currentObj = sceneObjects[i];
@@ -2537,9 +2550,9 @@ namespace AC
 					UnityVersionHandler.OpenScene (originalScene);
 
 					// Search assets
-					if (AdvGame.GetReferences ().speechManager != null)
+					if (KickStarter.speechManager)
 					{
-						ActionListAsset[] allActionListAssets = AdvGame.GetReferences ().speechManager.GetAllActionListAssets ();
+						ActionListAsset[] allActionListAssets = KickStarter.speechManager.GetAllActionListAssets ();
 						foreach (ActionListAsset actionListAsset in allActionListAssets)
 						{
 							ActionList.logSuffix = string.Empty;
@@ -2575,6 +2588,27 @@ namespace AC
 				foreach (InvVar var in invVars)
 				{
 					if (var.id == ID)
+					{
+						return var;
+					}
+				}
+			}
+			return null;
+		}
+
+
+		/**
+		 * <summary>Gets an inventory property.</summary>
+		 * <param name = "label">The name of the property to get</param>
+		 * <returns>The inventory property.</returns>
+		 */
+		public InvVar GetProperty (string label)
+		{
+			if (invVars.Count > 0 && !string.IsNullOrEmpty (label))
+			{
+				foreach (InvVar var in invVars)
+				{
+					if (var.label == label)
 					{
 						return var;
 					}
@@ -2747,6 +2781,27 @@ namespace AC
 		}
 
 
+		/**
+		 * <summary>Gets an array of Objectives that belong in a given category</summary>
+		 * <param name = "categoryID">The ID of the category</param>
+		 * <returns>An array of all Objectives in the given category</returns>
+		 */
+		public Objective[] GetObjectivesInCategory (int categoryID)
+		{
+			List<Objective> _objectives = new List<Objective> ();
+
+			foreach (Objective objective in objectives)
+			{
+				if (objective.binID == categoryID)
+				{
+					_objectives.Add (objective);
+				}
+			}
+
+			return _objectives.ToArray ();
+		}
+
+
 		/** Gets the ID Of the first-defined category avaiable for Objectives, or -1 otherwise */
 		public int GetFirstObjectivessCategoryID ()
 		{
@@ -2772,6 +2827,24 @@ namespace AC
 			foreach (InvBin bin in bins)
 			{
 				if (bin.id == categoryID)
+				{
+					return bin;
+				}
+			}
+			return null;
+		}
+		
+
+		/**
+		 * <summary>Gets an inventory category.</summary>
+		 * <param name = "label">The name of the inventory category to find</param>
+		 * <returns>The inventory category</returns>
+		 */
+		public InvBin GetCategory (string label)
+		{
+			foreach (InvBin bin in bins)
+			{
+				if (bin.label == label)
 				{
 					return bin;
 				}
@@ -2843,7 +2916,7 @@ namespace AC
 
 		#if UNITY_EDITOR
 		
-		public int ChooseCategoryGUI (string label, int binID, bool forItems, bool forDocuments, bool forObjectives, string apiPrefix = "", string tooltip = "")
+		public int ChooseCategoryGUI (string label, int binID, bool forItems, bool forDocuments, bool forObjectives, string apiPrefix = "", string tooltip = "", bool addNoneOption = false)
 		{
 			if (bins == null || bins.Count == 0)
 			{
@@ -2868,6 +2941,12 @@ namespace AC
 
 			int chosenNumber = 0;
 			List<PopupSelectData> popupSelectDataList = new List<PopupSelectData> ();
+
+			if (addNoneOption)
+			{
+				popupSelectDataList.Add (new PopupSelectData (-1, "None", -1));
+			}
+
 			for (int i = 0; i < bins.Count; i++)
 			{
 				if ((forItems && !bins[i].forItems) ||
@@ -2899,6 +2978,12 @@ namespace AC
 			{
 				return -1;
 			}
+
+			if (chosenNumber == 0 && addNoneOption)
+			{
+				return -1;
+			}
+
 			int rootIndex = popupSelectDataList[chosenNumber].rootIndex;
 			return bins[rootIndex].id;
 		}

@@ -24,6 +24,71 @@ namespace AC
 		}
 
 
+		private static EditorGUILayout.ScrollViewScope scrollWheelScope = null;
+		private static EditorGUILayout.VerticalScope verticalScope = null;
+
+		public static void BeginScrollView (ref Vector2 scrollPos, int numItems)
+		{
+			int scrollHeight = Mathf.Min (numItems * 22, ACEditorPrefs.MenuItemsBeforeScroll * 22) + 9;
+
+			scrollWheelScope = new EditorGUILayout.ScrollViewScope (scrollPos, GUILayout.Height (scrollHeight));
+			verticalScope = new EditorGUILayout.VerticalScope ();
+			scrollPos = scrollWheelScope.scrollPosition;
+			int diff = (int) (verticalScope.rect.height - scrollHeight);
+
+			if (Event.current.isScrollWheel)
+			{
+				if (Event.current.delta.y < 0f)
+				{
+					// Scroll up
+					scrollWheelScope.handleScrollWheel = scrollPos.y > 0;
+				}
+				else
+				{
+					// Scroll down
+					scrollWheelScope.handleScrollWheel = scrollPos.y < diff;
+				}
+			}
+		}
+
+
+		public static void EndScrollView ()
+		{
+			verticalScope.Dispose ();
+			scrollWheelScope.Dispose ();
+		}
+
+
+		public static T AutoCreateField<T> (string label, T value, System.Func<T> onClickAutoCreate, string api = "", string tooltip = "") where T : Component
+		{
+			GUILayout.Label (string.Empty);
+			Rect rect = GUILayoutUtility.GetLastRect ();
+
+			bool showAutoCreate = (value == null);
+			if (showAutoCreate)
+			{
+				rect.width -= 24;
+			}
+
+			EditorGUIUtility.labelWidth = LabelWidth;
+			value = (T) EditorGUI.ObjectField (rect, new GUIContent (label, tooltip), value, typeof (T), true);
+			EditorGUIUtility.labelWidth = 0;
+			CreateMenu (api);
+
+			if (showAutoCreate)
+			{
+				rect.x += rect.width + 4;
+				rect.width = 20;
+
+				if (GUI.Button(rect, EditorGUIUtility.FindTexture ("Toolbar Plus")))
+				{
+					value = onClickAutoCreate.Invoke ();
+				}
+			}
+			return value;
+		}
+
+
 		public static bool ClickedCreateButton ()
 		{
 			return GUILayout.Button ("+", GUILayout.MaxWidth (20f));
@@ -151,7 +216,7 @@ namespace AC
 
 		public static void BeginVertical ()
 		{
-			EditorGUILayout.BeginVertical (EditorGUIUtility.isProSkin ? CustomStyles.Toolbar : CustomStyles.thinBox);
+			EditorGUILayout.BeginVertical (CustomStyles.ThinBox);
 		}
 
 
@@ -278,6 +343,26 @@ namespace AC
 		{
 			EditorGUIUtility.labelWidth = LabelWidth;
 			value = EditorGUILayout.IntField (value, layoutOption);
+			EditorGUIUtility.labelWidth = 0;
+			CreateMenu (api);
+			return value;
+		}
+
+
+		public static int DelayedIntField (string label, int value, string api = "", string tooltip = "")
+		{
+			EditorGUIUtility.labelWidth = LabelWidth;
+			value = EditorGUILayout.DelayedIntField (new GUIContent (label, tooltip), value);
+			EditorGUIUtility.labelWidth = 0;
+			CreateMenu (api);
+			return value;
+		}
+
+
+		public static int DelayedIntField (int value, GUILayoutOption layoutOption, string api = "")
+		{
+			EditorGUIUtility.labelWidth = LabelWidth;
+			value = EditorGUILayout.DelayedIntField (value, layoutOption);
 			EditorGUIUtility.labelWidth = 0;
 			CreateMenu (api);
 			return value;
@@ -505,13 +590,32 @@ namespace AC
 		{
 			if (spaceAbove)
 			{
-				EditorGUILayout.Space ();
+				GUILayout.Space (10);
 			}
-			if (GUILayout.Button (toggle ? label : "(+) " + label, CustomStyles.toggleHeader))
+			if (GUILayout.Button (label, CustomStyles.ToggleHeader))
 			{
 				toggle = !toggle;
 			}
+			Rect rect = GUILayoutUtility.GetLastRect ();
+			rect.x += 3;
+			rect.width = 20;
+
+			EditorGUI.BeginDisabledGroup (true);
+			GUI.Toggle (rect, toggle, string.Empty, EditorStyles.foldout);
+            EditorGUI.EndDisabledGroup ();
+
 			return toggle;
+		}
+
+
+		public static void Header (string label, bool spaceAbove = true)
+		{
+			if (spaceAbove)
+			{
+				EditorGUILayout.Space ();
+				EditorGUILayout.Space ();
+			}
+			GUILayout.Label (label, CustomStyles.Header);
 		}
 
 
@@ -875,6 +979,36 @@ namespace AC
 			{
 
 				return GetCustomGUIStyle (28);
+			}
+		}
+
+
+		public static GUIStyle Header
+		{
+			get
+			{
+				int index = EditorGUIUtility.isProSkin ? 33 : 31;
+				return GetCustomGUIStyle (index);
+			}
+		}
+
+
+		public static GUIStyle ToggleHeader
+		{
+			get
+			{
+				int index = EditorGUIUtility.isProSkin ? 34 : 32;
+				return GetCustomGUIStyle (index);
+			}
+		}
+
+
+		public static GUIStyle ThinBox
+		{
+			get
+			{
+				int index = EditorGUIUtility.isProSkin ? 36 : 35;
+				return GetCustomGUIStyle (index);
 			}
 		}
 

@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"RuntimeObjectives.cs"
  * 
@@ -25,6 +25,22 @@ namespace AC
 		protected List<ObjectiveInstance> playerObjectiveInstances = new List<ObjectiveInstance>();
 		protected List<ObjectiveInstance> globalObjectiveInstances = new List<ObjectiveInstance>();
 		protected ObjectiveInstance selectedObjectiveInstance;
+
+		#endregion
+
+
+		#region UnityStandards
+
+		private void OnEnable ()
+		{
+			EventManager.OnObjectiveUpdate += OnObjectiveUpdate;
+		}
+
+
+		private void OnDisable ()
+		{
+			EventManager.OnObjectiveUpdate -= OnObjectiveUpdate;
+		}
 
 		#endregion
 
@@ -86,6 +102,12 @@ namespace AC
 				{
 					SelectedObjective = newObjectiveInstance;
 				}
+
+				if (newObjectiveInstance.CurrentState.actionListOnEnter)
+				{
+					newObjectiveInstance.CurrentState.actionListOnEnter.Interact ();
+				}
+
 				KickStarter.eventManager.Call_OnObjectiveUpdate (newObjectiveInstance);
 			}
 			else
@@ -164,6 +186,12 @@ namespace AC
 				{
 					SelectedObjective = newObjectiveInstance;
 				}
+
+				if (newObjectiveInstance.CurrentState.actionListOnEnter)
+				{
+					newObjectiveInstance.CurrentState.actionListOnEnter.Interact ();
+				}
+
 				KickStarter.eventManager.Call_OnObjectiveUpdate (newObjectiveInstance);
 			}
 			else
@@ -422,6 +450,41 @@ namespace AC
 
 
 		/**
+		 * <summary> Gets all Objective instances in the category marked as the 'sub-objective category' for an Objective's current state</summary>
+		 * <param name = "objectiveID">The ID of the Objective</param>
+		 * <returns>All Objective instances that match the given criteria</returns>
+		 */
+		public ObjectiveInstance[] GetSubObjectives (int objectiveID)
+		{
+			ObjectiveInstance objectiveInstance = GetObjective (objectiveID);
+			if (objectiveInstance != null)
+			{
+				return objectiveInstance.GetSubObjectives ();
+			}
+
+			return new ObjectiveInstance[0];
+		}
+
+
+		/**
+		 * <summary> Gets all Objective instances in the category marked as the 'sub-objective category' for an Objective's current state</summary>
+		 * <param name = "objectiveID">The ID of the Objective</param>
+		 * <param name = "objectiveStateType">A filter for returned sub-Objectives based on their own current state<param>
+		 * <returns>All Objective instances that match the given criteria</returns>
+		 */
+		public ObjectiveInstance[] GetSubObjectives (int objectiveID, ObjectiveStateType objectiveStateType)
+		{
+			ObjectiveInstance objectiveInstance = GetObjective (objectiveID);
+			if (objectiveInstance != null)
+			{
+				return objectiveInstance.GetSubObjectives (objectiveStateType);
+			}
+
+			return new ObjectiveInstance[0];
+		}
+
+
+		/**
 		 * <summary>Selects an Objective, so that it can be displayed in a Menu</summary>
 		 * <param name = "objectiveID">The ID of the Objective to select</param>
 		 */
@@ -528,6 +591,93 @@ namespace AC
 		#endregion
 
 
+		#region CustomEvents
+
+		private void OnObjectiveUpdate (Objective objective, ObjectiveState state)
+		{
+			// Auto-start sub-objectives
+			if (state.LinkedCategoryID >= 0 && state.autoStartSubObjectives)
+			{
+				Objective[] subObjectives = KickStarter.inventoryManager.GetObjectivesInCategory (state.LinkedCategoryID);
+				foreach (Objective subObjective in subObjectives)
+				{
+					if (objective == subObjective) continue;
+					StartObjective (subObjective);
+				}
+			}
+
+			if (objective.binID < 0) return;
+			Objective[] fellowSubObjectives = KickStarter.inventoryManager.GetObjectivesInCategory (objective.binID);
+			ObjectiveInstance[] allCurrentObjectives = GetObjectives ();
+
+			// Auto-change on complete
+			if (state.stateType == ObjectiveStateType.Complete)
+			{
+				// All in category complete?
+				bool allComplete = true;
+				foreach (Objective subObjective in fellowSubObjectives)
+				{
+					if (subObjective == objective) continue;
+					if (GetObjective (subObjective.ID) == null || GetObjective (subObjective.ID).CurrentState.stateType != ObjectiveStateType.Complete)
+					{
+						allComplete = false;
+						break;
+					}
+				}
+
+				foreach (ObjectiveInstance currentObjective in allCurrentObjectives)
+				{
+					if (currentObjective.Objective == objective) continue;
+					if (currentObjective.CurrentState.LinkedCategoryID == objective.binID)
+					{
+						if (allComplete && currentObjective.CurrentState.AutoStateIDOnAllSubObsComplete >= 0)
+						{
+							SetObjectiveState (currentObjective.ObjectiveID, currentObjective.CurrentState.AutoStateIDOnAllSubObsComplete);
+						}
+						else if (currentObjective.CurrentState.AutoStateIDOnAnySubObsComplete >= 0)
+						{
+							SetObjectiveState (currentObjective.ObjectiveID, currentObjective.CurrentState.AutoStateIDOnAnySubObsComplete);
+						}
+					}
+				}
+			}
+
+			// Auto-change on fail
+			if (state.stateType == ObjectiveStateType.Fail)
+			{
+				// All in category fail?
+				bool allFailed = true;
+				foreach (Objective subObjective in fellowSubObjectives)
+				{
+					if (subObjective == objective) continue;
+					if (GetObjective (subObjective.ID) == null || GetObjective (subObjective.ID).CurrentState.stateType != ObjectiveStateType.Fail)
+					{
+						allFailed = false;
+						break;
+					}
+				}
+
+				foreach (ObjectiveInstance currentObjective in allCurrentObjectives)
+				{
+					if (currentObjective.Objective == objective) continue;
+					if (currentObjective.CurrentState.LinkedCategoryID == objective.binID)
+					{
+						if (allFailed && currentObjective.CurrentState.AutoStateIDOnAllSubObsFail >= 0)
+						{
+							SetObjectiveState (currentObjective.ObjectiveID, currentObjective.CurrentState.AutoStateIDOnAllSubObsFail);
+						}
+						else if (currentObjective.CurrentState.AutoStateIDOnAnySubObsFail >= 0)
+						{
+							SetObjectiveState (currentObjective.ObjectiveID, currentObjective.CurrentState.AutoStateIDOnAnySubObsFail);
+						}
+					}
+				}
+			}
+		}
+
+		#endregion
+
+
 		#region PrivateFunctions
 
 		private List<ObjectiveInstance> ExtractPlayerObjectiveData (PlayerData playerData)
@@ -566,6 +716,31 @@ namespace AC
 			}
 
 			return dataString.ToString ();
+		}
+
+
+		private void StartObjective (Objective objective)
+		{
+			foreach (ObjectiveInstance objectiveInstance in playerObjectiveInstances)
+			{
+				if (objectiveInstance.Objective == objective)
+				{
+					// Already started
+					return;
+				}
+			}
+			
+			foreach (ObjectiveInstance objectiveInstance in globalObjectiveInstances)
+			{
+				if (objectiveInstance.Objective == objective)
+				{
+					// Already started
+					return;
+				}
+			}
+
+			// Not started yet, so can start
+			SetObjectiveState (objective.ID, 0);
 		}
 
 		#endregion

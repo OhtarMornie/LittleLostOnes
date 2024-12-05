@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionTimescale.cs"
  * 
@@ -101,11 +101,7 @@ namespace AC
 			}
 			else
 			{
-				parameterID = Action.ChooseParameterGUI ("Timescale:", parameters, parameterID, ParameterType.Float);
-				if (parameterID < 0)
-				{
-					timeScale = EditorGUILayout.Slider ("Timescale:", timeScale, 0f, 1f);
-				}
+				SliderField ("Timescale:", ref timeScale, 0f, 1f, parameters, ref parameterID);
 			}
 		}
 		

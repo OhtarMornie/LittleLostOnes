@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"JsonAction.cs"
  * 
@@ -434,7 +434,7 @@ namespace AC
 		private static HashSet<ActionObjectReference> GetSceneObjectReferences ()
 		{
 			HashSet<Object> sceneObjects = new HashSet<Object> ();
-			GameObject[] sceneGameObjects = Object.FindObjectsOfType<GameObject> ();
+			GameObject[] sceneGameObjects = UnityVersionHandler.FindObjectsOfType<GameObject> ();
 			foreach (GameObject sceneGameObject in sceneGameObjects)
 			{
 				sceneObjects.Add (sceneGameObject);

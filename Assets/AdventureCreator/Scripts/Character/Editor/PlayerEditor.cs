@@ -16,7 +16,7 @@ namespace AC
 			
 			SharedGUIOne (_target);
 
-			SettingsManager settingsManager = AdvGame.GetReferences ().settingsManager;
+			SettingsManager settingsManager = KickStarter.settingsManager;
 			if (settingsManager != null && settingsManager.playerSwitching == PlayerSwitching.Allow)
 			{
 				NPC_GUI (_target);
@@ -26,8 +26,8 @@ namespace AC
 
 			if (settingsManager && (settingsManager.hotspotDetection == HotspotDetection.PlayerVicinity || settingsManager.playerSwitching == PlayerSwitching.Allow || (SceneSettings.IsUnity2D () && KickStarter.settingsManager.movementMethod != MovementMethod.PointAndClick)))
 			{
+				CustomGUILayout.Header ("Player settings");
 				CustomGUILayout.BeginVertical ();
-				EditorGUILayout.LabelField ("Player settings", EditorStyles.boldLabel);
 
 				if (settingsManager.hotspotDetection == HotspotDetection.PlayerVicinity)
 				{
@@ -46,13 +46,25 @@ namespace AC
 					_target.autoSyncHotspotState = CustomGUILayout.Toggle ("Auto-sync Hotspot state?", _target.autoSyncHotspotState, "", "If True, then any attached Hotspot will be made inactive while this character is the current active Player");
 				}
 
+				if (KickStarter.settingsManager.movementMethod == MovementMethod.Direct || KickStarter.settingsManager.movementMethod == MovementMethod.FirstPerson)
+				{
+					_target.jumpSpeed = CustomGUILayout.Slider ("Jump speed:", _target.jumpSpeed, 1f, 20f, "", "The player's jump speed");
+				}
+
+				CustomGUILayout.EndVertical ();
+			}
+			else if (KickStarter.settingsManager && (KickStarter.settingsManager.movementMethod == MovementMethod.Direct || KickStarter.settingsManager.movementMethod == MovementMethod.FirstPerson))
+			{
+				CustomGUILayout.Header ("Player settings");
+				CustomGUILayout.BeginVertical ();
+				_target.jumpSpeed = CustomGUILayout.Slider ("Jump speed:", _target.jumpSpeed, 1f, 20f, "", "The player's jump speed");
 				CustomGUILayout.EndVertical ();
 			}
 
 			if (Application.isPlaying && _target.gameObject.activeInHierarchy)
 			{
+				CustomGUILayout.Header ("Current inventory");
 				CustomGUILayout.BeginVertical ();
-				EditorGUILayout.LabelField ("Current inventory", EditorStyles.boldLabel);
 
 				bool isCarrying = false;
 

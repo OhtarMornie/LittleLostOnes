@@ -92,7 +92,7 @@ namespace AC
 
 			EditorGUILayout.LabelField ("Export", CustomStyles.subHeader);
 
-			exportData.maxXMLRows = EditorGUILayout.IntField ("Sheet row limit (SML only):", exportData.maxXMLRows);
+			exportData.maxXMLRows = EditorGUILayout.IntField ("SML sheet row limit:", exportData.maxXMLRows);
 			if (exportData.exportColumns.Count == 0)
 			{
 				GUI.enabled = false;
@@ -322,9 +322,9 @@ namespace AC
 			if (speechManager == null || exportData.exportColumns == null || exportData.exportColumns.Count == 0 || speechManager.lines == null || speechManager.lines.Count == 0) return;
 
 			string suggestedFilename = string.Empty;
-			if (AdvGame.GetReferences ().settingsManager)
+			if (KickStarter.settingsManager)
 			{
-				suggestedFilename = AdvGame.GetReferences ().settingsManager.saveFileName + " - ";
+				suggestedFilename = KickStarter.settingsManager.saveFileName + " - ";
 			}
 
 			string extension;
@@ -422,7 +422,7 @@ namespace AC
 							anyNotEmpty = true;
 						}
 					}
-					if (!anyNotEmpty)
+					if (anyNotEmpty && exportedTranslations.Count > 0 && line.translationText.Count > 0)
 					{
 						continue;
 					}

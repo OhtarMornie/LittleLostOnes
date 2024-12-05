@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"PlayerInput.cs"
  * 
@@ -63,11 +63,6 @@ namespace AC
 		protected bool lastClickWasDouble = false;
 		protected float lastclickTime = 0f;
 		
-		// Menu input override
-		protected string menuButtonInput;
-		protected float menuButtonValue;
-		protected SimulateInputType menuInput;
-		
 		// Controller movement
 		private bool cameraLockSnap = false;
 		protected Vector2 xboxCursor;
@@ -82,6 +77,7 @@ namespace AC
 		protected Vector2 dragVector;
 		protected float touchTime = 0f;
 		protected float touchThreshold = 0.2f;
+		protected TouchInstance[] touchInstances = new TouchInstance[10];
 		
 		// 1st person movement
 		protected Vector2 freeAim;
@@ -158,6 +154,8 @@ namespace AC
 		private Vector2 lockedCursorPositionOverride;
 		private bool overrideLockedCursorPosition;
 		private bool resetMouseClickThisFrame;
+
+		private List<SimulatedInput> simulatedInputs = new List<SimulatedInput> ();
 
 
 		private void OnEnable ()
@@ -957,7 +955,7 @@ namespace AC
 			{
 				toggleCursorOn = KickStarter.settingsManager.lockCursorOnStart;
 
-				if (toggleCursorOn && !KickStarter.settingsManager.IsInFirstPerson () && KickStarter.settingsManager.inputMethod == InputMethod.MouseAndKeyboard && KickStarter.settingsManager.hotspotDetection == HotspotDetection.MouseOver)
+				if (toggleCursorOn && movementMethod != MovementMethod.FirstPerson && KickStarter.settingsManager.inputMethod == InputMethod.MouseAndKeyboard && KickStarter.settingsManager.hotspotDetection == HotspotDetection.MouseOver)
 				{
 					ACDebug.Log ("Starting a non-First Person game with a locked cursor - is this correct?"); 
 				}
@@ -1461,7 +1459,7 @@ namespace AC
 			{
 				if (hotspot.highlight)
 				{
-					if (hotspot.IsOn () && hotspot.PlayerIsWithinBoundary () && hotspot != KickStarter.playerInteraction.GetActiveHotspot ())
+					if (hotspot.IsOn () && hotspot.PlayerIsWithinBoundary ())
 					{
 						hotspot.Flash ();
 					}
@@ -1548,28 +1546,29 @@ namespace AC
 
 		/**
 		 * <summary>Simulates the pressing of an Input button or axis.</summary>
-		 * <param name = "input">The type of Input this is simulating (Button, Axis)</param>
-		 * <param name = "axis">The name of the Input button or axis</param>
+		 * <param name = "inputType">The type of Input this is simulating (Button, Axis)</param>
+		 * <param name = "name">The name of the Input button or axis</param>
 		 * <param name = "value">The value to assign the Input axis, if input = SimulateInputType.Axis</param>
 		 */
-		public void SimulateInput (SimulateInputType input, string axis, float value)
+		public void SimulateInput (SimulateInputType inputType, string name, float value)
 		{
-			if (!string.IsNullOrEmpty (axis))
+			if (!string.IsNullOrEmpty (name))
 			{
-				menuInput = input;
-				menuButtonInput = axis;
-				
-				if (input == SimulateInputType.Button)
-				{
-					menuButtonValue = 1f;
-				}
-				else
-				{
-					menuButtonValue = value;
-				}
+				SimulatedInput simulatedInput = new SimulatedInput (name, value, inputType);
+				StartCoroutine (SimulateInputCo (simulatedInput));
+			}
+		}
 
-				CancelInvoke ();
-				Invoke ("StopSimulatingInput", 0.1f);
+
+		private IEnumerator SimulateInputCo (SimulatedInput simulatedInput)
+		{
+			simulatedInputs.Add (simulatedInput);
+
+			yield return null;
+
+			if (simulatedInputs.Contains (simulatedInput))
+			{
+				simulatedInputs.Remove (simulatedInput);
 			}
 		}
 
@@ -1584,23 +1583,17 @@ namespace AC
 		}
 
 
-		protected void StopSimulatingInput ()
-		{
-			menuButtonInput = string.Empty;
-		}
-
-
 		/**
 		 * <summary>Checks if any input button is currently being pressed, simulated or otherwise.</summary>
 		 * <returns>True if any input button is currently being pressed, simulated or otherwise.</returns>
 		 */
-		public bool InputAnyKey ()
+		public bool InputAnyKeyDown ()
 		{
-			if (menuButtonInput != null && !string.IsNullOrEmpty (menuButtonInput))
+			if (simulatedInputs.Count > 0)
 			{
 				return true;
 			}
-			return Input.anyKey;
+			return Input.anyKeyDown;
 		}
 
 
@@ -1611,6 +1604,14 @@ namespace AC
 				return 0f;
 			}
 
+			foreach (SimulatedInput simulatedInput in simulatedInputs)
+			{
+				if (simulatedInput.Name == axis && simulatedInput.InputType == SimulateInputType.Axis && simulatedInput.Value != 0f)
+				{
+					return simulatedInput.Value;
+				}
+			}
+			
 			if (InputGetAxisDelegate != null)
 			{
 				return InputGetAxisDelegate (axis);
@@ -1635,11 +1636,6 @@ namespace AC
 				catch {}
 			}
 			
-			if (!string.IsNullOrEmpty (menuButtonInput) && menuButtonInput == axis && menuInput == SimulateInputType.Axis)
-			{
-				return menuButtonValue;
-			}
-			
 			return 0f;
 		}
 		
@@ -1651,9 +1647,17 @@ namespace AC
 		 */
 		public float InputGetAxis (string axis)
 		{
-			if (string.IsNullOrEmpty (axis))
+			if (string.IsNullOrEmpty (axis) || !KickStarter.stateHandler.CanReceiveInput ())
 			{
 				return 0f;
+			}
+
+			foreach (SimulatedInput simulatedInput in simulatedInputs)
+			{
+				if (simulatedInput.Name == axis && simulatedInput.InputType == SimulateInputType.Axis && simulatedInput.Value != 0f)
+				{
+					return simulatedInput.Value;
+				}
 			}
 
 			if (InputGetAxisDelegate != null)
@@ -1680,11 +1684,6 @@ namespace AC
 				catch {}
 			}
 
-			if (!string.IsNullOrEmpty (menuButtonInput) && menuButtonInput == axis && menuInput == SimulateInputType.Axis)
-			{
-				return menuButtonValue;
-			}
-			
 			return 0f;
 		}
 		
@@ -1817,9 +1816,25 @@ namespace AC
 		 */
 		public bool InputGetButton (string axis)
 		{
-			if (string.IsNullOrEmpty (axis))
+			if (string.IsNullOrEmpty (axis) || !KickStarter.stateHandler.CanReceiveInput ())
 			{
 				return false;
+			}
+
+			for (int i = 0; i < simulatedInputs.Count; i++)
+			{
+				if (simulatedInputs[i].Name == axis && simulatedInputs[i].InputType == SimulateInputType.Button)
+				{
+					if (simulatedInputs[i].Value > 0f)
+					{
+						//ResetClick ();
+						simulatedInputs.RemoveAt (i);
+						return true;
+					}
+					
+					simulatedInputs.RemoveAt (i);
+					break;
+				}
 			}
 
 			if (InputGetButtonDelegate != null)
@@ -1846,18 +1861,6 @@ namespace AC
 				catch {}
 			}
 
-			if (!string.IsNullOrEmpty (menuButtonInput) && menuButtonInput == axis && menuInput == SimulateInputType.Button)
-			{
-				if (menuButtonValue > 0f)
-				{
-					//ResetClick ();
-					StopSimulatingInput ();	
-					return true;
-				}
-				
-				StopSimulatingInput ();
-			}
-
 			return false;
 		}
 		
@@ -1870,9 +1873,24 @@ namespace AC
 		 */
 		public bool InputGetButtonDown (string axis, bool showError = false)
 		{
-			if (string.IsNullOrEmpty (axis))
+			if (string.IsNullOrEmpty (axis) || !KickStarter.stateHandler.CanReceiveInput ())
 			{
 				return false;
+			}
+
+			for (int i = 0; i < simulatedInputs.Count; i++)
+			{
+				if (simulatedInputs[i].Name == axis && simulatedInputs[i].InputType == SimulateInputType.Button)
+				{
+					if (simulatedInputs[i].Value > 0f)
+					{
+						simulatedInputs.RemoveAt (i);
+						return true;
+					}
+
+					simulatedInputs.RemoveAt (i);
+					break;
+				}
 			}
 
 			if (InputGetButtonDownDelegate != null)
@@ -1905,18 +1923,6 @@ namespace AC
 				}
 			}
 
-			if (!string.IsNullOrEmpty (menuButtonInput) && menuButtonInput == axis && menuInput == SimulateInputType.Button)
-			{
-				if (menuButtonValue > 0f)
-				{
-					//ResetClick ();
-					StopSimulatingInput ();	
-					return true;
-				}
-				
-				StopSimulatingInput ();
-			}
-			
 			return false;
 		}
 
@@ -1928,7 +1934,7 @@ namespace AC
 		 */
 		public bool InputGetButtonUp (string axis)
 		{
-			if (string.IsNullOrEmpty (axis))
+			if (string.IsNullOrEmpty (axis) || !KickStarter.stateHandler.CanReceiveInput ())
 			{
 				return false;
 			}
@@ -2054,7 +2060,7 @@ namespace AC
 					if (!KickStarter.playerInteraction.IsMouseOverHotspot () ||
 						!KickStarter.stateHandler.CanInteract () ||
 						!KickStarter.stateHandler.IsInGameplay () ||
-						(KickStarter.playerInteraction.GetActiveHotspot () && 
+						(KickStarter.playerInteraction.GetActiveHotspot () && !KickStarter.playerInteraction.hotspotsPreventCameraDragging &&
 							(KickStarter.settingsManager.interactionMethod == AC_InteractionMethod.ContextSensitive || 
 							(KickStarter.playerInteraction.GetActiveHotspot ().IsSingleInteraction () && KickStarter.settingsManager.interactionMethod == AC_InteractionMethod.ChooseHotspotThenInteraction))))
 					{
@@ -2120,6 +2126,27 @@ namespace AC
 					heldObjectDatas[i].AttemptRelease (!isInGameplay);
 				}
 			}
+
+			if (KickStarter.settingsManager.inputMethod == InputMethod.TouchScreen)
+			{
+				for (int i = 0; i < Input.touchCount; i++)
+				{
+					Touch touch = Input.GetTouch (i);
+					if (touchInstances[i] == null) touchInstances[i] = new TouchInstance ();
+					touchInstances[i].delta = touch.deltaPosition / Time.deltaTime;
+					touchInstances[i].position = touch.position;
+				}
+			}
+		}
+
+
+		public TouchInstance GetTouchInstance (int index)
+		{
+			if (index >= 0 && index < touchInstances.Length)
+			{
+				return touchInstances[index];
+			}
+			return null;
 		}
 
 
@@ -2308,7 +2335,7 @@ namespace AC
 		}
 		
 
-		protected void ToggleCursor ()
+		public void ToggleCursor ()
 		{
 			foreach (HeldObjectData heldObjectData in heldObjectDatas)
 			{
@@ -2318,6 +2345,11 @@ namespace AC
 				}
 			}
 			toggleCursorOn = !toggleCursorOn;
+
+			if (toggleCursorOn)
+			{
+				freeAimLerp.Update (Vector2.zero, Vector2.zero, 0f);
+			}
 		}
 
 
@@ -2822,6 +2854,12 @@ namespace AC
 			}
 			set
 			{
+				if (KickStarter.settingsManager.inputMethod == InputMethod.TouchScreen)
+				{
+					canKeyboardControlMenusDuringGameplay = false;
+					return;
+				}
+
 				if (canKeyboardControlMenusDuringGameplay && !value)
 				{
 					List<Menu> allMenus = PlayerMenus.GetMenus (true);
@@ -2852,6 +2890,33 @@ namespace AC
 				}
 			}
 			return Vector3.zero;
+		}
+
+
+		private struct SimulatedInput
+		{
+
+			public readonly string Name;
+			public readonly float Value;
+			public readonly SimulateInputType InputType;
+		
+		
+			public SimulatedInput (string name, float value, SimulateInputType inputType)
+			{
+				Name = name;
+				Value = value;
+				InputType = inputType;
+			}
+
+		}
+
+
+		public class TouchInstance
+		{
+
+			public Vector2 delta;
+			public Vector3 position;
+
 		}
 
 	}

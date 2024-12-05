@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"EventBase.cs"
  * 
@@ -25,10 +25,10 @@ namespace AC
 
 		#region Variables
 
-		[SerializeField] private string label;
-		[SerializeField] private int id;
-		[SerializeField] private ActionListAsset actionListAsset;
-		[SerializeField] private int[] parameterIDs;
+		[SerializeField] protected string label;
+		[SerializeField] protected int id;
+		[SerializeField] protected ActionListAsset actionListAsset;
+		[SerializeField] protected int[] parameterIDs;
 		private ParameterReference[] parameterReferences;
 
 		#endregion
@@ -76,6 +76,7 @@ namespace AC
 						case ParameterType.Integer:
 						case ParameterType.InventoryItem:
 						case ParameterType.Document:
+						case ParameterType.Objective:
 						case ParameterType.GlobalVariable:
 						case ParameterType.LocalVariable:
 							if (arg is int)
@@ -97,7 +98,7 @@ namespace AC
 							if (arg is GVar)
 							{
 								GVar gVar = (GVar) arg;
-								Variables[] variables = UnityEngine.Object.FindObjectsOfType<Variables> ();
+								Variables[] variables = UnityVersionHandler.FindObjectsOfType<Variables> ();
 								foreach (Variables _variables in variables)
 								{
 									if (_variables.vars.Contains (gVar))
@@ -138,6 +139,7 @@ namespace AC
 
 		public int ID { get { return id; } }
 		public string Label { get { return !string.IsNullOrEmpty (label) ? label : EventName; } }
+		public ActionListAsset ActionListAsset { get { return actionListAsset; }}
 
 		public abstract string[] EditorNames { get; }
 		protected abstract string EventName { get; }
@@ -222,15 +224,12 @@ namespace AC
 		public void ShowGUI (bool isAssetFile)
 		{
 			label = CustomGUILayout.TextField ("Label:", label);
+			CustomGUILayout.LabelField ("Event:", EventName);
 
 			if (HasConditions (isAssetFile))
 			{
-				EditorGUILayout.Space ();
-				CustomGUILayout.LabelField ("Conditions:");
 				ShowConditionGUI (isAssetFile);
 			}
-
-			EditorGUILayout.Space ();
 
 			CustomGUILayout.MultiLineLabelGUI ("Triggered:", ConditionHelp);
 			actionListAsset = ActionListAssetMenu.AssetGUI ("ActionList when trigger:", actionListAsset, EventName, string.Empty, "The ActionListAsset to run when the event is triggered", OnAutoCreateActionList);

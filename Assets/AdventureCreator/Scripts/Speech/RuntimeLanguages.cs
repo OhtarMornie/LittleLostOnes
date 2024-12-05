@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"RuntimeLanguage.cs"
  * 
@@ -291,16 +291,13 @@ namespace AC
 				return string.Empty;
 			}
 
-			#if !LocalizationIsPresent
-			if (language == 0)
+			if (language == 0 && _lineID == -1)
 			{
 				return originalText;
 			}
-			#endif
 			
 			if (_lineID == -1 || language < 0)
 			{
-				ACDebug.Log ("Cannot find translation for '" + originalText + "' because the text has not been added to the Speech Manager.");
 				return originalText;
 			}
 			else
@@ -312,11 +309,12 @@ namespace AC
 					{
 						return speechLine.localizedString.GetLocalizedString ();
 					}
-					else if (language == 0)
+					else
+					#endif
+					if (language == 0)
 					{
 						return originalText;
 					}
-					#endif
 
 					if (speechLine.translationText.Count > (language - 1))
 					{
@@ -342,6 +340,11 @@ namespace AC
 				}
 				else
 				{
+					if (language == 0)
+					{
+						return originalText;
+					}
+					
 					if (KickStarter.settingsManager.showDebugLogs != ShowDebugLogs.Never)
 					{
 						SpeechLine originalLine = KickStarter.speechManager.GetLine (_lineID);
@@ -737,6 +740,23 @@ namespace AC
 			return numEnabledLanguages;
 		}
 
+		
+		public void CallOnSetLanguageEvent (int language)
+		{
+			#if LocalizationIsPresent
+			if (KickStarter.speechManager.autoSyncLocaleWithLanguage)
+			{
+				if (setLocaleCoroutine != null)
+				{
+					StopCoroutine (setLocaleCoroutine);
+				}
+				setLocaleCoroutine = StartCoroutine (SetLocaleCo (language));
+			}
+			#else
+			KickStarter.eventManager.Call_OnChangeLanguage (language);
+			#endif
+		}
+
 		#endregion
 
 
@@ -760,9 +780,9 @@ namespace AC
 
 		protected void TransferFromManager ()
 		{
-			if (AdvGame.GetReferences () && AdvGame.GetReferences ().speechManager)
+			if (KickStarter.speechManager)
 			{
-				SpeechManager speechManager = AdvGame.GetReferences ().speechManager;
+				SpeechManager speechManager = KickStarter.speechManager;
 				speechManager.Upgrade ();
 
 				languages.Clear ();
@@ -993,27 +1013,7 @@ namespace AC
 		#if LocalizationIsPresent
 
 		private bool initLocaleSettings;
-
-		private void OnEnable ()
-		{
-			EventManager.OnChangeLanguage += OnChangeLanguage;
-		}
-
-
-		private void OnDisable ()
-		{
-			EventManager.OnChangeLanguage -= OnChangeLanguage;
-		}
-
-
-		private void OnChangeLanguage (int language)
-		{
-			if (KickStarter.speechManager.autoSyncLocaleWithLanguage)
-			{
-				StartCoroutine (SetLocaleCo (language));
-			}
-		}
-
+		private Coroutine setLocaleCoroutine;
 
 		private IEnumerator SetLocaleCo (int index)
 		{
@@ -1031,6 +1031,8 @@ namespace AC
 			{
 				ACDebug.LogWarning ("Cannot sync AC language with Locale because index " + index + " cannot be found");
 			}
+
+			KickStarter.eventManager.Call_OnChangeLanguage (index);
 		}
 
 		#endif

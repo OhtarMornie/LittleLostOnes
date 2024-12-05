@@ -15,12 +15,19 @@ namespace AC
 		{
 			FootstepSounds _target = (FootstepSounds) target;
 
-			EditorGUILayout.Space ();
-			_target.footstepSounds = ShowClipsGUI (_target.footstepSounds, "Walking sounds");
-			EditorGUILayout.Space ();
-			_target.runSounds = ShowClipsGUI (_target.runSounds, "Running sounds (optional)");
+			if (KickStarter.settingsManager && KickStarter.settingsManager.surfaces.Count == 0)
+			{
+				EditorGUILayout.HelpBox ("No Surfaces defined - open up the Surfaces window below to define them.", MessageType.Info);
+			}
+
+			if (GUILayout.Button ("Surfaces window"))
+			{
+				SurfacesEditor.Init ();
+			}
+
 			EditorGUILayout.Space ();
 
+			CustomGUILayout.Header ("Properties");
 			CustomGUILayout.BeginVertical ();
 			_target.character = (Char) CustomGUILayout.ObjectField <Char> ("Character:", _target.character, true, string.Empty, "The Player or NPC that this component is for");
 			if (_target.character != null || _target.GetComponent <Char>())
@@ -53,54 +60,23 @@ namespace AC
 				EditorGUILayout.HelpBox ("To play sounds, the 'Sound to play from' must be assigned, or an AudioSource must be attached.", MessageType.Warning);
 			}
 
-			UnityVersionHandler.CustomSetDirty (_target);
-		}
+			EditorGUILayout.Space ();
 
-
-		private AudioClip[] ShowClipsGUI (AudioClip[] clips, string headerLabel)
-		{
+			CustomGUILayout.Header ("Auto-detection");
 			CustomGUILayout.BeginVertical ();
-			EditorGUILayout.LabelField (headerLabel, EditorStyles.boldLabel);
-			List<AudioClip> clipsList = new List<AudioClip>();
+			_target.autoDetectSurface = CustomGUILayout.Toggle ("Auto-detect Surface?", _target.autoDetectSurface, string.Empty, ("If True, raycasting will be used to auto-detect the current Surface"));
+			if (_target.autoDetectSurface)
+			{
+				_target.layerMask = AdvGame.LayerMaskField ("Layer mask:", _target.layerMask);
+				_target.raycastLength = CustomGUILayout.FloatField ("Ray length:", _target.raycastLength, string.Empty, "How long raycasts should be");
 
-			if (clips != null)
-			{
-				foreach (AudioClip clip in clips)
-				{
-					clipsList.Add (clip);
-				}
-			}
-
-			int numParameters = clipsList.Count;
-			numParameters = EditorGUILayout.DelayedIntField ("# of footstep sounds:", numParameters);
-
-			if (numParameters < clipsList.Count)
-			{
-				clipsList.RemoveRange (numParameters, clipsList.Count - numParameters);
-			}
-			else if (numParameters > clipsList.Count)
-			{
-				if (numParameters > clipsList.Capacity)
-				{
-					clipsList.Capacity = numParameters;
-				}
-				for (int i=clipsList.Count; i<numParameters; i++)
-				{
-					clipsList.Add (null);
-				}
-			}
-
-			for (int i=0; i<clipsList.Count; i++)
-			{
-				clipsList[i] = (AudioClip) CustomGUILayout.ObjectField <AudioClip> ("Sound #" + (i+1).ToString (), clipsList[i], false, "", headerLabel);
-			}
-			if (clipsList.Count > 1)
-			{
-				EditorGUILayout.HelpBox ("Sounds will be chosen at random.", MessageType.Info);
+				EditorGUILayout.HelpBox ("Auto-detection is based on the floor collider's Physics Material, whose name must end with '_' followed by the surface name, e.g. '_Grass'.", MessageType.Info);
 			}
 			CustomGUILayout.EndVertical ();
+			EditorGUILayout.Space ();
 
-			return clipsList.ToArray ();
+
+			UnityVersionHandler.CustomSetDirty (_target);
 		}
 
 	}

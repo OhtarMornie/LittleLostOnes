@@ -15,6 +15,20 @@ namespace AC
 		protected override string ConditionHelp { get { return "Whenever " + (hotspot ? "hotspot '" + hotspot.GetName (0) + "'" : "a Hotspot") + " is " + (onSelect ? "selected." : "deselected."); } }
 
 
+		public EventHotspotSelect (int _id, string _label, ActionListAsset _actionListAsset, int[] _parameterIDs, bool _onSelect, Hotspot _hotspot)
+		{
+			id = _id;
+			label = _label;
+			actionListAsset = _actionListAsset;
+			parameterIDs = _parameterIDs;
+			onSelect = _onSelect;
+			hotspot = _hotspot;
+		}
+
+
+		public EventHotspotSelect () {}
+
+
 		public override void Register ()
 		{
 			EventManager.OnHotspotSelect += OnHotspotSelect;

@@ -8,7 +8,7 @@ namespace AC
 
 		[SerializeField] private _Camera camera = null;
 		[SerializeField] private StartStop startStop;
-		private enum StartStop { Start, Stop };
+		public enum StartStop { Start, Stop };
 
 
 		public override string[] EditorNames { get { return new string[] { "Camera/Split-screen/Start", "Camera/Split-screen/Stop" }; } }
@@ -16,6 +16,20 @@ namespace AC
 		protected override string ConditionHelp { get { return "Whenever " + (camera ? "camera '" + camera.gameObject.name + "'s": "a camera's") + " split-screen effect " + startStop.ToString ().ToLower () + "s."; } }
 
 
+		public EventCameraSplitScreen (int _id, string _label, ActionListAsset _actionListAsset, int[] _parameterIDs, _Camera _camera, StartStop _startStop)
+		{
+			id = _id;
+			label = _label;
+			actionListAsset = _actionListAsset;
+			parameterIDs = _parameterIDs;
+			camera = _camera;
+			startStop = _startStop;
+		}
+
+
+		public EventCameraSplitScreen () {}
+		
+		
 		public override void Register ()
 		{
 			EventManager.OnCameraSplitScreenStart += OnCameraSplitScreenStart;

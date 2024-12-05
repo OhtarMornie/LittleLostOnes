@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ConstantIDManager.cs"
  * 
@@ -382,7 +382,7 @@ namespace AC
 			if (constantID is Remember)
 			{
 				Canvas canvas = constantID.transform.root.GetComponent <Canvas>();
-				if (canvas && canvas.gameObject.IsPersistent ())
+				if (canvas && canvas.gameObject.IsPersistent () && !MenuConstantIDs.Contains (constantID))
 				{
 					MenuConstantIDs.Add (constantID);
 					return;

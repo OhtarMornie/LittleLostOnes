@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"DragTrack.cs"
  * 
@@ -26,7 +26,11 @@ namespace AC
 		#region Variables
 
 		/** The Physics Material to give the track's end colliders */
+#if UNITY_6000_0_OR_NEWER
+		public PhysicsMaterial colliderMaterial;
+#else
 		public PhysicMaterial colliderMaterial;
+#endif
 		/** The size of the track's end colliders, as seen in the Scene window */
 		public float discSize = 0.2f;
 		/** The colour of Scene window Handles */
@@ -411,7 +415,7 @@ namespace AC
 
 		protected void LimitCollisions (Moveable_Drag draggable)
 		{
-			Collider[] allColliders = FindObjectsOfType (typeof(Collider)) as Collider[];
+			Collider[] allColliders = UnityVersionHandler.FindObjectsOfType<Collider> ();
 			Collider[] dragColliders = draggable.GetComponentsInChildren <Collider>();
 
 			// Disable all collisions on max/min colliders

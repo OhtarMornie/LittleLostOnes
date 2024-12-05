@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"PlayerPrefab.cs"
  * 
@@ -106,7 +106,7 @@ namespace AC
 		 */
 		public Player GetSceneInstance ()
 		{
-			Player[] scenePlayers = Object.FindObjectsOfType<Player> ();
+			Player[] scenePlayers = UnityVersionHandler.FindObjectsOfType<Player> ();
 			foreach (Player scenePlayer in scenePlayers)
 			{
 				if (scenePlayer.ID == ID)
@@ -553,9 +553,9 @@ namespace AC
 				if (UnityEditor.SceneManagement.EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo ())
 				{
 					// ActionList assets
-					if (AdvGame.GetReferences ().speechManager != null)
+					if (KickStarter.speechManager != null)
 					{
-						ActionListAsset[] allActionListAssets = AdvGame.GetReferences ().speechManager.GetAllActionListAssets ();
+						ActionListAsset[] allActionListAssets = KickStarter.speechManager.GetAllActionListAssets ();
 						foreach (ActionListAsset actionListAsset in allActionListAssets)
 						{
 							SearchActionListAssetForPlayerReferences (playerID, playerName, actionListAsset);
@@ -582,7 +582,7 @@ namespace AC
 
 		private static void SearchSceneForPlayerReferences (int playerID, string playerName, string suffix)
 		{
-			ActionList[] localActionLists = GameObject.FindObjectsOfType<ActionList> ();
+			ActionList[] localActionLists = UnityVersionHandler.FindObjectsOfType<ActionList> ();
 			foreach (ActionList actionList in localActionLists)
 			{
 				if (actionList.source == ActionListSource.InScene)

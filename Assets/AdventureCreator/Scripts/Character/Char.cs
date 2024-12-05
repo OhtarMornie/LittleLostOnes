@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"Char.cs"
  * 
@@ -86,7 +86,9 @@ namespace AC
 		public float lipSyncBlendShapeSpeedFactor = 1f;
 		private Expression currentExpression = null;
 
+		public CircleCollider2D CircleCollider { get; private set; }
 		protected Quaternion newRotation;
+		private Vector3 upDirection = Vector3.up;
 		private float prevHeight;
 		private float heightChange;
 		protected Transform _transform;
@@ -113,12 +115,10 @@ namespace AC
 
 		// 3D variables
 
-		/** The Transform to parent objects held in the character's left hand to */
-		public Transform leftHandBone;
-		/** The Transform to parent objects held in the character's right hand to */
-		public Transform rightHandBone;
-		private GameObject leftHandHeldObject;
-		private GameObject rightHandHeldObject;
+		[SerializeField] private Transform leftHandBone;
+		[SerializeField] private Transform rightHandBone;
+		
+		public AttachmentPoint[] attachmentPoints = new AttachmentPoint[0];
 
 		private IKLimbController leftHandIKController = new IKLimbController ();
 		private IKLimbController rightHandIKController = new IKLimbController ();
@@ -212,7 +212,7 @@ namespace AC
 		private Animator _animator;
 
 		/** If True, then the root object of a 2D, sprite-based character will rotate around the Z-axis. Otherwise, turning will be simulated and the actual rotation will be unaffected */
-		public bool turn2DCharactersIn3DSpace = true;
+		public bool turn2DCharactersIn3DSpace = false;
 
 		/** The sprite Transform, that's a child GameObject, used by AnimEngine_SpritesUnity / AnimEngine_SpritesUnityComplex / AnimEngine_Sprites2DToolkit */
 		public Transform spriteChild;
@@ -302,6 +302,8 @@ namespace AC
 		private float nonFacingFactor = 1f;
 		protected Paths ownPath;
 		protected AC_PathType lockedPathType;
+		protected int lockedEndIndex = -1;
+		public int LockedEndIndex { get { return lockedEndIndex; } private set { lockedEndIndex = value; }}
 
 		private Quaternion actualRotation;
 		private Vector3 actualForward = Vector3.forward;
@@ -407,7 +409,7 @@ namespace AC
 		private Sound speechSound;
 		
 		private bool isUnderTimelineControl;
-		#if !ACIgnoreTimeline
+		#if TimelineIsPresent
 		private CharacterAnimationShot activeCharacterAnimationShot;
 		#endif
 
@@ -417,8 +419,21 @@ namespace AC
 		protected float timelineHeadTurnWeight;
 
 
+		public void Upgrade ()
+		{
+			if (attachmentPoints == null || attachmentPoints.Length == 0)
+			{
+				attachmentPoints = new AttachmentPoint[2];
+				attachmentPoints[0] = new AttachmentPoint (0, "Left hand", leftHandBone);
+				attachmentPoints[1] = new AttachmentPoint (1, "Right hand", rightHandBone);
+			}
+		}
+
+
 		protected virtual void _Awake ()
 		{
+			Upgrade ();
+
 			if (!CanPhysicallyRotate)
 			{
 				// Use initial rotation for starting rotation only in this situation
@@ -446,11 +461,11 @@ namespace AC
 				}
 				else
 				{
-					CircleCollider2D circleCollider = GetComponent<CircleCollider2D> ();
-					if (circleCollider)
+					CircleCollider = GetComponent<CircleCollider2D> ();
+					if (CircleCollider)
 					{
-						wallRayOrigin = circleCollider.offset;
-						wallRayForward = circleCollider.radius;
+						wallRayOrigin = CircleCollider.offset;
+						wallRayForward = CircleCollider.radius;
 					}
 					else
 					{
@@ -506,6 +521,16 @@ namespace AC
 						ACDebug.LogWarning ("The sprite child of '" + gameObject.name + "' is not positioned at (0,0,0) - is this correct?", gameObject);
 					}
 				}
+
+				if (!SceneSettings.IsUnity2D () && !turn2DCharactersIn3DSpace)
+				{
+					ACDebug.LogWarning ("2D character in 3D scene detected - should 'Turn root object in 3D?' be checked?", gameObject);
+				}
+			}
+
+			if (spriteChild == null)
+			{
+				turn2DCharactersIn3DSpace = false;
 			}
 
 			if (spriteChild)
@@ -663,10 +688,7 @@ namespace AC
 			UpdateWallReductionFactor ();
 			CalcHeightChange ();
 
-			if (spriteChild)
-			{
-				PrepareSpriteChild (SceneSettings.IsTopDown (), SceneSettings.IsUnity2D ());
-			}
+			PrepareSpriteChild (SceneSettings.IsTopDown (), SceneSettings.IsUnity2D ());
 
 			AnimUpdate ();
 			SpeedUpdate ();
@@ -688,10 +710,7 @@ namespace AC
 			{
 				MoveUpdate ();
 
-				if (spriteChild)
-				{
-					PrepareSpriteChild (SceneSettings.IsTopDown (), SceneSettings.IsUnity2D ());
-				}
+				PrepareSpriteChild (SceneSettings.IsTopDown (), SceneSettings.IsUnity2D ());
 			}
 
 			if (spriteChild)
@@ -746,15 +765,15 @@ namespace AC
 			}
 			else if (_characterController)
 			{
-				headPosition += new Vector3 (0f, _characterController.height * Transform.localScale.y * 0.8f, 0f);
+				headPosition += UpDirection * _characterController.height * Transform.localScale.y * 0.8f;
 			}
 			else if (capsuleCollider)
 			{
-				headPosition += new Vector3 (0f, capsuleCollider.height * Transform.localScale.y * 0.8f, 0f);
+				headPosition += UpDirection * capsuleCollider.height * Transform.localScale.y * 0.8f;
 			}
 
 			Vector3 rightDirection = Vector3.RotateTowards (TransformForward, TransformRight, actualHeadAngles.x * Mathf.Deg2Rad, 1f);
-			return headPosition + rightDirection + (Vector3.up * Mathf.Asin (actualHeadAngles.y * Mathf.Deg2Rad));
+			return headPosition + rightDirection + (UpDirection * Mathf.Asin (actualHeadAngles.y * Mathf.Deg2Rad));
 		}
 
 
@@ -840,7 +859,7 @@ namespace AC
 					if (targetNode >= activePath.nodes.Count) return;
 
 					Vector3 direction = activePath.nodes[targetNode] - Transform.position;
-					Vector3 lookDir = new Vector3 (direction.x, 0f, direction.z);
+					Vector3 lookDir = Flatten3D (direction);
 
 					float nodeThreshold = KickStarter.settingsManager.GetDestinationThreshold ();
 					float nodeThresholdSqrd = nodeThreshold * nodeThreshold;
@@ -862,7 +881,6 @@ namespace AC
 						else
 						{
 							SetMoveDirection (direction);
-
 							lookDir = new Vector3 (direction.x, 0f, direction.y);
 
 							SetLookDirection (lookDir, false);
@@ -870,7 +888,7 @@ namespace AC
 					}
 					else if (activePath.affectY)
 					{
-						SetMoveDirection (direction);
+						SetMoveDirection (direction, false, false);
 						SetLookDirection (lookDir, false);
 					}
 					else
@@ -896,10 +914,17 @@ namespace AC
 						nodeThreshold *= multiplier;
 					}
 
-					if (retroPathfinding)
+					if (retroPathfinding && GetMotionControl () == MotionControl.Automatic)
 					{
-						nodeThreshold = 0.01f;
-						nodeThresholdSqrd = nodeThreshold * nodeThreshold;
+						if (_characterController)
+						{
+							ACDebug.LogWarning ("Retro-mode pathfinding will be disabled if a Character Controller is present.", this);
+						}
+						else
+						{
+							nodeThreshold = 0.01f;
+							nodeThresholdSqrd = nodeThreshold * nodeThreshold;
+						}
 					}
 
 					if ((SceneSettings.IsUnity2D () && directionSqrMagnitude < nodeThresholdSqrd) ||
@@ -912,6 +937,7 @@ namespace AC
 							NodeCommand nodeCommand = activePath.nodeCommands[targetNode];
 							nodeCommand.SetParameter (activePath.commandSource, this.gameObject);
 
+							if (activePath == null) return;
 							if (activePath.commandSource == ActionListSource.InScene && nodeCommand.cutscene && nodeCommand.pausesCharacter)
 							{
 								PausePath (activePath.nodePause, nodeCommand.cutscene);
@@ -948,7 +974,7 @@ namespace AC
 
 		private void SpeedUpdate ()
 		{
-			#if !ACIgnoreTimeline
+			#if TimelineIsPresent
 			if (AnimationControlledByAnimationShot)
 			{
 				moveSpeed = moveSpeedLerp.Update (moveSpeed, GetTargetSpeed (), acceleration);
@@ -1048,7 +1074,7 @@ namespace AC
 				AnimateHeadTurn ();
 			}
 
-			#if !ACIgnoreTimeline
+			#if TimelineIsPresent
 			if (AnimationControlledByAnimationShot)
 			{
 				return;
@@ -1121,6 +1147,115 @@ namespace AC
 		}
 
 
+		private void UpdatePushChars ()
+		{
+			if (!IsPathfinding ()) return;
+
+			foreach (var otherCharacter in KickStarter.stateHandler.Characters)
+			{
+				if (otherCharacter == this) continue;
+				CircleCollider2D otherCharCircle = otherCharacter.CircleCollider;
+				if (otherCharCircle == null) continue;
+
+				if (KickStarter.sceneSettings.navMesh.characterEvasion == CharacterEvasion.OnlyStationaryCharacters && otherCharacter.IsMovingAlongPath ()) continue;
+
+				Vector2 otherCharCentre = otherCharacter.Transform.TransformPoint (otherCharCircle.offset);
+
+				float otherCharMajor = otherCharCircle.radius * otherCharacter.Transform.localScale.x;
+				float otherCharMinor = otherCharMajor * KickStarter.sceneSettings.navMesh.characterEvasionYScale;
+				Vector2 relativePosition = new Vector2 (Transform.position.x - otherCharCentre.x, Transform.position.y - otherCharCentre.y);
+
+				if (((Vector2) GetTargetPosition () - otherCharCentre).sqrMagnitude < (otherCharMajor * otherCharMajor)) continue;
+				
+				if (relativePosition.x >= 0 && relativePosition.y >= 0)
+				{
+					// Top right
+					if (relativePosition.x > otherCharMajor) continue;
+					float yDiff = otherCharMinor * (otherCharMajor - relativePosition.x);
+					if (yDiff <= relativePosition.y) continue;
+
+					Vector3 moveDirection2D = new Vector2 (moveDirection.x, moveDirection.y).normalized;
+					float rightDot = Vector2.Dot (moveDirection2D, Vector2.right);
+					float upDot = Vector2.Dot (moveDirection2D, Vector2.up);
+
+					if (rightDot < upDot)
+					{
+						Transform.position = new Vector3 (Transform.position.x, Transform.position.y + yDiff, Transform.position.z);
+					}
+					else
+					{
+						float xDiff = ((otherCharMinor * otherCharMajor) - relativePosition.y) / otherCharMinor;
+						Transform.position = new Vector3 (Transform.position.x + xDiff, Transform.position.y, Transform.position.z);
+					}
+				}
+				else if (relativePosition.x >= 0 && relativePosition.y < 0)
+				{
+					// Bottom right
+					if (relativePosition.x > otherCharMajor) continue;
+					float yDiff = otherCharMinor * (relativePosition.x - otherCharMajor);
+					if (yDiff >= relativePosition.y) continue;
+
+					Vector3 moveDirection2D = new Vector2 (moveDirection.x, moveDirection.y).normalized;
+					float rightDot = Vector2.Dot (moveDirection2D, Vector2.right);
+					float upDot = Vector2.Dot (moveDirection2D, Vector2.up);
+					
+					if (-rightDot > upDot)
+					{
+						Transform.position = new Vector3 (Transform.position.x, Transform.position.y + yDiff, Transform.position.z);
+					}
+					else
+					{
+						float xDiff = ((otherCharMinor * otherCharMajor) + relativePosition.y) / otherCharMinor;
+						Transform.position = new Vector3 (Transform.position.x + xDiff, Transform.position.y, Transform.position.z);
+					}
+				}
+				else if (relativePosition.x < 0 && relativePosition.y < 0)
+				{
+					// Bottom left
+					if (relativePosition.x < -otherCharMajor) continue;
+					float yDiff = -otherCharMinor * (relativePosition.x + otherCharMajor);
+					if (yDiff >= relativePosition.y) continue;
+
+					Vector3 moveDirection2D = new Vector2 (moveDirection.x, moveDirection.y).normalized;
+					float rightDot = Vector2.Dot (moveDirection2D, Vector2.right);
+					float upDot = Vector2.Dot (moveDirection2D, Vector2.up);
+
+					if (rightDot > upDot)
+					{
+						Transform.position = new Vector3 (Transform.position.x, Transform.position.y + yDiff, Transform.position.z);
+					}
+					else
+					{
+						float xDiff = ((otherCharMinor * otherCharMajor) + relativePosition.y) / -otherCharMinor;
+						Transform.position = new Vector3 (Transform.position.x + xDiff, Transform.position.y, Transform.position.z);
+					}
+				}
+				else if (relativePosition.x < 0 && relativePosition.y >= 0)
+				{
+					// Top left
+					if (relativePosition.x < -otherCharMajor) continue;
+					float yDiff = otherCharMinor * (otherCharMajor + relativePosition.x);
+					if (yDiff <= relativePosition.y) continue;
+
+					Vector3 moveDirection2D = new Vector2 (moveDirection.x, moveDirection.y).normalized;
+					float rightDot = Vector2.Dot (moveDirection2D, Vector2.right);
+					float upDot = Vector2.Dot (moveDirection2D, Vector2.up);
+					
+					if (rightDot > -upDot)
+					{
+						Transform.position = new Vector3 (Transform.position.x, Transform.position.y + yDiff, Transform.position.z);
+					}
+					else
+					{
+						float xDiff = ((otherCharMinor * otherCharMajor) - relativePosition.y) / -otherCharMinor;
+						Transform.position = new Vector3 (Transform.position.x + xDiff, Transform.position.y, Transform.position.z);
+					}
+				}
+				
+			}
+		}
+
+
 		private void MoveUpdate ()
 		{
 			if (animEngine)
@@ -1155,12 +1290,17 @@ namespace AC
 						}
 						else if (SceneSettings.IsUnity2D ())
 						{
+							if (KickStarter.sceneSettings.navMesh && KickStarter.sceneSettings.navMesh.characterEvasionMethod == CharacterEvasionMethod.Push)
+							{
+								UpdatePushChars ();
+							}
+
 							newVel.z = 0f;
 							float magnitude = newVel.magnitude;
 
 							if (magnitude > 0f)
 							{
-								float upAmount = Mathf.Abs (Vector3.Dot (newVel.normalized, Vector3.up));
+								float upAmount = Mathf.Abs (Vector3.Dot (newVel.normalized, UpDirection));
 								float mag = (magnitude * (1f - upAmount)) + (magnitude * GetVerticalReductionFactor () * upAmount);
 								newVel *= mag / magnitude;
 							}
@@ -1205,7 +1345,7 @@ namespace AC
 							}
 						}
 
-						#if !ACIgnoreTimeline
+						#if TimelineIsPresent
 						if (!noMove && !AnimationControlledByAnimationShot)
 						#else
 						if (!noMove)
@@ -1223,10 +1363,11 @@ namespace AC
 									{
 										if (IsGrounded ())
 										{
-											newVel.y = -0.001f;
+											//newVel.y = -0.001f;
+											newVel -= UpDirection * 0.001f;
 											simulatedVerticalSpeed = 0f;
 
-											/*bool hitGround = Physics.Raycast (Transform.position, Vector3.down, out hitDownInfo, _characterController.skinWidth, groundCheckLayerMask);
+											/*bool hitGround = Physics.Raycast (Transform.position, -UpDirection, out hitDownInfo, _characterController.skinWidth, groundCheckLayerMask);
 											if (hitGround && hitDownInfo.normal.y < 1)
 											{
 												newVel.y = -hitDownInfo.normal.y;
@@ -1235,6 +1376,12 @@ namespace AC
 										else
 										{
 											simulatedVerticalSpeed -= simulatedMass * Time.deltaTime;
+
+											if (_characterController.velocity.y == 0f && simulatedVerticalSpeed >= 0.02f)
+											{
+												simulatedVerticalSpeed = 0f;
+											}
+
 											newVel += simulatedVerticalSpeed * -Physics.gravity;
 										}
 									}
@@ -1272,6 +1419,12 @@ namespace AC
 							if (!_characterController.isGrounded && !ignoreGravity)
 							{
 								simulatedVerticalSpeed -= simulatedMass * Time.deltaTime;
+
+								if (_characterController.velocity.y == 0f && simulatedVerticalSpeed >= 0.02f)
+								{
+									simulatedVerticalSpeed = 0f;
+								}
+
 								_characterController.Move (simulatedVerticalSpeed * Time.deltaTime * -Physics.gravity);
 							}
 						}
@@ -1286,7 +1439,7 @@ namespace AC
 
 		private Vector3 CalcForce (Vector3 targetVelocity, float verticalSpeed, float mass, Vector3 rigidbodyVelocity)
 		{
-			targetVelocity.y += verticalSpeed;
+			targetVelocity += verticalSpeed * UpDirection;
 
 			Vector3 deltaVelocity = targetVelocity - rigidbodyVelocity;
 			Vector3 force = mass * deltaVelocity / Time.deltaTime * Time.fixedDeltaTime / 0.02f;
@@ -1312,7 +1465,8 @@ namespace AC
 					}
 					else
 					{
-						Vector3 force = CalcForce (newVel, _rigidbody.velocity.y, _rigidbody.mass, _rigidbody.velocity);
+						Vector3 velocity = UnityVersionHandler.GetRigidbodyVelocity (_rigidbody);
+						Vector3 force = CalcForce (newVel, GetUpAmount (velocity), _rigidbody.mass, velocity);
 						_rigidbody.AddForce (force);
 					}
 				}
@@ -1349,7 +1503,7 @@ namespace AC
 					}
 					else
 					{
-						Vector3 force = CalcForce (newVel, 0f, _rigidbody2D.mass, _rigidbody2D.velocity);
+						Vector3 force = CalcForce (newVel, 0f, _rigidbody2D.mass, _rigidbody2D.linearVelocity);
 						_rigidbody2D.AddForce (force);
 					}
 				}
@@ -1403,7 +1557,7 @@ namespace AC
 			}
 			else
 			{
-				#if !ACIgnoreTimeline
+				#if TimelineIsPresent
 				if (AnimationControlledByAnimationShot)
 				{
 					if (isRunning)
@@ -1431,7 +1585,7 @@ namespace AC
 			}
 			else
 			{
-				targetPoint.y = Transform.position.y;
+				targetPoint = Flatten3D (targetPoint) + (GetUpAmount (Transform.position) * UpDirection);
 			}
 			return targetPoint;
 		}
@@ -1598,7 +1752,7 @@ namespace AC
 				RecalculateActivePathfind ();
 			}
 
-			prevHeight = _position.y;
+			prevHeight = GetUpAmount (_position);
 
 			SendMessage ("OnTeleport", SendMessageOptions.DontRequireReceiver);
 			if (KickStarter.eventManager) KickStarter.eventManager.Call_OnCharacterTeleport (this, _position, GetTargetRotation ());
@@ -1622,7 +1776,7 @@ namespace AC
 		 */
 		public void SetRotation (float angle)
 		{
-			TransformRotation = Quaternion.AngleAxis (angle, Vector3.up);
+			TransformRotation = Quaternion.AngleAxis (angle, UpDirection);
 			SetLookDirection (TransformForward, true);
 		}
 
@@ -1671,19 +1825,20 @@ namespace AC
 				}
 				newRotation = targetRotation;
 
-				if (KickStarter.settingsManager && spriteChild)
-				{
-					PrepareSpriteChild (SceneSettings.IsTopDown (), SceneSettings.IsUnity2D ());
-				}
+				PrepareSpriteChild (SceneSettings.IsTopDown (), SceneSettings.IsUnity2D ());
 
 				SendMessage ("OnSnapRotate", SendMessageOptions.DontRequireReceiver);
 				return;
 			}
 
-			float targetAngle = Mathf.Atan2 (lookDirection.x, lookDirection.z);
-			float currentAngle = Mathf.Atan2 (TransformForward.x, TransformForward.z);
+			Vector3 planeForward = Vector3.forward;
+			Vector3 projectedLook = Flatten3D (lookDirection);
+			Vector3 projectedForward = Flatten3D (TransformForward);
+			float currentAngle = Vector3.SignedAngle (planeForward, projectedForward, UpDirection) * Mathf.Deg2Rad;
+			float targetAngle = Vector3.SignedAngle (planeForward, projectedLook, UpDirection) * Mathf.Deg2Rad;
 
 			float angleDiff = targetAngle - currentAngle;
+			//angleDiff = Vector3.SignedAngle (projectedForward, projectedLook, UpDirection);
 
 			if (Mathf.Approximately (angleDiff, 0f))
 			{
@@ -1734,14 +1889,11 @@ namespace AC
 
 			if (animEngine && animEngine.turningStyle == TurningStyle.Linear)
 			{
-				//float newAngle = newAngleLinearLerp.Update (currentAngle, targetAngle, turnSpeed * GetScriptTurningFactor ());
-				float newAngle = Mathf.MoveTowards (currentAngle, targetAngle, Time.deltaTime * turnSpeed);
-				newRotation = Quaternion.AngleAxis (newAngle * Mathf.Rad2Deg, Vector3.up);
+				newRotation = Quaternion.RotateTowards (TransformRotation, GetTargetRotation (), turnSpeed * Time.deltaTime * 50f);
 			}
 			else
 			{
-				float newAngle = newAngleLerp.Update (currentAngle, targetAngle, turnSpeed * GetScriptTurningFactor ());
-				newRotation = Quaternion.AngleAxis (newAngle * Mathf.Rad2Deg, Vector3.up);
+				newRotation = Quaternion.Lerp (TransformRotation, GetTargetRotation (), turnSpeed * GetScriptTurningFactor () * Time.deltaTime);
 			}
 		}
 
@@ -1872,7 +2024,7 @@ namespace AC
 		public void SetLookDirection (Vector3 _direction, bool isInstant)
 		{
 			Vector3 oldLookDirection = lookDirection;
-			lookDirection = new Vector3 (_direction.x, 0f, _direction.z);
+			lookDirection = Flatten3D (_direction);
 
 			if (KickStarter.settingsManager.rotationsAffectedByVerticalReduction && SceneSettings.IsUnity2D () && (KickStarter.settingsManager.movementMethod == MovementMethod.PointAndClick || !IsActivePlayer ()))
 			{
@@ -1900,12 +2052,16 @@ namespace AC
 		 * <param name = "_direction">The direction to move in</param>
 		 * <param name = "useSmoothing">If True, smoothing will be applied to the change in direction, so the change will be gradual</param>
 		 */
-		public void SetMoveDirection (Vector3 _direction, bool useSmoothing = false)
+		public void SetMoveDirection (Vector3 _direction, bool useSmoothing = false, bool flatten3D = true)
 		{
 			if (_direction != Vector3.zero)
 			{
-				Quaternion targetRotation = Quaternion.LookRotation (_direction, Vector3.up);
+				if (!SceneSettings.IsUnity2D () && flatten3D)
+				{
+					_direction = Flatten3D (_direction);
+				}
 
+				Quaternion targetRotation = Quaternion.LookRotation (_direction, Vector3.up);
 				Vector3 newMoveDirection = targetRotation * Vector3.forward;
 				newMoveDirection.Normalize ();
 
@@ -2053,10 +2209,12 @@ namespace AC
 			lastDist = Mathf.Infinity;
 			pausePath = false;
 			nodeActionList = null;
+			LockedEndIndex = -1;
 
 			int tempPrev = targetNode;
+			bool isLockedToPath = this == KickStarter.player && KickStarter.stateHandler.IsInGameplay () && KickStarter.player.IsLockedToPath ();
 
-			targetNode = activePath.GetNextNode (targetNode, prevNode, this == KickStarter.player && KickStarter.stateHandler.IsInGameplay () && KickStarter.player.IsLockedToPath (), lockedPathType);
+			targetNode = activePath.GetNextNode (targetNode, prevNode, isLockedToPath, lockedPathType);
 			
 			prevNode = tempPrev;
 
@@ -2075,6 +2233,12 @@ namespace AC
 
 			if (targetNode == -1)
 			{
+				if (true && isLockedToPath)
+				{
+					LockedEndIndex = tempPrev;
+					targetNode = tempPrev;
+					return;
+				}
 				EndPath ();
 				return;
 			}
@@ -2349,7 +2513,7 @@ namespace AC
 			}
 			else
 			{
-				SetLookDirection (new Vector3 (direction.x, 0f, direction.z), false);
+				SetLookDirection (Flatten3D (direction), false);
 			}
 
 			isTurningBeforeWalking = true;
@@ -2818,7 +2982,7 @@ namespace AC
 
 		private void CalcHeightChange ()
 		{
-			float currentHeight = Transform.position.y;
+			float currentHeight = GetUpAmount (Transform.position);
 			heightChange = currentHeight - prevHeight;
 			prevHeight = currentHeight;
 		}
@@ -3345,7 +3509,8 @@ namespace AC
 										new Vector3 (headTurnTarget.position.x - Transform.position.x, 0, headTurnTarget.position.y - Transform.position.y) + headTurnTargetOffset
 										:
 										headTurnTarget.position + headTurnTargetOffset - Transform.position;
-				pointForward.y = 0f;
+
+				pointForward = Flatten3D (pointForward);
 				targetHeadAngles.x = Vector3.Angle (TransformForward, pointForward);
 				targetHeadAngles.x = Mathf.Min (targetHeadAngles.x, (animEngine.isSpriteBased) ? 100f : 70f);
 
@@ -3368,11 +3533,11 @@ namespace AC
 					pointPitch -= Transform.position;
 					if (_characterController)
 					{
-						pointPitch -= new Vector3 (0f, _characterController.height * Transform.localScale.y * 0.8f, 0f);
+						pointPitch -= UpDirection * _characterController.height * Transform.localScale.y * 0.8f;
 					}
 					else if (capsuleCollider)
 					{
-						pointPitch -= new Vector3 (0f, capsuleCollider.height * Transform.localScale.y * 0.8f, 0f);
+						pointPitch -= UpDirection * capsuleCollider.height * Transform.localScale.y * 0.8f;
 					}
 				}
 
@@ -3411,19 +3576,16 @@ namespace AC
 
 
 		/** Gets the Transform associated with a given hand bone */
-		public Transform GetHandTransform (Hand hand)
+		public Transform GetHandTransform (int attachmentPointID)
 		{
-			switch (hand)
+			foreach (var attachmentPoint in attachmentPoints)
 			{
-				case Hand.Left:
-					return leftHandBone;
-
-				case Hand.Right:
-					return rightHandBone;
-
-				default:
-					return null;
+				if (attachmentPoint.ID == attachmentPointID)
+				{
+					return attachmentPoint.transform;
+				}
 			}
+			return null;
 		}
 
 
@@ -3433,31 +3595,28 @@ namespace AC
 		 * <param name = "hand">Which hand to parent the object to (Left, Right)</param>
 		 * <returns>True if the parenting was sucessful</returns>
 		 */
-		public bool HoldObject (GameObject objectToHold, Hand hand)
+		public bool HoldObject (GameObject objectToHold, int attachmentPointID)
 		{
 			if (objectToHold == null)
 			{
 				return false;
 			}
 
-			Transform handTransform;
-			if (hand == Hand.Left)
+			foreach (var attachmentPoint in attachmentPoints)
 			{
-				handTransform = leftHandBone;
-				leftHandHeldObject = objectToHold;
-			}
-			else
-			{
-				handTransform = rightHandBone;
-				rightHandHeldObject = objectToHold;
-			}
+				if (attachmentPoint.ID == attachmentPointID)
+				{
+					attachmentPoint.heldObject = objectToHold;
 
-			if (handTransform)
-			{
-				objectToHold.transform.parent = handTransform;
-				objectToHold.transform.localPosition = Vector3.zero;
-				KickStarter.eventManager.Call_OnCharacterHoldObject (this, objectToHold, hand);
-				return true;
+					if (attachmentPoint.transform)
+					{
+						objectToHold.transform.SetParent (attachmentPoint.transform);
+						objectToHold.transform.localPosition = Vector3.zero;
+						KickStarter.eventManager.Call_OnCharacterHoldObject (this, objectToHold, attachmentPointID);
+						return true;
+					}
+					break;
+				}
 			}
 
 			ACDebug.Log ("Character " + GetName () + " cannot hold object " + objectToHold.name + " - no hand bone found.", gameObject);
@@ -3468,38 +3627,41 @@ namespace AC
 		/** Drops any objects held in the character's hands. */
 		public void ReleaseHeldObjects (bool delete)
 		{
-			ReleaseHeldObject (Hand.Left, delete);
-			ReleaseHeldObject (Hand.Right, delete);
+			foreach (var attachmentPoint in attachmentPoints)
+			{
+				ReleaseHeldObject (attachmentPoint.ID, delete);
+			}
 		}
 
 
-		/** Drops any objects held in the character's hands. */
-		public void ReleaseHeldObject (Hand hand, bool delete)
+		/**
+		 * <summary>Drops any objects held in the character's hands.</summary>
+		 * <param name = "attachmentPointID">The ID of the attachment point to drop from</param<
+		 * <param name = "delete">If True, the held object will be deleted</param>
+		 * <returns>The object that has been released, if delete = False</returns>
+		 */
+		public GameObject ReleaseHeldObject (int attachmentPointID, bool delete)
 		{
-			if (hand == Hand.Left && leftHandHeldObject && leftHandHeldObject.transform.IsChildOf (transform))
+			foreach (var attachmentPoint in attachmentPoints)
 			{
-				KickStarter.eventManager.Call_OnCharacterDropObject (this, leftHandHeldObject, hand);
-				if (delete)
+				if (attachmentPoint.ID == attachmentPointID)
 				{
-					Destroy (leftHandHeldObject);
-				}
-				else
-				{
-					leftHandHeldObject.transform.parent = null;
+					if (attachmentPoint.heldObject && attachmentPoint.heldObject.transform.IsChildOf (transform))
+					{
+						KickStarter.eventManager.Call_OnCharacterDropObject (this, attachmentPoint.heldObject, attachmentPointID);
+						if (delete)
+						{
+							Destroy (attachmentPoint.heldObject);
+						}
+						else
+						{
+							attachmentPoint.heldObject.transform.parent = null;
+							return attachmentPoint.heldObject;
+						}
+					}
 				}
 			}
-			else if (hand == Hand.Right && rightHandHeldObject && rightHandHeldObject.transform.IsChildOf (transform))
-			{
-				KickStarter.eventManager.Call_OnCharacterDropObject (this, rightHandHeldObject, hand);
-				if (delete)
-				{
-					Destroy (rightHandHeldObject);
-				}
-				else
-				{
-					rightHandHeldObject.transform.parent = null;
-				}
-			}
+			return null;
 		}
 
 
@@ -3531,7 +3693,7 @@ namespace AC
 				}
 				else
 				{
-					worldPosition.y += addedHeight;
+					worldPosition += addedHeight * UpDirection;
 				}
 			}
 			else if (_characterController)
@@ -3544,7 +3706,7 @@ namespace AC
 				}
 				else
 				{
-					worldPosition.y += addedHeight;
+					worldPosition += addedHeight * UpDirection;
 				}
 			}
 			else
@@ -3809,15 +3971,6 @@ namespace AC
 				lipSyncTexture.SetFrame (0);
 			}
 
-			if (KickStarter.speechManager.lipSyncMode == LipSyncMode.RogoLipSync)
-			{
-				RogoLipSyncIntegration.Stop (this);
-			}
-			else if (KickStarter.speechManager.lipSyncMode == LipSyncMode.FaceFX)
-			{
-				FaceFXIntegration.Stop (this);
-			}
-
 			lipSyncShapes.Clear ();
 			isLipSyncing = false;
 
@@ -3982,19 +4135,19 @@ namespace AC
 			{
 				if (capsuleCollider && capsuleCollider.direction != 1)
 				{
-					return Physics.CheckCapsule (Transform.position + new Vector3 (0f, _collider.bounds.size.x / 2f, 0f),
-												 Transform.position + new Vector3 (0f, _collider.bounds.size.x / 4f, 0f),
+					return Physics.CheckCapsule (Transform.position + (_collider.bounds.size.x / 2f * UpDirection),
+												 Transform.position + (_collider.bounds.size.x / 4f * UpDirection),
 												 _collider.bounds.size.y * 0.45f, /* was 0.5 */
 												 groundCheckLayerMask);
 				}
 
-				return Physics.CheckCapsule (Transform.position + new Vector3 (0f, _collider.bounds.size.y - (_collider.bounds.size.x / 2f), 0f),
-											 Transform.position + new Vector3 (0f, _collider.bounds.size.x / 4f, 0f),
+				return Physics.CheckCapsule (Transform.position + (UpDirection * (_collider.bounds.size.y - (_collider.bounds.size.x / 2f))),
+											 Transform.position + (UpDirection * _collider.bounds.size.x / 4f),
 											 _collider.bounds.size.x * 0.45f, /* was 0.5 */
 											 groundCheckLayerMask);
 			}
 
-			if (_rigidbody && Mathf.Abs (_rigidbody.velocity.y) > 0.1f)
+			if (_rigidbody && GetUpAmount (UnityVersionHandler.GetRigidbodyVelocity (_rigidbody)) > 0.1f)
 			{
 				return false;
 			}
@@ -4010,7 +4163,7 @@ namespace AC
 				{
 					if (!capsuleCollider.isTrigger && capsuleCollider.enabled)
 					{
-						return Physics.CheckCapsule (Transform.position + new Vector3 (0f, _collider.bounds.size.y - (_collider.bounds.size.x / 2f), 0f), Transform.position + new Vector3 (0f, _collider.bounds.size.x / 4f, 0f), _collider.bounds.size.x / 2f, groundCheckLayerMask);
+						return Physics.CheckCapsule (Transform.position + (UpDirection * (_collider.bounds.size.y - (_collider.bounds.size.x / 2f))), Transform.position + (UpDirection * _collider.bounds.size.x / 4f), _collider.bounds.size.x / 2f, groundCheckLayerMask);
 					}
 				}
 			}
@@ -4078,7 +4231,7 @@ namespace AC
 			{
 				return new Quaternion ();
 			}
-			return Quaternion.LookRotation (lookDirection, Vector3.up);
+			return Quaternion.LookRotation (lookDirection, UpDirection);
 		}
 
 
@@ -4574,7 +4727,7 @@ namespace AC
 		}
 
 
-		#if !ACIgnoreTimeline
+		#if TimelineIsPresent
 
 		/** The CharacterAnimationShot that's currently being applied to the character, if sprite-based */
 		public CharacterAnimationShot ActiveCharacterAnimationShot
@@ -4616,6 +4769,18 @@ namespace AC
 			{
 				return rightHandIKController;
 			}
+		}
+
+
+		protected float GetUpAmount (Vector3 direction)
+		{
+			return Vector3.Dot (direction, UpDirection);
+		}
+
+
+		protected Vector3 Flatten3D (Vector3 direction)
+		{
+			return Vector3.ProjectOnPlane (direction, UpDirection);
 		}
 
 
@@ -4695,6 +4860,20 @@ namespace AC
 			set
 			{
 				pathfindUpdateFrequency = value;
+			}
+		}
+
+
+		/** The character's 'up' vector. By default, this is Vector3.up */
+		public Vector3 UpDirection
+		{
+			get
+			{
+				return upDirection;
+			}
+			set
+			{
+				upDirection = value;
 			}
 		}
 

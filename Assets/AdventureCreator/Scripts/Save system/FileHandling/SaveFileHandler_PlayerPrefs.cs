@@ -75,7 +75,7 @@ namespace AC
 			try
 			{
 				PlayerPrefs.SetString (fullFilename, dataToSave);
-				#if UNITY_PS4 || UNITY_SWITCH
+				#if UNITY_PS4 || UNITY_SWITCH || UNITY_WEBGL
 				PlayerPrefs.Save ();
 				#endif
 				ACDebug.Log ("PlayerPrefs key written: " + fullFilename);
@@ -235,20 +235,20 @@ namespace AC
 				}
 
 				int updateTime = 0;
-				if (KickStarter.settingsManager.saveTimeDisplay != SaveTimeDisplay.None)
+
+				string dateKey = filename + "_timestamp";
+				if (PlayerPrefs.HasKey (dateKey))
 				{
-					string dateKey = filename + "_timestamp";
-
-					if (PlayerPrefs.HasKey (dateKey))
+					string timestampData = PlayerPrefs.GetString (dateKey);
+					if (!string.IsNullOrEmpty (timestampData))
 					{
-						string timestampData = PlayerPrefs.GetString (dateKey);
-						if (!string.IsNullOrEmpty (timestampData))
+						if (int.TryParse (timestampData, out updateTime) && !isAutoSave)
 						{
-							if (int.TryParse (timestampData, out updateTime) && !isAutoSave)
-							{
-								DateTime startDate = new DateTime (2000, 1, 1, 0, 0, 0).ToUniversalTime ();
-								DateTime saveDate = startDate.AddSeconds (updateTime);
+							DateTime startDate = new DateTime (2000, 1, 1, 0, 0, 0).ToUniversalTime ();
+							DateTime saveDate = startDate.AddSeconds (updateTime);
 
+							if (KickStarter.settingsManager.saveTimeDisplay != SaveTimeDisplay.None)
+							{
 								label += GetTimeString (saveDate);
 							}
 						}

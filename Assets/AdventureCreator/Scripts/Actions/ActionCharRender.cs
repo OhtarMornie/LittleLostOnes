@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionCharRender.cs"
  * 
@@ -127,12 +127,7 @@ namespace AC
 			isPlayer = EditorGUILayout.Toggle ("Is Player?", isPlayer);
 			if (isPlayer)
 			{
-				if (KickStarter.settingsManager != null && KickStarter.settingsManager.playerSwitching == PlayerSwitching.Allow)
-				{
-					parameterID = ChooseParameterGUI ("Player ID:", parameters, parameterID, ParameterType.Integer);
-					if (parameterID < 0)
-						playerID = ChoosePlayerGUI (playerID, true);
-				}
+				PlayerField (ref playerID, parameters, ref parameterID);
 
 				if (KickStarter.settingsManager != null && KickStarter.settingsManager.playerSwitching == PlayerSwitching.Allow)
 				{
@@ -157,20 +152,7 @@ namespace AC
 			}
 			else
 			{
-				parameterID = Action.ChooseParameterGUI ("Character:", parameters, parameterID, ParameterType.GameObject);
-				if (parameterID >= 0)
-				{
-					constantID = 0;
-					editorChar = null;
-				}
-				else
-				{
-					editorChar = (Char) EditorGUILayout.ObjectField ("Character:", editorChar, typeof (Char), true);
-					
-					constantID = FieldToID <Char> (editorChar, constantID);
-					editorChar = IDToField <Char> (editorChar, constantID, false);
-				}
-
+				ComponentField ("Character:", ref editorChar, ref constantID, parameters, ref parameterID);
 				_char = editorChar;
 			}
 
@@ -183,20 +165,11 @@ namespace AC
 					mapType = (SortingMapType) EditorGUILayout.EnumPopup ("Sorting type:", mapType);
 					if (mapType == SortingMapType.OrderInLayer)
 					{
-						sortingOrderParameterID = Action.ChooseParameterGUI ("New order:", parameters, sortingOrderParameterID, ParameterType.Integer);
-						if (sortingOrderParameterID < 0)
-						{
-							sortingOrder = EditorGUILayout.IntField ("New order:", sortingOrder);
-						}
-
+						IntField ("New order:", ref sortingOrder, parameters, ref sortingMapParameterID);
 					}
 					else if (mapType == SortingMapType.SortingLayer)
 					{
-						sortingLayerParameterID = Action.ChooseParameterGUI ("New layer:", parameters, sortingLayerParameterID, new ParameterType[2] { ParameterType.String, ParameterType.PopUp });
-						if (sortingLayerParameterID < 0)
-						{
-							sortingLayer = TextField ("New layer:", sortingLayer);
-						}
+						TextField ("New layer:", ref sortingLayer, parameters, ref sortingLayerParameterID);
 					}
 				}
 

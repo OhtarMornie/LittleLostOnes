@@ -15,6 +15,20 @@ namespace AC
 		protected override string ConditionHelp { get { return "Whenever " + (!string.IsNullOrEmpty (menuName) ? "menu " + menuName + "'s " : "a menu's ") + (!string.IsNullOrEmpty (menuName) && !string.IsNullOrEmpty (elementName) ? "'" + elementName + "' element is" : "elements are") + " clicked on."; } }
 
 
+		public EventMenuClick (int _id, string _label, ActionListAsset _actionListAsset, int[] _parameterIDs, string _menuName, string _elementName)
+		{
+			id = _id;
+			label = _label;
+			actionListAsset = _actionListAsset;
+			parameterIDs = _parameterIDs;
+			menuName = _menuName;
+			elementName = _elementName;
+		}
+
+
+		public EventMenuClick () {}
+
+
 		public override void Register ()
 		{
 			EventManager.OnMenuElementClick += OnMenuElementClick;

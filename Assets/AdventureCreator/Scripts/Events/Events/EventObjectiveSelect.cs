@@ -14,6 +14,19 @@ namespace AC
 		protected override string ConditionHelp { get { return "Whenever " + ((objectiveID >= 0) ? GetObjectiveName () : "an Objective") + " is selected."; } }
 
 
+		public EventObjectiveSelect (int _id, string _label, ActionListAsset _actionListAsset, int[] _parameterIDs, int _objectiveID)
+		{
+			id = _id;
+			label = _label;
+			actionListAsset = _actionListAsset;
+			parameterIDs = _parameterIDs;
+			objectiveID = _objectiveID;
+		}
+
+
+		public EventObjectiveSelect () {}
+
+
 		public override void Register ()
 		{
 			EventManager.OnObjectiveSelect += OnObjectiveSelect;
@@ -30,8 +43,17 @@ namespace AC
 		{
 			if (objectiveID < 0 || objectiveID == objective.ID)
 			{
-				Run ();
+				Run (new object[] { objective.ID });
 			}
+		}
+
+
+		protected override ParameterReference[] GetParameterReferences ()
+		{
+			return new ParameterReference[]
+			{
+				new ParameterReference (ParameterType.Objective, "Objective")
+			};
 		}
 
 

@@ -7,12 +7,25 @@ namespace AC
 	{
 
 		[SerializeField] private VolumeType volumeType;
-		private enum VolumeType { Music, SFX, Speech };
+		public enum VolumeType { Music, SFX, Speech };
 
 		public override string[] EditorNames { get { return new string[] { "Options/Change volume/Music", "Options/Change volume/SFX", "Options/Change volume/Speech" }; } }
 		protected override string EventName { get { return "OnChangeVolume"; } }
 		protected override string ConditionHelp { get { return "Whenever the " + volumeType.ToString ().ToLower () + " volume is changed."; } }
-		
+
+
+		public EventOptionsVolume (int _id, string _label, ActionListAsset _actionListAsset, int[] _parameterIDs, VolumeType _volumeType)
+		{
+			id = _id;
+			label = _label;
+			actionListAsset = _actionListAsset;
+			parameterIDs = _parameterIDs;
+			volumeType = _volumeType;
+		}
+
+
+		public EventOptionsVolume () {}
+
 
 		public override void Register ()
 		{

@@ -48,6 +48,7 @@ SkinnedMeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -59,6 +60,7 @@ SkinnedMeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -93,9 +95,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 1
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 0491efeb96cab44cbb184d2356164a55, type: 3}
 --- !u!114 &11427260
 MonoBehaviour:
@@ -109,15 +111,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b7c3ce72f27144c1be5a4a8ce09121d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  showInEditor: 0
   interactionSource: 0
-  limitToCamera: {fileID: 0}
+  _limitToCamera: {fileID: 0}
   interactiveBoundary: {fileID: 0}
   hotspotName: Barrel
   lineID: 43
   highlight: {fileID: 11400000}
   walkToMarker: {fileID: 0}
   centrePoint: {fileID: 0}
+  centrePointOverrides: 0
   provideUseInteraction: 1
   useButton:
     interaction: {fileID: 0}
@@ -129,6 +131,7 @@ MonoBehaviour:
     iconID: -1
     selectItemMode: 0
     playerAction: 0
+    doubleClickDoesNotSnapPlayerToMarker: 0
     setProximity: 0
     proximity: 1
     faceAfter: 0
@@ -145,6 +148,7 @@ MonoBehaviour:
     iconID: 0
     selectItemMode: 0
     playerAction: 3
+    doubleClickDoesNotSnapPlayerToMarker: 0
     setProximity: 0
     proximity: 1
     faceAfter: 0
@@ -160,6 +164,7 @@ MonoBehaviour:
     iconID: 0
     selectItemMode: 0
     playerAction: 0
+    doubleClickDoesNotSnapPlayerToMarker: 0
     setProximity: 0
     proximity: 1
     faceAfter: 0
@@ -178,6 +183,7 @@ MonoBehaviour:
     iconID: -1
     selectItemMode: 0
     playerAction: 0
+    doubleClickDoesNotSnapPlayerToMarker: 0
     setProximity: 0
     proximity: 1
     faceAfter: 0
@@ -195,6 +201,7 @@ MonoBehaviour:
     iconID: 0
     selectItemMode: 0
     playerAction: 1
+    doubleClickDoesNotSnapPlayerToMarker: 0
     setProximity: 0
     proximity: 0
     faceAfter: 0
@@ -210,13 +217,32 @@ MonoBehaviour:
     iconID: -1
     selectItemMode: 0
     playerAction: 0
+    doubleClickDoesNotSnapPlayerToMarker: 0
     setProximity: 0
     proximity: 1
     faceAfter: 0
     isBlocking: 0
     parameterID: 0
     invParameterID: -1
+  provideUnhandledUseInteraction: 0
   provideUnhandledInvInteraction: 0
+  unhandledUseButton:
+    interaction: {fileID: 0}
+    assetFile: {fileID: 0}
+    customScriptObject: {fileID: 0}
+    customScriptFunction: 
+    isDisabled: 0
+    invID: 0
+    iconID: -1
+    selectItemMode: 0
+    playerAction: 0
+    doubleClickDoesNotSnapPlayerToMarker: 0
+    setProximity: 0
+    proximity: 1
+    faceAfter: 0
+    isBlocking: 0
+    parameterID: -1
+    invParameterID: -1
   unhandledInvButton:
     interaction: {fileID: 0}
     assetFile: {fileID: 0}
@@ -227,12 +253,14 @@ MonoBehaviour:
     iconID: -1
     selectItemMode: 0
     playerAction: 0
+    doubleClickDoesNotSnapPlayerToMarker: 0
     setProximity: 0
     proximity: 1
     faceAfter: 0
     isBlocking: 0
     parameterID: -1
     invParameterID: -1
+  canBeLowerCase: 0
   drawGizmos: 1
   lastInteractionIndex: 0
   displayLineID: -1
@@ -255,6 +283,7 @@ MonoBehaviour:
   constantID: 32590
   retainInPrefab: 1
   autoManual: 0
+  hotspotToSave: {fileID: 0}
   startState: 0
 --- !u!1 &100008
 GameObject:
@@ -322,22 +351,42 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highlightWhenSelected: 1
-  brightenMaterials: 1
+  brightenMaterials: 0
   affectChildren: 1
-  maxHighlight: 2
   fadeTime: 0.3
   flashHoldTime: 0
+  highlightCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 2
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  highlightMaterialPropertyOverride: 
   callEvents: 0
   onHighlightOn:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   onHighlightOff:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
 --- !u!114 &11410384
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -353,3 +402,8 @@ MonoBehaviour:
   constantID: 5948
   retainInPrefab: 0
   autoManual: 0
+  animatorToSave: {fileID: 9550246}
+  saveController: 0
+  setDefaultParameterValues: 0
+  retainParametersWhenDisabled: 0
+  defaultAnimParameters: []

@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionInventorySet.cs"
  * 
@@ -29,8 +29,6 @@ namespace AC
 		public int invID;
 		public int replaceParameterID = -1;
 		public int invIDReplace;
-		protected int invNumber;
-		protected int replaceInvNumber;
 		
 		public bool setAmount = false;
 		public int amountParameterID = -1;
@@ -42,8 +40,10 @@ namespace AC
 		public bool addToFront = false;
 		[SerializeField] private bool removeLast = false; // Deprecated
 
-		public enum ItemRemoveMethod { SpecificItem, LastSelectedItem, AllItems };
+		public enum ItemRemoveMethod { SpecificItem, LastSelectedItem, AllItems, AllItemsInCategory };
 		public ItemRemoveMethod itemRemoveMethod = ItemRemoveMethod.SpecificItem;
+		public int categoryID;
+		public int categoryIDParameterID = -1;
 
 		#if UNITY_EDITOR
 		private InventoryManager inventoryManager;
@@ -61,6 +61,7 @@ namespace AC
 			invID = AssignInvItemID (parameters, parameterID, invID);
 			invIDReplace = AssignInvItemID (parameters, replaceParameterID, invIDReplace);
 			amount = AssignInteger (parameters, amountParameterID, amount);
+			categoryID = AssignInteger (parameters, categoryIDParameterID, categoryID);
 		}
 
 
@@ -184,6 +185,17 @@ namespace AC
 								KickStarter.runtimeInventory.PlayerInvCollection.DeleteAll ();
 							}
 						}
+						else if (itemRemoveMethod == ItemRemoveMethod.AllItemsInCategory)
+						{
+							if (_playerID >= 0)
+							{
+								KickStarter.runtimeInventory.RemoveAllFromOtherPlayer (_playerID, categoryID);
+							}
+							else
+							{
+								KickStarter.runtimeInventory.PlayerInvCollection.DeleteAllInCategory (categoryID);
+							}
+						}
 						break;
 
 					case InvAction.Replace:
@@ -224,65 +236,19 @@ namespace AC
 
 		public override void ShowGUI (List<ActionParameter> parameters)
 		{
-			if (inventoryManager == null && AdvGame.GetReferences ().inventoryManager)
+			if (inventoryManager == null && KickStarter.inventoryManager)
 			{
-				inventoryManager = AdvGame.GetReferences ().inventoryManager;
+				inventoryManager = KickStarter.inventoryManager;
 			}
-			if (settingsManager == null && AdvGame.GetReferences ().settingsManager)
+			if (settingsManager == null && KickStarter.settingsManager)
 			{
-				settingsManager = AdvGame.GetReferences ().settingsManager;
+				settingsManager = KickStarter.settingsManager;
 			}
 			
 			if (inventoryManager != null)
 			{
-				// Create a string List of the field's names (for the PopUp box)
-				List<string> labelList = new List<string>();
-				
-				int i = 0;
-				if (parameterID == -1)
-				{
-					invNumber = -1;
-				}
-				
 				if (inventoryManager.items.Count > 0)
 				{
-					foreach (InvItem _item in inventoryManager.items)
-					{
-						labelList.Add (_item.label);
-						
-						// If a item has been removed, make sure selected variable is still valid
-						if (_item.id == invID)
-						{
-							invNumber = i;
-						}
-						if (_item.id == invIDReplace)
-						{
-							replaceInvNumber = i;
-						}
-						
-						i++;
-					}
-					
-					if (invNumber == -1)
-					{
-						if (invID != 0)
-						{
-							LogWarning ("Previously chosen item no longer exists!");
-						}
-						invNumber = 0;
-						invID = 0;
-					}
-
-					if (invAction == InvAction.Replace && replaceInvNumber == -1)
-					{
-						if (invIDReplace != 0)
-						{
-							LogWarning ("Previously chosen item no longer exists!");
-						}
-						replaceInvNumber = 0;
-						invIDReplace = 0;
-					}
-
 					invAction = (InvAction) EditorGUILayout.EnumPopup ("Method:", invAction);
 
 					string label = "Item to add:";
@@ -294,48 +260,28 @@ namespace AC
 
 					if (invAction != InvAction.Remove || itemRemoveMethod == ItemRemoveMethod.SpecificItem)
 					{
-						parameterID = Action.ChooseParameterGUI (label, parameters, parameterID, ParameterType.InventoryItem);
-						if (parameterID >= 0)
-						{
-							invNumber = Mathf.Min (invNumber, inventoryManager.items.Count-1);
-							invID = -1;
-						}
-						else
-						{
-							invNumber = EditorGUILayout.Popup (label, invNumber, labelList.ToArray());
-							invID = inventoryManager.items[invNumber].id;
-						}
+						ItemField (label, ref invID, parameters, ref parameterID);
 					}
 
-					if ((invAction == InvAction.Remove && removeLast) || inventoryManager.items[invNumber].canCarryMultiple)
+					if ((invAction == InvAction.Remove && itemRemoveMethod == ItemRemoveMethod.LastSelectedItem) || (inventoryManager.GetItem (invID) != null && inventoryManager.GetItem (invID).canCarryMultiple))
 					{
 						setAmount = EditorGUILayout.Toggle ("Set amount?", setAmount);
 					
 						if (setAmount)
 						{
 							string _label = (invAction == InvAction.Remove) ? "Reduce count by:" : "Increase count by:";
-
-							amountParameterID = Action.ChooseParameterGUI (_label, parameters, amountParameterID, ParameterType.Integer);
-							if (amountParameterID < 0)
-							{
-								amount = EditorGUILayout.IntField (_label, amount);
-							}
+							IntField (_label, ref amount, parameters, ref amountParameterID);
 						}
+					}
+
+					if (invAction == InvAction.Remove && itemRemoveMethod == ItemRemoveMethod.AllItemsInCategory)
+					{
+						IntField ("Category ID", ref categoryID, parameters, ref categoryIDParameterID);
 					}
 
 					if (invAction == InvAction.Replace)
 					{
-						replaceParameterID = Action.ChooseParameterGUI ("Item to remove:", parameters, replaceParameterID, ParameterType.InventoryItem);
-						if (replaceParameterID >= 0)
-						{
-							replaceInvNumber = Mathf.Min (replaceInvNumber, inventoryManager.items.Count-1);
-							invIDReplace = -1;
-						}
-						else
-						{
-							replaceInvNumber = EditorGUILayout.Popup ("Item to remove:", replaceInvNumber, labelList.ToArray());
-							invIDReplace = inventoryManager.items[replaceInvNumber].id;
-						}
+						ItemField ("Item to remove:", ref invIDReplace, parameters, ref replaceParameterID);
 					}
 					else if (invAction == InvAction.Add)
 					{
@@ -346,9 +292,7 @@ namespace AC
 				{
 					EditorGUILayout.HelpBox ("No inventory items exist!", MessageType.Info);
 					invID = -1;
-					invNumber = -1;
 					invIDReplace = -1;
-					replaceInvNumber = -1;
 				}
 
 				if (settingsManager != null && settingsManager.playerSwitching == PlayerSwitching.Allow && !settingsManager.shareInventory && invAction != InvAction.Replace && !(invAction == InvAction.Remove && itemRemoveMethod == ItemRemoveMethod.LastSelectedItem))
@@ -379,7 +323,7 @@ namespace AC
 
 			if (!inventoryManager)
 			{
-				inventoryManager = AdvGame.GetReferences ().inventoryManager;
+				inventoryManager = KickStarter.inventoryManager;
 			}
 
 			if (inventoryManager)

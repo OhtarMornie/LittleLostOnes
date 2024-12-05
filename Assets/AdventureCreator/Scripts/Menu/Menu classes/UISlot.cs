@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"UISlot.cs"
  * 
@@ -36,16 +36,18 @@ namespace AC
 		public UnityEngine.Sprite sprite;
 		
 		#if TextMeshProIsPresent
-		private TMPro.TextMeshProUGUI uiText;
-		#else
-		private Text uiText;
+		private TMPro.TextMeshProUGUI uiTextTMP;
 		#endif
+		private Text uiText;
 
 		private Image uiImage;
 		private RawImage uiRawImage;
 
 		private Color originalNormalColour;
 		private Color originalHighlightedColour;
+		#if UNITY_2019_4_OR_NEWER
+		private Color originalSelectedColour;
+		#endif
 		private UnityEngine.Sprite emptySprite;
 		private Texture cacheTexture;
 		private Sprite originalSprite;
@@ -65,6 +67,10 @@ namespace AC
 			uiImage = null;
 			uiRawImage = null;
 			sprite = null;
+
+			#if TextMeshProIsPresent
+			uiTextTMP = null;
+			#endif
 		}
 
 
@@ -82,16 +88,16 @@ namespace AC
 
 		#if UNITY_EDITOR
 
-		public void LinkedUiGUI (int i, MenuSource source)
+		public void LinkedUiGUI (int i, Menu menu)
 		{
 			uiButton = (UnityEngine.UI.Button) EditorGUILayout.ObjectField ("Linked Button (" + (i+1).ToString () + "):", uiButton, typeof (UnityEngine.UI.Button), true);
 
-			if (Application.isPlaying && source == MenuSource.UnityUiPrefab)
+			if (Application.isPlaying && menu.menuSource == MenuSource.UnityUiPrefab)
 			{}
 			else
 			{
 				uiButtonID = Menu.FieldToID <UnityEngine.UI.Button> (uiButton, uiButtonID);
-				uiButton = Menu.IDToField <UnityEngine.UI.Button> (uiButton, uiButtonID, source);
+				uiButton = Menu.IDToField <UnityEngine.UI.Button> (uiButton, uiButtonID, menu);
 			}
 		}
 
@@ -124,7 +130,7 @@ namespace AC
 		 * <param name = "linkUIGraphic">What Image component the Element's Graphics should be linked to (ImageComponent, ButtonTargetGraphic)</param>
 		 * <param name = "emptySlotTexture">If set, the texture to use when a slot is considered empty</param>
 		 */
-		public void LinkUIElements (Canvas canvas, LinkUIGraphic linkUIGraphic, Texture2D emptySlotTexture = null)
+		public void LinkUIElements (Menu menu, Canvas canvas, LinkUIGraphic linkUIGraphic, Texture2D emptySlotTexture = null)
 		{
 			if (canvas)
 			{
@@ -138,10 +144,13 @@ namespace AC
 			if (uiButton)
 			{
 				#if TextMeshProIsPresent
-				uiText = uiButton.GetComponentInChildren <TMPro.TextMeshProUGUI>();
-				#else
-				uiText = uiButton.GetComponentInChildren <Text>();
+				if (menu.useTextMeshProComponents)
+				{
+					uiTextTMP = uiButton.GetComponentInChildren <TMPro.TextMeshProUGUI>();
+				}
+				if (!menu.useTextMeshProComponents || uiTextTMP == null)
 				#endif
+					uiText = uiButton.GetComponentInChildren <Text>();
 				uiRawImage = uiButton.GetComponentInChildren <RawImage>();
 
 				if (linkUIGraphic == LinkUIGraphic.ImageComponent)
@@ -169,6 +178,9 @@ namespace AC
 
 				originalNormalColour = uiButton.colors.normalColor;
 				originalHighlightedColour = uiButton.colors.highlightedColor;
+				#if UNITY_2019_4_OR_NEWER
+				originalSelectedColour = uiButton.colors.selectedColor;
+				#endif
 				originalSprite = (uiImage) ? uiImage.sprite : null;
 			}
 
@@ -185,6 +197,14 @@ namespace AC
 		 */
 		public void SetText (string _text)
 		{
+			#if TextMeshProIsPresent
+			if (uiTextTMP)
+			{
+				uiTextTMP.text = _text;
+				return;
+			}
+			#endif
+
 			if (uiText)
 			{
 				uiText.text = _text;
@@ -395,6 +415,9 @@ namespace AC
 				ColorBlock colorBlock = uiButton.colors;
 				colorBlock.normalColor = originalNormalColour;
 				colorBlock.highlightedColor = originalHighlightedColour;
+				#if UNITY_2019_4_OR_NEWER
+				colorBlock.selectedColor = originalSelectedColour;
+				#endif
 				uiButton.colors = colorBlock;
 			}
 		}

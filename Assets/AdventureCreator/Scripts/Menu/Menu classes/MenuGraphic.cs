@@ -5,7 +5,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"MenuGraphic.cs"
  * 
@@ -40,6 +40,8 @@ namespace AC
 		private enum UIImageType { Image, RawImage };
 		/** The name of the MenuJournal element to refer to, if graphicType = GraphicType.PageTexture */
 		public string linkedJournalElementName;
+		/** The change to make to the associated UI object when invisible */
+		public UIComponentHideStyle uiComponentHideStyle = UIComponentHideStyle.DisableObject;
 
 		private Texture localTexture;
 		private AC.Char portraitCharacterOverride;
@@ -63,6 +65,7 @@ namespace AC
 			graphic = new CursorIconBase ();
 			numSlots = 1;
 			linkedJournalElementName = string.Empty;
+			uiComponentHideStyle = UIComponentHideStyle.DisableObject;
 			SetSize (new Vector2 (10f, 5f));
 			
 			base.Declare ();
@@ -91,6 +94,7 @@ namespace AC
 			uiRawImage = _element.uiRawImage;
 			uiImageType = _element.uiImageType;
 			linkedJournalElementName = _element.linkedJournalElementName;
+			uiComponentHideStyle = _element.uiComponentHideStyle;
 
 			graphicType = _element.graphicType;
 			graphic = new CursorIconBase ();
@@ -128,7 +132,7 @@ namespace AC
 		
 		#if UNITY_EDITOR
 		
-		public override void ShowGUI (Menu menu)
+		public override void ShowGUI (Menu menu, System.Action<ActionListAsset> showALAEditor)
 		{
 			string apiPrefix = "(AC.PlayerMenus.GetElementWithName (\"" + menu.title + "\", \"" + title + "\") as AC.MenuGraphic)";
 
@@ -140,11 +144,11 @@ namespace AC
 				uiImageType = (UIImageType) EditorGUILayout.EnumPopup (new GUIContent ("UI image type:", "The type of UI component to link to"), uiImageType);
 				if (uiImageType == UIImageType.Image)
 				{
-					uiImage = LinkedUiGUI <Image> (uiImage, "Linked Image:", source);
+					uiImage = LinkedUiGUI <Image> (uiImage, "Linked Image:", menu);
 				}
 				else if (uiImageType == UIImageType.RawImage)
 				{
-					uiRawImage = LinkedUiGUI <RawImage> (uiRawImage, "Linked Raw Image:", source);
+					uiRawImage = LinkedUiGUI <RawImage> (uiRawImage, "Linked Raw Image:", menu);
 				}
 				CustomGUILayout.EndVertical ();
 				CustomGUILayout.BeginVertical ();
@@ -165,9 +169,14 @@ namespace AC
 				linkedJournalElementName = CustomGUILayout.TextField ("Journal element name:", linkedJournalElementName, apiPrefix + ".linkedJournalElementName", "The name of the Journal element (in the same Menu) to refer to");
 			}
 
+			if (menu.menuSource != MenuSource.AdventureCreator)
+			{
+				uiComponentHideStyle = (UIComponentHideStyle) CustomGUILayout.EnumPopup ("When invisible:", uiComponentHideStyle, apiPrefix + ".uiComponentHideStyle", "The method by which this element (or slots within it) are hidden from view when made invisible");
+			}
+
 			CustomGUILayout.EndVertical ();
 			
-			base.ShowGUI (menu);
+			base.ShowGUI (menu, showALAEditor);
 		}
 
 		#endif
@@ -239,6 +248,8 @@ namespace AC
 		public override void OnMenuTurnOn (Menu menu)
 		{
 			base.OnMenuTurnOn (menu);
+
+			graphic.Reset ();
 
 			PreDisplay (0, Options.GetLanguage (), false);
 
@@ -434,11 +445,11 @@ namespace AC
 					break;
 			}
 		}
-		
+	
 
 		public override void RecalculateSize (MenuSource source)
 		{
-			graphic.Reset ();
+			graphic.Reset (false);
 			SetUIGraphic ();
 			base.RecalculateSize (source);
 		}
@@ -484,7 +495,7 @@ namespace AC
 					default:
 						break;
 				}
-				UpdateUIElement (uiImage);
+				UpdateUIElement (uiImage, uiComponentHideStyle);
 			}
 			if (uiImageType == UIImageType.RawImage && uiRawImage)
 			{
@@ -520,14 +531,14 @@ namespace AC
 						break;
 				}
 
-				UpdateUIElement (uiRawImage);
+				UpdateUIElement (uiRawImage, uiComponentHideStyle);
 			}
 		}
 		
 		
 		protected override void AutoSize ()
 		{
-			if (graphicType == AC_GraphicType.Normal && graphic.texture)
+			if (graphic.texture && (graphicType == AC_GraphicType.Normal || !Application.isPlaying))
 			{
 				GUIContent content = new GUIContent (graphic.texture);
 				AutoSize (content);

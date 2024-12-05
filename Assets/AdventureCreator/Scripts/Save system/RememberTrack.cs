@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"RememberTrack.cs"
  * 
@@ -107,6 +107,7 @@ namespace AC
 		{
 			if (trackToSave == null) trackToSave = GetComponent<DragTrack> ();
 
+			CustomGUILayout.Header ("Track");
 			CustomGUILayout.BeginVertical ();
 			trackToSave = (DragTrack) CustomGUILayout.ObjectField<DragTrack> ("Track to save:", trackToSave, true);
 			CustomGUILayout.EndVertical ();

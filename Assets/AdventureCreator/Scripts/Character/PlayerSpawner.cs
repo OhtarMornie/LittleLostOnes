@@ -62,7 +62,7 @@ namespace AC
 				yield return spawnAllPlayersCoroutine.Current;
 			}
 
-			Player[] localPlayers = FindObjectsOfType<Player> ();
+			Player[] localPlayers = UnityVersionHandler.FindObjectsOfType<Player> ();
 
 			switch (KickStarter.settingsManager.playerSwitching)
 			{

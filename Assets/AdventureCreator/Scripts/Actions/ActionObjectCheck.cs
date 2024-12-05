@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"ActionObjectCheck.cs"
  * 
@@ -55,19 +55,7 @@ namespace AC
 		
 		public override void ShowGUI (List<ActionParameter> parameters)
 		{
-			parameterID = Action.ChooseParameterGUI ("Object to check:", parameters, parameterID, ParameterType.GameObject);
-			if (parameterID >= 0)
-			{
-				constantID = 0;
-				gameObject = null;
-			}
-			else
-			{
-				gameObject = (GameObject) EditorGUILayout.ObjectField ("Object to check:", gameObject, typeof (GameObject), true);
-				
-				constantID = FieldToID (gameObject, constantID);
-				gameObject = IDToField (gameObject, constantID, false);
-			}
+			GameObjectField ("Object to check:", ref gameObject, ref constantID, parameters, ref parameterID);
 		}
 
 

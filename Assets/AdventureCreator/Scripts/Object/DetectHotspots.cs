@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"DetectHotspots.cs"
  * 
@@ -93,7 +93,8 @@ namespace AC
 				}
 
 				hotspots.Add (otherHotspot);
-				hotspots = KickStarter.eventManager.Call_OnModifyHotspotDetectorCollection (this, hotspots);
+
+				if (KickStarter.eventManager) hotspots = KickStarter.eventManager.Call_OnModifyHotspotDetectorCollection (this, hotspots);
 			}
 		}
 
@@ -119,7 +120,8 @@ namespace AC
 					}
 				}
 				hotspots.Add (otherHotspot);
-				hotspots = KickStarter.eventManager.Call_OnModifyHotspotDetectorCollection (this, hotspots);
+				
+				if (KickStarter.eventManager) hotspots = KickStarter.eventManager.Call_OnModifyHotspotDetectorCollection (this, hotspots);
 			}
 		}
 
@@ -169,7 +171,7 @@ namespace AC
 		/** Detects Hotspots in its vicinity. This is public so that it can be called by StateHandler every frame. */
 		public void _Update ()
 		{
-			if (nearestHotspot && nearestHotspot.gameObject.layer == LayerMask.NameToLayer (AdvGame.GetReferences ().settingsManager.deactivatedLayer))
+			if (nearestHotspot && nearestHotspot.gameObject.layer == LayerMask.NameToLayer (KickStarter.settingsManager.deactivatedLayer))
 			{
 				nearestHotspot = null;
 			}
@@ -189,11 +191,11 @@ namespace AC
 				{
 					CycleHotspots (true);
 				}
-				else if (KickStarter.playerInput.InputGetAxis ("CycleHotspots") > 0.1f)
+				else if (KickStarter.playerInput.InputGetAxis ("CycleHotspots") >= 0.1f)
 				{
 					CycleHotspots (true);
 				}
-				else if (KickStarter.playerInput.InputGetAxis ("CycleHotspots") < -0.1f)
+				else if (KickStarter.playerInput.InputGetAxis ("CycleHotspots") <= -0.1f)
 				{
 					CycleHotspots (false);
 				}
@@ -219,7 +221,7 @@ namespace AC
 		{
 			if (hotspots.Count > 0)
 			{
-				if (AdvGame.GetReferences ().settingsManager.hotspotsInVicinity == HotspotsInVicinity.NearestOnly)
+				if (KickStarter.settingsManager.hotspotsInVicinity == HotspotsInVicinity.NearestOnly)
 				{
 					if (selected >= 0 && selected < hotspots.Count)
 					{
@@ -235,7 +237,7 @@ namespace AC
 						}
 					}
 				}
-				else if (AdvGame.GetReferences ().settingsManager.hotspotsInVicinity == HotspotsInVicinity.CycleMultiple)
+				else if (KickStarter.settingsManager.hotspotsInVicinity == HotspotsInVicinity.CycleMultiple)
 				{
 					if (selected >= hotspots.Count)
 					{

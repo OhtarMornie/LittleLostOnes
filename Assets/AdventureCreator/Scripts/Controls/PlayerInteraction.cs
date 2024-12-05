@@ -1,7 +1,7 @@
 /*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"PlayerInteraction.cs"
  * 
@@ -23,6 +23,9 @@ namespace AC
 	public class PlayerInteraction : MonoBehaviour
 	{
 
+		/** If True, then camera-dragging will never be possible if a Hotspot is selected first */
+		public bool hotspotsPreventCameraDragging = false;
+
 		protected bool inPreInteractionCutscene = false;
 		protected HotspotLabelData hotspotLabelData = new HotspotLabelData ();
 
@@ -38,6 +41,7 @@ namespace AC
 
 		private const int MaxRaycastHits = 5;
 		private RaycastHit2D[] results2D = new RaycastHit2D[MaxRaycastHits];
+		private HotspotDetection lastFrameHotspotDetection;
 
 
 		protected void OnEnable ()
@@ -47,6 +51,8 @@ namespace AC
 			EventManager.OnInventoryCombine += OnInventoryCombine;
 			EventManager.OnEnterGameState += OnEnterGameState;
 			EventManager.OnCharacterRecalculatePathfind += OnCharacterRecalculatePathfind;
+
+			if (KickStarter.settingsManager) lastFrameHotspotDetection = KickStarter.settingsManager.hotspotDetection;
 		}
 
 		
@@ -63,6 +69,20 @@ namespace AC
 		/** Updates the interaction handler. This is called every frame by StateHandler. */
 		public void UpdateInteraction ()
 		{
+			if (lastFrameHotspotDetection != KickStarter.settingsManager.hotspotDetection)
+			{
+				bool isExitingPlayerVicinity = lastFrameHotspotDetection == HotspotDetection.PlayerVicinity;
+				lastFrameHotspotDetection = KickStarter.settingsManager.hotspotDetection;
+
+				if (isExitingPlayerVicinity)
+				{
+					foreach (Hotspot hotspot in KickStarter.stateHandler.Hotspots)
+					{
+						hotspot.OnExitPlayerVicinityMode ();
+					}
+				}
+			}
+
 			MouseState mouseState = KickStarter.playerInput.GetMouseState ();
 
 			if (KickStarter.stateHandler.IsInGameplay ())	
@@ -74,7 +94,7 @@ namespace AC
 					return;
 				}
 				
-				if (KickStarter.settingsManager.interactionMethod != AC_InteractionMethod.CustomScript && mouseState == MouseState.RightClick && InvInstance.IsValid (KickStarter.runtimeInventory.SelectedInstance) && !KickStarter.playerMenus.IsMouseOverMenu ())
+				if (KickStarter.settingsManager.interactionMethod != AC_InteractionMethod.CustomScript && mouseState == MouseState.RightClick && InvInstance.IsValid (KickStarter.runtimeInventory.SelectedInstance) && !KickStarter.playerMenus.CanCurrentlyRightClick ())
 				{
 					if (KickStarter.settingsManager.SelectInteractionMethod () == SelectInteractions.CyclingCursorAndClickingHotspot && KickStarter.settingsManager.cycleInventoryCursors)
 					{
@@ -97,7 +117,7 @@ namespace AC
 					}
 					else if (KickStarter.settingsManager.RightClickInventory == RightClickInventory.ExaminesHotspot && KickStarter.settingsManager.interactionMethod == AC_InteractionMethod.ContextSensitive)
 					{
-						if (hotspot)
+						if (hotspot && !KickStarter.playerMenus.IsMouseOverMenu ())
 						{
 							hotspot.RunExamineInteraction ();
 						}
@@ -201,6 +221,7 @@ namespace AC
 					}
 					else if (!KickStarter.playerMenus.IsMouseOverInteractionMenu ())
 					{
+						if (IsInvokingDefaultInteraction ()) return;
 						ChooseHotspotThenInteractionClick (mouseState);
 					}
 				}
@@ -232,8 +253,24 @@ namespace AC
 			{
 				if (KickStarter.playerMenus.EventSystem && KickStarter.playerMenus.EventSystem.IsPointerOverGameObject () && !KickStarter.settingsManager.InventoryDragDrop)
 				{
-					// Don't null if over interactive Menu Element (Unity UI issue)
-					return;
+					if (KickStarter.playerMenus.IsMouseOverMenu () && !KickStarter.playerMenus.CanCurrentlyRightClick ())
+					{
+						// OK in this instance
+					}
+					else if (KickStarter.playerMenus.IsMouseOverInventory ())
+					{
+						// Don't null if over Inventory
+						return;
+					}
+					else if (!AC.KickStarter.settingsManager.unityUIClicksAlwaysBlocks)
+					{
+						// OK in this instance
+					}
+					else
+					{
+						// Don't null if over interactive Menu Element (Unity UI issue)
+						return;
+					}
 				}
 				KickStarter.runtimeInventory.SetNull ();
 			}
@@ -292,7 +329,7 @@ namespace AC
 							// Just highlight the nearest hotspot, but don't make it the "active" one
 							KickStarter.player.hotspotDetector.HighlightAll ();
 						}
-						else
+						else if (!KickStarter.settingsManager.cursorMustBeOverNearestHotspot)
 						{
 							return CheckHotspotValid (KickStarter.player.hotspotDetector.GetSelected ());
 						}
@@ -566,25 +603,28 @@ namespace AC
 
 		protected bool IsInvokingDefaultInteraction ()
 		{
-			if (KickStarter.settingsManager.interactionMethod == AC_InteractionMethod.ChooseInteractionThenHotspot &&
-				KickStarter.settingsManager.allowDefaultinteractions &&
-				KickStarter.playerInput.InputGetButtonDown ("DefaultInteraction"))
+			if (hotspot == null || !hotspot.provideUseInteraction) return false;
+
+			switch (KickStarter.settingsManager.interactionMethod)
 			{
-				return true;
+				case AC_InteractionMethod.ChooseInteractionThenHotspot:
+				case AC_InteractionMethod.ChooseHotspotThenInteraction:
+					if (KickStarter.settingsManager.allowDefaultinteractions && KickStarter.playerInput.InputGetButtonDown ("DefaultInteraction"))
+					{
+						UseHotspot (hotspot);
+						return true;
+					}
+					return false;
+
+				default:
+					return false;
 			}
-			return false;
 		}
 
 
 		protected void ContextSensitiveClick (MouseState mouseState)
 		{
-			if (hotspot != null &&
-				IsInvokingDefaultInteraction () &&
-				hotspot.provideUseInteraction)
-			{
-				UseHotspot (hotspot);
-				return;
-			}
+			if (IsInvokingDefaultInteraction ()) return;
 
 			if (RequireTwoTaps ())
 			{
@@ -611,13 +651,11 @@ namespace AC
 												(KickStarter.settingsManager.interactionMethod == AC_InteractionMethod.ContextSensitive ||
 												(KickStarter.settingsManager.interactionMethod == AC_InteractionMethod.ChooseHotspotThenInteraction && hotspot.IsSingleInteraction ())));
 
-					if (KickStarter.settingsManager.inputMethod == InputMethod.TouchScreen && KickStarter.settingsManager.touchScreenHotspotInput == TouchScreenHotspotInput.TouchUp)
+					if ((KickStarter.settingsManager.inputMethod == InputMethod.TouchScreen && KickStarter.settingsManager.touchScreenHotspotInput == TouchScreenHotspotInput.TouchUp && KickStarter.runtimeInventory.SelectedItem == null) ||
+						(KickStarter.settingsManager.inputMethod != InputMethod.TouchScreen && KickStarter.settingsManager.clickUpHotspots))
 					{
-						if (KickStarter.runtimeInventory.SelectedItem == null)
-						{
-							if (mouseState == MouseState.SingleClick) mouseState = MouseState.Normal;
-							else if (mouseState == MouseState.LetGo) mouseState = MouseState.SingleClick;
-						}
+						if (mouseState == MouseState.SingleClick) mouseState = MouseState.Normal;
+						else if (mouseState == MouseState.LetGo) mouseState = MouseState.SingleClick;
 					}
 
 					if ((mouseState == MouseState.SingleClick && !requireDoubleClick) || mouseState == MouseState.DoubleClick || mouseState == MouseState.RightClick || IsDroppingInventory ())
@@ -1165,7 +1203,7 @@ namespace AC
 			
 			if (KickStarter.player)
 			{
-				if (_button != null && (_button.playerAction == PlayerAction.DoNothing || _button.playerAction == PlayerAction.TurnToFace))
+				if (_button != null && ((_button.playerAction == PlayerAction.DoNothing && _button.stopPlayer) || _button.playerAction == PlayerAction.TurnToFace))
 				{
 					KickStarter.player.EndPath ();
 				}
@@ -1295,6 +1333,10 @@ namespace AC
 							lookVector.y = 0;
 
 							KickStarter.player.EndPath ();
+							if (KickStarter.settingsManager.IsInFirstPerson ())
+							{
+								inPreInteractionCutscene = true;
+							}
 							KickStarter.player.SetLookDirection (lookVector, false);
 							
 							while (KickStarter.player.IsTurning ())
@@ -1315,6 +1357,11 @@ namespace AC
 					
 					else if (_button.playerAction == PlayerAction.WalkTo)
 					{
+						if (!SceneSettings.IsUnity2D () && _hotspot.Collider)
+						{
+							targetPos = _hotspot.Collider.ClosestPoint (KickStarter.player.Transform.position);
+						}
+
 						float dist = Vector3.Distance (KickStarter.player.Transform.position, targetPos);
 						if (_hotspot.walkToMarker)
 						{
@@ -1329,7 +1376,7 @@ namespace AC
 								if (KickStarter.navigationManager)
 								{
 									Vector3[] pointArray;
-									Vector3 targetPosition = _hotspot.Transform.position;
+									Vector3 targetPosition = targetPos;
 									if (_hotspot.walkToMarker)
 									{
 										targetPosition = _hotspot.walkToMarker.Position;
@@ -1394,6 +1441,10 @@ namespace AC
 						if (_button.faceAfter)
 						{
 							KickStarter.player.EndPath ();
+							if (KickStarter.settingsManager.IsInFirstPerson ())
+							{
+								inPreInteractionCutscene = true;
+							}
 							KickStarter.player.SetLookDirection (lookVector, false);
 							while (KickStarter.player.IsTurning ())
 							{
@@ -1423,7 +1474,17 @@ namespace AC
 
 				if (KickStarter.player)
 				{
-					KickStarter.player.EndPath (null, _button == null || _button.playerAction == PlayerAction.DoNothing);
+					if (_button != null && _button.playerAction == PlayerAction.DoNothing)
+					{
+						if (_button.stopPlayer)
+						{
+							KickStarter.player.EndPath (null, true);
+						}
+					}
+					else if (_button == null || _button.playerAction != PlayerAction.DoNothing)
+					{
+						KickStarter.player.EndPath (null, _button == null);
+					}
 				}
 				hotspotMovingTo = null;
 			}
@@ -1744,6 +1805,73 @@ namespace AC
 			
 			return false;
 		}
+
+
+		/**
+		 * <summary>Checks if the cursor is currently over a Hotspot.</summary>
+		 * <returs>True if the cursor is currently over a Hotspot</returns>
+		 */
+		public Hotspot MouseOverHotspot ()
+		{
+			if (SceneSettings.IsUnity2D ())
+			{
+				RaycastHit2D hit = new RaycastHit2D ();
+				
+				if (KickStarter.mainCamera.IsOrthographic ())
+				{
+					hit = UnityVersionHandler.Perform2DRaycast (
+						KickStarter.CameraMain.ScreenToWorldPoint (KickStarter.playerInput.GetMousePosition ()),
+						Vector2.zero,
+						KickStarter.settingsManager.hotspotRaycastLength,
+						HotspotLayerMask
+						);
+				}
+				else
+				{
+					Vector3 pos = KickStarter.playerInput.GetMousePosition ();
+					pos.z = -KickStarter.CameraMainTransform.position.z;
+
+					hit = UnityVersionHandler.Perform2DRaycast (
+						KickStarter.CameraMain.ScreenToWorldPoint (pos),
+						Vector2.zero,
+						KickStarter.settingsManager.hotspotRaycastLength,
+						HotspotLayerMask
+						);
+				}
+				
+				if (hit.collider)
+				{
+					Hotspot hitHotspot = hit.collider.gameObject.GetComponent <Hotspot>();
+					if (hitHotspot)
+					{
+						return hitHotspot;
+					}
+				}
+			}
+			else
+			{
+				Ray ray = KickStarter.CameraMain.ScreenPointToRay (KickStarter.playerInput.GetMousePosition ());
+				
+				RaycastHit[] results = Physics.RaycastAll (ray, KickStarter.settingsManager.hotspotRaycastLength, HotspotLayerMask);
+				System.Array.Sort (results, delegate (RaycastHit hit1, RaycastHit hit2) { return hit1.distance.CompareTo (hit2.distance); });
+
+				for (int i = 0; i < results.Length; i++)
+				{
+					Hotspot hotspot = results[i].collider.GetComponent<Hotspot> ();
+					if (hotspot)
+					{
+						if (!hotspot.PlayerIsWithinBoundary ())
+						{
+							continue;
+						}
+						return hotspot;
+					}
+					break;
+				}
+			}
+			
+			return null;
+		}
 		
 
 		/**
@@ -1774,12 +1902,12 @@ namespace AC
 				return true;
 			}
 			
-			if ( KickStarter.settingsManager.InventoryDragDrop && KickStarter.playerInput.CanClick () && mouseState == MouseState.Normal && KickStarter.playerInput.GetDragState () == DragState.None)
+			if (KickStarter.settingsManager.InventoryDragDrop && KickStarter.playerInput.CanClick () && mouseState == MouseState.Normal && KickStarter.playerInput.GetDragState () == DragState.None)
 			{
 				return true;
 			}
-			
-			if (mouseState == MouseState.SingleClick && KickStarter.settingsManager.inventoryDisableLeft)
+
+			if (KickStarter.settingsManager.inventoryDisableLeft && mouseState == MouseState.SingleClick)
 			{
 				return true;
 			}

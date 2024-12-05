@@ -10,6 +10,18 @@
 		protected override string ConditionHelp { get { return "Whenever the language is set."; } }
 
 
+		public EventOptionsLanguage (int _id, string _label, ActionListAsset _actionListAsset, int[] _parameterIDs)
+		{
+			id = _id;
+			label = _label;
+			actionListAsset = _actionListAsset;
+			parameterIDs = _parameterIDs;
+		}
+
+
+		public EventOptionsLanguage () {}
+
+
 		public override void Register ()
 		{
 			EventManager.OnChangeLanguage += OnChangeLanguage;

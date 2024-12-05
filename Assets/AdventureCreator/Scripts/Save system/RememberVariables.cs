@@ -1,7 +1,7 @@
 ﻿/*
  *
  *	Adventure Creator
- *	by Chris Burton, 2013-2023
+ *	by Chris Burton, 2013-2024
  *	
  *	"RememberVariables.cs"
  * 
@@ -74,6 +74,7 @@ namespace AC
 		{
 			if (variablesToSave == null) variablesToSave = GetComponent<Variables> ();
 
+			CustomGUILayout.Header ("Variables");
 			CustomGUILayout.BeginVertical ();
 			variablesToSave = (Variables) CustomGUILayout.ObjectField<Variables> ("Variables to save:", variablesToSave, true);
 			CustomGUILayout.EndVertical ();

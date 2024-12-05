@@ -50,14 +50,14 @@ namespace AC
 
 		protected void SharedGUI (string headerLabel)
 		{
-			SettingsManager settingsManager = AdvGame.GetReferences ().settingsManager;
+			SettingsManager settingsManager = KickStarter.settingsManager;
 
 			bool showMixerOptions = settingsManager.volumeControl == VolumeControl.AudioMixerGroups;
 
-			EditorGUILayout.BeginVertical (CustomStyles.thinBox);
 			showTracks = CustomGUILayout.ToggleHeader (showTracks, headerLabel);
 			if (showTracks)
 			{
+				CustomGUILayout.BeginVertical ();
 				List<MusicStorage> storages = Storages;
 
 				scrollPos = EditorGUILayout.BeginScrollView (scrollPos);
@@ -114,15 +114,14 @@ namespace AC
 
 			if (selectedTrack != null && Storages.Contains (selectedTrack))
 			{
-				EditorGUILayout.BeginVertical (CustomStyles.thinBox);
-
 				showSelectedTrack = CustomGUILayout.ToggleHeader (showSelectedTrack, "Track #" + selectedTrack.ID + ": " + selectedTrack.Label);
 				if (showSelectedTrack)
 				{
+					CustomGUILayout.BeginVertical ();
 					int i = Storages.IndexOf (selectedTrack);
 					selectedTrack.ShowGUI (APIPrefix + "[" + i + "]", showMixerOptions);
+					CustomGUILayout.EndVertical ();
 				}
-				CustomGUILayout.EndVertical ();
 			}
 
 			if (GUI.changed)
