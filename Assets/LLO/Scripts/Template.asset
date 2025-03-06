@@ -484,7 +484,7 @@ MonoBehaviour:
     x: 610.15106
     y: 1170.5974
     width: 300
-    height: 212
+    height: 247
   overrideColor: {r: 1, g: 1, b: 1, a: 1}
   showOutputSockets: 1
   parentActionListInEditor: {fileID: 0}
@@ -638,7 +638,7 @@ MonoBehaviour:
     x: 144.68979
     y: 1906.329
     width: 300
-    height: 212
+    height: 247
   overrideColor: {r: 1, g: 1, b: 1, a: 1}
   showOutputSockets: 1
   parentActionListInEditor: {fileID: 0}

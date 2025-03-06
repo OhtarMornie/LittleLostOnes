@@ -765,8 +765,8 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 25.170227
-    y: 437.4381
+    x: 355.17023
+    y: 407.4381
     width: 300
     height: 155
   overrideColor: {r: 1, g: 1, b: 1, a: 1}
@@ -1099,6 +1099,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 209880616076329361, guid: c1a45caa532f3aa4e8ac54b882c69cd3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 482351178820812989, guid: c1a45caa532f3aa4e8ac54b882c69cd3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.6
+      objectReference: {fileID: 0}
     - target: {fileID: 507989276802708469, guid: c1a45caa532f3aa4e8ac54b882c69cd3, type: 3}
       propertyPath: m_Name
       value: _Cameras
@@ -1143,6 +1151,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3158647169114243070, guid: c1a45caa532f3aa4e8ac54b882c69cd3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.6
+      objectReference: {fileID: 0}
     - target: {fileID: 3313102112796828244, guid: c1a45caa532f3aa4e8ac54b882c69cd3, type: 3}
       propertyPath: targetIsPlayer
       value: 1
@@ -1151,6 +1163,22 @@ PrefabInstance:
       propertyPath: backgroundConstraint
       value: 
       objectReference: {fileID: 886686349}
+    - target: {fileID: 4195234109244610802, guid: c1a45caa532f3aa4e8ac54b882c69cd3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7473178665240956560, guid: c1a45caa532f3aa4e8ac54b882c69cd3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7822488909788152019, guid: c1a45caa532f3aa4e8ac54b882c69cd3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8490805632334581685, guid: c1a45caa532f3aa4e8ac54b882c69cd3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

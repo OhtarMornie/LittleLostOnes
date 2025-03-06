@@ -293,7 +293,7 @@ MonoBehaviour:
   obToMoveID: 368586
   obToMove: {fileID: 5505149944855976362, guid: b16877732cf06bf4da98d316b631c31a, type: 3}
   markerParameterID: -1
-  markerID: 1009444
+  markerID: 857938
   teleporter: {fileID: 0}
   relativeGameObject: {fileID: 0}
   relativeGameObjectID: 0
@@ -573,7 +573,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3cc1f751990d444ef9e1381090933b8b, type: 3}
-  m_Name: Prologue1_Street_2
+  m_Name: Prologue1_7_School_Hall
   m_EditorClassIdentifier: 
   actions:
   - {fileID: 8361091694201469447}
@@ -591,7 +591,6 @@ MonoBehaviour:
   - {fileID: -5039028175514399126}
   - {fileID: -7235031438365816391}
   - {fileID: 2193607419407469631}
-  - {fileID: 218093226542811635}
   isSkippable: 1
   actionListType: 0
   unfreezePauseMenus: 1
@@ -603,59 +602,6 @@ MonoBehaviour:
   tagID: 0
   groups: []
   backupData: []
---- !u!114 &218093226542811635
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f1d11677f69f745f88dbe9922511d53f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  id: 0
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  willWait: 0
-  endAction: 0
-  skipAction: -1
-  skipActionActual: {fileID: 0}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  endings:
-  - resultAction: 1
-    skipAction: -1
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 1
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 46
-    y: 3084.3079
-    width: 300
-    height: 248.41
-  overrideColor: {r: 1, g: 1, b: 1, a: 1}
-  showOutputSockets: 1
-  parentActionListInEditor: {fileID: 0}
-  groupID: 0
-  chooseSceneBy: 1
-  sceneNumber: 0
-  sceneNumberParameterID: -1
-  sceneName: Scene_Street_FrontGate
-  sceneNameParameterID: -1
-  assignScreenOverlay: 0
-  onlyPreload: 0
-  relativePosition: 0
-  relativeMarker: {fileID: 0}
-  relativeMarkerID: 0
-  relativeMarkerParameterID: -1
-  forceReload: 0
 --- !u!114 &2079954054390495948
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -740,7 +686,7 @@ MonoBehaviour:
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   endings:
-  - resultAction: 0
+  - resultAction: 1
     skipAction: 9
     skipActionActual: {fileID: 0}
     linkedCutscene: {fileID: 0}

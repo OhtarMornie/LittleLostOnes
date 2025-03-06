@@ -2090,15 +2090,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: 1
   title: SubsLineLabel
-  slotSize: {x: 63, y: 5}
+  slotSize: {x: 69, y: 5}
   sizeType: 1
   positionType: 2
   slotSpacing: 0
   lineID: 87
   alternativeInputButton: 
   font: {fileID: 12800000, guid: 19fe8e01a5566b6418798a251023299d, type: 3}
-  fontScaleFactor: 2.3
-  fontColor: {r: 0.06666667, g: 0.023529414, b: 0, a: 1}
+  fontScaleFactor: 2.5
+  fontColor: {r: 1, g: 0.9381419, b: 0.8254717, a: 1}
   fontHighlightColor: {r: 1, g: 1, b: 1, a: 1}
   isVisible: 1
   isClickable: 0
@@ -2115,20 +2115,20 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 180.3424
-    y: 103.363205
-    width: 977.76
+    x: 130.10417
+    y: 89.79329
+    width: 1070.88
     height: 43.649998
-  relativePosition: {x: 14, y: 32}
+  relativePosition: {x: 10.1, y: 29.9}
   numSlots: 1
   uiTextTMP: {fileID: 0}
-  hideScrollingCharacters: 0
+  hideScrollingCharacters: 1
   uiText: {fileID: 11400000, guid: d54965938232edc4c90d92b571cd02b5, type: 3}
-  _label: Hi!
+  _label: "\u0422\u0435\u043A\u0441\u0442\u0422\u0435\u043A\u0441\u0442\u0422\u0435\u043A\u0441\u0442\u0422\u0435\u043A\u0441\u0442\u0422\u0435\u043A\u0441\u0442\u0422\u0435\u043A\u0441\u0442\u0422\u0435\u043A\u0441\u0442\u0422\u0435\u043A\u0441\u0442\u0422\u0435\u043A\u0441\u0442\u0422\u0435\u043A\u0441\u0442\u0422\u0435\u043A\u0441\u0442\u0422\u0435\u043A\u0441\u0442\u0422\u0435\u043A\u0441\u0442\u0422\u0435\u043A\u0441\u0442\u0422\u0435\u043A\u0441\u0442\u0422\u0435\u043A\u0441\u0442\u0422\u0435\u043A\u0441\u0442\u0422\u0435\u043A\u0441\u0442\u0422\u0435\u043A\u0441\u0442\u0422\u0435\u043A\u0441\u0442\u0422\u0435\u043A\u0441\u0442\u0422\u0435\u043A\u0441\u0442\u0422\u0435\u043A\u0441\u0442\u0422\u0435\u043A\u0441\u0442\u0422\u0435\u043A\u0441\u0442\u0422\u0435\u043A\u0441\u0442\u0422\u0435\u043A\u0441\u0442\u0422\u0435\u043A\u0441\u0442\u0422\u0435\u043A\u0441\u0442\u0422\u0435\u043A\u0441\u0442\u0422\u0435\u043A\u0441\u0442\u0422\u0435\u043A\u0441\u0442\u0422\u0435\u043A\u0441\u0442\u0422\u0435\u043A\u0441\u0442"
   anchor: 0
-  textEffects: 0
+  textEffects: 3
   outlineSize: 2
-  effectColour: {r: 0, g: 0, b: 0, a: 1}
+  effectColour: {r: 1, g: 0.7282863, b: 0.6179246, a: 0.29803923}
   labelType: 2
   variableID: 0
   useCharacterColour: 0
@@ -7542,15 +7542,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: 0
   title: SubsSpeakerLabel
-  slotSize: {x: 57, y: 7}
+  slotSize: {x: 20.2, y: 5.3}
   sizeType: 1
   positionType: 2
   slotSpacing: 0
   lineID: 86
   alternativeInputButton: 
   font: {fileID: 12800000, guid: 19fe8e01a5566b6418798a251023299d, type: 3}
-  fontScaleFactor: 2.5
-  fontColor: {r: 0.066037714, g: 0.022212671, b: 0, a: 1}
+  fontScaleFactor: 2.65
+  fontColor: {r: 0, g: 0, b: 0, a: 1}
   fontHighlightColor: {r: 1, g: 1, b: 1, a: 1}
   isVisible: 1
   isClickable: 0
@@ -7567,20 +7567,20 @@ MonoBehaviour:
   maxAutoWidthFactor: 0.5
   relativeRect:
     serializedVersion: 2
-    x: 212.5464
-    y: 27.778862
-    width: 884.64
-    height: 61.109997
-  relativePosition: {x: 16.5, y: 8.6}
+    x: 60.543518
+    y: 18.919659
+    width: 313.50403
+    height: 46.269
+  relativePosition: {x: 4.7, y: 6.3}
   numSlots: 1
   uiTextTMP: {fileID: 0}
   hideScrollingCharacters: 0
   uiText: {fileID: 0}
   _label: Brain
-  anchor: 0
-  textEffects: 0
-  outlineSize: 1
-  effectColour: {r: 0, g: 0, b: 0, a: 1}
+  anchor: 4
+  textEffects: 3
+  outlineSize: 5
+  effectColour: {r: 1, g: 0.7294118, b: 0.61960787, a: 0.29803923}
   labelType: 3
   variableID: 0
   useCharacterColour: 1
@@ -8496,7 +8496,7 @@ MonoBehaviour:
   _isLocked: 0
   id: 9
   title: Subtitles
-  manualSize: {x: 83, y: 37}
+  manualSize: {x: 83, y: 34.4}
   positionType: 2
   manualPosition: {x: 50, y: 100}
   positionSmoothing: 0
@@ -8513,7 +8513,7 @@ MonoBehaviour:
   hideDuringSaveScreenshots: 1
   useTextMeshProComponents: 0
   fitWithinScreen: 1
-  backgroundTexture: {fileID: 2800000, guid: dbcaefbea795f1745b213f5a19a310fc, type: 3}
+  backgroundTexture: {fileID: 2800000, guid: 33ebb909a1e0f7c4fad97fa6aa16b30e, type: 3}
   visibleElements:
   - {fileID: 7006176280233766712}
   - {fileID: -4846450264503876346}
@@ -8544,12 +8544,12 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 0
-      outSlope: 0
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0
+      outWeight: 0
     - serializedVersion: 3
       time: 1
       value: 1
@@ -8557,13 +8557,13 @@ MonoBehaviour:
       outSlope: 0
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
   panDistance: 0.5
-  fadeSpeed: 0.46
+  fadeSpeed: 0.1
   zoomAnchor: 4
   zoomElements: 0
   oneMenuPerSpeech: 1
@@ -8574,9 +8574,9 @@ MonoBehaviour:
   rect:
     serializedVersion: 2
     x: 131.91998
-    y: 549.99
+    y: 572.688
     width: 1288.16
-    height: 323.01
+    height: 300.312
 --- !u!114 &8591270506127999559
 MonoBehaviour:
   m_ObjectHideFlags: 1
