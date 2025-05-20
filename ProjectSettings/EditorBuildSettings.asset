@@ -5,13 +5,13 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/LLO/Scenes/Old/Scene_MainMenu.unity
     guid: 1fe9dab4c4b5fd44582799504de23664
-  - enabled: 1
+  - enabled: 0
     path: Assets/LLO/Scenes/Old/Scene_School_2ndFloor_RightHall.unity
     guid: 625c202880b5a6442bf3062f1fc84b89
-  - enabled: 1
+  - enabled: 0
     path: Assets/LLO/Scenes/Old/Scene_School_BiologyClass.unity
     guid: 4f5af99ec7d518249a4e92bf81a8b1ac
   - enabled: 0
@@ -21,17 +21,20 @@ EditorBuildSettings:
     path: Assets/LLO/Scenes/Old/BG_Street_Paralax.unity
     guid: a90db315c61fdfd4c9a7e4a2e65af16b
   - enabled: 1
-    path: Assets/LLO/Scenes/Home/Scene_Home_Bedroom.unity
+    path: Assets/LLO/Scenes/Home/Scene_Home_BedroomNight.unity
+    guid: a87161b4c6f23f644a5da2f1b154d3d5
+  - enabled: 1
+    path: Assets/LLO/Scenes/Home/Scene_Home_BedroomMorning.unity
     guid: d624fe2fb07bbe045a964e3340844dd0
   - enabled: 1
     path: Assets/LLO/Scenes/Home/Scene_Home_Hallway.unity
     guid: 72ed00940eb6f3e46b8f38b4b6da554e
   - enabled: 1
-    path: Assets/LLO/Scenes/Street/Scene_Street_2.unity
-    guid: 97abe7b79bded8549bb0b78ecc4b9f36
-  - enabled: 1
     path: Assets/LLO/Scenes/Street/Scene_Street_1.unity
     guid: 89d9d464d21d29644b688da9776c593e
+  - enabled: 1
+    path: Assets/LLO/Scenes/Street/Scene_Street_2.unity
+    guid: 97abe7b79bded8549bb0b78ecc4b9f36
   - enabled: 1
     path: Assets/LLO/Scenes/Street/Scene_Street_FrontGate.unity
     guid: 7d0e705438eab3741886a0d2546cf8f5
@@ -39,13 +42,37 @@ EditorBuildSettings:
     path: Assets/LLO/Scenes/School/1stFloor/Scene_School_1stFloorLeftHall.unity
     guid: 66baf0566f73a1e49ad275b7219c02dd
   - enabled: 1
-    path: Assets/LLO/Scenes/School/1stFloor/Scene_School_Warderobe.unity
+    path: Assets/LLO/Scenes/School/1stFloor/Scene_School_1stFloorRightHall.unity
+    guid: 0d9d3de096fc9824c9f2bb2b481f7157
+  - enabled: 0
+    path: Assets/LLO/Scenes/Old/Scene_School_Warderobe.unity
     guid: f08f06b6e528580429887708aed14c20
   - enabled: 1
-    path: Assets/LLO/Scenes/School/1stFloor/Scene_School_Hall.unity
+    path: Assets/LLO/Scenes/School/1stFloor/Scene_School_EntaranceHall.unity
     guid: 8691c07864378ac4b8b85c2e7fa6c925
   - enabled: 1
     path: Assets/LLO/Scenes/School/1stFloor/Scene_School_108.unity
     guid: 5fb83a7e65f54734e9e4df424c13d72f
+  - enabled: 1
+    path: Assets/LLO/Scenes/School/2ndFloor/Scene_School_2ndFloorLeftHall.unity
+    guid: a3423019e02b05c48a2c465fc3400ada
+  - enabled: 1
+    path: Assets/LLO/Scenes/School/2ndFloor/Scene_School_2ndFloorRightHall.unity
+    guid: 5b5da72253917044a9fa8cce725b45d7
+  - enabled: 1
+    path: Assets/LLO/Scenes/School/2ndFloor/Scene_School_AssemblyHallEnterance.unity
+    guid: b82abc2caab9f9f4ca4893c7cfe9fab8
+  - enabled: 1
+    path: Assets/LLO/Scenes/School/3rdFloor/Scene_School_3rdFloorLeftHall.unity
+    guid: 1eabddab085b3b4459c0bc00606fc04b
+  - enabled: 1
+    path: Assets/LLO/Scenes/School/3rdFloor/Scene_School_3rdFloorRightHall.unity
+    guid: 4fe660e431a181242bc2392952f903ec
+  - enabled: 1
+    path: Assets/LLO/Scenes/School/3rdFloor/Scene_School_LibraryEntarance.unity
+    guid: 3422200d9b697e5469d0fb9880ed9133
+  - enabled: 0
+    path: Assets/LLO/Scenes/Interactable/CodeLock.unity
+    guid: 406403fb433676f41ac552f5b15233eb
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
