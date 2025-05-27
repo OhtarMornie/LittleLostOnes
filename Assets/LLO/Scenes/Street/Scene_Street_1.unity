@@ -892,8 +892,8 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 3.170227
-    y: 604.4381
+    x: 14
+    y: 737
     width: 300
     height: 155
   overrideColor: {r: 1, g: 1, b: 1, a: 1}
@@ -1035,8 +1035,8 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 18.978699
-    y: 249.27637
+    x: 14
+    y: 539
     width: 300
     height: 168
   overrideColor: {r: 1, g: 1, b: 1, a: 1}
@@ -1271,8 +1271,8 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 478
-    y: 199
+    x: 14
+    y: 236
     width: 300
     height: 273
   overrideColor: {r: 1, g: 1, b: 1, a: 1}
@@ -1390,6 +1390,9 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 224833937884829349, guid: c1a45caa532f3aa4e8ac54b882c69cd3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1470519914}
     - targetCorrespondingSourceObject: {fileID: 8893992609525279659, guid: c1a45caa532f3aa4e8ac54b882c69cd3, type: 3}
       insertIndex: -1
       addedObject: {fileID: 206621417}
@@ -1406,6 +1409,26 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1686467461}
   m_SourcePrefab: {fileID: 100100000, guid: c1a45caa532f3aa4e8ac54b882c69cd3, type: 3}
+--- !u!1 &1470519913 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 224833937884829349, guid: c1a45caa532f3aa4e8ac54b882c69cd3, type: 3}
+  m_PrefabInstance: {fileID: 1470519912}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1470519914
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1470519913}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f72e60470f1fa4fd1825cd67ce482cf6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  constantID: 38154
+  retainInPrefab: 0
+  autoManual: 0
 --- !u!1 &1583074066
 GameObject:
   m_ObjectHideFlags: 0
@@ -1752,7 +1775,7 @@ MonoBehaviour:
   previousSceneName: 
   fadeInOnStart: 0
   fadeSpeed: 0.5
-  cameraOnStart: {fileID: 0}
+  cameraOnStart: {fileID: 1155329128}
   playerIDs: 
   limitByPlayer: 0
   limitByActive: 0
