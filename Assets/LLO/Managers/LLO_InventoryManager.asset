@@ -237,6 +237,61 @@ MonoBehaviour:
     carryOnStartID: -1
     useSeparateSlots: 0
     selectSingle: 0
+  - label: ExamPappers
+    id: 4
+    altLabel: 
+    carryOnStart: 0
+    carryOnStartNotDefault: 0
+    carryOnStartIDs: 00000000
+    vars: []
+    canCarryMultiple: 0
+    count: 1
+    canBeLowerCase: 0
+    maxCount: 999
+    itemStackingMode: 0
+    tex: {fileID: 0}
+    activeTex: {fileID: 0}
+    selectedTex: {fileID: 0}
+    linkedPrefab: {fileID: 0}
+    cursorIcon:
+      texture: {fileID: 0}
+      isAnimated: 0
+      numFrames: 1
+      numRows: 1
+      numCols: 1
+      size: 0.04
+      animSpeed: 4
+      endAnimOnLastFrame: 0
+      skipFirstFrameWhenLooping: 0
+      clickOffset: {x: 0, y: 0}
+      frameSpeeds: []
+      alwaysAnimate: 0
+      dontCycle: 0
+      label: Icon 1
+      lineID: -1
+      id: 0
+    lineID: -1
+    useIconID: 0
+    binID: -1
+    overrideUseSyntax: 0
+    hotspotPrefix1:
+      label: Use
+      lineID: -1
+    hotspotPrefix2:
+      label: on
+      lineID: -1
+    useActionList: {fileID: 0}
+    lookActionList: {fileID: 0}
+    interactions: []
+    combineInteractions: []
+    combineActionList: []
+    combineID: 
+    unhandledActionList: {fileID: 0}
+    unhandledGiveActionList: {fileID: 0}
+    unhandledCombineActionList: {fileID: 0}
+    carryOnStartID: -1
+    useSeparateSlots: 0
+    selectSingle: 0
   bins: []
   invVars: []
   unhandledCombine: {fileID: 0}
@@ -281,6 +336,44 @@ MonoBehaviour:
       autoStateIDOnAnySubObsFailPlusOne: 0
       linkedCategoryIDPlusOne: 0
     lockStateWhenComplete: 0
+    lockStateWhenFail: 1
+    binID: -1
+    vars: []
+  - ID: 9
+    title: SubQuest_Prologue1_GoToTheComputer
+    titleLineID: -1
+    description: 
+    descriptionLineID: -1
+    perPlayer: 0
+    texture: {fileID: 0}
+    states:
+    - ID: 0
+      label: Started
+      labelLineID: -1
+      description: 
+      descriptionLineID: -1
+      stateType: 1
+      actionListOnEnter: {fileID: 0}
+      autoStartSubObjectives: 0
+      autoStateIDOnAllSubObsCompletePlusOne: 0
+      autoStateIDOnAnySubObsCompletePlusOne: 0
+      autoStateIDOnAllSubObsFailPlusOne: 0
+      autoStateIDOnAnySubObsFailPlusOne: 0
+      linkedCategoryIDPlusOne: 0
+    - ID: 1
+      label: Completed
+      labelLineID: -1
+      description: 
+      descriptionLineID: -1
+      stateType: 2
+      actionListOnEnter: {fileID: 0}
+      autoStartSubObjectives: 0
+      autoStateIDOnAllSubObsCompletePlusOne: 0
+      autoStateIDOnAnySubObsCompletePlusOne: 0
+      autoStateIDOnAllSubObsFailPlusOne: 0
+      autoStateIDOnAnySubObsFailPlusOne: 0
+      linkedCategoryIDPlusOne: 0
+    lockStateWhenComplete: 1
     lockStateWhenFail: 1
     binID: -1
     vars: []
@@ -474,44 +567,6 @@ MonoBehaviour:
     lockStateWhenFail: 1
     binID: -1
     vars: []
-  - ID: 13
-    title: SubQuest_Prologue1_GoToTheBathroom
-    titleLineID: -1
-    description: 
-    descriptionLineID: -1
-    perPlayer: 0
-    texture: {fileID: 0}
-    states:
-    - ID: 0
-      label: Started
-      labelLineID: -1
-      description: 
-      descriptionLineID: -1
-      stateType: 1
-      actionListOnEnter: {fileID: 0}
-      autoStartSubObjectives: 0
-      autoStateIDOnAllSubObsCompletePlusOne: 0
-      autoStateIDOnAnySubObsCompletePlusOne: 0
-      autoStateIDOnAllSubObsFailPlusOne: 0
-      autoStateIDOnAnySubObsFailPlusOne: 0
-      linkedCategoryIDPlusOne: 0
-    - ID: 1
-      label: Completed
-      labelLineID: -1
-      description: 
-      descriptionLineID: -1
-      stateType: 2
-      actionListOnEnter: {fileID: 0}
-      autoStartSubObjectives: 0
-      autoStateIDOnAllSubObsCompletePlusOne: 0
-      autoStateIDOnAnySubObsCompletePlusOne: 0
-      autoStateIDOnAllSubObsFailPlusOne: 0
-      autoStateIDOnAnySubObsFailPlusOne: 0
-      linkedCategoryIDPlusOne: 0
-    lockStateWhenComplete: 1
-    lockStateWhenFail: 1
-    binID: -1
-    vars: []
   - ID: 1
     title: Quest_2
     titleLineID: -1
@@ -627,7 +682,159 @@ MonoBehaviour:
     binID: -1
     vars: []
   - ID: 11
-    title: SubQuest_2_AskSomeQuestion
+    title: SubQuest_2_AskJabaSomeQuestion
+    titleLineID: -1
+    description: 
+    descriptionLineID: -1
+    perPlayer: 0
+    texture: {fileID: 0}
+    states:
+    - ID: 0
+      label: Started
+      labelLineID: -1
+      description: 
+      descriptionLineID: -1
+      stateType: 1
+      actionListOnEnter: {fileID: 0}
+      autoStartSubObjectives: 0
+      autoStateIDOnAllSubObsCompletePlusOne: 0
+      autoStateIDOnAnySubObsCompletePlusOne: 0
+      autoStateIDOnAllSubObsFailPlusOne: 0
+      autoStateIDOnAnySubObsFailPlusOne: 0
+      linkedCategoryIDPlusOne: 0
+    - ID: 1
+      label: Completed
+      labelLineID: -1
+      description: 
+      descriptionLineID: -1
+      stateType: 2
+      actionListOnEnter: {fileID: 0}
+      autoStartSubObjectives: 0
+      autoStateIDOnAllSubObsCompletePlusOne: 0
+      autoStateIDOnAnySubObsCompletePlusOne: 0
+      autoStateIDOnAllSubObsFailPlusOne: 0
+      autoStateIDOnAnySubObsFailPlusOne: 0
+      linkedCategoryIDPlusOne: 0
+    lockStateWhenComplete: 1
+    lockStateWhenFail: 1
+    binID: -1
+    vars: []
+  - ID: 15
+    title: SubQuest_3B_TalkToJulia
+    titleLineID: -1
+    description: 
+    descriptionLineID: -1
+    perPlayer: 0
+    texture: {fileID: 0}
+    states:
+    - ID: 0
+      label: Started
+      labelLineID: -1
+      description: 
+      descriptionLineID: -1
+      stateType: 1
+      actionListOnEnter: {fileID: 0}
+      autoStartSubObjectives: 0
+      autoStateIDOnAllSubObsCompletePlusOne: 0
+      autoStateIDOnAnySubObsCompletePlusOne: 0
+      autoStateIDOnAllSubObsFailPlusOne: 0
+      autoStateIDOnAnySubObsFailPlusOne: 0
+      linkedCategoryIDPlusOne: 0
+    - ID: 1
+      label: Completed
+      labelLineID: -1
+      description: 
+      descriptionLineID: -1
+      stateType: 2
+      actionListOnEnter: {fileID: 0}
+      autoStartSubObjectives: 0
+      autoStateIDOnAllSubObsCompletePlusOne: 0
+      autoStateIDOnAnySubObsCompletePlusOne: 0
+      autoStateIDOnAllSubObsFailPlusOne: 0
+      autoStateIDOnAnySubObsFailPlusOne: 0
+      linkedCategoryIDPlusOne: 0
+    lockStateWhenComplete: 1
+    lockStateWhenFail: 1
+    binID: -1
+    vars: []
+  - ID: 16
+    title: SubQuest_3B_FindTheRat
+    titleLineID: -1
+    description: 
+    descriptionLineID: -1
+    perPlayer: 0
+    texture: {fileID: 0}
+    states:
+    - ID: 0
+      label: Started
+      labelLineID: -1
+      description: 
+      descriptionLineID: -1
+      stateType: 1
+      actionListOnEnter: {fileID: 0}
+      autoStartSubObjectives: 0
+      autoStateIDOnAllSubObsCompletePlusOne: 0
+      autoStateIDOnAnySubObsCompletePlusOne: 0
+      autoStateIDOnAllSubObsFailPlusOne: 0
+      autoStateIDOnAnySubObsFailPlusOne: 0
+      linkedCategoryIDPlusOne: 0
+    - ID: 1
+      label: Completed
+      labelLineID: -1
+      description: 
+      descriptionLineID: -1
+      stateType: 2
+      actionListOnEnter: {fileID: 0}
+      autoStartSubObjectives: 0
+      autoStateIDOnAllSubObsCompletePlusOne: 0
+      autoStateIDOnAnySubObsCompletePlusOne: 0
+      autoStateIDOnAllSubObsFailPlusOne: 0
+      autoStateIDOnAnySubObsFailPlusOne: 0
+      linkedCategoryIDPlusOne: 0
+    lockStateWhenComplete: 1
+    lockStateWhenFail: 1
+    binID: -1
+    vars: []
+  - ID: 17
+    title: SubQuest_3B_CaptureTheRat
+    titleLineID: -1
+    description: 
+    descriptionLineID: -1
+    perPlayer: 0
+    texture: {fileID: 0}
+    states:
+    - ID: 0
+      label: Started
+      labelLineID: -1
+      description: 
+      descriptionLineID: -1
+      stateType: 1
+      actionListOnEnter: {fileID: 0}
+      autoStartSubObjectives: 0
+      autoStateIDOnAllSubObsCompletePlusOne: 0
+      autoStateIDOnAnySubObsCompletePlusOne: 0
+      autoStateIDOnAllSubObsFailPlusOne: 0
+      autoStateIDOnAnySubObsFailPlusOne: 0
+      linkedCategoryIDPlusOne: 0
+    - ID: 1
+      label: Completed
+      labelLineID: -1
+      description: 
+      descriptionLineID: -1
+      stateType: 2
+      actionListOnEnter: {fileID: 0}
+      autoStartSubObjectives: 0
+      autoStateIDOnAllSubObsCompletePlusOne: 0
+      autoStateIDOnAnySubObsCompletePlusOne: 0
+      autoStateIDOnAllSubObsFailPlusOne: 0
+      autoStateIDOnAnySubObsFailPlusOne: 0
+      linkedCategoryIDPlusOne: 0
+    lockStateWhenComplete: 1
+    lockStateWhenFail: 1
+    binID: -1
+    vars: []
+  - ID: 18
+    title: SubQuest_3B_BringRatToJulia
     titleLineID: -1
     description: 
     descriptionLineID: -1
@@ -665,7 +872,7 @@ MonoBehaviour:
     binID: -1
     vars: []
   - ID: 2
-    title: SubQuest_2_PickCodeLock
+    title: SubQuest_3_PickCodeLock
     titleLineID: -1
     description: 
     descriptionLineID: -1
@@ -702,8 +909,84 @@ MonoBehaviour:
     lockStateWhenFail: 1
     binID: -1
     vars: []
+  - ID: 19
+    title: SubQuest_3_BringThePappers
+    titleLineID: -1
+    description: 
+    descriptionLineID: -1
+    perPlayer: 0
+    texture: {fileID: 0}
+    states:
+    - ID: 0
+      label: Started
+      labelLineID: -1
+      description: 
+      descriptionLineID: -1
+      stateType: 1
+      actionListOnEnter: {fileID: 0}
+      autoStartSubObjectives: 0
+      autoStateIDOnAllSubObsCompletePlusOne: 0
+      autoStateIDOnAnySubObsCompletePlusOne: 0
+      autoStateIDOnAllSubObsFailPlusOne: 0
+      autoStateIDOnAnySubObsFailPlusOne: 0
+      linkedCategoryIDPlusOne: 0
+    - ID: 1
+      label: Completed
+      labelLineID: -1
+      description: 
+      descriptionLineID: -1
+      stateType: 2
+      actionListOnEnter: {fileID: 0}
+      autoStartSubObjectives: 0
+      autoStateIDOnAllSubObsCompletePlusOne: 0
+      autoStateIDOnAnySubObsCompletePlusOne: 0
+      autoStateIDOnAllSubObsFailPlusOne: 0
+      autoStateIDOnAnySubObsFailPlusOne: 0
+      linkedCategoryIDPlusOne: 0
+    lockStateWhenComplete: 1
+    lockStateWhenFail: 1
+    binID: -1
+    vars: []
+  - ID: 20
+    title: SubQuest_3_SolveThePapper
+    titleLineID: -1
+    description: 
+    descriptionLineID: -1
+    perPlayer: 0
+    texture: {fileID: 0}
+    states:
+    - ID: 0
+      label: Started
+      labelLineID: -1
+      description: 
+      descriptionLineID: -1
+      stateType: 1
+      actionListOnEnter: {fileID: 0}
+      autoStartSubObjectives: 0
+      autoStateIDOnAllSubObsCompletePlusOne: 0
+      autoStateIDOnAnySubObsCompletePlusOne: 0
+      autoStateIDOnAllSubObsFailPlusOne: 0
+      autoStateIDOnAnySubObsFailPlusOne: 0
+      linkedCategoryIDPlusOne: 0
+    - ID: 1
+      label: Completed
+      labelLineID: -1
+      description: 
+      descriptionLineID: -1
+      stateType: 2
+      actionListOnEnter: {fileID: 0}
+      autoStartSubObjectives: 0
+      autoStateIDOnAllSubObsCompletePlusOne: 0
+      autoStateIDOnAnySubObsCompletePlusOne: 0
+      autoStateIDOnAllSubObsFailPlusOne: 0
+      autoStateIDOnAnySubObsFailPlusOne: 0
+      linkedCategoryIDPlusOne: 0
+    lockStateWhenComplete: 1
+    lockStateWhenFail: 1
+    binID: -1
+    vars: []
   - ID: 3
-    title: Quest_3A
+    title: Quest_4A
     titleLineID: -1
     description: 
     descriptionLineID: -1
@@ -741,7 +1024,7 @@ MonoBehaviour:
     binID: -1
     vars: []
   - ID: 4
-    title: Quest_3B
+    title: Quest_4B
     titleLineID: -1
     description: 
     descriptionLineID: -1

@@ -333,6 +333,46 @@ MonoBehaviour:
     textValLineID: -1
     popUpsLineID: -1
     description: 
+  - label: IsThereALesson?
+    id: 16
+    type: 0
+    val: 1
+    floatVal: 0
+    textVal: 
+    gameObjectVal: {fileID: 0}
+    gameObjectSaveReferences: 1
+    objectVal: {fileID: 0}
+    popUps: []
+    vector3Val: {x: 0, y: 0, z: 0}
+    link: 0
+    pmVar: 
+    updateLinkOnStart: 0
+    canTranslate: 1
+    popUpID: 0
+    ignorePresets: 0
+    textValLineID: -1
+    popUpsLineID: -1
+    description: 
+  - label: TestScore
+    id: 17
+    type: 1
+    val: 0
+    floatVal: 0
+    textVal: 
+    gameObjectVal: {fileID: 0}
+    gameObjectSaveReferences: 1
+    objectVal: {fileID: 0}
+    popUps: []
+    vector3Val: {x: 0, y: 0, z: 0}
+    link: 0
+    pmVar: 
+    updateLinkOnStart: 0
+    canTranslate: 1
+    popUpID: 0
+    ignorePresets: 0
+    textValLineID: -1
+    popUpsLineID: -1
+    description: 
   varPresets:
   - label: New preset
     ID: 0
@@ -449,7 +489,21 @@ MonoBehaviour:
       vector3Val: {x: 0, y: 0, z: 0}
       gameObjectVal: {fileID: 0}
       objectVal: {fileID: 0}
+    - id: 16
+      val: 0
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+      gameObjectVal: {fileID: 0}
+      objectVal: {fileID: 0}
+    - id: 17
+      val: 0
+      floatVal: 0
+      textVal: 
+      vector3Val: {x: 0, y: 0, z: 0}
+      gameObjectVal: {fileID: 0}
+      objectVal: {fileID: 0}
   updateRuntime: 1
   popUpLabelData: []
   timers: []
-  scrollPos: {x: 0, y: 0}
+  scrollPos: {x: 0, y: 41}
