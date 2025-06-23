@@ -1037,7 +1037,7 @@ MonoBehaviour:
       description: 
       descriptionLineID: -1
       stateType: 1
-      actionListOnEnter: {fileID: 11400000, guid: fb2bf86ec428afe458108c8b270c1ffe, type: 2}
+      actionListOnEnter: {fileID: 0}
       autoStartSubObjectives: 0
       autoStateIDOnAllSubObsCompletePlusOne: 0
       autoStateIDOnAnySubObsCompletePlusOne: 0

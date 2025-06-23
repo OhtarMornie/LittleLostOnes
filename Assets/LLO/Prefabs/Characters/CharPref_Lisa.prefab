@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 6661506883349912149}
   - component: {fileID: 3054667114085604790}
   - component: {fileID: 2123193307570609753}
-  m_Layer: 2
+  m_Layer: 6
   m_Name: CharPref_Lisa
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -32,7 +32,7 @@ Transform:
   m_GameObject: {fileID: 5505149944855976362}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -1.8, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -479,7 +479,7 @@ GameObject:
   - component: {fileID: 8026058131787770683}
   - component: {fileID: 5224902646739804135}
   - component: {fileID: 4159415839611159316}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Sprite_Lisa
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -524,7 +524,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 3bcacf0549edc854b9de12098543da4f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -762,7 +762,7 @@ GameObject:
   - component: {fileID: 2671577209668030020}
   - component: {fileID: 6762539690799389439}
   - component: {fileID: 5689678336760419129}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Sound child
   m_TagString: Untagged
   m_Icon: {fileID: 0}

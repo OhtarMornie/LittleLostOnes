@@ -17,6 +17,9 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/BG_MainMenu.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/LLO/Scenes/MainMenu.unity
+    guid: 65920f6e5bf736a4c8ba5c0e7c78fa2e
   - enabled: 0
     path: Assets/LLO/Scenes/Old/BG_Street_Paralax.unity
     guid: a90db315c61fdfd4c9a7e4a2e65af16b
@@ -51,7 +54,7 @@ EditorBuildSettings:
     path: Assets/LLO/Scenes/School/1stFloor/Scene_School_EntaranceHall.unity
     guid: 8691c07864378ac4b8b85c2e7fa6c925
   - enabled: 1
-    path: Assets/LLO/Scenes/School/1stFloor/Scene_School_108.unity
+    path: Assets/LLO/Scenes/School/1stFloor/Scene_School_109.unity
     guid: 5fb83a7e65f54734e9e4df424c13d72f
   - enabled: 1
     path: Assets/LLO/Scenes/School/1stFloor/Scene_School_1stFloorBathroom.unity
@@ -66,7 +69,7 @@ EditorBuildSettings:
     path: Assets/LLO/Scenes/School/2ndFloor/Scene_School_AssemblyHallEnterance.unity
     guid: b82abc2caab9f9f4ca4893c7cfe9fab8
   - enabled: 1
-    path: Assets/LLO/Scenes/School/2ndFloor/Scene_School_209.unity
+    path: Assets/LLO/Scenes/School/2ndFloor/Scene_School_207.unity
     guid: c130c1297c4e801469a561662b9dcc8f
   - enabled: 1
     path: Assets/LLO/Scenes/School/3rdFloor/Scene_School_3rdFloorLeftHall.unity

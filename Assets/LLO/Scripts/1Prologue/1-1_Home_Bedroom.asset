@@ -96,7 +96,7 @@ MonoBehaviour:
     x: 14
     y: 14
     width: 300
-    height: 212
+    height: 226.05
   overrideColor: {r: 1, g: 1, b: 1, a: 1}
   showOutputSockets: 1
   parentActionListInEditor: {fileID: 0}
@@ -107,8 +107,8 @@ MonoBehaviour:
   isPlayer: 0
   playerID: -1
   speaker: {fileID: 0}
-  messageText: "\u041D\u043E\u0441\u0442\u0430\u043B\u044C\u0433\u0438\u044F, \u043E\u0442\u0441\u044B\u043B\u043A\u0438,
-    \u0438\u043D\u0442\u0435\u0440\u043D\u0435\u0442"
+  messageText: "<i>\u041D\u043E\u0441\u0442\u0430\u043B\u044C\u0433\u0438\u044F,
+    \u043E\u0442\u0441\u044B\u043B\u043A\u0438, \u0438\u043D\u0442\u0435\u0440\u043D\u0435\u0442"
   lineID: -1
   multiLineIDs: 
   isBackground: 0

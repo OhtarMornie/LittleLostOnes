@@ -38,7 +38,7 @@ MonoBehaviour:
   useInvariantCulture: 1
   sceneAttributes: []
   actionListOnStart: {fileID: 0}
-  blackOutWhenSkipping: 0
+  blackOutWhenSkipping: 1
   events:
   - rid: 6358307628637749341
   savePlayerReferencesWithAddressables: 0
@@ -75,7 +75,7 @@ MonoBehaviour:
   hideLockedCursor: 0
   disableFreeAimWhenDragging: 0
   disableFreeAimWhenDraggingPickUp: 0
-  runConversationsWithKeys: 0
+  runConversationsWithKeys: 1
   clickUpInteractions: 0
   clickUpHotspots: 0
   defaultMouseClicks: 1
@@ -266,6 +266,11 @@ MonoBehaviour:
     audioClip: {fileID: 8300000, guid: 09aa07b4c2eb30742a6430641c25ecc6, type: 3}
     relativeVolume: 1
     overrideMixerGroup: {fileID: 0}
+  - ID: 8
+    label: Ambience_School_Classroom_Lesson
+    audioClip: {fileID: 8300000, guid: d5b6c188af06e804d90449b8a6f74e1b, type: 3}
+    relativeVolume: 1
+    overrideMixerGroup: {fileID: 0}
   - ID: 3
     label: 
     audioClip: {fileID: 8300000, guid: 27d7153452763b9449cda2adee85b59c, type: 3}
@@ -289,11 +294,6 @@ MonoBehaviour:
   - ID: 7
     label: Ambience_SchoolEntrance
     audioClip: {fileID: 8300000, guid: 115135478d461824f881e5738811496e, type: 3}
-    relativeVolume: 1
-    overrideMixerGroup: {fileID: 0}
-  - ID: 8
-    label: Ambience_Classroom_Lesson
-    audioClip: {fileID: 8300000, guid: d5b6c188af06e804d90449b8a6f74e1b, type: 3}
     relativeVolume: 1
     overrideMixerGroup: {fileID: 0}
   loadAmbienceFadeTime: 0.13

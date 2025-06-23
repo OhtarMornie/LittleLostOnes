@@ -60,6 +60,7 @@ GameObject:
   - component: {fileID: 3354630779911746322}
   - component: {fileID: 4682305479840085058}
   - component: {fileID: 8771933505110353034}
+  - component: {fileID: 2107745769447719563}
   m_Layer: 2
   m_Name: Marker2D:OffScreen_Left
   m_TagString: Untagged
@@ -76,11 +77,11 @@ Transform:
   m_GameObject: {fileID: 224833937884829349}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 40, y: -1.6, z: 0}
+  m_LocalPosition: {x: 40, y: -1.6, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 6475895692831662547}
+  m_Father: {fileID: 6157839039055880189}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &4682305479840085058
 SpriteRenderer:
@@ -149,6 +150,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbbbb3c8d2a7340dab40d45d6033e69e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2107745769447719563
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 224833937884829349}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f72e60470f1fa4fd1825cd67ce482cf6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  constantID: 11654
+  retainInPrefab: 1
+  autoManual: 0
 --- !u!1 &283384862862394457
 GameObject:
   m_ObjectHideFlags: 0
@@ -181,15 +197,6 @@ Transform:
   - {fileID: 2490004066263289914}
   - {fileID: 1157327628354095500}
   - {fileID: 3317220946071170221}
-  - {fileID: 4489040377015272253}
-  - {fileID: 3354630779911746322}
-  - {fileID: 4195234109244610802}
-  - {fileID: 7473178665240956560}
-  - {fileID: 8490805632334581685}
-  - {fileID: 7822488909788152019}
-  - {fileID: 209880616076329361}
-  - {fileID: 3158647169114243070}
-  - {fileID: 482351178820812989}
   m_Father: {fileID: 2752608060738745162}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &303258782940367757
@@ -203,6 +210,7 @@ GameObject:
   - component: {fileID: 7822488909788152019}
   - component: {fileID: 8710912850113002599}
   - component: {fileID: 2361096162252328224}
+  - component: {fileID: 1918600274580205348}
   m_Layer: 2
   m_Name: Marker2D:Dialogue_Right2
   m_TagString: Untagged
@@ -219,11 +227,11 @@ Transform:
   m_GameObject: {fileID: 303258782940367757}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 8, y: -1.6, z: 0}
+  m_LocalPosition: {x: 8, y: -1.6, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 6475895692831662547}
+  m_Father: {fileID: 6157839039055880189}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &8710912850113002599
 SpriteRenderer:
@@ -292,6 +300,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbbbb3c8d2a7340dab40d45d6033e69e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1918600274580205348
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 303258782940367757}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f72e60470f1fa4fd1825cd67ce482cf6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  constantID: 11658
+  retainInPrefab: 1
+  autoManual: 0
 --- !u!1 &507989276802708469
 GameObject:
   m_ObjectHideFlags: 0
@@ -336,6 +359,7 @@ GameObject:
   - component: {fileID: 4489040377015272253}
   - component: {fileID: 1158545201542564933}
   - component: {fileID: 2778204983263509809}
+  - component: {fileID: 8526427521284319291}
   m_Layer: 2
   m_Name: Marker2D:OffScreen_Right
   m_TagString: Untagged
@@ -352,11 +376,11 @@ Transform:
   m_GameObject: {fileID: 651041209998002383}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 40, y: -1.6, z: 0}
+  m_LocalPosition: {x: 40, y: -1.6, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 6475895692831662547}
+  m_Father: {fileID: 6157839039055880189}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1158545201542564933
 SpriteRenderer:
@@ -425,6 +449,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbbbb3c8d2a7340dab40d45d6033e69e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &8526427521284319291
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 651041209998002383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f72e60470f1fa4fd1825cd67ce482cf6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  constantID: 10976
+  retainInPrefab: 1
+  autoManual: 0
 --- !u!1 &1181494393085234365
 GameObject:
   m_ObjectHideFlags: 0
@@ -623,6 +662,7 @@ GameObject:
   - component: {fileID: 482351178820812989}
   - component: {fileID: 6117376415493118176}
   - component: {fileID: 4743769742399844125}
+  - component: {fileID: 6581265331443079964}
   m_Layer: 2
   m_Name: Marker2D:Dialogue_Left3
   m_TagString: Untagged
@@ -639,11 +679,11 @@ Transform:
   m_GameObject: {fileID: 2145103334794025405}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -15, y: -1.6, z: 0}
+  m_LocalPosition: {x: -15, y: -1.6, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 6475895692831662547}
+  m_Father: {fileID: 6157839039055880189}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &6117376415493118176
 SpriteRenderer:
@@ -712,6 +752,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbbbb3c8d2a7340dab40d45d6033e69e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6581265331443079964
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2145103334794025405}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f72e60470f1fa4fd1825cd67ce482cf6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  constantID: 11662
+  retainInPrefab: 1
+  autoManual: 0
 --- !u!1 &2357853149874965491
 GameObject:
   m_ObjectHideFlags: 0
@@ -740,7 +795,7 @@ Transform:
   m_GameObject: {fileID: 2357853149874965491}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0.31000018, y: -0.43, z: -9}
+  m_LocalPosition: {x: 0, y: 0, z: -9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -755,7 +810,7 @@ ParticleSystem:
   m_GameObject: {fileID: 2357853149874965491}
   serializedVersion: 8
   lengthInSec: 10
-  simulationSpeed: 0.17
+  simulationSpeed: 0.1
   stopAction: 0
   cullingMode: 0
   ringBufferMode: 0
@@ -882,7 +937,7 @@ ParticleSystem:
     startSpeed:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.33
+      scalar: 0.1
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -935,8 +990,8 @@ ParticleSystem:
     startColor:
       serializedVersion: 2
       minMaxState: 2
-      minColor: {r: 1, g: 1, b: 1, a: 0.29803923}
-      maxColor: {r: 1, g: 1, b: 1, a: 0.2}
+      minColor: {r: 1, g: 1, b: 1, a: 0.2}
+      maxColor: {r: 1, g: 1, b: 1, a: 0.101960786}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -1385,7 +1440,7 @@ ParticleSystem:
     donutRadius: 0.2
     m_Position: {x: 0, y: 0, z: 0}
     m_Rotation: {x: -90, y: 0, z: 0}
-    m_Scale: {x: 45, y: 24.65, z: 0}
+    m_Scale: {x: 35, y: 20, z: 0}
     placementMode: 0
     m_MeshMaterialIndex: 0
     m_MeshNormalOffset: 0
@@ -1583,7 +1638,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 75
+      scalar: 10
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -2209,7 +2264,7 @@ ParticleSystem:
     uvChannelMask: -1
     rowMode: 1
     sprites:
-    - sprite: {fileID: 0}
+    - sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
     flipU: 0
     flipV: 0
   VelocityModule:
@@ -3411,7 +3466,7 @@ ParticleSystem:
     strength:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1.08
+      scalar: 2
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -3517,7 +3572,7 @@ ParticleSystem:
     strengthZ:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1
+      scalar: 0
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -3567,8 +3622,8 @@ ParticleSystem:
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
-    separateAxes: 0
-    frequency: 0.5
+    separateAxes: 1
+    frequency: 0.78
     damping: 1
     octaves: 1
     octaveMultiplier: 0.5
@@ -3577,7 +3632,7 @@ ParticleSystem:
     scrollSpeed:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0
+      scalar: 0.3
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -4273,7 +4328,7 @@ ParticleSystem:
     separateAxes: 0
     range: {x: 0, y: 1}
   ColorBySpeedModule:
-    enabled: 1
+    enabled: 0
     gradient:
       serializedVersion: 2
       minMaxState: 1
@@ -5594,6 +5649,7 @@ GameObject:
   - component: {fileID: 209880616076329361}
   - component: {fileID: 7770914358155352970}
   - component: {fileID: 493447809803069864}
+  - component: {fileID: 8824562635252187309}
   m_Layer: 2
   m_Name: Marker2D:Dialogue_Left2
   m_TagString: Untagged
@@ -5610,11 +5666,11 @@ Transform:
   m_GameObject: {fileID: 3798280039481443324}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -8, y: -1.6, z: 0}
+  m_LocalPosition: {x: -8, y: -1.6, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 6475895692831662547}
+  m_Father: {fileID: 6157839039055880189}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &7770914358155352970
 SpriteRenderer:
@@ -5683,6 +5739,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbbbb3c8d2a7340dab40d45d6033e69e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &8824562635252187309
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3798280039481443324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f72e60470f1fa4fd1825cd67ce482cf6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  constantID: 11666
+  retainInPrefab: 1
+  autoManual: 0
 --- !u!1 &5307611499919504659
 GameObject:
   m_ObjectHideFlags: 0
@@ -5694,6 +5765,7 @@ GameObject:
   - component: {fileID: 3158647169114243070}
   - component: {fileID: 9159787177999182197}
   - component: {fileID: 7433044807484858059}
+  - component: {fileID: 5708717788328533657}
   m_Layer: 2
   m_Name: Marker2D:Dialogue_Right3
   m_TagString: Untagged
@@ -5710,11 +5782,11 @@ Transform:
   m_GameObject: {fileID: 5307611499919504659}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 15, y: -1.6, z: 0}
+  m_LocalPosition: {x: 15, y: -1.6, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 6475895692831662547}
+  m_Father: {fileID: 6157839039055880189}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &9159787177999182197
 SpriteRenderer:
@@ -5783,6 +5855,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbbbb3c8d2a7340dab40d45d6033e69e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5708717788328533657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5307611499919504659}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f72e60470f1fa4fd1825cd67ce482cf6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  constantID: 11670
+  retainInPrefab: 1
+  autoManual: 0
 --- !u!1 &5706603732137082910
 GameObject:
   m_ObjectHideFlags: 0
@@ -5794,6 +5881,7 @@ GameObject:
   - component: {fileID: 7473178665240956560}
   - component: {fileID: 299565068033738684}
   - component: {fileID: 5487145294281381128}
+  - component: {fileID: 4542480469704915803}
   m_Layer: 2
   m_Name: Marker2D:Dialogue_Right
   m_TagString: Untagged
@@ -5810,11 +5898,11 @@ Transform:
   m_GameObject: {fileID: 5706603732137082910}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4, y: -1.6, z: 0}
+  m_LocalPosition: {x: 4, y: -1.6, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 6475895692831662547}
+  m_Father: {fileID: 6157839039055880189}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &299565068033738684
 SpriteRenderer:
@@ -5883,6 +5971,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbbbb3c8d2a7340dab40d45d6033e69e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4542480469704915803
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5706603732137082910}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f72e60470f1fa4fd1825cd67ce482cf6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  constantID: 11674
+  retainInPrefab: 1
+  autoManual: 0
 --- !u!1 &6247486730602353722
 GameObject:
   m_ObjectHideFlags: 0
@@ -5894,6 +5997,7 @@ GameObject:
   - component: {fileID: 8490805632334581685}
   - component: {fileID: 5623170813242993968}
   - component: {fileID: 868932342260214415}
+  - component: {fileID: 550763022177230547}
   m_Layer: 2
   m_Name: Marker2D:Dialogue_Left
   m_TagString: Untagged
@@ -5910,11 +6014,11 @@ Transform:
   m_GameObject: {fileID: 6247486730602353722}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -4, y: -1.6, z: 0}
+  m_LocalPosition: {x: -4, y: -1.6, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 6475895692831662547}
+  m_Father: {fileID: 6157839039055880189}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &5623170813242993968
 SpriteRenderer:
@@ -5983,6 +6087,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbbbb3c8d2a7340dab40d45d6033e69e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &550763022177230547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6247486730602353722}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f72e60470f1fa4fd1825cd67ce482cf6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  constantID: 11678
+  retainInPrefab: 1
+  autoManual: 0
 --- !u!1 &6969195422269726327
 GameObject:
   m_ObjectHideFlags: 0
@@ -6017,7 +6136,16 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 4489040377015272253}
+  - {fileID: 3158647169114243070}
+  - {fileID: 7822488909788152019}
+  - {fileID: 7473178665240956560}
+  - {fileID: 4195234109244610802}
+  - {fileID: 8490805632334581685}
+  - {fileID: 209880616076329361}
+  - {fileID: 482351178820812989}
+  - {fileID: 3354630779911746322}
   m_Father: {fileID: 2752608060738745162}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &2768714426944968774
@@ -6218,6 +6346,7 @@ GameObject:
   - component: {fileID: 4195234109244610802}
   - component: {fileID: 8800428150510379866}
   - component: {fileID: 5727605950893817169}
+  - component: {fileID: 6591853089243406045}
   m_Layer: 2
   m_Name: Marker2D:Dialogue_Middle
   m_TagString: Untagged
@@ -6234,11 +6363,11 @@ Transform:
   m_GameObject: {fileID: 8893992609525279659}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.6, z: 0}
+  m_LocalPosition: {x: 0, y: -1.6, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 6475895692831662547}
+  m_Father: {fileID: 6157839039055880189}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &8800428150510379866
 SpriteRenderer:
@@ -6307,3 +6436,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbbbb3c8d2a7340dab40d45d6033e69e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6591853089243406045
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8893992609525279659}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f72e60470f1fa4fd1825cd67ce482cf6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  constantID: 11682
+  retainInPrefab: 1
+  autoManual: 0

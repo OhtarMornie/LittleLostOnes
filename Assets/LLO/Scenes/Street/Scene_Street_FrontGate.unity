@@ -1675,21 +1675,21 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8893992609525279659, guid: c1a45caa532f3aa4e8ac54b882c69cd3, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 206621417}
-    - targetCorrespondingSourceObject: {fileID: 5706603732137082910, guid: c1a45caa532f3aa4e8ac54b882c69cd3, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1470519916}
-    - targetCorrespondingSourceObject: {fileID: 6247486730602353722, guid: c1a45caa532f3aa4e8ac54b882c69cd3, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1470519915}
-    - targetCorrespondingSourceObject: {fileID: 303258782940367757, guid: c1a45caa532f3aa4e8ac54b882c69cd3, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1336633899}
     - targetCorrespondingSourceObject: {fileID: 5307611499919504659, guid: c1a45caa532f3aa4e8ac54b882c69cd3, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1686467461}
+    - targetCorrespondingSourceObject: {fileID: 303258782940367757, guid: c1a45caa532f3aa4e8ac54b882c69cd3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1336633899}
+    - targetCorrespondingSourceObject: {fileID: 5706603732137082910, guid: c1a45caa532f3aa4e8ac54b882c69cd3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1470519916}
+    - targetCorrespondingSourceObject: {fileID: 8893992609525279659, guid: c1a45caa532f3aa4e8ac54b882c69cd3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 206621417}
+    - targetCorrespondingSourceObject: {fileID: 6247486730602353722, guid: c1a45caa532f3aa4e8ac54b882c69cd3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1470519915}
   m_SourcePrefab: {fileID: 100100000, guid: c1a45caa532f3aa4e8ac54b882c69cd3, type: 3}
 --- !u!1 &1470519913 stripped
 GameObject:
@@ -2026,8 +2026,12 @@ MonoBehaviour:
   syncParamValues: 1
   groups: []
   backupData:
+  - className: AC.ActionFade
+    jsonData: '{"id":0,"isDisplayed":true,"showComment":false,"comment":"","willWait":true,"endAction":0,"skipAction":-1,"skipActionActual":{"instanceID":0},"linkedCutscene":{"instanceID":0},"linkedAsset":{"instanceID":0},"endings":[{"resultAction":0,"skipAction":-1,"skipActionActual":{"instanceID":0},"linkedCutscene":{"instanceID":0},"linkedAsset":{"instanceID":0}}],"isEnabled":true,"isAssetFile":false,"isBreakPoint":false,"nodeRect":{"serializedVersion":"2","x":14.0,"y":14.0,"width":300.0,"height":232.0},"overrideColor":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"showOutputSockets":true,"parentActionListInEditor":{"instanceID":1621103902693114403_0},"groupID":0,"fadeType":1,"isInstant":false,"fadeSpeed":0.5,"fadeSpeedParameterID":-1,"setTexture":false,"tempTexture":{"instanceID":0},"tempTextureParameterID":-1,"forceCompleteTransition":true,"cameraFadePauseBehaviour":0,"fadeCurve":{"serializedVersion":"2","m_Curve":[{"serializedVersion":"3","time":0.0,"value":0.0,"inSlope":1.0,"outSlope":1.0,"tangentMode":0,"weightedMode":0,"inWeight":0.0,"outWeight":0.0},{"serializedVersion":"3","time":1.0,"value":1.0,"inSlope":1.0,"outSlope":1.0,"tangentMode":0,"weightedMode":0,"inWeight":0.0,"outWeight":0.0}],"m_PreInfinity":2,"m_PostInfinity":2,"m_RotationOrder":4}}'
+    endingReferencesBuffer: 00
+    endingOverrideIndex: 00000000
   - className: AC.ActionScene
-    jsonData: '{"id":0,"isDisplayed":true,"showComment":false,"comment":"","willWait":false,"endAction":0,"skipAction":-99,"skipActionActual":{"instanceID":0},"linkedCutscene":{"instanceID":0},"linkedAsset":{"instanceID":0},"endings":[],"isEnabled":true,"isAssetFile":false,"isBreakPoint":false,"nodeRect":{"serializedVersion":"2","x":14.0,"y":14.0,"width":300.0,"height":164.0},"overrideColor":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"showOutputSockets":true,"parentActionListInEditor":{"instanceID":1621103902693114403_0},"groupID":0,"chooseSceneBy":1,"sceneNumber":0,"sceneNumberParameterID":-1,"sceneName":"Scene_School_Hall","sceneNameParameterID":-1,"assignScreenOverlay":false,"onlyPreload":false,"relativePosition":false,"relativeMarker":{"instanceID":0},"relativeMarkerID":0,"relativeMarkerParameterID":-1,"forceReload":false}'
+    jsonData: '{"id":0,"isDisplayed":true,"showComment":false,"comment":"","willWait":false,"endAction":0,"skipAction":-99,"skipActionActual":{"instanceID":0},"linkedCutscene":{"instanceID":0},"linkedAsset":{"instanceID":0},"endings":[],"isEnabled":true,"isAssetFile":false,"isBreakPoint":false,"nodeRect":{"serializedVersion":"2","x":8.0,"y":283.0,"width":300.0,"height":164.0},"overrideColor":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"showOutputSockets":true,"parentActionListInEditor":{"instanceID":1621103902693114403_0},"groupID":0,"chooseSceneBy":1,"sceneNumber":0,"sceneNumberParameterID":-1,"sceneName":"Scene_School_EntaranceHall","sceneNameParameterID":-1,"assignScreenOverlay":false,"onlyPreload":false,"relativePosition":false,"relativeMarker":{"instanceID":0},"relativeMarkerID":0,"relativeMarkerParameterID":-1,"forceReload":false}'
     endingReferencesBuffer: 
     endingOverrideIndex: 
 --- !u!1 &1621103902703859651
@@ -2095,17 +2099,21 @@ MonoBehaviour:
   groups: []
   backupData:
   - className: AC.ActionCameraCrossfade
-    jsonData: '{"id":0,"isDisplayed":true,"showComment":false,"comment":"","willWait":false,"endAction":0,"skipAction":-1,"skipActionActual":{"instanceID":0},"linkedCutscene":{"instanceID":0},"linkedAsset":{"instanceID":0},"endings":[{"resultAction":2,"skipAction":1,"skipActionActual":{"instanceID":133198},"linkedCutscene":{"instanceID":0},"linkedAsset":{"instanceID":0}}],"isEnabled":true,"isAssetFile":false,"isBreakPoint":false,"nodeRect":{"serializedVersion":"2","x":14.0,"y":14.0,"width":300.0,"height":192.0},"overrideColor":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"showOutputSockets":true,"parentActionListInEditor":{"instanceID":2940491226999435922_0},"groupID":0,"parameterID":-1,"constantID":0,"linkedCamera":{"instanceID":3313102112796828244_1470519912},"transitionTime":1.0,"transitionTimeParameterID":-1,"fadeCurve":{"serializedVersion":"2","m_Curve":[{"serializedVersion":"3","time":0.0,"value":0.0,"inSlope":1.0,"outSlope":1.0,"tangentMode":0,"weightedMode":0,"inWeight":0.0,"outWeight":0.0},{"serializedVersion":"3","time":1.0,"value":1.0,"inSlope":1.0,"outSlope":1.0,"tangentMode":0,"weightedMode":0,"inWeight":0.0,"outWeight":0.0}],"m_PreInfinity":2,"m_PostInfinity":2,"m_RotationOrder":4},"returnToLast":false}'
+    jsonData: '{"id":0,"isDisplayed":true,"showComment":false,"comment":"","willWait":false,"endAction":0,"skipAction":-1,"skipActionActual":{"instanceID":0},"linkedCutscene":{"instanceID":0},"linkedAsset":{"instanceID":0},"endings":[{"resultAction":2,"skipAction":3,"skipActionActual":{"instanceID":69870},"linkedCutscene":{"instanceID":0},"linkedAsset":{"instanceID":0}}],"isEnabled":true,"isAssetFile":false,"isBreakPoint":false,"nodeRect":{"serializedVersion":"2","x":14.0,"y":14.0,"width":300.0,"height":192.0},"overrideColor":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"showOutputSockets":true,"parentActionListInEditor":{"instanceID":2940491226999435922_0},"groupID":0,"parameterID":-1,"constantID":0,"linkedCamera":{"instanceID":3313102112796828244_1470519912},"transitionTime":1.0,"transitionTimeParameterID":-1,"fadeCurve":{"serializedVersion":"2","m_Curve":[{"serializedVersion":"3","time":0.0,"value":0.0,"inSlope":1.0,"outSlope":1.0,"tangentMode":0,"weightedMode":0,"inWeight":0.0,"outWeight":0.0},{"serializedVersion":"3","time":1.0,"value":1.0,"inSlope":1.0,"outSlope":1.0,"tangentMode":0,"weightedMode":0,"inWeight":0.0,"outWeight":0.0}],"m_PreInfinity":2,"m_PostInfinity":2,"m_RotationOrder":4},"returnToLast":false}'
     endingReferencesBuffer: 01
-    endingOverrideIndex: 01000000
+    endingOverrideIndex: 03000000
   - className: AC.ActionObjectiveCheck
-    jsonData: '{"id":0,"isDisplayed":true,"showComment":false,"comment":"","willWait":false,"endAction":0,"skipAction":-1,"skipActionActual":{"instanceID":0},"linkedCutscene":{"instanceID":0},"linkedAsset":{"instanceID":0},"endings":[{"resultAction":1,"skipAction":-1,"skipActionActual":{"instanceID":0},"linkedCutscene":{"instanceID":0},"linkedAsset":{"instanceID":0}},{"resultAction":0,"skipAction":-1,"skipActionActual":{"instanceID":0},"linkedCutscene":{"instanceID":0},"linkedAsset":{"instanceID":0}},{"resultAction":1,"skipAction":-1,"skipActionActual":{"instanceID":0},"linkedCutscene":{"instanceID":0},"linkedAsset":{"instanceID":0}}],"isEnabled":true,"isAssetFile":false,"isBreakPoint":false,"nodeRect":{"serializedVersion":"2","x":18.97869873046875,"y":249.2763671875,"width":300.0,"height":148.0},"overrideColor":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"showOutputSockets":true,"parentActionListInEditor":{"instanceID":2940491226999435922_0},"groupID":0,"objectiveID":0,"objectiveParameterID":-1,"playerID":0,"setPlayer":false,"numSockets":3}'
-    endingReferencesBuffer: 000000
-    endingOverrideIndex: 000000000000000000000000
+    jsonData: '{"id":0,"isDisplayed":true,"showComment":false,"comment":"","willWait":false,"endAction":0,"skipAction":-1,"skipActionActual":{"instanceID":0},"linkedCutscene":{"instanceID":0},"linkedAsset":{"instanceID":0},"endings":[{"resultAction":1,"skipAction":-1,"skipActionActual":{"instanceID":0},"linkedCutscene":{"instanceID":0},"linkedAsset":{"instanceID":0}},{"resultAction":2,"skipAction":2,"skipActionActual":{"instanceID":69910},"linkedCutscene":{"instanceID":0},"linkedAsset":{"instanceID":0}},{"resultAction":1,"skipAction":-1,"skipActionActual":{"instanceID":0},"linkedCutscene":{"instanceID":0},"linkedAsset":{"instanceID":0}}],"isEnabled":true,"isAssetFile":false,"isBreakPoint":false,"nodeRect":{"serializedVersion":"2","x":14.0,"y":519.0,"width":300.0,"height":168.0},"overrideColor":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"showOutputSockets":true,"parentActionListInEditor":{"instanceID":2940491226999435922_0},"groupID":0,"objectiveID":6,"objectiveParameterID":-1,"playerID":0,"setPlayer":false,"numSockets":3}'
+    endingReferencesBuffer: 000100
+    endingOverrideIndex: 000000000200000000000000
   - className: AC.ActionRunActionList
-    jsonData: '{"id":0,"isDisplayed":true,"showComment":false,"comment":"","willWait":true,"endAction":0,"skipAction":-1,"skipActionActual":{"instanceID":0},"linkedCutscene":{"instanceID":0},"linkedAsset":{"instanceID":0},"endings":[{"resultAction":1,"skipAction":-1,"skipActionActual":{"instanceID":0},"linkedCutscene":{"instanceID":0},"linkedAsset":{"instanceID":0}}],"isEnabled":true,"isAssetFile":false,"isBreakPoint":false,"nodeRect":{"serializedVersion":"2","x":25.17022705078125,"y":437.4381103515625,"width":300.0,"height":155.0},"overrideColor":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"showOutputSockets":true,"parentActionListInEditor":{"instanceID":2940491226999435922_0},"groupID":0,"listSource":1,"actionList":{"instanceID":0},"constantID":0,"parameterID":-1,"invActionList":{"instanceID":72014},"assetParameterID":-1,"runFromStart":true,"jumpToAction":0,"jumpToActionParameterID":-1,"jumpToActionActual":{"instanceID":0},"runInParallel":true,"isSkippable":false,"localParameters":[],"parameterIDs":[],"setParameters":false,"runMode":0,"hasUpgradedAgain":false}'
+    jsonData: '{"id":0,"isDisplayed":true,"showComment":false,"comment":"","willWait":true,"endAction":0,"skipAction":-1,"skipActionActual":{"instanceID":0},"linkedCutscene":{"instanceID":0},"linkedAsset":{"instanceID":0},"endings":[{"resultAction":1,"skipAction":-1,"skipActionActual":{"instanceID":0},"linkedCutscene":{"instanceID":0},"linkedAsset":{"instanceID":0}}],"isEnabled":true,"isAssetFile":false,"isBreakPoint":false,"nodeRect":{"serializedVersion":"2","x":14.0,"y":717.0,"width":300.0,"height":155.0},"overrideColor":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"showOutputSockets":true,"parentActionListInEditor":{"instanceID":2940491226999435922_0},"groupID":0,"listSource":1,"actionList":{"instanceID":0},"constantID":0,"parameterID":-1,"invActionList":{"instanceID":47406},"assetParameterID":-1,"runFromStart":true,"jumpToAction":0,"jumpToActionParameterID":-1,"jumpToActionActual":{"instanceID":0},"runInParallel":true,"isSkippable":false,"localParameters":[],"parameterIDs":[],"setParameters":false,"runMode":0,"hasUpgradedAgain":false}'
     endingReferencesBuffer: 00
     endingOverrideIndex: 00000000
+  - className: AC.ActionAmbience
+    jsonData: '{"id":0,"isDisplayed":true,"showComment":false,"comment":"","willWait":false,"endAction":0,"skipAction":-1,"skipActionActual":{"instanceID":0},"linkedCutscene":{"instanceID":0},"linkedAsset":{"instanceID":0},"endings":[{"resultAction":2,"skipAction":1,"skipActionActual":{"instanceID":69922},"linkedCutscene":{"instanceID":0},"linkedAsset":{"instanceID":0}}],"isEnabled":true,"isAssetFile":false,"isBreakPoint":false,"nodeRect":{"serializedVersion":"2","x":14.0,"y":236.0,"width":300.0,"height":253.0},"overrideColor":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"showOutputSockets":true,"parentActionListInEditor":{"instanceID":2940491226999435922_0},"groupID":0,"trackID":7,"trackIDParameterID":-1,"fadeTime":0.0,"fadeTimeParameterID":-1,"loop":true,"isQueued":false,"resumeFromStart":true,"resumeIfPlayedBefore":false,"willWaitComplete":false,"musicAction":0,"loopingOverlapTime":1.399999976158142}'
+    endingReferencesBuffer: 01
+    endingOverrideIndex: 01000000
 --- !u!1 &2940491227005994866
 GameObject:
   m_ObjectHideFlags: 0

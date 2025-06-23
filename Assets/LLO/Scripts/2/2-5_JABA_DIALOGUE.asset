@@ -1,5 +1,134 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8761878464413634956
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed656dc9f403a441f8fe89408c7a7189, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 31
+    skipActionActual: {fileID: 2705007123214442172}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 319.1
+    width: 300
+    height: 260.57
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  constantID: 0
+  parameterID: -1
+  messageParameterID: -1
+  isPlayer: 0
+  playerID: -1
+  speaker: {fileID: 0}
+  messageText: "<i>\u041F\u043E\u0441\u043E\u0440\u0435\u0432\u043D\u043E\u0432\u0430\u0432\u0448\u0438\u0441\u044C
+    \u0432 \xAB\u043A\u0430\u043C\u0435\u043D\u044C-\u043D\u043E\u0436\u043D\u0438\u0446\u044B-\u0431\u0443\u043C\u0430\u0433\u0430\xBB,
+    \u043C\u044B \u0441 \u0414\u0438\u043C\u043E\u0439 \u043F\u0440\u043E\u0438\u0433\u0440\u0430\u043B\u0438
+    \u041B\u0438\u0437\u0435."
+  lineID: -1
+  multiLineIDs: 
+  isBackground: 0
+  noAnimation: 0
+  headClip: {fileID: 0}
+  mouthClip: {fileID: 0}
+  play2DHeadAnim: 0
+  headClip2D: 
+  headLayer: 0
+  play2DMouthAnim: 0
+  mouthClip2D: 
+  mouthLayer: 0
+  waitTimeOffset: 0
+--- !u!114 &-8696059146256792227
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed656dc9f403a441f8fe89408c7a7189, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 37
+    skipActionActual: {fileID: 1057719635844526956}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 3080.4802
+    width: 300
+    height: 260.57
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  constantID: 0
+  parameterID: -1
+  messageParameterID: -1
+  isPlayer: 0
+  playerID: -1
+  speaker: {fileID: 0}
+  messageText: "<i>\u042F \u043F\u043E\u0441\u043C\u043E\u0442\u0440\u0435\u043B
+    \u043D\u0430 \u0414\u0438\u043C\u0443, \u043D\u0430\u0434\u0435\u044F\u0441\u044C,
+    \u0447\u0442\u043E \u0438 \u0432 \u044D\u0442\u043E\u0442 \u0440\u0430\u0437
+    \u043E\u043D \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u0438\u0442, \u043D\u043E
+    \u043E\u043D \u0442\u043E\u0436\u0435 \u043C\u043E\u043B\u0447\u0430\u043B"
+  lineID: -1
+  multiLineIDs: 
+  isBackground: 0
+  noAnimation: 0
+  headClip: {fileID: 0}
+  mouthClip: {fileID: 0}
+  play2DHeadAnim: 0
+  headClip2D: 
+  headLayer: 0
+  play2DMouthAnim: 0
+  mouthClip2D: 
+  mouthLayer: 0
+  waitTimeOffset: 0
 --- !u!114 &-8633176535409871769
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -24,7 +153,7 @@ MonoBehaviour:
   linkedAsset: {fileID: 0}
   endings:
   - resultAction: 2
-    skipAction: 27
+    skipAction: 24
     skipActionActual: {fileID: -1406215218471279884}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
@@ -33,8 +162,8 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 571.3062
-    y: 5766.626
+    x: 1764
+    y: 12593.879
     width: 300
     height: 152
   overrideColor: {r: 1, g: 1, b: 1, a: 1}
@@ -71,8 +200,8 @@ MonoBehaviour:
   linkedAsset: {fileID: 0}
   endings:
   - resultAction: 2
-    skipAction: 5
-    skipActionActual: {fileID: 1694110622243639638}
+    skipAction: 67
+    skipActionActual: {fileID: 8166208502979835724}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -81,144 +210,23 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 481
+    y: 4790.72
     width: 300
-    height: 232
+    height: 275.57
   overrideColor: {r: 1, g: 1, b: 1, a: 1}
   showOutputSockets: 1
   parentActionListInEditor: {fileID: 0}
   groupID: 0
-  constantID: 0
+  constantID: 368004
   parameterID: -1
   messageParameterID: -1
   isPlayer: 0
   playerID: -1
-  speaker: {fileID: 0}
-  messageText: "\u041D\u0435 \u0442\u0430 \u0444\u0430\u043C\u0438\u043B\u0438\u044F!"
-  lineID: -1
-  multiLineIDs: 
-  isBackground: 0
-  noAnimation: 0
-  headClip: {fileID: 0}
-  mouthClip: {fileID: 0}
-  play2DHeadAnim: 0
-  headClip2D: 
-  headLayer: 0
-  play2DMouthAnim: 0
-  mouthClip2D: 
-  mouthLayer: 0
-  waitTimeOffset: 0
---- !u!114 &-8507608403928398005
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ed656dc9f403a441f8fe89408c7a7189, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  id: 0
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  willWait: 0
-  endAction: 0
-  skipAction: -1
-  skipActionActual: {fileID: 0}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  endings:
-  - resultAction: 2
-    skipAction: 11
-    skipActionActual: {fileID: -106060332348862698}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 1
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 371.03687
-    y: 3804.2568
-    width: 300
-    height: 246.05
-  overrideColor: {r: 1, g: 1, b: 1, a: 1}
-  showOutputSockets: 1
-  parentActionListInEditor: {fileID: 0}
-  groupID: 0
-  constantID: 0
-  parameterID: -1
-  messageParameterID: -1
-  isPlayer: 0
-  playerID: -1
-  speaker: {fileID: 0}
-  messageText: "\u041C\u043E\u0436\u043D\u043E \u043C\u044B \u0432\u043E\u0437\u044C\u043C\u0435\u043C
-    \u043F\u0440\u043E\u0431\u043D\u0438\u043A \u043A \u043E\u043B\u0438\u043C\u043F\u0438\u0430\u0434\u0435?"
-  lineID: -1
-  multiLineIDs: 
-  isBackground: 0
-  noAnimation: 0
-  headClip: {fileID: 0}
-  mouthClip: {fileID: 0}
-  play2DHeadAnim: 0
-  headClip2D: 
-  headLayer: 0
-  play2DMouthAnim: 0
-  mouthClip2D: 
-  mouthLayer: 0
-  waitTimeOffset: 0
---- !u!114 &-8414983827424510670
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ed656dc9f403a441f8fe89408c7a7189, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  id: 0
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  willWait: 0
-  endAction: 0
-  skipAction: -1
-  skipActionActual: {fileID: 0}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  endings:
-  - resultAction: 0
-    skipAction: -1
-    skipActionActual: {fileID: 0}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 1
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 14
-    y: 14
-    width: 300
-    height: 212
-  overrideColor: {r: 1, g: 1, b: 1, a: 1}
-  showOutputSockets: 1
-  parentActionListInEditor: {fileID: 0}
-  groupID: 0
-  constantID: 0
-  parameterID: -1
-  messageParameterID: -1
-  isPlayer: 0
-  playerID: -1
-  speaker: {fileID: 0}
-  messageText: "A, \u043D\u0430 \u043F\u0435\u0440\u0435\u0441\u0434\u0430\u0447\u0443
-    \u043F\u0440\u0438\u0448\u043B\u0438?"
+  speaker: {fileID: 3503659167585205392, guid: eb5706aa2fcbfda48b70b1c2b320f069, type: 3}
+  messageText: "\u0418\u0436 \u0442\u044B, \u0434\u0430\u0436\u0435 \u0444\u0430\u043C\u0438\u043B\u0438\u044E
+    \u043C\u043E\u044E \u0432\u044B\u0443\u0447\u0438\u0442\u044C \u043D\u0435 \u043C\u043E\u0436\u0435\u0448\u044C!
+    \u0427\u0442\u043E \u0442\u0435\u0431\u0435 \u043E\u0442 \u043C\u0435\u043D\u044F
+    \u043D\u0430\u0434\u043E?!"
   lineID: -1
   multiLineIDs: 
   isBackground: 0
@@ -256,8 +264,8 @@ MonoBehaviour:
   linkedAsset: {fileID: 0}
   endings:
   - resultAction: 2
-    skipAction: 9
-    skipActionActual: {fileID: 5954935649414501261}
+    skipAction: 41
+    skipActionActual: {fileID: -5437347751954417194}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -265,8 +273,8 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 673
-    y: 1566
+    x: 364
+    y: 6378.34
     width: 300
     height: 192
   overrideColor: {r: 1, g: 1, b: 1, a: 1}
@@ -303,6 +311,128 @@ MonoBehaviour:
   variablesConstantID: 0
   placeholderType: 1
   placeholderPopUpLabelDataID: -1
+--- !u!114 &-7475843057557115364
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b3339a0ba7074d969436b88c517d06f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 33
+    skipActionActual: {fileID: -132052613714388426}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 1938.77
+    width: 300
+    height: 240
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  gameObject: {fileID: 5505149944855976362, guid: eb5706aa2fcbfda48b70b1c2b320f069, type: 3}
+  parameterID: -1
+  constantID: 368004
+  replaceGameObject: {fileID: 0}
+  replaceParameterID: -1
+  replaceConstantID: 0
+  relativeGameObject: {fileID: 0}
+  relativeGameObjectID: 11682
+  relativeGameObjectParameterID: -1
+  relativeVectorParameterID: -1
+  relativeVector: {x: 0, y: 0, z: 0}
+  vectorVarParameterID: -1
+  vectorVarID: 0
+  variableLocation: 0
+  invAction: 0
+  positionRelativeTo: 3
+  variables: {fileID: 0}
+  variablesConstantID: 0
+  spawnedObjectParameterID: -1
+--- !u!114 &-7441653771345747693
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed656dc9f403a441f8fe89408c7a7189, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 51
+    skipActionActual: {fileID: 1826528462183040333}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 1064
+    y: 9789.159
+    width: 300
+    height: 261.05
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  constantID: 257690
+  parameterID: -1
+  messageParameterID: -1
+  isPlayer: 0
+  playerID: -1
+  speaker: {fileID: 2835096581580009860, guid: 045e5608eb5c48a4db37fdcb50e5fee3, type: 3}
+  messageText: "\u041C\u044B... \u044D\u0442\u043E... \u0432 \u043E\u043B\u0438\u043C\u043F\u0438\u0430\u0434\u0435
+    \u0445\u043E\u0442\u0438\u043C \u043F\u043E\u0443\u0447\u0430\u0441\u0442\u0432\u043E\u0432\u0430\u0442\u044C..."
+  lineID: -1
+  multiLineIDs: 
+  isBackground: 0
+  noAnimation: 0
+  headClip: {fileID: 0}
+  mouthClip: {fileID: 0}
+  play2DHeadAnim: 0
+  headClip2D: 
+  headLayer: 0
+  play2DMouthAnim: 0
+  mouthClip2D: 
+  mouthLayer: 0
+  waitTimeOffset: 0
 --- !u!114 &-7272389699305819365
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -327,8 +457,8 @@ MonoBehaviour:
   linkedAsset: {fileID: 0}
   endings:
   - resultAction: 2
-    skipAction: 25
-    skipActionActual: {fileID: 4061842680136715463}
+    skipAction: 44
+    skipActionActual: {fileID: -1560763607453266181}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -336,8 +466,71 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 339
-    y: 1521
+    x: 714
+    y: 6695.34
+    width: 300
+    height: 261.05
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  constantID: 368004
+  parameterID: -1
+  messageParameterID: -1
+  isPlayer: 0
+  playerID: -1
+  speaker: {fileID: 3503659167585205392, guid: eb5706aa2fcbfda48b70b1c2b320f069, type: 3}
+  messageText: "\u042F \u0443 \u0442\u0435\u0431\u044F \u043D\u0435 \u0443\u0441\u043F\u0435\u043B\u0430
+    \u0441\u043F\u0440\u043E\u0441\u0438\u0442\u044C, \u0430 \u0442\u044B \u0437\u043D\u0430\u0447\u0438\u0442
+    \u043D\u0435 \u0443\u0447\u0438\u043B \u0435\u0433\u043E?"
+  lineID: -1
+  multiLineIDs: 
+  isBackground: 0
+  noAnimation: 0
+  headClip: {fileID: 0}
+  mouthClip: {fileID: 0}
+  play2DHeadAnim: 0
+  headClip2D: 
+  headLayer: 0
+  play2DMouthAnim: 0
+  mouthClip2D: 
+  mouthLayer: 0
+  waitTimeOffset: 0
+--- !u!114 &-7259698973605836364
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed656dc9f403a441f8fe89408c7a7189, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 2
+    skipActionActual: {fileID: -2560329928813904371}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 3952.6704
     width: 300
     height: 246.05
   overrideColor: {r: 1, g: 1, b: 1, a: 1}
@@ -350,9 +543,137 @@ MonoBehaviour:
   isPlayer: 0
   playerID: -1
   speaker: {fileID: 0}
-  messageText: "\u042F \u0443 \u0442\u0435\u0431\u044F \u043D\u0435 \u0443\u0441\u043F\u0435\u043B\u0430
-    \u0441\u043F\u0440\u043E\u0441\u0438\u0442\u044C, \u0430 \u0442\u044B \u0437\u043D\u0430\u0447\u0438\u0442
-    \u043D\u0435 \u0443\u0447\u0438\u043B \u0435\u0433\u043E?"
+  messageText: "<i>\u041B\u0430\u0434\u043D\u043E, \u043D\u0435 \u043F\u0430\u043D\u0438\u043A\u0443\u044E...
+    \u041D\u0430\u0434\u043E \u043D\u0430\u0447\u0430\u0442\u044C \u0445\u043E\u0442\u044F
+    \u0431\u044B \u0441 \u043F\u0440\u0438\u0432\u0435\u0442\u0441\u0442\u0432\u0438\u044F..."
+  lineID: -1
+  multiLineIDs: 
+  isBackground: 0
+  noAnimation: 0
+  headClip: {fileID: 0}
+  mouthClip: {fileID: 0}
+  play2DHeadAnim: 0
+  headClip2D: 
+  headLayer: 0
+  play2DMouthAnim: 0
+  mouthClip2D: 
+  mouthLayer: 0
+  waitTimeOffset: 0
+--- !u!114 &-7151458077720835350
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed656dc9f403a441f8fe89408c7a7189, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 30
+    skipActionActual: {fileID: -8761878464413634956}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 14
+    width: 300
+    height: 275.1
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  constantID: 0
+  parameterID: -1
+  messageParameterID: -1
+  isPlayer: 0
+  playerID: -1
+  speaker: {fileID: 0}
+  messageText: "<i>\u0414\u043E\u0439\u0434\u044F \u0434\u043E \u0445\u043E\u043B\u043B\u0430
+    \u0442\u0440\u0435\u0442\u044C\u0435\u0433\u043E \u044D\u0442\u0430\u0436\u0430,
+    \u043C\u044B \u043D\u0430\u043A\u043E\u043D\u0435\u0446 \u0437\u0430\u043C\u0435\u0442\u0438\u043B\u0438
+    \u043A\u0440\u0443\u0433\u043B\u0443\u044E \u0444\u0438\u0433\u0443\u0440\u0443
+    \u0416\u0430\u0431\u044B, \u0432\u0445\u043E\u0434\u044F\u0449\u0435\u0439 \u0432
+    \u0431\u0438\u0431\u043B\u0438\u043E\u0442\u0435\u043A\u0443. "
+  lineID: -1
+  multiLineIDs: 
+  isBackground: 0
+  noAnimation: 0
+  headClip: {fileID: 0}
+  mouthClip: {fileID: 0}
+  play2DHeadAnim: 0
+  headClip2D: 
+  headLayer: 0
+  play2DMouthAnim: 0
+  mouthClip2D: 
+  mouthLayer: 0
+  waitTimeOffset: 0
+--- !u!114 &-7098747546785481956
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed656dc9f403a441f8fe89408c7a7189, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 56
+    skipActionActual: {fileID: 5560226677402665581}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 1064
+    y: 11943.879
+    width: 300
+    height: 232
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  constantID: 0
+  parameterID: -1
+  messageParameterID: -1
+  isPlayer: 0
+  playerID: -1
+  speaker: {fileID: 0}
+  messageText: "<i>\u041E\u043D\u0430 \u0435\u0445\u0438\u0434\u043D\u043E \u0441\u0449\u0443\u0440\u0438\u043B\u0430
+    \u0433\u043B\u0430\u0437\u043A\u0438."
   lineID: -1
   multiLineIDs: 
   isBackground: 0
@@ -390,13 +711,13 @@ MonoBehaviour:
   linkedAsset: {fileID: 0}
   endings:
   - resultAction: 2
-    skipAction: 8
+    skipAction: 9
     skipActionActual: {fileID: -7584949875815821746}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
   - resultAction: 2
-    skipAction: 7
-    skipActionActual: {fileID: -7272389699305819365}
+    skipAction: 68
+    skipActionActual: {fileID: 5361170714877043385}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -404,10 +725,10 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 362
-    y: 1250
+    x: 364
+    y: 6133.34
     width: 300
-    height: 235
+    height: 215
   overrideColor: {r: 1, g: 1, b: 1, a: 1}
   showOutputSockets: 1
   parentActionListInEditor: {fileID: 0}
@@ -423,7 +744,159 @@ MonoBehaviour:
   menuParameterID: -1
   elementParameterID: -1
   numSockets: 2
---- !u!114 &-6242741541339607299
+--- !u!114 &-6449089576790344122
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e71317434ca91481a8e97d91e89df8c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 32
+    skipActionActual: {fileID: 2916710585480262273}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 1135.72
+    width: 300
+    height: 287
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  parameterID: -1
+  constantID: 368586
+  isPlayer: 0
+  playerID: -1
+  animChar: {fileID: 3503659167585205392, guid: b16877732cf06bf4da98d316b631c31a, type: 3}
+  clip: {fileID: 0}
+  clipParameterID: -1
+  clip2D: Anim_Char_Lisa_Open
+  clip2DParameterID: -1
+  method: 0
+  blendMode: 0
+  layer: 0
+  standard: 0
+  includeDirection: 0
+  changeSound: 0
+  newSound: {fileID: 0}
+  newSoundParameterID: -1
+  newSpeedParameterID: -1
+  layerInt: 0
+  idleAfter: 1
+  idleAfterCustom: 0
+  playMode: 0
+  playModeBase: 1
+  fadeTime: 0
+  changeSpeed: 0
+  newSpeed: 0
+  methodMecanim: 2
+  mecanimCharParameter: 0
+  mecanimParameterType: 0
+  parameterName: 
+  parameterNameID: -1
+  parameterValue: 0
+  parameterValueParameterID: -1
+  hideHead: 0
+  doLoop: 0
+--- !u!114 &-6288422991249525846
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e71317434ca91481a8e97d91e89df8c0, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 22
+    skipActionActual: {fileID: 4061842680136715463}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 714
+    y: 7263.3896
+    width: 300
+    height: 287
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  parameterID: -1
+  constantID: 368004
+  isPlayer: 0
+  playerID: -1
+  animChar: {fileID: 3503659167585205392, guid: eb5706aa2fcbfda48b70b1c2b320f069, type: 3}
+  clip: {fileID: 0}
+  clipParameterID: -1
+  clip2D: Char_NSJaba_Default
+  clip2DParameterID: -1
+  method: 0
+  blendMode: 0
+  layer: 0
+  standard: 0
+  includeDirection: 0
+  changeSound: 0
+  newSound: {fileID: 0}
+  newSoundParameterID: -1
+  newSpeedParameterID: -1
+  layerInt: 0
+  idleAfter: 1
+  idleAfterCustom: 0
+  playMode: 0
+  playModeBase: 1
+  fadeTime: 0
+  changeSpeed: 0
+  newSpeed: 0
+  methodMecanim: 2
+  mecanimCharParameter: 0
+  mecanimParameterType: 0
+  parameterName: 
+  parameterNameID: -1
+  parameterValue: 0
+  parameterValueParameterID: -1
+  hideHead: 0
+  doLoop: 0
+--- !u!114 &-5581200397298010680
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -447,8 +920,8 @@ MonoBehaviour:
   linkedAsset: {fileID: 0}
   endings:
   - resultAction: 2
-    skipAction: 26
-    skipActionActual: {fileID: -8633176535409871769}
+    skipAction: 61
+    skipActionActual: {fileID: 2098756825083168650}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -456,8 +929,70 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 596.3362
-    y: 5490.9717
+    x: 1414
+    y: 12463.879
+    width: 300
+    height: 246.05
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  constantID: 0
+  parameterID: -1
+  messageParameterID: -1
+  isPlayer: 0
+  playerID: -1
+  speaker: {fileID: 0}
+  messageText: "<i>\u0412\u043D\u0435\u0437\u0430\u043F\u043D\u043E, \u043E\u043D\u0430
+    \u0440\u0430\u0441\u043F\u043B\u044B\u043B\u0430\u0441\u044C \u0432 \u0443\u043B\u044B\u0431\u043A\u0435"
+  lineID: -1
+  multiLineIDs: 
+  isBackground: 0
+  noAnimation: 0
+  headClip: {fileID: 0}
+  mouthClip: {fileID: 0}
+  play2DHeadAnim: 0
+  headClip2D: 
+  headLayer: 0
+  play2DMouthAnim: 0
+  mouthClip2D: 
+  mouthLayer: 0
+  waitTimeOffset: 0
+--- !u!114 &-5437347751954417194
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed656dc9f403a441f8fe89408c7a7189, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 42
+    skipActionActual: {fileID: -1737297530518480675}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 364
+    y: 6600.34
     width: 300
     height: 232
   overrideColor: {r: 1, g: 1, b: 1, a: 1}
@@ -470,8 +1005,507 @@ MonoBehaviour:
   isPlayer: 0
   playerID: -1
   speaker: {fileID: 0}
-  messageText: "\u0412\u0441\u0435, \u0438\u0434\u0438\u0442\u0435, \u043D\u0435
-    \u0442\u0440\u043E\u0433\u0430\u0439\u0442\u0435 \u043C\u0435\u043D\u044F"
+  messageText: "<i>\u041E\u043D\u0430 \u043D\u0435\u043C\u043D\u043E\u0433\u043E
+    \u0443\u043B\u044B\u0431\u043D\u0443\u043B\u0430\u0441\u044C"
+  lineID: -1
+  multiLineIDs: 
+  isBackground: 0
+  noAnimation: 0
+  headClip: {fileID: 0}
+  mouthClip: {fileID: 0}
+  play2DHeadAnim: 0
+  headClip2D: 
+  headLayer: 0
+  play2DMouthAnim: 0
+  mouthClip2D: 
+  mouthLayer: 0
+  waitTimeOffset: 0
+--- !u!114 &-4826938388067981741
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b3339a0ba7074d969436b88c517d06f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 23
+    skipActionActual: {fileID: -8633176535409871769}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 1764
+    y: 12398.879
+    width: 300
+    height: 165
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  gameObject: {fileID: 5505149944855976362, guid: eb5706aa2fcbfda48b70b1c2b320f069, type: 3}
+  parameterID: -1
+  constantID: 368004
+  replaceGameObject: {fileID: 0}
+  replaceParameterID: -1
+  replaceConstantID: 0
+  relativeGameObject: {fileID: 0}
+  relativeGameObjectID: 0
+  relativeGameObjectParameterID: -1
+  relativeVectorParameterID: -1
+  relativeVector: {x: 0, y: 0, z: 0}
+  vectorVarParameterID: -1
+  vectorVarID: 0
+  variableLocation: 0
+  invAction: 1
+  positionRelativeTo: 0
+  variables: {fileID: 0}
+  variablesConstantID: 0
+  spawnedObjectParameterID: -1
+--- !u!114 &-4817870951845454307
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed656dc9f403a441f8fe89408c7a7189, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 54
+    skipActionActual: {fileID: 1537914012995650113}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 1064
+    y: 10646.829
+    width: 300
+    height: 247
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  constantID: 368587
+  parameterID: -1
+  messageParameterID: -1
+  isPlayer: 0
+  playerID: -1
+  speaker: {fileID: 3503659167585205392, guid: d55d6cb06dfd54b479189462d0b17a5d, type: 3}
+  messageText: "\u0414-\u0434\u0430. \u0414\u0430. \u0425\u043E\u0442\u0438\u043C."
+  lineID: -1
+  multiLineIDs: 
+  isBackground: 0
+  noAnimation: 0
+  headClip: {fileID: 0}
+  mouthClip: {fileID: 0}
+  play2DHeadAnim: 0
+  headClip2D: 
+  headLayer: 0
+  play2DMouthAnim: 0
+  mouthClip2D: 
+  mouthLayer: 0
+  waitTimeOffset: 0
+--- !u!114 &-4453443930524389500
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea4c3ba658ee84d51a7ccd6f9fc22176, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 1
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 29
+    skipActionActual: {fileID: -14672903955490020}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 1764
+    y: 13142.879
+    width: 300
+    height: 175
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  listSource: 1
+  actionList: {fileID: 0}
+  constantID: 0
+  parameterID: -1
+  invActionList: {fileID: 11400000, guid: e3f4bf3800220bf44b0a54a219cdcbcc, type: 2}
+  assetParameterID: -1
+  runFromStart: 1
+  jumpToAction: 0
+  jumpToActionParameterID: -1
+  jumpToActionActual: {fileID: 0}
+  runInParallel: 1
+  isSkippable: 1
+  localParameters: []
+  parameterIDs: 
+  setParameters: 0
+  runMode: 0
+  hasUpgradedAgain: 0
+--- !u!114 &-3919532315503191139
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed656dc9f403a441f8fe89408c7a7189, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 14
+    skipActionActual: {fileID: 2627516875972317076}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 1064
+    y: 12481.929
+    width: 300
+    height: 246.05
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  constantID: 0
+  parameterID: -1
+  messageParameterID: -1
+  isPlayer: 0
+  playerID: -1
+  speaker: {fileID: 0}
+  messageText: "<i>\u0427\u0435\u0440\u0442, \u043E\u043D\u0430 \u044F\u0432\u043D\u043E
+    \u0447\u0442\u043E-\u0442\u043E \u0437\u0430\u043F\u0430\u0434\u0430\u0437\u0440\u0438\u0432\u0430\u0435\u0442... "
+  lineID: -1
+  multiLineIDs: 
+  isBackground: 0
+  noAnimation: 0
+  headClip: {fileID: 0}
+  mouthClip: {fileID: 0}
+  play2DHeadAnim: 0
+  headClip2D: 
+  headLayer: 0
+  play2DMouthAnim: 0
+  mouthClip2D: 
+  mouthLayer: 0
+  waitTimeOffset: 0
+--- !u!114 &-3727264779904836114
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed656dc9f403a441f8fe89408c7a7189, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 34
+    skipActionActual: {fileID: 7575582188838320227}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 2499.34
+    width: 300
+    height: 260.57
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  constantID: 0
+  parameterID: -1
+  messageParameterID: -1
+  isPlayer: 0
+  playerID: -1
+  speaker: {fileID: 0}
+  messageText: "<i>\u041E\u043D \u043F\u043E\u0441\u043C\u043E\u0442\u0440\u0435\u043B\u0430
+    \u043D\u0430 \u043D\u0430\u0441 \u0441\u0432\u0435\u0440\u0445\u0443, \u0432\u043D\u0438\u0437
+    \u0438 \u0441\u0442\u0430\u043B\u0430 \u0436\u0434\u0430\u0442\u044C, \u043F\u043E\u043A\u0430
+    \u043C\u044B \u043D\u0430\u0447\u043D\u0435\u043C \u0433\u043E\u0432\u043E\u0440\u0438\u0442\u044C"
+  lineID: -1
+  multiLineIDs: 
+  isBackground: 0
+  noAnimation: 0
+  headClip: {fileID: 0}
+  mouthClip: {fileID: 0}
+  play2DHeadAnim: 0
+  headClip2D: 
+  headLayer: 0
+  play2DMouthAnim: 0
+  mouthClip2D: 
+  mouthLayer: 0
+  waitTimeOffset: 0
+--- !u!114 &-3531960144760042209
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed656dc9f403a441f8fe89408c7a7189, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 53
+    skipActionActual: {fileID: -4817870951845454307}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 1064
+    y: 10370.779
+    width: 300
+    height: 246.05
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  constantID: 0
+  parameterID: -1
+  messageParameterID: -1
+  isPlayer: 0
+  playerID: -1
+  speaker: {fileID: 0}
+  messageText: "<i>\u0423\u0432\u0438\u0434\u0435\u0432 \u044D\u0442\u043E, \u043E\u043D
+    \u0443\u0432\u0435\u0440\u0435\u043D\u043D\u043E \u0437\u0430\u043A\u0438\u0432\u0430\u043B."
+  lineID: -1
+  multiLineIDs: 
+  isBackground: 0
+  noAnimation: 0
+  headClip: {fileID: 0}
+  mouthClip: {fileID: 0}
+  play2DHeadAnim: 0
+  headClip2D: 
+  headLayer: 0
+  play2DMouthAnim: 0
+  mouthClip2D: 
+  mouthLayer: 0
+  waitTimeOffset: 0
+--- !u!114 &-3513412778153600110
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0f86ace5fdd94f0a86553230ec9308f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 14
+    skipActionActual: {fileID: 2627516875972317076}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 1414
+    y: 11721.879
+    width: 300
+    height: 172
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  setVarMethod: 0
+  setVarMethodString: 0
+  setVarMethodIntBool: 0
+  setVarMethodVector: 0
+  parameterID: -1
+  variableID: 29
+  setParameterID: -1
+  slotNumber: 0
+  slotNumberParameterID: -1
+  slotAccountsForOffset: 0
+  doLoop: 0
+  intValue: 0
+  floatValue: 0
+  boolValue: 1
+  stringValue: 
+  formula: 
+  vector3Value: {x: 0, y: 0, z: 0}
+  gameObjectValue: {fileID: 0}
+  unityObjectValue: {fileID: 0}
+  preProcessTokens: 1
+  lineID: -1
+  location: 0
+  menuName: 
+  elementName: 
+  animator: {fileID: 0}
+  parameterName: 
+  variables: {fileID: 0}
+  variablesConstantID: 0
+  placeholderType: 0
+  placeholderPopUpLabelDataID: -1
+--- !u!114 &-3282119244092986378
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed656dc9f403a441f8fe89408c7a7189, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 49
+    skipActionActual: {fileID: 3324687852274646005}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 1064
+    y: 9235.159
+    width: 300
+    height: 247
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  constantID: 257690
+  parameterID: -1
+  messageParameterID: -1
+  isPlayer: 0
+  playerID: -1
+  speaker: {fileID: 2835096581580009860, guid: 045e5608eb5c48a4db37fdcb50e5fee3, type: 3}
+  messageText: "\u041D\u0430\u0442\u0430\u043B\u044C\u044F... \u0412\u0430\u0441\u0438\u043B\u044C\u0435\u0432\u043D\u0430..."
   lineID: -1
   multiLineIDs: 
   isBackground: 0
@@ -508,13 +1542,13 @@ MonoBehaviour:
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   endings:
-  - resultAction: 0
-    skipAction: -1
-    skipActionActual: {fileID: 0}
+  - resultAction: 2
+    skipAction: 66
+    skipActionActual: {fileID: 1891766476956401523}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
   - resultAction: 2
-    skipAction: 3
+    skipAction: 4
     skipActionActual: {fileID: 334469014482118797}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
@@ -524,7 +1558,7 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 14
-    y: 256
+    y: 4228.72
     width: 300
     height: 215
   overrideColor: {r: 1, g: 1, b: 1, a: 1}
@@ -542,54 +1576,7 @@ MonoBehaviour:
   menuParameterID: -1
   elementParameterID: -1
   numSockets: 2
---- !u!114 &-1406215218471279884
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1cd39f26654b848c79ea1329108b9a8b, type: 3}
-  m_Name: (Clone)
-  m_EditorClassIdentifier: 
-  id: 0
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  willWait: 0
-  endAction: 0
-  skipAction: -1
-  skipActionActual: {fileID: 0}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  endings:
-  - resultAction: 2
-    skipAction: 29
-    skipActionActual: {fileID: 6003477877368516978}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 1
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 567.3062
-    y: 5987.626
-    width: 300
-    height: 152
-  overrideColor: {r: 1, g: 1, b: 1, a: 1}
-  showOutputSockets: 1
-  parentActionListInEditor: {fileID: 0}
-  groupID: 0
-  objectiveID: 15
-  objectiveParameterID: -1
-  newStateID: 0
-  selectAfter: 0
-  playerID: 0
-  setPlayer: 0
---- !u!114 &-729285698710095298
+--- !u!114 &-1737297530518480675
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -614,7 +1601,7 @@ MonoBehaviour:
   endings:
   - resultAction: 2
     skipAction: 10
-    skipActionActual: {fileID: -8507608403928398005}
+    skipActionActual: {fileID: 5954935649414501261}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -622,21 +1609,253 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 667
-    y: 3651.6067
+    x: 364
+    y: 6862.34
     width: 300
-    height: 232
+    height: 261.05
   overrideColor: {r: 1, g: 1, b: 1, a: 1}
   showOutputSockets: 1
   parentActionListInEditor: {fileID: 0}
   groupID: 0
-  constantID: 0
+  constantID: 368004
   parameterID: -1
   messageParameterID: -1
   isPlayer: 0
   playerID: -1
-  speaker: {fileID: 0}
-  messageText: "\u0425\u043E\u0442\u044C \u044D\u0442\u043E \u0437\u0430\u043F\u043E\u043C\u043D\u0438\u043B\u0438"
+  speaker: {fileID: 3503659167585205392, guid: eb5706aa2fcbfda48b70b1c2b320f069, type: 3}
+  messageText: "\u0421\u0442\u044B\u0434\u043D\u043E? \u0418 \u043F\u0440\u0430\u0432\u0438\u043B\u044C\u043D\u043E,
+    \u043F\u043E\u0434\u0435\u043B\u043E\u043C \u0432\u0430\u043C."
+  lineID: -1
+  multiLineIDs: 
+  isBackground: 0
+  noAnimation: 0
+  headClip: {fileID: 0}
+  mouthClip: {fileID: 0}
+  play2DHeadAnim: 0
+  headClip2D: 
+  headLayer: 0
+  play2DMouthAnim: 0
+  mouthClip2D: 
+  mouthLayer: 0
+  waitTimeOffset: 0
+--- !u!114 &-1560763607453266181
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed656dc9f403a441f8fe89408c7a7189, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 69
+    skipActionActual: {fileID: -6288422991249525846}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 714
+    y: 6986.3896
+    width: 300
+    height: 247
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  constantID: 368004
+  parameterID: -1
+  messageParameterID: -1
+  isPlayer: 0
+  playerID: -1
+  speaker: {fileID: 3503659167585205392, guid: eb5706aa2fcbfda48b70b1c2b320f069, type: 3}
+  messageText: "\u041B\u0443\u0447\u0448\u0435 \u0431\u044B \u043C\u043E\u043B\u0447\u0430\u043B,
+    \u0435\u0439 \u0431\u043E\u0433\u0443..."
+  lineID: -1
+  multiLineIDs: 
+  isBackground: 0
+  noAnimation: 0
+  headClip: {fileID: 0}
+  mouthClip: {fileID: 0}
+  play2DHeadAnim: 0
+  headClip2D: 
+  headLayer: 0
+  play2DMouthAnim: 0
+  mouthClip2D: 
+  mouthLayer: 0
+  waitTimeOffset: 0
+--- !u!114 &-1406215218471279884
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cd39f26654b848c79ea1329108b9a8b, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 26
+    skipActionActual: {fileID: 6003477877368516978}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 1764
+    y: 12775.879
+    width: 300
+    height: 152
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  objectiveID: 15
+  objectiveParameterID: -1
+  newStateID: 0
+  selectAfter: 0
+  playerID: 0
+  setPlayer: 0
+--- !u!114 &-888932411398871332
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b3339a0ba7074d969436b88c517d06f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 0
+    skipAction: -1
+    skipActionActual: {fileID: 0}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 885.72003
+    width: 300
+    height: 220
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  gameObject: {fileID: 5505149944855976362, guid: b16877732cf06bf4da98d316b631c31a, type: 3}
+  parameterID: -1
+  constantID: 368586
+  replaceGameObject: {fileID: 0}
+  replaceParameterID: -1
+  replaceConstantID: 0
+  relativeGameObject: {fileID: 0}
+  relativeGameObjectID: 11682
+  relativeGameObjectParameterID: -1
+  relativeVectorParameterID: -1
+  relativeVector: {x: 0, y: 0, z: 0}
+  vectorVarParameterID: -1
+  vectorVarID: 0
+  variableLocation: 0
+  invAction: 0
+  positionRelativeTo: 3
+  variables: {fileID: 0}
+  variablesConstantID: 0
+  spawnedObjectParameterID: -1
+--- !u!114 &-729285698710095298
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed656dc9f403a441f8fe89408c7a7189, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 45
+    skipActionActual: {fileID: 8715408565866780134}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 714
+    y: 8352.959
+    width: 300
+    height: 247
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  constantID: 368004
+  parameterID: -1
+  messageParameterID: -1
+  isPlayer: 0
+  playerID: -1
+  speaker: {fileID: 3503659167585205392, guid: eb5706aa2fcbfda48b70b1c2b320f069, type: 3}
+  messageText: "\u0425\u043E\u0442\u044C \u044D\u0442\u043E \u0437\u0430\u043F\u043E\u043C\u043D\u0438\u043B\u0438
+    \u0438 \u0441\u043B\u0430\u0432\u0430 \u0431\u043E\u0433\u0443."
   lineID: -1
   multiLineIDs: 
   isBackground: 0
@@ -674,7 +1893,7 @@ MonoBehaviour:
   linkedAsset: {fileID: 0}
   endings:
   - resultAction: 2
-    skipAction: 23
+    skipAction: 20
     skipActionActual: {fileID: -729285698710095298}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
@@ -683,8 +1902,8 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 669
-    y: 3448.6062
+    x: 714
+    y: 8130.9595
     width: 300
     height: 192
   overrideColor: {r: 1, g: 1, b: 1, a: 1}
@@ -721,6 +1940,196 @@ MonoBehaviour:
   variablesConstantID: 0
   placeholderType: 1
   placeholderPopUpLabelDataID: -1
+--- !u!114 &-604266981440862308
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed656dc9f403a441f8fe89408c7a7189, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 47
+    skipActionActual: {fileID: 1268617822818542653}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 1064
+    y: 8683.06
+    width: 300
+    height: 246.05
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  constantID: 0
+  parameterID: -1
+  messageParameterID: -1
+  isPlayer: 0
+  playerID: -1
+  speaker: {fileID: 0}
+  messageText: "<i>\u0415\u0441\u043B\u0438 \u043D\u0435 \u0441\u0434\u0435\u043B\u0430\u0435\u043C
+    \u044D\u0442\u043E\u0433\u043E \u0441\u0435\u0439\u0447\u0430\u0441, \u043F\u0440\u043E\u0449\u0430\u0439
+    \u043A\u043E\u043D\u0442\u0440\u043E\u043B\u044C\u043D\u0430\u044F... \u0438
+    \u043F\u043B\u0435\u0435\u0440..."
+  lineID: -1
+  multiLineIDs: 
+  isBackground: 0
+  noAnimation: 0
+  headClip: {fileID: 0}
+  mouthClip: {fileID: 0}
+  play2DHeadAnim: 0
+  headClip2D: 
+  headLayer: 0
+  play2DMouthAnim: 0
+  mouthClip2D: 
+  mouthLayer: 0
+  waitTimeOffset: 0
+--- !u!114 &-199403236748271710
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed656dc9f403a441f8fe89408c7a7189, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 7
+    skipActionActual: {fileID: -6818519207436253336}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 364
+    y: 5857.29
+    width: 300
+    height: 246.05
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  constantID: 0
+  parameterID: -1
+  messageParameterID: -1
+  isPlayer: 0
+  playerID: -1
+  speaker: {fileID: 0}
+  messageText: "<i>\u041C\u043E\u0436\u0435\u0442 \u043D\u0430\u0447\u0430\u0442\u044C
+    \u0441 \u0447\u0435\u0433\u043E-\u0442\u043E, \u0447\u0442\u043E \u0435\u0435
+    \u0437\u0430\u0434\u043E\u0431\u0440\u0438\u0442..?"
+  lineID: -1
+  multiLineIDs: 
+  isBackground: 0
+  noAnimation: 0
+  headClip: {fileID: 0}
+  mouthClip: {fileID: 0}
+  play2DHeadAnim: 0
+  headClip2D: 
+  headLayer: 0
+  play2DMouthAnim: 0
+  mouthClip2D: 
+  mouthLayer: 0
+  waitTimeOffset: 0
+--- !u!114 &-132052613714388426
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed656dc9f403a441f8fe89408c7a7189, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 35
+    skipActionActual: {fileID: -3727264779904836114}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 2208.77
+    width: 300
+    height: 260.57
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  constantID: 0
+  parameterID: -1
+  messageParameterID: -1
+  isPlayer: 0
+  playerID: -1
+  speaker: {fileID: 0}
+  messageText: "<i>\u041C\u044B \u0441 \u0434\u0438\u043C\u043E\u0439 \u043F\u043E\u0434\u043E\u0448\u043B\u0438
+    \u0438 \u0432\u0441\u0442\u0430\u043B\u0438 \u043F\u0435\u0440\u0435\u0434 \u0416\u0430\u0431\u043E\u0439,
+    \u043F\u0440\u0438\u0432\u043B\u0435\u0447\u0430 \u0435\u0435 \u0432\u043D\u0438\u043C\u0430\u043D\u0438\u0435."
+  lineID: -1
+  multiLineIDs: 
+  isBackground: 0
+  noAnimation: 0
+  headClip: {fileID: 0}
+  mouthClip: {fileID: 0}
+  play2DHeadAnim: 0
+  headClip2D: 
+  headLayer: 0
+  play2DMouthAnim: 0
+  mouthClip2D: 
+  mouthLayer: 0
+  waitTimeOffset: 0
 --- !u!114 &-106060332348862698
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -754,22 +2163,23 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 366.49835
-    y: 4076.9497
+    x: 1064
+    y: 11185.829
     width: 300
-    height: 232
+    height: 261.05
   overrideColor: {r: 1, g: 1, b: 1, a: 1}
   showOutputSockets: 1
   parentActionListInEditor: {fileID: 0}
   groupID: 0
-  constantID: 0
+  constantID: 368004
   parameterID: -1
   messageParameterID: -1
   isPlayer: 0
   playerID: -1
-  speaker: {fileID: 0}
-  messageText: "\u0425\u043E\u0442\u0438\u0442\u0435 \u0432 \u043E\u043B\u0438\u043C\u043F\u0438\u0430\u0434\u0435
-    \u0443\u0447\u0430\u0441\u0442\u0432\u043E\u0432\u0430\u0442\u044C?"
+  speaker: {fileID: 3503659167585205392, guid: eb5706aa2fcbfda48b70b1c2b320f069, type: 3}
+  messageText: "\u042F \u043D\u0435 \u043E\u0441\u043B\u044B\u0448\u0438\u043B\u0430\u0441\u044C?
+    \u0412 \u043E\u043B\u0438\u043C\u043F\u0438\u0430\u0434\u0435 \u0445\u043E\u0442\u0438\u0442\u0435
+    \u0443\u0447\u0430\u0441\u0442\u0432\u043E\u0432\u0430\u0442\u044C? "
   lineID: -1
   multiLineIDs: 
   isBackground: 0
@@ -783,6 +2193,66 @@ MonoBehaviour:
   mouthClip2D: 
   mouthLayer: 0
   waitTimeOffset: 0
+--- !u!114 &-14672903955490020
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b3339a0ba7074d969436b88c517d06f, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 16
+    skipActionActual: {fileID: 5719303197971838750}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 1764
+    y: 13347.879
+    width: 300
+    height: 165
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  gameObject: {fileID: 5505149944855976362, guid: eb5706aa2fcbfda48b70b1c2b320f069, type: 3}
+  parameterID: -1
+  constantID: 368004
+  replaceGameObject: {fileID: 0}
+  replaceParameterID: -1
+  replaceConstantID: 0
+  relativeGameObject: {fileID: 0}
+  relativeGameObjectID: 0
+  relativeGameObjectParameterID: -1
+  relativeVectorParameterID: -1
+  relativeVector: {x: 0, y: 0, z: 0}
+  vectorVarParameterID: -1
+  vectorVarID: 0
+  variableLocation: 0
+  invAction: 1
+  positionRelativeTo: 0
+  variables: {fileID: 0}
+  variablesConstantID: 0
+  spawnedObjectParameterID: -1
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -796,7 +2266,8 @@ MonoBehaviour:
   m_Name: 2-5_JABA_DIALOGUE
   m_EditorClassIdentifier: 
   actions:
-  - {fileID: -8414983827424510670}
+  - {fileID: -7151458077720835350}
+  - {fileID: -7475843057557115364}
   - {fileID: -2560329928813904371}
   - {fileID: -8545948264048688015}
   - {fileID: 334469014482118797}
@@ -806,15 +2277,11 @@ MonoBehaviour:
   - {fileID: -7272389699305819365}
   - {fileID: -7584949875815821746}
   - {fileID: 5954935649414501261}
-  - {fileID: -8507608403928398005}
   - {fileID: -106060332348862698}
   - {fileID: 559384438330973360}
   - {fileID: 6581336401290107471}
-  - {fileID: 5156598137655373181}
-  - {fileID: 3855498568078813583}
   - {fileID: 2627516875972317076}
-  - {fileID: 3465750770224953028}
-  - {fileID: -6242741541339607299}
+  - {fileID: -4453443930524389500}
   - {fileID: 5719303197971838750}
   - {fileID: 5488181043460573647}
   - {fileID: 7574067385982942093}
@@ -826,6 +2293,49 @@ MonoBehaviour:
   - {fileID: -1406215218471279884}
   - {fileID: 8274154431180023718}
   - {fileID: 6003477877368516978}
+  - {fileID: 2325254039857350257}
+  - {fileID: -4826938388067981741}
+  - {fileID: -14672903955490020}
+  - {fileID: -8761878464413634956}
+  - {fileID: 2705007123214442172}
+  - {fileID: 2916710585480262273}
+  - {fileID: -132052613714388426}
+  - {fileID: 7575582188838320227}
+  - {fileID: -3727264779904836114}
+  - {fileID: -8696059146256792227}
+  - {fileID: 1057719635844526956}
+  - {fileID: -7259698973605836364}
+  - {fileID: 4341136137588528943}
+  - {fileID: -199403236748271710}
+  - {fileID: -5437347751954417194}
+  - {fileID: -1737297530518480675}
+  - {fileID: 678151128025183434}
+  - {fileID: -1560763607453266181}
+  - {fileID: 8715408565866780134}
+  - {fileID: -604266981440862308}
+  - {fileID: 1268617822818542653}
+  - {fileID: -3282119244092986378}
+  - {fileID: 3324687852274646005}
+  - {fileID: -7441653771345747693}
+  - {fileID: 1826528462183040333}
+  - {fileID: -3531960144760042209}
+  - {fileID: -4817870951845454307}
+  - {fileID: 1537914012995650113}
+  - {fileID: -7098747546785481956}
+  - {fileID: 5560226677402665581}
+  - {fileID: -3919532315503191139}
+  - {fileID: -3513412778153600110}
+  - {fileID: 8138116206453163615}
+  - {fileID: -5581200397298010680}
+  - {fileID: 2098756825083168650}
+  - {fileID: 1420347521130571677}
+  - {fileID: -888932411398871332}
+  - {fileID: -6449089576790344122}
+  - {fileID: 7424621839200069693}
+  - {fileID: 1891766476956401523}
+  - {fileID: 8166208502979835724}
+  - {fileID: 5361170714877043385}
+  - {fileID: -6288422991249525846}
   isSkippable: 1
   actionListType: 0
   unfreezePauseMenus: 1
@@ -861,7 +2371,7 @@ MonoBehaviour:
   linkedAsset: {fileID: 0}
   endings:
   - resultAction: 2
-    skipAction: 4
+    skipAction: 5
     skipActionActual: {fileID: 1010869057608624032}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
@@ -871,7 +2381,7 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 364
-    y: 481
+    y: 4473.72
     width: 300
     height: 192
   overrideColor: {r: 1, g: 1, b: 1, a: 1}
@@ -937,8 +2447,8 @@ MonoBehaviour:
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
   - resultAction: 2
-    skipAction: 15
-    skipActionActual: {fileID: 3855498568078813583}
+    skipAction: 58
+    skipActionActual: {fileID: -3513412778153600110}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -946,10 +2456,10 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 372.3333
-    y: 4359.255
+    x: 1064
+    y: 11476.879
     width: 300
-    height: 235
+    height: 215
   overrideColor: {r: 1, g: 1, b: 1, a: 1}
   showOutputSockets: 1
   parentActionListInEditor: {fileID: 0}
@@ -965,6 +2475,69 @@ MonoBehaviour:
   menuParameterID: -1
   elementParameterID: -1
   numSockets: 2
+--- !u!114 &678151128025183434
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed656dc9f403a441f8fe89408c7a7189, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 69
+    skipActionActual: {fileID: -6288422991249525846}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 364
+    y: 7458.9595
+    width: 300
+    height: 261.05
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  constantID: 368004
+  parameterID: -1
+  messageParameterID: -1
+  isPlayer: 0
+  playerID: -1
+  speaker: {fileID: 3503659167585205392, guid: eb5706aa2fcbfda48b70b1c2b320f069, type: 3}
+  messageText: "\u041D\u0435 \u043F\u043E\u0440\u0442\u0438\u0442\u0435 \u043C\u043D\u0435
+    \u0442\u0443\u0442 \u0442\u0430\u043A\u0443\u044E \u0445\u043E\u0440\u043E\u0448\u0443\u044E
+    \u0434\u0435\u0432\u043E\u0447\u043A\u0443!"
+  lineID: -1
+  multiLineIDs: 
+  isBackground: 0
+  noAnimation: 0
+  headClip: {fileID: 0}
+  mouthClip: {fileID: 0}
+  play2DHeadAnim: 0
+  headClip2D: 
+  headLayer: 0
+  play2DMouthAnim: 0
+  mouthClip2D: 
+  mouthLayer: 0
+  waitTimeOffset: 0
 --- !u!114 &1010869057608624032
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -989,8 +2562,8 @@ MonoBehaviour:
   linkedAsset: {fileID: 0}
   endings:
   - resultAction: 2
-    skipAction: 5
-    skipActionActual: {fileID: 1694110622243639638}
+    skipAction: 67
+    skipActionActual: {fileID: 8166208502979835724}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -999,7 +2572,254 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 364
-    y: 703
+    y: 4695.72
+    width: 300
+    height: 247
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  constantID: 368004
+  parameterID: -1
+  messageParameterID: -1
+  isPlayer: 0
+  playerID: -1
+  speaker: {fileID: 3503659167585205392, guid: eb5706aa2fcbfda48b70b1c2b320f069, type: 3}
+  messageText: "\u041D\u0438\u0447\u0435 \u043D\u0435 \u0441\u043B\u044B\u0448\u0443,
+    \u0433\u043E\u0432\u043E\u0440\u0438 \u0433\u0440\u043E\u043C\u0447\u0435."
+  lineID: -1
+  multiLineIDs: 
+  isBackground: 0
+  noAnimation: 0
+  headClip: {fileID: 0}
+  mouthClip: {fileID: 0}
+  play2DHeadAnim: 0
+  headClip2D: 
+  headLayer: 0
+  play2DMouthAnim: 0
+  mouthClip2D: 
+  mouthLayer: 0
+  waitTimeOffset: 0
+--- !u!114 &1057719635844526956
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed656dc9f403a441f8fe89408c7a7189, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 27
+    skipActionActual: {fileID: 2325254039857350257}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 3371.0503
+    width: 300
+    height: 260.57
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  constantID: 0
+  parameterID: -1
+  messageParameterID: -1
+  isPlayer: 0
+  playerID: -1
+  speaker: {fileID: 0}
+  messageText: "<i>\u0415\u0439 \u044D\u0442\u043E \u044F\u0432\u043D\u043E \u043D\u0430\u0434\u043E\u0435\u043B\u043E.
+    \u041D\u0435\u0434\u043E\u0436\u0434\u0430\u0432\u0448\u0438\u0441\u044C \u043F\u043E\u043A\u0430
+    \u043C\u044B \u043D\u0430\u0447\u043D\u0435\u043C \u0434\u0438\u0430\u043B\u043E\u0433,
+    \u043E\u043D\u0430 \u043F\u0435\u0440\u0435\u043D\u044F\u043B\u0430 \u0438\u043D\u0438\u0446\u0438\u0430\u0442\u0438\u0432\u0443:"
+  lineID: -1
+  multiLineIDs: 
+  isBackground: 0
+  noAnimation: 0
+  headClip: {fileID: 0}
+  mouthClip: {fileID: 0}
+  play2DHeadAnim: 0
+  headClip2D: 
+  headLayer: 0
+  play2DMouthAnim: 0
+  mouthClip2D: 
+  mouthLayer: 0
+  waitTimeOffset: 0
+--- !u!114 &1268617822818542653
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed656dc9f403a441f8fe89408c7a7189, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 48
+    skipActionActual: {fileID: -3282119244092986378}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 1064
+    y: 8959.109
+    width: 300
+    height: 246.05
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  constantID: 0
+  parameterID: -1
+  messageParameterID: -1
+  isPlayer: 0
+  playerID: -1
+  speaker: {fileID: 0}
+  messageText: "<i>\u042F \u0441\u043E\u0431\u0440\u0430\u043B \u0432\u0441\u044E
+    \u0432\u043E\u043B\u044E \u0438 \u0441 \u0443\u0441\u0438\u043B\u0438\u0435\u043C
+    \u0432\u044B\u0434\u0430\u0432\u0438\u043B:"
+  lineID: -1
+  multiLineIDs: 
+  isBackground: 0
+  noAnimation: 0
+  headClip: {fileID: 0}
+  mouthClip: {fileID: 0}
+  play2DHeadAnim: 0
+  headClip2D: 
+  headLayer: 0
+  play2DMouthAnim: 0
+  mouthClip2D: 
+  mouthLayer: 0
+  waitTimeOffset: 0
+--- !u!114 &1420347521130571677
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea4c3ba658ee84d51a7ccd6f9fc22176, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 1
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 28
+    skipActionActual: {fileID: -4826938388067981741}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 1764
+    y: 12193.879
+    width: 300
+    height: 175
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  listSource: 1
+  actionList: {fileID: 0}
+  constantID: 0
+  parameterID: -1
+  invActionList: {fileID: 11400000, guid: c334abbf6d91899479bf1cb88c2ae5a3, type: 2}
+  assetParameterID: -1
+  runFromStart: 1
+  jumpToAction: 0
+  jumpToActionParameterID: -1
+  jumpToActionActual: {fileID: 0}
+  runInParallel: 1
+  isSkippable: 1
+  localParameters: []
+  parameterIDs: 
+  setParameters: 0
+  runMode: 0
+  hasUpgradedAgain: 0
+--- !u!114 &1537914012995650113
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed656dc9f403a441f8fe89408c7a7189, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 11
+    skipActionActual: {fileID: -106060332348862698}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 1064
+    y: 10923.829
     width: 300
     height: 232
   overrideColor: {r: 1, g: 1, b: 1, a: 1}
@@ -1012,7 +2832,7 @@ MonoBehaviour:
   isPlayer: 0
   playerID: -1
   speaker: {fileID: 0}
-  messageText: "\u041D\u0438\u0447\u0435 \u043D\u0435 \u0441\u043B\u044B\u0448\u0443"
+  messageText: "<i>\u0413\u043B\u0430\u0437\u0430 \u0416\u0430\u0431\u044B \u0440\u0430\u0441\u0448\u0438\u0440\u0438\u043B\u0438\u0441\u044C."
   lineID: -1
   multiLineIDs: 
   isBackground: 0
@@ -1050,8 +2870,8 @@ MonoBehaviour:
   linkedAsset: {fileID: 0}
   endings:
   - resultAction: 2
-    skipAction: 6
-    skipActionActual: {fileID: -6818519207436253336}
+    skipAction: 39
+    skipActionActual: {fileID: 4341136137588528943}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -1060,9 +2880,71 @@ MonoBehaviour:
   nodeRect:
     serializedVersion: 2
     x: 364
-    y: 965
+    y: 5289.72
     width: 300
-    height: 232
+    height: 247
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  constantID: 368004
+  parameterID: -1
+  messageParameterID: -1
+  isPlayer: 0
+  playerID: -1
+  speaker: {fileID: 3503659167585205392, guid: eb5706aa2fcbfda48b70b1c2b320f069, type: 3}
+  messageText: "\u0422\u0430\u043A \u0437\u0430\u0447\u0435\u043C \u0432\u044B \u043A\u043E
+    \u043C\u043D\u0435 \u043F\u0440\u0438\u0448\u043B\u0438? "
+  lineID: -1
+  multiLineIDs: 
+  isBackground: 0
+  noAnimation: 0
+  headClip: {fileID: 0}
+  mouthClip: {fileID: 0}
+  play2DHeadAnim: 0
+  headClip2D: 
+  headLayer: 0
+  play2DMouthAnim: 0
+  mouthClip2D: 
+  mouthLayer: 0
+  waitTimeOffset: 0
+--- !u!114 &1826528462183040333
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed656dc9f403a441f8fe89408c7a7189, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 52
+    skipActionActual: {fileID: -3531960144760042209}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 1064
+    y: 10080.209
+    width: 300
+    height: 260.57
   overrideColor: {r: 1, g: 1, b: 1, a: 1}
   showOutputSockets: 1
   parentActionListInEditor: {fileID: 0}
@@ -1073,7 +2955,210 @@ MonoBehaviour:
   isPlayer: 0
   playerID: -1
   speaker: {fileID: 0}
-  messageText: "\u0417\u0430\u0447\u0435\u043C \u043F\u0440\u0438\u0448\u043B\u0438? "
+  messageText: "<i>\u042F \u043F\u043E\u0432\u0435\u0440\u043D\u0443\u043B\u0441\u044F
+    \u043D\u0430 \u0414\u0438\u043C\u0443, \u043E\u0436\u0438\u0434\u0430\u044F \u0445\u043E\u0442\u044C
+    \u043A\u0430\u043A\u043E\u0439-\u0442\u043E \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0438. "
+  lineID: -1
+  multiLineIDs: 
+  isBackground: 0
+  noAnimation: 0
+  headClip: {fileID: 0}
+  mouthClip: {fileID: 0}
+  play2DHeadAnim: 0
+  headClip2D: 
+  headLayer: 0
+  play2DMouthAnim: 0
+  mouthClip2D: 
+  mouthLayer: 0
+  waitTimeOffset: 0
+--- !u!114 &1891766476956401523
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e71317434ca91481a8e97d91e89df8c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 3
+    skipActionActual: {fileID: -8545948264048688015}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 4473.72
+    width: 300
+    height: 287
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  parameterID: -1
+  constantID: 368004
+  isPlayer: 0
+  playerID: -1
+  animChar: {fileID: 3503659167585205392, guid: eb5706aa2fcbfda48b70b1c2b320f069, type: 3}
+  clip: {fileID: 0}
+  clipParameterID: -1
+  clip2D: Char_NSJaba_Angry
+  clip2DParameterID: -1
+  method: 0
+  blendMode: 0
+  layer: 0
+  standard: 0
+  includeDirection: 0
+  changeSound: 0
+  newSound: {fileID: 0}
+  newSoundParameterID: -1
+  newSpeedParameterID: -1
+  layerInt: 0
+  idleAfter: 1
+  idleAfterCustom: 0
+  playMode: 0
+  playModeBase: 1
+  fadeTime: 0
+  changeSpeed: 0
+  newSpeed: 0
+  methodMecanim: 2
+  mecanimCharParameter: 0
+  mecanimParameterType: 0
+  parameterName: 
+  parameterNameID: -1
+  parameterValue: 0
+  parameterValueParameterID: -1
+  hideHead: 0
+  doLoop: 0
+--- !u!114 &2098756825083168650
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed656dc9f403a441f8fe89408c7a7189, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 15
+    skipActionActual: {fileID: -4453443930524389500}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 1414
+    y: 12739.929
+    width: 300
+    height: 247
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  constantID: 368004
+  parameterID: -1
+  messageParameterID: -1
+  isPlayer: 0
+  playerID: -1
+  speaker: {fileID: 3503659167585205392, guid: eb5706aa2fcbfda48b70b1c2b320f069, type: 3}
+  messageText: "\u0414\u0430 \u043B\u0430\u0434\u043D\u043E \u0432\u0430\u043C, \u0447\u0442\u043E
+    \u0432\u044B \u0438\u0441\u043F\u0443\u0433\u0430\u043B\u0438\u0441\u044C?"
+  lineID: -1
+  multiLineIDs: 
+  isBackground: 0
+  noAnimation: 0
+  headClip: {fileID: 0}
+  mouthClip: {fileID: 0}
+  play2DHeadAnim: 0
+  headClip2D: 
+  headLayer: 0
+  play2DMouthAnim: 0
+  mouthClip2D: 
+  mouthLayer: 0
+  waitTimeOffset: 0
+--- !u!114 &2325254039857350257
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed656dc9f403a441f8fe89408c7a7189, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 38
+    skipActionActual: {fileID: -7259698973605836364}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 3661.6204
+    width: 300
+    height: 261.05
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  constantID: 368004
+  parameterID: -1
+  messageParameterID: -1
+  isPlayer: 0
+  playerID: -1
+  speaker: {fileID: 3503659167585205392, guid: eb5706aa2fcbfda48b70b1c2b320f069, type: 3}
+  messageText: "\u0427\u0442\u043E \u0432\u0430\u043C \u043E\u0442 \u043C\u0435\u043D\u044F
+    \u043D\u0430\u0434\u043E. A-\u0430-\u0430, \u0441\u0442\u0438\u0445 \u0440\u0430\u0441\u0441\u043A\u0430\u0437\u0430\u0442\u044C
+    \u043F\u0440\u0438\u0448\u043B\u0438?"
   lineID: -1
   multiLineIDs: 
   isBackground: 0
@@ -1110,14 +3195,14 @@ MonoBehaviour:
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   endings:
-  - resultAction: 0
-    skipAction: -1
-    skipActionActual: {fileID: 0}
+  - resultAction: 2
+    skipAction: 59
+    skipActionActual: {fileID: 8138116206453163615}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
   - resultAction: 2
-    skipAction: 18
-    skipActionActual: {fileID: -6242741541339607299}
+    skipAction: 62
+    skipActionActual: {fileID: 1420347521130571677}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -1125,10 +3210,10 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 639.6244
-    y: 5246.1006
+    x: 1414
+    y: 11923.879
     width: 300
-    height: 220
+    height: 240
   overrideColor: {r: 1, g: 1, b: 1, a: 1}
   showOutputSockets: 1
   parentActionListInEditor: {fileID: 0}
@@ -1148,7 +3233,7 @@ MonoBehaviour:
   checkParameterID: -1
   getVarMethod: 0
   compareVariableID: 0
-  intValue: 2
+  intValue: 3
   floatValue: 0
   intCondition: 3
   isAdditive: 0
@@ -1167,69 +3252,7 @@ MonoBehaviour:
   compareVariablesConstantID: 0
   placeholderType: 1
   placeholderPopUpLabelDataID: 0
---- !u!114 &3465750770224953028
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ed656dc9f403a441f8fe89408c7a7189, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  id: 0
-  isDisplayed: 1
-  showComment: 0
-  comment: 
-  willWait: 0
-  endAction: 0
-  skipAction: -1
-  skipActionActual: {fileID: 0}
-  linkedCutscene: {fileID: 0}
-  linkedAsset: {fileID: 0}
-  endings:
-  - resultAction: 2
-    skipAction: 19
-    skipActionActual: {fileID: 5719303197971838750}
-    linkedCutscene: {fileID: 0}
-    linkedAsset: {fileID: 0}
-  isEnabled: 1
-  isAssetFile: 1
-  isBreakPoint: 0
-  nodeRect:
-    serializedVersion: 2
-    x: 952.369
-    y: 5482.617
-    width: 300
-    height: 232
-  overrideColor: {r: 1, g: 1, b: 1, a: 1}
-  showOutputSockets: 1
-  parentActionListInEditor: {fileID: 0}
-  groupID: 0
-  constantID: 0
-  parameterID: -1
-  messageParameterID: -1
-  isPlayer: 0
-  playerID: -1
-  speaker: {fileID: 0}
-  messageText: "\u041A\u043E\u0434 \u043E\u0442 \u0448\u043A\u0430\u0444\u0447\u0438\u043A\u0430
-    - 0356"
-  lineID: -1
-  multiLineIDs: 
-  isBackground: 0
-  noAnimation: 0
-  headClip: {fileID: 0}
-  mouthClip: {fileID: 0}
-  play2DHeadAnim: 0
-  headClip2D: 
-  headLayer: 0
-  play2DMouthAnim: 0
-  mouthClip2D: 
-  mouthLayer: 0
-  waitTimeOffset: 0
---- !u!114 &3855498568078813583
+--- !u!114 &2705007123214442172
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1252,9 +3275,9 @@ MonoBehaviour:
   linkedCutscene: {fileID: 0}
   linkedAsset: {fileID: 0}
   endings:
-  - resultAction: 0
-    skipAction: 10
-    skipActionActual: {fileID: 0}
+  - resultAction: 2
+    skipAction: 63
+    skipActionActual: {fileID: -888932411398871332}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -1262,10 +3285,10 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 354.25638
-    y: 4701.12
+    x: 14
+    y: 609.67004
     width: 300
-    height: 212
+    height: 246.05
   overrideColor: {r: 1, g: 1, b: 1, a: 1}
   showOutputSockets: 1
   parentActionListInEditor: {fileID: 0}
@@ -1276,8 +3299,131 @@ MonoBehaviour:
   isPlayer: 0
   playerID: -1
   speaker: {fileID: 0}
-  messageText: "\u0418 \u043F\u0440\u0430\u0432\u0438\u043B\u044C\u043D\u043E, \u0442\u043E\u043B\u044C\u043A\u043E
-    \u043E\u043F\u0430\u0437\u043E\u0440\u0438\u0442\u0435"
+  messageText: "<i>\u041E\u043D\u0430 \u043F\u043E\u0434\u0442\u043E\u043B\u043A\u043D\u0443\u043B\u0430
+    \u043D\u0430\u0441 \u043E\u0431\u043E\u0438\u0445 \u043A \u0431\u0438\u0431\u043B\u0438\u043E\u0442\u0435\u043A\u0435. "
+  lineID: -1
+  multiLineIDs: 
+  isBackground: 0
+  noAnimation: 0
+  headClip: {fileID: 0}
+  mouthClip: {fileID: 0}
+  play2DHeadAnim: 0
+  headClip2D: 
+  headLayer: 0
+  play2DMouthAnim: 0
+  mouthClip2D: 
+  mouthLayer: 0
+  waitTimeOffset: 0
+--- !u!114 &2916710585480262273
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed656dc9f403a441f8fe89408c7a7189, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 65
+    skipActionActual: {fileID: 7424621839200069693}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 1452.72
+    width: 300
+    height: 261.05
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  constantID: 368586
+  parameterID: -1
+  messageParameterID: -1
+  isPlayer: 0
+  playerID: -1
+  speaker: {fileID: 3503659167585205392, guid: b16877732cf06bf4da98d316b631c31a, type: 3}
+  messageText: "\u0414\u0430\u0432\u0430\u0439\u0442\u0435, \u0434\u0432\u0435 \u043F\u043E\u043B\u043E\u0432\u0438\u043D\u043A\u0438
+    \u043C\u043E\u0437\u0433\u0430, \u0432\u044B \u0441\u043F\u0440\u0430\u0432\u0438\u0442\u0435\u0441\u044C. "
+  lineID: -1
+  multiLineIDs: 
+  isBackground: 0
+  noAnimation: 0
+  headClip: {fileID: 0}
+  mouthClip: {fileID: 0}
+  play2DHeadAnim: 0
+  headClip2D: 
+  headLayer: 0
+  play2DMouthAnim: 0
+  mouthClip2D: 
+  mouthLayer: 0
+  waitTimeOffset: 0
+--- !u!114 &3324687852274646005
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed656dc9f403a441f8fe89408c7a7189, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 50
+    skipActionActual: {fileID: -7441653771345747693}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 1064
+    y: 9512.159
+    width: 300
+    height: 247
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  constantID: 368004
+  parameterID: -1
+  messageParameterID: -1
+  isPlayer: 0
+  playerID: -1
+  speaker: {fileID: 3503659167585205392, guid: eb5706aa2fcbfda48b70b1c2b320f069, type: 3}
+  messageText: "\u0410? \u041D\u0443 \u0447\u0435\u0433\u043E \u0435\u0449\u0435?"
   lineID: -1
   multiLineIDs: 
   isBackground: 0
@@ -1315,8 +3461,8 @@ MonoBehaviour:
   linkedAsset: {fileID: 0}
   endings:
   - resultAction: 2
-    skipAction: 10
-    skipActionActual: {fileID: -8507608403928398005}
+    skipAction: 45
+    skipActionActual: {fileID: 8715408565866780134}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -1324,10 +3470,10 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 197
-    y: 3427.9307
+    x: 1064
+    y: 8130.9595
     width: 300
-    height: 232
+    height: 246.05
   overrideColor: {r: 1, g: 1, b: 1, a: 1}
   showOutputSockets: 1
   parentActionListInEditor: {fileID: 0}
@@ -1338,8 +3484,8 @@ MonoBehaviour:
   isPlayer: 0
   playerID: -1
   speaker: {fileID: 0}
-  messageText: "\u041E\u0439 \u0432\u0441\u0435, \u043C\u043E\u043B\u0447\u0438\u0442\u0435,
-    \u043D\u0435 \u043F\u043E\u0437\u043E\u0440\u044C\u0442\u0435\u0441\u044C"
+  messageText: "\u041E\u0439 \u0432\u0441\u0435, \u0445\u0432\u0430\u0442\u0438\u0442.
+    \u041C\u043E\u043B\u0447\u0438\u0442\u0435, \u043D\u0435 \u043F\u043E\u0437\u043E\u0440\u044C\u0442\u0435\u0441\u044C"
   lineID: -1
   multiLineIDs: 
   isBackground: 0
@@ -1377,7 +3523,7 @@ MonoBehaviour:
   linkedAsset: {fileID: 0}
   endings:
   - resultAction: 2
-    skipAction: 21
+    skipAction: 18
     skipActionActual: {fileID: 7574067385982942093}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
@@ -1386,22 +3532,24 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 221
-    y: 2842.4705
+    x: 714
+    y: 7580.3896
     width: 300
-    height: 232
+    height: 275.57
   overrideColor: {r: 1, g: 1, b: 1, a: 1}
   showOutputSockets: 1
   parentActionListInEditor: {fileID: 0}
   groupID: 0
-  constantID: 0
+  constantID: 368004
   parameterID: -1
   messageParameterID: -1
   isPlayer: 0
   playerID: -1
-  speaker: {fileID: 0}
-  messageText: "\u041F\u043E\u043C\u043D\u0438\u0442\u0435 \u043A\u0430\u043A\u043E\u0439
-    \u0441\u0442\u0438\u0445 \u043D\u0430\u0434\u043E \u0443\u0447\u0438\u0442\u044C?"
+  speaker: {fileID: 3503659167585205392, guid: eb5706aa2fcbfda48b70b1c2b320f069, type: 3}
+  messageText: "\u041B\u0430\u0434\u043D\u043E, \u0431\u043E\u0433 \u0441 \u0432\u0430\u043C\u0438.
+    \u041F\u043E\u043C\u043D\u0438\u0442\u0435 \u043A\u0430\u043A\u043E\u0439 \u0441\u0442\u0438\u0445
+    \u043D\u0430\u0434\u043E \u0443\u0447\u0438\u0442\u044C? \u042F \u0436\u0435
+    \u0437\u0430\u0432\u0442\u0440\u0430 \u0441\u043F\u0440\u043E\u0448\u0443... "
   lineID: -1
   multiLineIDs: 
   isBackground: 0
@@ -1415,7 +3563,7 @@ MonoBehaviour:
   mouthClip2D: 
   mouthLayer: 0
   waitTimeOffset: 0
---- !u!114 &5156598137655373181
+--- !u!114 &4341136137588528943
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1439,8 +3587,8 @@ MonoBehaviour:
   linkedAsset: {fileID: 0}
   endings:
   - resultAction: 2
-    skipAction: 16
-    skipActionActual: {fileID: 2627516875972317076}
+    skipAction: 40
+    skipActionActual: {fileID: -199403236748271710}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -1448,10 +3596,10 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 817.7826
-    y: 4828.256
+    x: 364
+    y: 5566.72
     width: 300
-    height: 246.05
+    height: 260.57
   overrideColor: {r: 1, g: 1, b: 1, a: 1}
   showOutputSockets: 1
   parentActionListInEditor: {fileID: 0}
@@ -1462,8 +3610,10 @@ MonoBehaviour:
   isPlayer: 0
   playerID: -1
   speaker: {fileID: 0}
-  messageText: "\u0414\u0443\u043C\u0430\u0435\u0442\u0435 \u043C\u0435\u043D\u044F
-    \u0442\u0430\u043A \u043B\u0435\u0433\u043A\u043E \u0443\u043C\u0430\u0441\u043B\u0438\u0442\u044C?"
+  messageText: "<i>\u0415\u0441\u043B\u0438 \u044F \u043D\u0430\u0447\u043D\u0443
+    \u0441\u0440\u0430\u0437\u0443 \u0433\u043E\u0432\u043E\u0440\u0438\u0442\u044C
+    \u043F\u0440\u043E \u043E\u043B\u0438\u043C\u043F\u0438\u0430\u0434\u0443, \u043E\u043D\u0430
+    \u0447\u0442\u043E-\u0442\u043E \u0437\u0430\u043F\u043E\u0434\u043E\u0437\u0440\u0438\u0442..."
   lineID: -1
   multiLineIDs: 
   isBackground: 0
@@ -1477,6 +3627,82 @@ MonoBehaviour:
   mouthClip2D: 
   mouthLayer: 0
   waitTimeOffset: 0
+--- !u!114 &5361170714877043385
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e71317434ca91481a8e97d91e89df8c0, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 8
+    skipActionActual: {fileID: -7272389699305819365}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 714
+    y: 6378.34
+    width: 300
+    height: 287
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  parameterID: -1
+  constantID: 368004
+  isPlayer: 0
+  playerID: -1
+  animChar: {fileID: 3503659167585205392, guid: eb5706aa2fcbfda48b70b1c2b320f069, type: 3}
+  clip: {fileID: 0}
+  clipParameterID: -1
+  clip2D: Char_NSJaba_Angry
+  clip2DParameterID: -1
+  method: 0
+  blendMode: 0
+  layer: 0
+  standard: 0
+  includeDirection: 0
+  changeSound: 0
+  newSound: {fileID: 0}
+  newSoundParameterID: -1
+  newSpeedParameterID: -1
+  layerInt: 0
+  idleAfter: 1
+  idleAfterCustom: 0
+  playMode: 0
+  playModeBase: 1
+  fadeTime: 0
+  changeSpeed: 0
+  newSpeed: 0
+  methodMecanim: 2
+  mecanimCharParameter: 0
+  mecanimParameterType: 0
+  parameterName: 
+  parameterNameID: -1
+  parameterValue: 0
+  parameterValueParameterID: -1
+  hideHead: 0
+  doLoop: 0
 --- !u!114 &5488181043460573647
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1501,7 +3727,7 @@ MonoBehaviour:
   linkedAsset: {fileID: 0}
   endings:
   - resultAction: 2
-    skipAction: 28
+    skipAction: 25
     skipActionActual: {fileID: 8274154431180023718}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
@@ -1510,8 +3736,8 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 962.6175
-    y: 6001.9365
+    x: 1764
+    y: 13724.879
     width: 300
     height: 152
   overrideColor: {r: 1, g: 1, b: 1, a: 1}
@@ -1524,6 +3750,69 @@ MonoBehaviour:
   selectAfter: 0
   playerID: 0
   setPlayer: 0
+--- !u!114 &5560226677402665581
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed656dc9f403a441f8fe89408c7a7189, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 57
+    skipActionActual: {fileID: -3919532315503191139}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 1064
+    y: 12205.879
+    width: 300
+    height: 246.05
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  constantID: 0
+  parameterID: -1
+  messageParameterID: -1
+  isPlayer: 0
+  playerID: -1
+  speaker: {fileID: 0}
+  messageText: "\u042D\u0442\u043E \u0432\u044B \u0442\u0430\u043A \u0437\u0430\u0434\u043E\u0431\u0440\u0438\u0442\u044C
+    \u043C\u0435\u043D\u044F \u043F\u044B\u0442\u0430\u0435\u0442\u0435\u0441\u044C,
+    \u0434\u0430?"
+  lineID: -1
+  multiLineIDs: 
+  isBackground: 0
+  noAnimation: 0
+  headClip: {fileID: 0}
+  mouthClip: {fileID: 0}
+  play2DHeadAnim: 0
+  headClip2D: 
+  headLayer: 0
+  play2DMouthAnim: 0
+  mouthClip2D: 
+  mouthLayer: 0
+  waitTimeOffset: 0
 --- !u!114 &5719303197971838750
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1548,7 +3837,7 @@ MonoBehaviour:
   linkedAsset: {fileID: 0}
   endings:
   - resultAction: 2
-    skipAction: 20
+    skipAction: 17
     skipActionActual: {fileID: 5488181043460573647}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
@@ -1557,8 +3846,8 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 964.0129
-    y: 5803.275
+    x: 1764
+    y: 13542.879
     width: 300
     height: 152
   overrideColor: {r: 1, g: 1, b: 1, a: 1}
@@ -1595,8 +3884,8 @@ MonoBehaviour:
   linkedAsset: {fileID: 0}
   endings:
   - resultAction: 2
-    skipAction: 25
-    skipActionActual: {fileID: 4061842680136715463}
+    skipAction: 43
+    skipActionActual: {fileID: 678151128025183434}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -1604,23 +3893,24 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 671
-    y: 1769
+    x: 364
+    y: 7153.3896
     width: 300
-    height: 246.05
+    height: 275.57
   overrideColor: {r: 1, g: 1, b: 1, a: 1}
   showOutputSockets: 1
   parentActionListInEditor: {fileID: 0}
   groupID: 0
-  constantID: 0
+  constantID: 368004
   parameterID: -1
   messageParameterID: -1
   isPlayer: 0
   playerID: -1
-  speaker: {fileID: 0}
-  messageText: "\u0421\u0430\u043C\u0438 \u043E\u043F\u0430\u0437\u0434\u044B\u0432\u0430\u0435\u0442\u0435,
-    \u043D\u0435\u0447\u0435 \u041B\u0438\u0437\u0443 \u0441 \u0441\u043E\u0431\u043E\u0439
-    \u0442\u044F\u043D\u0443\u0442\u044C "
+  speaker: {fileID: 3503659167585205392, guid: eb5706aa2fcbfda48b70b1c2b320f069, type: 3}
+  messageText: "\u041B\u0430\u0434\u043D\u043E \u0447\u0442\u043E \u0441\u0430\u043C\u0438
+    \u043E\u043F\u0430\u0437\u0434\u044B\u0432\u0430\u0435\u0442\u0435, \u0442\u0430\u043A
+    \u0432\u044B \u0435\u0449\u0435 \u041B\u0438\u0437\u043E\u043D\u044C\u043A\u0443
+    \u0441 \u0441\u043E\u0431\u043E\u0439 \u0432\u043D\u0438\u0437 \u0442\u044F\u043D\u0438\u0442\u0435 "
   lineID: -1
   multiLineIDs: 
   isBackground: 0
@@ -1650,7 +3940,7 @@ MonoBehaviour:
   isDisplayed: 1
   showComment: 0
   comment: 
-  willWait: 0
+  willWait: 1
   endAction: 0
   skipAction: -1
   skipActionActual: {fileID: 0}
@@ -1667,8 +3957,8 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 568.8638
-    y: 6209.5117
+    x: 1764
+    y: 12957.879
     width: 300
     height: 155
   overrideColor: {r: 1, g: 1, b: 1, a: 1}
@@ -1716,8 +4006,8 @@ MonoBehaviour:
   linkedAsset: {fileID: 0}
   endings:
   - resultAction: 2
-    skipAction: 14
-    skipActionActual: {fileID: 5156598137655373181}
+    skipAction: 55
+    skipActionActual: {fileID: -7098747546785481956}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
   isEnabled: 1
@@ -1725,8 +4015,8 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 819.7826
-    y: 4625.256
+    x: 1064
+    y: 11721.879
     width: 300
     height: 192
   overrideColor: {r: 1, g: 1, b: 1, a: 1}
@@ -1763,6 +4053,66 @@ MonoBehaviour:
   variablesConstantID: 0
   placeholderType: 1
   placeholderPopUpLabelDataID: -1
+--- !u!114 &7424621839200069693
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b3339a0ba7074d969436b88c517d06f, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 1
+    skipActionActual: {fileID: -7475843057557115364}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 1743.77
+    width: 300
+    height: 165
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  gameObject: {fileID: 5505149944855976362, guid: b16877732cf06bf4da98d316b631c31a, type: 3}
+  parameterID: -1
+  constantID: 368586
+  replaceGameObject: {fileID: 0}
+  replaceParameterID: -1
+  replaceConstantID: 0
+  relativeGameObject: {fileID: 0}
+  relativeGameObjectID: 11682
+  relativeGameObjectParameterID: -1
+  relativeVectorParameterID: -1
+  relativeVector: {x: 0, y: 0, z: 0}
+  vectorVarParameterID: -1
+  vectorVarID: 0
+  variableLocation: 0
+  invAction: 1
+  positionRelativeTo: 3
+  variables: {fileID: 0}
+  variablesConstantID: 0
+  spawnedObjectParameterID: -1
 --- !u!114 &7574067385982942093
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1787,12 +4137,12 @@ MonoBehaviour:
   linkedAsset: {fileID: 0}
   endings:
   - resultAction: 2
-    skipAction: 22
+    skipAction: 19
     skipActionActual: {fileID: -692941174925641588}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
   - resultAction: 2
-    skipAction: 24
+    skipAction: 21
     skipActionActual: {fileID: 4019003715625955323}
     linkedCutscene: {fileID: 0}
     linkedAsset: {fileID: 0}
@@ -1801,10 +4151,10 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 358.00012
-    y: 3132.6067
+    x: 714
+    y: 7885.9595
     width: 300
-    height: 235
+    height: 215
   overrideColor: {r: 1, g: 1, b: 1, a: 1}
   showOutputSockets: 1
   parentActionListInEditor: {fileID: 0}
@@ -1820,6 +4170,225 @@ MonoBehaviour:
   menuParameterID: -1
   elementParameterID: -1
   numSockets: 2
+--- !u!114 &7575582188838320227
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed656dc9f403a441f8fe89408c7a7189, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 36
+    skipActionActual: {fileID: -8696059146256792227}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 14
+    y: 2789.9102
+    width: 300
+    height: 260.57
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  constantID: 0
+  parameterID: -1
+  messageParameterID: -1
+  isPlayer: 0
+  playerID: -1
+  speaker: {fileID: 0}
+  messageText: "<i>\u042F \u0445\u043E\u0442\u0435\u043B \u043F\u043E\u0437\u0434\u0430\u0440\u043E\u0432\u0430\u0442\u044C\u0441\u044F,
+    \u043D\u043E \u0432\u0441\u044F \u043C\u043E\u044F \u0445\u0440\u0430\u0431\u0440\u043E\u0441\u0442\u044C
+    \u0438 \u0443\u0432\u0435\u0440\u0435\u043D\u043D\u043E\u0441\u0442\u044C \u0443\u043B\u0438\u0442\u0443\u0447\u0438\u043B\u0430\u0441\u044C. "
+  lineID: -1
+  multiLineIDs: 
+  isBackground: 0
+  noAnimation: 0
+  headClip: {fileID: 0}
+  mouthClip: {fileID: 0}
+  play2DHeadAnim: 0
+  headClip2D: 
+  headLayer: 0
+  play2DMouthAnim: 0
+  mouthClip2D: 
+  mouthLayer: 0
+  waitTimeOffset: 0
+--- !u!114 &8138116206453163615
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdaacaae7eb224bd2b2b6d336bb7b1a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 60
+    skipActionActual: {fileID: -5581200397298010680}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  - resultAction: 2
+    skipAction: 15
+    skipActionActual: {fileID: -4453443930524389500}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 1414
+    y: 12193.879
+    width: 300
+    height: 240
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  resultActionTrue: 0
+  skipActionTrue: -1
+  skipActionTrueActual: {fileID: 0}
+  linkedCutsceneTrue: {fileID: 0}
+  linkedAssetTrue: {fileID: 0}
+  resultActionFail: 1
+  skipActionFail: -1
+  skipActionFailActual: {fileID: 0}
+  linkedCutsceneFail: {fileID: 0}
+  linkedAssetFail: {fileID: 0}
+  parameterID: -1
+  variableID: 29
+  checkParameterID: -1
+  getVarMethod: 0
+  compareVariableID: 0
+  intValue: 0
+  floatValue: 0
+  intCondition: 0
+  isAdditive: 0
+  boolValue: 1
+  boolCondition: 0
+  stringValue: 
+  checkCase: 1
+  vector3Value: {x: 0, y: 0, z: 0}
+  vectorCondition: 0
+  gameObjectValue: {fileID: 0}
+  unityObjectValue: {fileID: 0}
+  location: 0
+  variables: {fileID: 0}
+  variablesConstantID: 0
+  compareVariables: {fileID: 0}
+  compareVariablesConstantID: 0
+  placeholderType: 0
+  placeholderPopUpLabelDataID: 0
+--- !u!114 &8166208502979835724
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e71317434ca91481a8e97d91e89df8c0, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 6
+    skipActionActual: {fileID: 1694110622243639638}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 364
+    y: 4972.72
+    width: 300
+    height: 287
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  parameterID: -1
+  constantID: 368004
+  isPlayer: 0
+  playerID: -1
+  animChar: {fileID: 3503659167585205392, guid: eb5706aa2fcbfda48b70b1c2b320f069, type: 3}
+  clip: {fileID: 0}
+  clipParameterID: -1
+  clip2D: Char_NSJaba_Default
+  clip2DParameterID: -1
+  method: 0
+  blendMode: 0
+  layer: 0
+  standard: 0
+  includeDirection: 0
+  changeSound: 0
+  newSound: {fileID: 0}
+  newSoundParameterID: -1
+  newSpeedParameterID: -1
+  layerInt: 0
+  idleAfter: 1
+  idleAfterCustom: 0
+  playMode: 0
+  playModeBase: 1
+  fadeTime: 0
+  changeSpeed: 0
+  newSpeed: 0
+  methodMecanim: 2
+  mecanimCharParameter: 0
+  mecanimParameterType: 0
+  parameterName: 
+  parameterNameID: -1
+  parameterValue: 0
+  parameterValueParameterID: -1
+  hideHead: 0
+  doLoop: 0
 --- !u!114 &8274154431180023718
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1836,7 +4405,7 @@ MonoBehaviour:
   isDisplayed: 1
   showComment: 0
   comment: 
-  willWait: 0
+  willWait: 1
   endAction: 0
   skipAction: -1
   skipActionActual: {fileID: 0}
@@ -1853,10 +4422,10 @@ MonoBehaviour:
   isBreakPoint: 0
   nodeRect:
     serializedVersion: 2
-    x: 964.30615
-    y: 6198.626
+    x: 1764
+    y: 13906.879
     width: 300
-    height: 155
+    height: 152
   overrideColor: {r: 1, g: 1, b: 1, a: 1}
   showOutputSockets: 1
   parentActionListInEditor: {fileID: 0}
@@ -1878,3 +4447,67 @@ MonoBehaviour:
   setParameters: 0
   runMode: 0
   hasUpgradedAgain: 0
+--- !u!114 &8715408565866780134
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed656dc9f403a441f8fe89408c7a7189, type: 3}
+  m_Name: (Clone)
+  m_EditorClassIdentifier: 
+  id: 0
+  isDisplayed: 1
+  showComment: 0
+  comment: 
+  willWait: 0
+  endAction: 0
+  skipAction: -1
+  skipActionActual: {fileID: 0}
+  linkedCutscene: {fileID: 0}
+  linkedAsset: {fileID: 0}
+  endings:
+  - resultAction: 2
+    skipAction: 46
+    skipActionActual: {fileID: -604266981440862308}
+    linkedCutscene: {fileID: 0}
+    linkedAsset: {fileID: 0}
+  isEnabled: 1
+  isAssetFile: 1
+  isBreakPoint: 0
+  nodeRect:
+    serializedVersion: 2
+    x: 1064
+    y: 8407.01
+    width: 300
+    height: 246.05
+  overrideColor: {r: 1, g: 1, b: 1, a: 1}
+  showOutputSockets: 1
+  parentActionListInEditor: {fileID: 0}
+  groupID: 0
+  constantID: 0
+  parameterID: -1
+  messageParameterID: -1
+  isPlayer: 0
+  playerID: -1
+  speaker: {fileID: 0}
+  messageText: "<i>\u0416\u0430\u0431\u0430 \u0443\u0436\u0435 \u0441\u043E\u0431\u0440\u0430\u043B\u0430\u0441\u044C
+    \u0443\u0445\u043E\u0434\u0438\u0442\u044C, \u0430 \u043C\u044B \u0442\u0430\u043A
+    \u0438 \u043D\u0435 \u0443\u0437\u043D\u0430\u043B\u0438 \u0447\u0435\u0433\u043E
+    \u0445\u043E\u0442\u0435\u043B\u0438"
+  lineID: -1
+  multiLineIDs: 
+  isBackground: 0
+  noAnimation: 0
+  headClip: {fileID: 0}
+  mouthClip: {fileID: 0}
+  play2DHeadAnim: 0
+  headClip2D: 
+  headLayer: 0
+  play2DMouthAnim: 0
+  mouthClip2D: 
+  mouthLayer: 0
+  waitTimeOffset: 0
